@@ -1,6 +1,6 @@
 ```yaml
-number: 22586
-title: "[ty] Add support for dynamic dataclasses via `make_dataclass`"
+number: 22591
+title: "[ty] Support starred unpacking in class bases"
 type: pull_request
 state: open
 author: charliermarsh
@@ -8,14 +8,14 @@ labels:
   - ty
 assignees: []
 base: main
-head: charlie/functional-dict
-created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-15T04:02:32Z
-url: https://github.com/astral-sh/ruff/pull/22586
+head: charlie/bases
+created_at: 2026-01-15T04:06:39Z
+updated_at: 2026-01-15T04:09:29Z
+url: https://github.com/astral-sh/ruff/pull/22591
 synced_at: 2026-01-15T04:51:53Z
 ```
 
-# [ty] Add support for dynamic dataclasses via `make_dataclass`
+# [ty] Support starred unpacking in class bases
 
 ---
 
@@ -23,16 +23,36 @@ _@charliermarsh_
 
 ## Summary
 
-Like #22327, but for dataclasses.
+Closes https://github.com/astral-sh/ty/issues/2492.
 
 
 ---
 
-_Label `ty` added by @charliermarsh on 2026-01-14 22:21_
+_Label `ty` added by @charliermarsh on 2026-01-15 04:06_
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-14 22:22_
+_Marked ready for review by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Review requested from @sharkdp by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Review requested from @dcreager by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-15 04:08_
 
 
 <!-- generated-comment typing_conformance_diagnostics_diff -->
@@ -63,7 +83,7 @@ The percentage of diagnostics emitted that were expected errors held steady at 0
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
+_Comment by @astral-sh-bot[bot] on 2026-01-15 04:09_
 
 
 <!-- generated-comment mypy_primer -->
@@ -79,17 +99,6 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
 tornado (https://github.com/tornadoweb/tornado)
 - tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 + tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-
-strawberry (https://github.com/strawberry-graphql/strawberry)
-+ strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 348 diagnostics
-+ Found 350 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
 - src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
@@ -196,14 +205,23 @@ prefect (https://github.com/PrefectHQ/prefect)
 + Found 5334 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
 + static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1822 diagnostics
++ Found 1825 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 4361 diagnostics
++ Found 4359 diagnostics
 
 
 ```
@@ -214,37 +232,5 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
-
----
-
-_Marked ready for review by @charliermarsh on 2026-01-15 02:58_
-
----
-
-_Review requested from @carljm by @charliermarsh on 2026-01-15 02:58_
-
----
-
-_Review requested from @AlexWaygood by @charliermarsh on 2026-01-15 02:58_
-
----
-
-_Review requested from @sharkdp by @charliermarsh on 2026-01-15 02:58_
-
----
-
-_Review requested from @dcreager by @charliermarsh on 2026-01-15 02:58_
-
----
-
-_Converted to draft by @charliermarsh on 2026-01-15 02:59_
-
----
-
-_Marked ready for review by @charliermarsh on 2026-01-15 03:22_
-
----
-
-_Review requested from @MichaReiser by @charliermarsh on 2026-01-15 03:59_
 
 ---

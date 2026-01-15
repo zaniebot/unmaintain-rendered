@@ -2,16 +2,16 @@
 number: 2470
 title: Stack overflow with self referential tuple + use of list(...) constructor
 type: issue
-state: open
+state: closed
 author: BaxHugh
 labels:
   - fatal
   - type aliases
 assignees: []
 created_at: 2026-01-12T16:23:44Z
-updated_at: 2026-01-12T21:54:52Z
+updated_at: 2026-01-15T03:59:11Z
 url: https://github.com/astral-sh/ty/issues/2470
-synced_at: 2026-01-12T22:24:33Z
+synced_at: 2026-01-15T04:51:36Z
 ```
 
 # Stack overflow with self referential tuple + use of list(...) constructor
@@ -128,5 +128,19 @@ _Label `type aliases` added by @AlexWaygood on 2026-01-12 16:25_
 ---
 
 _Added to milestone `Pre-stable 1` by @carljm on 2026-01-12 21:54_
+
+---
+
+_Comment by @charliermarsh on 2026-01-15 03:59_
+
+Fixed by https://github.com/astral-sh/ruff/pull/22543.
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 03:59_
+
+---
+
+_Assigned to @carljm by @charliermarsh on 2026-01-15 03:59_
 
 ---

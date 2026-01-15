@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zb/no-sources-package
 created_at: 2025-07-25T21:11:34Z
-updated_at: 2026-01-15T03:38:19Z
+updated_at: 2026-01-15T03:58:40Z
 url: https://github.com/astral-sh/uv/pull/14910
-synced_at: 2026-01-15T03:52:24Z
+synced_at: 2026-01-15T04:52:06Z
 ```
 
 # Add `--no-sources-package`
@@ -64,5 +64,21 @@ I think I would expect this to return `&NoSources`? Callers can clone if they ne
 _@charliermarsh approved on 2026-01-15 03:38_
 
 Looks reasonable. I find `NoSources` name to be a bit confusing because it's sort of like a double-negative? I probably would've left it as `SourceStrategy` and just added a `Disabled(Vec<Package>)` variant.
+
+---
+
+_Comment by @zanieb on 2026-01-15 03:51_
+
+Hm. I was mostly mirroring the `NoBinary` and `NoBuild` patterns. I think it'd need to be `SourceStrategy::Disabled` and `SourceStrategy::DisabledPackages` or `SourceStrategy::Disabled(Option<Vec<Packages>>)`? both of which feel a little weird to me too.
+
+---
+
+_@zanieb reviewed on 2026-01-15 03:58_
+
+---
+
+_Review comment by @zanieb on `crates/uv-dispatch/src/lib.rs`:219 on 2026-01-15 03:58_
+
+I think I did this for some painful reason, but it was a while ago now. I'll look again.
 
 ---
