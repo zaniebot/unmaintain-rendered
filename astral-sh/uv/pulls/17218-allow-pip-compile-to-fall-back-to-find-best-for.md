@@ -2,7 +2,7 @@
 number: 17218
 title: "Allow `pip compile` to fall back to `find_best` for `--python`"
 type: pull_request
-state: open
+state: closed
 author: EliteTK
 labels:
   - enhancement
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: tk/pip-compile-missing-py-2
 created_at: 2025-12-22T19:16:52Z
-updated_at: 2025-12-29T13:16:22Z
+updated_at: 2026-01-15T14:02:35Z
 url: https://github.com/astral-sh/uv/pull/17218
-synced_at: 2026-01-12T16:12:39Z
+synced_at: 2026-01-15T14:51:33Z
 ```
 
 # Allow `pip compile` to fall back to `find_best` for `--python`
@@ -108,5 +108,9 @@ hint: A managed Python download is available for Python 3.13, but Python downloa
 ---
 
 _Converted to draft by @EliteTK on 2025-12-29 13:16_
+
+---
+
+_Closed by @EliteTK on 2026-01-15 14:02_
 
 ---

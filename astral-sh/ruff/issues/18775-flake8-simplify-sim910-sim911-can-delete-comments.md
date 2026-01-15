@@ -9,9 +9,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2025-06-19T00:40:13Z
-updated_at: 2026-01-15T12:50:56Z
+updated_at: 2026-01-15T14:26:34Z
 url: https://github.com/astral-sh/ruff/issues/18775
-synced_at: 2026-01-15T13:51:54Z
+synced_at: 2026-01-15T14:51:08Z
 ```
 
 # [flake8-simplify] SIM910/SIM911 can delete comments
@@ -89,5 +89,11 @@ _Comment by @leonace924 on 2026-01-15 12:28_
 _Comment by @MichaReiser on 2026-01-15 12:50_
 
 Yeah sure. The easiest fix would be to mark the fix as unsafe if it intersects with any comment as we do in many other rules. A more advanced fix would be trying to preserve the comments.
+
+---
+
+_Comment by @leonace924 on 2026-01-15 14:26_
+
+PR is ready based on your comment
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zsol/jj-purmswupkxso
 created_at: 2026-01-15T10:27:47Z
-updated_at: 2026-01-15T13:27:09Z
+updated_at: 2026-01-15T14:19:29Z
 url: https://github.com/astral-sh/uv/pull/17482
-synced_at: 2026-01-15T13:52:18Z
+synced_at: 2026-01-15T14:51:33Z
 ```
 
 # auth-helper: only refresh pyx tokens expiring in 30 minutes
@@ -139,5 +139,11 @@ _Comment by @zanieb on 2026-01-15 13:26_
 I'm wondering why `uv auth token` and `uv auth credential-helper` should have different tolerance behavior? I think it make sense that Bazel builds will take longer want want a higher tolerance, but at a high-level, I'm not sure it makes sense?
 
 I think I might expect `uv auth token` and `uv auth credential-helper` to take a `--refresh-tolerance` option rather than have multiple default values?
+
+---
+
+_Comment by @zsol on 2026-01-15 14:19_
+
+I've changed the tolerance so it matches `uv auth token` for now. We can pontificate the merits of a command line flag later
 
 ---

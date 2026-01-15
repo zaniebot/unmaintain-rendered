@@ -8,9 +8,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2026-01-14T14:57:10Z
-updated_at: 2026-01-15T12:15:50Z
+updated_at: 2026-01-15T14:33:27Z
 url: https://github.com/astral-sh/ty/issues/2494
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T14:51:03Z
 ```
 
 # Split `unused-ignore-comment` and introduce separate rule for unused `type: ignore` comments
@@ -248,5 +248,24 @@ There's an existing rule to [catch unknown rules in ignore comments](https://doc
 ---
 
 _Renamed from "`unused-ignore-comment` should not handle unknown rules" to "Split `unused-ignore-comment` and introduce separate rule for unused `type: ignore` comments" by @MichaReiser on 2026-01-15 12:15_
+
+---
+
+_Comment by @mswart on 2026-01-15 14:16_
+
+
+> 1. If respect-type-ignore-comments is set to true
+> I get the warning "Unused blanket type: ignore directive (ty unused-ignore-comment)" on the type: ignore used by pyright.
+> So I have to add "unused-ignore-comment" on that line like this:
+> ```py
+> class Meta: # type: ignore[reportIncompatibleVariableOverride] # ty: ignore[unused-ignore-comment]
+> ```
+
+You can however use pyright specific rule suppression comments (`# pyright: ignore`); they are ignored automatically by ty:
+
+```py
+class Meta:  # pyright: ignore[reportIncompatibleVariableOverride]
+```
+
 
 ---

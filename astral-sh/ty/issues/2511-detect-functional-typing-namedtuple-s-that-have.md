@@ -2,16 +2,16 @@
 number: 2511
 title: "Detect functional `typing.NamedTuple`s that have fields beginning with underscores"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - runtime semantics
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:11:24Z
-updated_at: 2026-01-15T12:23:21Z
+updated_at: 2026-01-15T14:15:47Z
 url: https://github.com/astral-sh/ty/issues/2511
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T14:51:03Z
 ```
 
 # Detect functional `typing.NamedTuple`s that have fields beginning with underscores
@@ -47,5 +47,9 @@ _Label `runtime semantics` added by @AlexWaygood on 2026-01-15 12:11_
 ---
 
 _Label `namedtuples` added by @AlexWaygood on 2026-01-15 12:23_
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 14:15_
 
 ---

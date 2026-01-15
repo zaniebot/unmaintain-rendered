@@ -6,14 +6,15 @@ state: merged
 author: dhruvmanila
 labels:
   - server
+  - ty
 assignees: []
 merged: true
 base: main
 head: dhruv/log-guidance
 created_at: 2026-01-12T09:31:56Z
-updated_at: 2026-01-13T08:13:12Z
+updated_at: 2026-01-15T14:18:21Z
 url: https://github.com/astral-sh/ruff/pull/22530
-synced_at: 2026-01-13T08:23:11Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [ty] Improve log guidance message for Zed
@@ -126,5 +127,9 @@ _Closed by @dhruvmanila on 2026-01-13 08:13_
 ---
 
 _Branch deleted on 2026-01-13 08:13_
+
+---
+
+_Label `ty` added by @ntBre on 2026-01-15 14:18_
 
 ---

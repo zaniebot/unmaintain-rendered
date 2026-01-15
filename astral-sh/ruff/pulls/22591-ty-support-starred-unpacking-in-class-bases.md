@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/bases
 created_at: 2026-01-15T04:06:39Z
-updated_at: 2026-01-15T09:22:02Z
+updated_at: 2026-01-15T13:50:55Z
 url: https://github.com/astral-sh/ruff/pull/22591
-synced_at: 2026-01-15T09:45:40Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [ty] Support starred unpacking in class bases
@@ -135,5 +135,31 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 13:49_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/classes.md`:59 on 2026-01-15 13:49_
+
+This should cause us to emit an `unsupported-base` diagnostic, since we can't determine the class's MRO accurately here
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 13:50_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2462 on 2026-01-15 13:50_
+
+Could we use `itertools::Either` to avoid allocating `Vec`s here?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 13:50_
+
+Thank you!!
 
 ---

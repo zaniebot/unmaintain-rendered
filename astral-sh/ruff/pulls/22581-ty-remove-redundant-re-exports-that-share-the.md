@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ag/remove-redundant-auto-import-symbols
 created_at: 2026-01-14T19:18:15Z
-updated_at: 2026-01-14T19:25:56Z
+updated_at: 2026-01-15T14:09:33Z
 url: https://github.com/astral-sh/ruff/pull/22581
-synced_at: 2026-01-14T19:42:40Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [ty] Remove redundant re-exports that share the same top-most module
@@ -217,5 +217,89 @@ _Label `server` added by @BurntSushi on 2026-01-14 19:24_
 ---
 
 _Label `ty` added by @BurntSushi on 2026-01-14 19:24_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:80 on 2026-01-15 13:14_
+
+Nit, it could be assigning the result of `AllSymbolInfo::` to a variable before acquiring the lock, if whatever we do in `::from_module `is expensive. The same applies for line 85
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/symbols.rs`:295 on 2026-01-15 13:18_
+
+`ModuleName` is also a compact str, meaning we only clone a heap allocation if the string is more than 24 bytes
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/symbols.rs`:837 on 2026-01-15 13:19_
+
+Nit: I have a slight preference for using our own enum here (which could also have methods like `symbol_kind`). Reading `is_left`, `either` in this body feels rather cryptic.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_module_resolver/src/module_name.rs`:96 on 2026-01-15 13:29_
+
+Nit: I'm leaning towards using `root` here, which IMO goes better with `ancestors` and `parent` than `top`, but I can't specifically say why :)
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:239 on 2026-01-15 13:35_
+
+One concern that I have with removing it without considering the outer context is if you're working on said library. Let's say I work on pandas and are writing a module in `pandas.io.parsers.readers` or a sibling package of it. It's probably desired to then import the symbol from the closest module rather than always preferring the outer most module?
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:257 on 2026-01-15 13:39_
+
+This `impl` block is a bit larger than what I normally would feel comfortable having within a function body. Should we make `merge` a module? 
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:254 on 2026-01-15 13:40_
+
+I'd find a a short comment on what the meaning of these fields helpful. The code here is complicated enough that I'm failing to easily infer the meaning (and all the invariants) by simply scanning the method bodies
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:245 on 2026-01-15 13:51_
+
+All the lints emitted by clippy here seem reasonable to me (except maybe the match one but can we just disable this specific lint). Any specific reason why you disabled all warning lints?
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:436 on 2026-01-15 13:55_
+
+Is this semantically the same as "finishing" a group? If so, should we add a `finish_into(&mut self, target: &mut Vec)` method (or `finish(&mut self) -> impl Iterator<...>` ?
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:447 on 2026-01-15 13:55_
+
+haha, you're not one of the `is_some_and` fans :)
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:308 on 2026-01-15 14:01_
+
+What are cases where the kind between two symbols with the same fully qualified name is different? 
+
+Would two different kinds suggest that these are different symbols?
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/all_symbols.rs`:250 on 2026-01-15 14:05_
+
+Nit: This might be more annoying, so I leave it up to you. As I understand it, the `origin_keep` act as a mechanism to remove elements from `origin` and `reexport` without having to actually remove them (because `swap_remove` would change the ordering). 
+
+An alternative (but maybe too annoying to deal with) approach would be to "tombstone" elements that have been removed, e.g. by making `orign` a `Vec` over `Option<AllSymbolInfo>` where `None` is the tombstone.
+
+---
+
+_@MichaReiser approved on 2026-01-15 14:09_
+
+This looks good. There's certainly a fair amount of complexity in `merge` (functional but also to avoid allocations) that requires a fair amount of concentration to understand what's going on. 
+
+I have one design question on whether filtering out re-export must be sensitive to the current module.
 
 ---

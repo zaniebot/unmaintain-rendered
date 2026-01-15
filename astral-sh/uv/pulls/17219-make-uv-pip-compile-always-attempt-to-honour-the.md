@@ -2,7 +2,7 @@
 number: 17219
 title: "Make `uv pip compile` always attempt to honour the `--python` argument"
 type: pull_request
-state: open
+state: closed
 author: EliteTK
 labels:
   - bug
@@ -11,9 +11,9 @@ draft: true
 base: tk/pip-compile-missing-py-2
 head: tk/pip-compile-missing-py-3
 created_at: 2025-12-22T19:44:06Z
-updated_at: 2025-12-29T13:16:34Z
+updated_at: 2026-01-15T14:02:31Z
 url: https://github.com/astral-sh/uv/pull/17219
-synced_at: 2026-01-12T16:12:39Z
+synced_at: 2026-01-15T14:51:33Z
 ```
 
 # Make `uv pip compile` always attempt to honour the `--python` argument
@@ -45,5 +45,9 @@ _Label `bug` added by @EliteTK on 2025-12-22 19:44_
 ---
 
 _Converted to draft by @EliteTK on 2025-12-29 13:16_
+
+---
+
+_Closed by @EliteTK on 2026-01-15 14:02_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-15T13:39:31Z
+updated_at: 2026-01-15T14:13:32Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-15T13:52:05Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -202,5 +202,69 @@ _Closed by @AlexWaygood on 2026-01-15 13:33_
 ---
 
 _Reopened by @AlexWaygood on 2026-01-15 13:34_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 13:46_
+
+I'm a _bit_ hesitant about this one. The typing spec doesn't say anything about this function AFAIK, and I don't remember seeing any user requests on the issue tracker for us to add special-cased support. Mypy_primer only shows two diagnostics going away in the ecosystem, on `strawberry` -- and it looks like those lines already have `type: ignore`s on them for mypy.
+
+Meanwhile, this is _quite_ a bit of new code, and the manual parsing of arguments in `infer/builder.rs` is quite complicated and error-prone.
+
+Do any other type checkers have special-cased support for this function? We do have to draw the line _somewhere_.
+
+I think I'd feel differently if we could share more of the call-expression-parsing logic with what we've already added for namedtuples (which definitely _was_ necessary), but the schema `make_dataclass()` expects is _just_ different enough that sharing more of the code seeems like it could be pretty difficult?
+
+Another -- much simpler -- way to avoid false positives with the objects returned by this function would be to just special-case the return type so that we infer `type[Unknown]` rather than `type` -- that wouldn't involve any custom call-expression parsing.
+
+---
+
+_Comment by @charliermarsh on 2026-01-15 13:59_
+
+AFAICT, Mypy and Pyright do not support it. But... I would still advocate for us to support it? We have all the infrastructure to do so! And almost all of the new code is in argument parsing -- which is very verbose, but at least fairly mechanical and testable? (E.g., it's much easier to know when we have that right, as opposed to something deep in type inference.) I think I don't agree that _this_ is where we should draw the line, unless it's a feature that we can't support for reasons that I don't yet understand or would be uncovered by your review.
+
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 14:01_
+
+(I'm curious for @carljm's and @dcreager's opinions!)
+
+---
+
+_Comment by @charliermarsh on 2026-01-15 14:08_
+
+Ditto and am totally fine to be overruled on it of course. I took it as a given that we'd support this given that it's in the [type system overview](https://github.com/astral-sh/ty/issues/1889); that may have been a mistake!
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 14:10_
+
+> Ditto and am totally fine to be overruled on it of course. I took it as a given that we'd support this given that it's in the [type system overview](https://github.com/astral-sh/ty/issues/1889); that may have been a mistake!
+
+Well, that issue just says that we don't have any tests for the function right now. But this PR adds a lot more than just test coverage 😆
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/infer/builder.rs`:7616 on 2026-01-15 14:12_
+
+Can we match on the elements here. The same in other positions
+```suggestion
+                    [name_expr, type_expr] => {
+```
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 14:12_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:5817 on 2026-01-15 14:13_
+
+It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 14:13_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T13:42:46Z
+updated_at: 2026-01-15T13:59:08Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-15T13:52:18Z
+synced_at: 2026-01-15T14:51:33Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -302,5 +302,119 @@ _@zanieb reviewed on 2026-01-15 13:42_
 _Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:42_
 
 I think it's fairly important to explain what's happening when we're searching for a different version than you've requested.
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:44_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1513 on 2026-01-15 13:44_
+
+Nit: I might call this `let result = `? I found `if let Err(error) = installation {` a little confusing downstream since you're doing a match here and at a glance it looks like you could be unpacking the error here?
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:47_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1536 on 2026-01-15 13:47_
+
+```suggestion
+            // Emit a warning instead of failing since we may find a suitable
+            // interpreter on the system after relaxing the request further.
+            // Additionally, uv did not previously attempt downloads in this
+            // code path and we want to minimize the fatal cases for
+            // backwards compatibility.
+            // Errors encountered here are either network errors or quirky
+            // configuration problems.
+```
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:48_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:48_
+
+(this seems doable by just including a message tuple in your iterator)
+
+---
+
+_@EliteTK reviewed on 2026-01-15 13:49_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:49_
+
+They're not quite lost, just different:
+
+https://github.com/astral-sh/uv/pull/17249/changes#diff-d02a01db770da7d68941d9e67624483d066f95310e5c1835dc0edc23f9af6e5cR1490
+
+Although it looks like I removed this:
+
+https://github.com/astral-sh/uv/pull/17249/changes#diff-d02a01db770da7d68941d9e67624483d066f95310e5c1835dc0edc23f9af6e5cL1458
+
+Which was not intended. I'll definitely re-introduce that.
+
+I was thinking that if the entry log was present that those attempt specific log entries would be sufficient without the details but I have no issue with adding more logging information.
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:49_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 13:49_
+
+The attached error is worthless. I think we need to render the chain? 
+
+---
+
+_@zanieb approved on 2026-01-15 13:52_
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:53_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:53_
+
+I think the "relaxed" part is sort of helpful for explaining what we're doing, but I'm okay with omitting it for now.
+
+---
+
+_@EliteTK reviewed on 2026-01-15 13:54_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1513 on 2026-01-15 13:54_
+
+Yeah I'll rename that. That's a fair point.
+
+Unpacking the error here would require a `match (match ...)` which seemed like a worse idea than this. 
+
+The goal was to coalesce all the errors into a Result<Option<PythonInstallation>, crate::Error> and then in the case of:
+
+* `Ok(Some(installation))`: We return early.
+* `Ok(None)`: We keep going for now, which might mean we end up propagating the outer error instead.
+* `Err(error)`: We do the special error handling below.
+
+Since there's three different potential error paths coming out of this, it seemed less clunky to do it this way.
+
+I can try to come up with something else though.
+
+---
+
+_@EliteTK reviewed on 2026-01-15 13:59_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 13:59_
+
+Yeah I was curious about your opinion on this. I'll render the chain. Do you know off the top of your head if we do that somewhere else already? (I know how to do it, the anyhow docs have a good example (even if this isn't an anyhow error))
 
 ---

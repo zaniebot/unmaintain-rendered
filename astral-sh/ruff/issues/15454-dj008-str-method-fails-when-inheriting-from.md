@@ -9,9 +9,9 @@ labels:
   - type-inference
 assignees: []
 created_at: 2025-01-13T12:12:39Z
-updated_at: 2025-01-15T07:10:28Z
+updated_at: 2026-01-15T14:27:09Z
 url: https://github.com/astral-sh/ruff/issues/15454
-synced_at: 2026-01-12T15:54:54Z
+synced_at: 2026-01-15T14:51:08Z
 ```
 
 # DJ008 (`__str__` method) fails when inheriting from multiple models, and str only defined in other module
@@ -100,5 +100,34 @@ I wonder if we should ignore this rule when the subclass is coming from a differ
 ---
 
 _Label `rule` added by @MichaReiser on 2025-01-15 07:10_
+
+---
+
+_Comment by @tuttle on 2026-01-15 14:27_
+
+We encountered this problem when creating Django models from abstract classes
+
+```python
+from django_extensions.db.models import TimeStampedModel
+
+class SentNotification(TimeStampedModel):
+    ...
+```
+
+This is very common in our codebase. The `DJ008` or `DJ012` rule don't not trigger at all and cannot detect missing `__str__` or bad ordering.
+
+A similar issue is addressed in issues:
+- https://github.com/astral-sh/ruff/issues/13664
+- https://github.com/astral-sh/ruff/issues/12865
+
+A workaround would be to have an option in `pyproject.toml` to **define a list of classes that can also serve as model bases** (aside from the standard `django.db.models.Model`):
+
+```
+[tool.ruff.lint.django]
+additional-abstract-model-classes = [
+    "django_extensions.db.models.TimeStampedModel",
+]
+```
+
 
 ---

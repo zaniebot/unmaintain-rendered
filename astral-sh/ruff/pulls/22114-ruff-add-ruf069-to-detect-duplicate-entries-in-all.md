@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-15T00:50:32Z
+updated_at: 2026-01-15T14:14:53Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-15T01:41:26Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -776,5 +776,51 @@ I should have addressed all concerns now, sorry for the delay
 ---
 
 _Review requested from @chirizxc by @leandrobbraga on 2026-01-15 00:38_
+
+---
+
+_Comment by @chirizxc on 2026-01-15 14:10_
+
+In general, it seems that we also have [code](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs) that repeats in this rule. Should we move some functions to helpers and reuse them?
+
+Do something like this:
+```rust
+pub(crate) fn all_assignment<F>(
+    checker: &Checker,
+    target: &ast::Expr,
+    value: &ast::Expr,
+    call: F,
+) where
+    F: FnOnce(&Checker, &[ast::Expr]),
+{
+
+    let ast::Expr::Name(ast::ExprName { id, .. }) = target else {
+        return;
+    };
+
+    if id != "__all__" {
+        return;
+    }
+
+    if !checker.semantic().current_scope().kind.is_module() {
+        return
+    }
+
+    let elts = match value {
+        ast::Expr::List(ast::ExprList { elts, .. }) => elts,
+        ast::Expr::Tuple(ast::ExprTuple { elts, .. }) => elts,
+        _ => return,
+    };
+
+    call(checker, elts);
+}
+```
+
+
+---
+
+_Comment by @chirizxc on 2026-01-15 14:14_
+
+It is possible to leave it as it is. However, if we decide to add more checks to the rule in the future, for example, to track `.append()`, we will have to change the code, and moving it to helpers may not be that useful.
 
 ---

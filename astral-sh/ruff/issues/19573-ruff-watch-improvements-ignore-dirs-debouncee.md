@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-07-27T10:47:38Z
-updated_at: 2025-07-28T09:38:36Z
+updated_at: 2026-01-15T14:16:36Z
 url: https://github.com/astral-sh/ruff/issues/19573
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-15T14:51:08Z
 ```
 
 # ruff --watch improvements: ignore dirs, debouncee
@@ -71,5 +71,24 @@ _Comment by @MichaReiser on 2025-07-28 09:38_
 Thanks. Debouncing and only running ruff when a project file (not matching exclude and matches include) does make sense to me. 
 
 We could try to reuse ty's file watcher. It implements debouncing
+
+---
+
+_Comment by @leonace924 on 2026-01-15 14:12_
+
+@MichaReiser is this fixed?
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 14:14_
+
+I don't think so
+
+---
+
+_Comment by @leonace924 on 2026-01-15 14:16_
+
+@MichaReiser  may I work on this as well? would you assign to me?
+I am gonna put the PR today as I put the one already
 
 ---

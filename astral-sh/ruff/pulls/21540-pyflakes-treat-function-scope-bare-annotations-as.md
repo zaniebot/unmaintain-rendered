@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: Issue-21494
 created_at: 2025-11-20T15:49:52Z
-updated_at: 2025-11-21T15:03:24Z
+updated_at: 2026-01-15T14:25:22Z
 url: https://github.com/astral-sh/ruff/pull/21540
-synced_at: 2026-01-12T15:57:26Z
+synced_at: 2026-01-15T14:51:20Z
 ```
 
 # [pyflakes] Treat function-scope bare annotations as locals per PEP 526 (F821)
@@ -175,5 +175,9 @@ def demo_closure():
 ```
 
 What do you think about this 
+
+---
+
+_Review requested from @ntBre by @MichaReiser on 2026-01-15 14:25_
 
 ---
