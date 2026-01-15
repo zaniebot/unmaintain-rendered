@@ -2,15 +2,15 @@
 number: 22535
 title: "[ruff-wasm-nodejs] Debug output \"built glob set\" leaking to stdout from globset crate"
 type: issue
-state: open
+state: closed
 author: fschaeffler
 labels:
   - wish
 assignees: []
 created_at: 2026-01-12T16:18:53Z
-updated_at: 2026-01-12T17:20:01Z
+updated_at: 2026-01-15T08:44:56Z
 url: https://github.com/astral-sh/ruff/issues/22535
-synced_at: 2026-01-12T18:23:23Z
+synced_at: 2026-01-15T09:45:29Z
 ```
 
 # [ruff-wasm-nodejs] Debug output "built glob set" leaking to stdout from globset crate
@@ -79,5 +79,9 @@ I'd accept a PR fixing this, but it's unlikely that it's something we fix oursel
 ---
 
 _Label `wish` added by @MichaReiser on 2026-01-12 17:20_
+
+---
+
+_Closed by @MichaReiser on 2026-01-15 08:44_
 
 ---

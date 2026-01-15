@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T05:06:03Z
+updated_at: 2026-01-15T08:46:33Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T05:50:22Z
+synced_at: 2026-01-15T09:45:28Z
 ```
 
 # Dependency Dashboard
@@ -1130,7 +1130,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `abravalheri/validate-pyproject v0.24.1`
  - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
- - `rbubley/mirrors-prettier v3.7.4`
+ - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
  - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
  - `shellcheck-py/shellcheck-py v0.11.0.1`

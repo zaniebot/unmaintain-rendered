@@ -8,9 +8,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-05-13T00:32:25Z
-updated_at: 2025-10-16T21:11:36Z
+updated_at: 2026-01-15T08:51:43Z
 url: https://github.com/astral-sh/uv/issues/13418
-synced_at: 2026-01-12T16:01:28Z
+synced_at: 2026-01-15T09:45:45Z
 ```
 
 # `uv tool install` failing to install due to 'Permission denied'
@@ -174,5 +174,13 @@ Ah, sorry. That output is when I run the curl command to download and install uv
 _Comment by @konstin on 2025-10-16 21:11_
 
 This bug is about a `uv tool install` problem, could you open a separate issue with logs and other information that could be relevant, such as security software and the permissions on the paths in the error message?
+
+---
+
+_Comment by @salchichongallo on 2026-01-15 08:51_
+
+I ran `sudo chown -R <my_user> ~/.local/share/uv` and I was able to run the `uv tool install` without problems.
+
+Note: I installed uv via Homebrew
 
 ---

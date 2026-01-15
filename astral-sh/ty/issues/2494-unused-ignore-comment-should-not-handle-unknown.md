@@ -8,9 +8,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2026-01-14T14:57:10Z
-updated_at: 2026-01-14T16:02:32Z
+updated_at: 2026-01-15T09:24:47Z
 url: https://github.com/astral-sh/ty/issues/2494
-synced_at: 2026-01-14T16:38:48Z
+synced_at: 2026-01-15T09:45:23Z
 ```
 
 # `unused-ignore-comment` should not handle unknown rules
@@ -173,5 +173,62 @@ If you set `respect-type-ignore-comments: false`, then you wouldn't need any `# 
 So can you clarify what is the problem you find with setting `respect-type-ignore-comments: false`? Is it that you have some `type: ignore` that should actually be respected by both ty and pyright? To me, in that case it actually seems better to use a separate `type: ignore` for pyright and `ty: ignore` for ty, because then you can use a rule code for both. If you use a single `type: ignore` to silence both, then (since pyright and ty don't share rule codes) it would have to be a blanket (code-less) ignore, which is more error-prone.
 
 (Somewhat separately, I do wonder about our current behavior of interpreting any `type: ignore` with an unrecognized code as a blanket `type: ignore`. It seems unlikely to me that that will be the desired behavior for anyone -- but I'm also not sure what would be a better behavior.)
+
+---
+
+_Comment by @lypwig on 2026-01-15 09:21_
+
+First of all, thank you for the time you take to read and understand users feedback.
+
+> > And eventually add an other rule to check if type: is used with an unknown rule?
+>
+> I'm not sure how this would work if you use multiple type checkers as ty would warn about rules that it doesn't know but those might be pyright rules.
+
+The use case is that only ty is used (so this option should be deactivated by default I think).
+
+---
+
+> > class Meta: # type: ignore[reportIncompatibleVariableOverride] # ty: ignore[unused-ignore-comment]
+>
+> If you set respect-type-ignore-comments: false, then you wouldn't need any # ty: ignore there.
+
+Yeah, I finally removed `respect-type-ignore-comments: false` in the settings.
+
+---
+
+> So can you clarify what is the problem you find with setting respect-type-ignore-comments: false?
+
+I use Pyright and ty, and in some file I have many lines with poor typing, so I need disable type checking on them, including `class Meta:` detected by Pyright.
+
+1. **If `respect-type-ignore-comments` is set to `true`**
+
+I get the warning *"Unused blanket `type: ignore` directive (ty unused-ignore-comment)"* on the `type: ignore` used by pyright.
+So I have to add "unused-ignore-comment" on that line like this:
+
+```python
+class Meta: # type: ignore[reportIncompatibleVariableOverride] # ty: ignore[unused-ignore-comment]
+```
+
+2. **If `respect-type-ignore-comments` is set to `false`**
+
+I have too many warnings for both type-checkers that I need to disable with a comment, and some them are going to be a bit long:
+
+```python
+# type: ignore[reportGeneralTypeIssue] # ty: ignore[invalid-key,possibly-missing-attribute]
+```
+
+At this point I just share my current use-case, I'm not really sure what is the ty, it's up to you to decide.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 09:24_
+
+> The use case is that only ty is used (so this option should be deactivated by default I think).
+
+Thanks for providing more details. This makes sense to me, except that I don't follow what you mean by
+
+> The use case is that only ty is used (so this option should be deactivated by default I think).
+
+I understand that you use both ty and pyright. Is this correct? What option are you referring to in that sentence?
 
 ---

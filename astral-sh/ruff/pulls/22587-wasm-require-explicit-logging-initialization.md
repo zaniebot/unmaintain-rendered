@@ -2,17 +2,18 @@
 number: 22587
 title: "wasm: Require explicit logging initialization"
 type: pull_request
-state: open
+state: merged
 author: Jkhall81
 labels:
   - playground
 assignees: []
+merged: true
 base: main
 head: fix/wasm-logging-init-22535
 created_at: 2026-01-14T22:33:02Z
-updated_at: 2026-01-15T08:40:39Z
+updated_at: 2026-01-15T08:44:54Z
 url: https://github.com/astral-sh/ruff/pull/22587
-synced_at: 2026-01-15T08:47:17Z
+synced_at: 2026-01-15T09:45:40Z
 ```
 
 # wasm: Require explicit logging initialization
@@ -74,5 +75,13 @@ _Review requested from @Gankra by @MichaReiser on 2026-01-15 08:31_
 ---
 
 _Label `playground` added by @MichaReiser on 2026-01-15 08:34_
+
+---
+
+_Merged by @MichaReiser on 2026-01-15 08:44_
+
+---
+
+_Closed by @MichaReiser on 2026-01-15 08:44_
 
 ---

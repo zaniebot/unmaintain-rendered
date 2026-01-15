@@ -7,9 +7,9 @@ author: pumetu
 labels: []
 assignees: []
 created_at: 2026-01-15T02:27:38Z
-updated_at: 2026-01-15T06:24:12Z
+updated_at: 2026-01-15T08:57:11Z
 url: https://github.com/astral-sh/ty/issues/2504
-synced_at: 2026-01-15T06:49:13Z
+synced_at: 2026-01-15T09:45:23Z
 ```
 
 # ty seems to not understand that the decorator creates a dataclass and says can't find __init__
@@ -70,5 +70,11 @@ But there is a type system feature that allows you to declare this to the type s
 ---
 
 _Closed by @carljm on 2026-01-15 06:24_
+
+---
+
+_Comment by @pumetu on 2026-01-15 08:57_
+
+Thank you so much for the reply and the pointer to the docs @carljm!
 
 ---

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-14T22:14:29Z
+updated_at: 2026-01-15T09:14:22Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-14T22:42:17Z
+synced_at: 2026-01-15T09:45:23Z
 ```
 
 # Dependency Dashboard
@@ -194,7 +194,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`
  - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
- - `rbubley/mirrors-prettier v3.7.4`
+ - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
  - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
  - `rhysd/actionlint v1.7.10`

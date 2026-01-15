@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: double_star_as_pow
 created_at: 2025-12-01T09:13:26Z
-updated_at: 2026-01-13T10:00:48Z
+updated_at: 2026-01-15T09:07:29Z
 url: https://github.com/astral-sh/ruff/pull/21720
-synced_at: 2026-01-13T10:30:16Z
+synced_at: 2026-01-15T09:45:40Z
 ```
 
 # parser: parsing doublestar as a power op without a left hand side
@@ -396,5 +396,61 @@ Which I think requires addressing https://github.com/astral-sh/ruff/blob/af623e1
 ---
 
 _@MichaReiser reviewed on 2026-01-13 10:00_
+
+---
+
+_@11happy reviewed on 2026-01-15 09:02_
+
+---
+
+_Review comment by @11happy on `crates/ruff_python_parser/src/parser/expression.rs`:400 on 2026-01-15 09:02_
+
+would you like me to remove this branch & keep the error with tests?
+however I would like to point out as you can see in snapshots
+```
+value: BinOp(
+                                ExprBinOp {
+                                    node_index: NodeIndex(None),
+                                    range: 47..50,
+                                    left: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 47..47,
+                                            id: Name(""),
+                                            ctx: Invalid,
+                                        },
+                                    ),
+                                    op: Pow,
+                                    right: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 49..50,
+                                            id: Name("y"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                },
+```
+here the ranges are identified correctly with current changes, 
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 09:04_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_parser/src/parser/expression.rs`:400 on 2026-01-15 09:04_
+
+I suggest removing this branch and fixing the underlying issue why the ranges are incorrect. Although I expect this to be somewhat tricky.
+
+---
+
+_Review comment by @11happy on `crates/ruff_python_parser/src/parser/expression.rs`:400 on 2026-01-15 09:07_
+
+sure let me investigate on the underlying issue.
+
+---
+
+_@11happy reviewed on 2026-01-15 09:07_
 
 ---
