@@ -7,9 +7,9 @@ author: vepain
 labels: []
 assignees: []
 created_at: 2026-01-15T21:43:37Z
-updated_at: 2026-01-15T21:46:27Z
+updated_at: 2026-01-15T21:55:53Z
 url: https://github.com/astral-sh/ty/issues/2525
-synced_at: 2026-01-15T22:01:48Z
+synced_at: 2026-01-15T23:02:43Z
 ```
 
 # False negative for unimplemented abstract method for classes decorated with @final
@@ -55,5 +55,11 @@ _Renamed from "False negative for unimplemened abstract method when final" to "F
 ---
 
 _Renamed from "False negative for unimplemented abstract method for class decorated with @final" to "False negative for unimplemented abstract method for classes decorated with @final" by @vepain on 2026-01-15 21:46_
+
+---
+
+_Comment by @vepain on 2026-01-15 21:55_
+
+This issue is potentially implied by this one: https://github.com/astral-sh/ty/issues/1877
 
 ---

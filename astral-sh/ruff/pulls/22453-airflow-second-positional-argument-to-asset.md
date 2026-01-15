@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
-updated_at: 2026-01-15T20:04:03Z
+updated_at: 2026-01-15T22:47:28Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-15T21:12:57Z
+synced_at: 2026-01-15T23:03:01Z
 ```
 
 # [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
@@ -220,5 +220,15 @@ because that's still valid in the new API? The problem is specifically when the 
 ---
 
 _@ntBre reviewed on 2026-01-15 20:04_
+
+---
+
+_@sjyangkevin reviewed on 2026-01-15 22:47_
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:161 on 2026-01-15 22:47_
+
+Thanks for pointing this out. I searched through the codebase and find a similar example to perform such test. I've made the update to the check logic, as well as adding test cases for other variants.
 
 ---

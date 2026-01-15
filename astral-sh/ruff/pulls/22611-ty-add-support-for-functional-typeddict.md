@@ -11,9 +11,9 @@ draft: true
 base: charlie/functional-dict
 head: charlie/functional-typed
 created_at: 2026-01-15T20:31:56Z
-updated_at: 2026-01-15T21:50:52Z
+updated_at: 2026-01-15T21:52:46Z
 url: https://github.com/astral-sh/ruff/pull/22611
-synced_at: 2026-01-15T22:02:06Z
+synced_at: 2026-01-15T23:03:01Z
 ```
 
 # [ty] Add support for functional `TypedDict`
@@ -106,6 +106,14 @@ isort (https://github.com/pycqa/isort)
 - isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `@Todo | None | list[Unknown]`
 + isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Any | None | list[Unknown]`
 
+alerta (https://github.com/alerta/alerta)
++ alerta/utils/logging.py:48:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:57:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:60:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:61:25: error[invalid-key] Unknown key "facility" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "facility"
+- Found 620 diagnostics
++ Found 624 diagnostics
+
 graphql-core (https://github.com/graphql-python/graphql-core)
 - tests/utilities/test_build_client_schema.py:90:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - tests/utilities/test_build_client_schema.py:498:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -115,14 +123,6 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - tests/utilities/test_build_client_schema.py:1002:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 641 diagnostics
 + Found 635 diagnostics
-
-alerta (https://github.com/alerta/alerta)
-+ alerta/utils/logging.py:48:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:57:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:60:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:61:25: error[invalid-key] Unknown key "facility" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "facility"
-- Found 620 diagnostics
-+ Found 624 diagnostics
 
 porcupine (https://github.com/Akuli/porcupine)
 + porcupine/plugins/aboutdialog.py:55:31: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["x"]` on object of type `_PlaceInfo`
@@ -158,8 +158,8 @@ ppb-vector (https://github.com/ppb/ppb-vector)
 + Found 14 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 
 dragonchain (https://github.com/dragonchain/dragonchain)
 + dragonchain/lib/database/redisearch.py:122:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
@@ -230,9 +230,6 @@ operator (https://github.com/canonical/operator)
 + ops/model.py:3729:16: error[invalid-return-type] Return type does not match returned value: expected `_StatusDict`, found `dict[Unknown | str, Unknown | str]`
 + ops/model.py:3843:16: error[invalid-return-type] Return type does not match returned value: expected `_NetworkDict`, found `dict[Unknown | str, Unknown | list[dict[Unknown | str, Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown]] | Unknown] | list[str]]`
 + ops/model.py:3844:31: error[invalid-argument-type] Invalid argument to key "bind-addresses" with declared type `list[BindAddressDict]` on TypedDict `_NetworkDict`: value of type `list[dict[Unknown | str, Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown]] | Unknown]`
-+ ops/pebble.py:130:18: error[invalid-type-form] Invalid type `Literal["CheckLevel | str"]` in `TypedDict` field type
-+ ops/pebble.py:184:18: error[invalid-type-form] Invalid type `Literal["NotRequired[LocalIdentityDict]"]` in `TypedDict` field type
-+ ops/pebble.py:185:18: error[invalid-type-form] Invalid type `Literal["NotRequired[BasicIdentityDict]"]` in `TypedDict` field type
 - ops/pebble.py:630:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - ops/pebble.py:720:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - ops/pebble.py:789:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -327,7 +324,7 @@ operator (https://github.com/canonical/operator)
 + ops/pebble.py:2556:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | LayerDict | None`, found `(LayerDict & Top[dict[Unknown, Unknown]]) | (Layer & Top[dict[Unknown, Unknown]])`
 + ops/pebble.py:2666:17: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_Item` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 - Found 132 diagnostics
-+ Found 251 diagnostics
++ Found 248 diagnostics
 
 pyproject-metadata (https://github.com/pypa/pyproject-metadata)
 - pyproject_metadata/__init__.py:397:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -367,13 +364,13 @@ meson (https://github.com/mesonbuild/meson)
 - mesonbuild/cargo/manifest.py:304:17: error[invalid-key] Unknown key "version" for TypedDict `FromWorkspace`: Unknown key "version"
 + mesonbuild/cargo/manifest.py:310:22: error[no-matching-overload] No overload of function `_depv_to_dep` matches arguments
 + mesonbuild/cargo/manifest.py:354:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `LibTarget`
-+ mesonbuild/cargo/manifest.py:370:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["path"], /) -> str, (key: Literal["test"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["bench"], /) -> bool, (key: Literal["doc"], /) -> bool, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["harness"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["required-features"], /) -> list[str]]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
++ mesonbuild/cargo/manifest.py:370:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
 + mesonbuild/cargo/manifest.py:371:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:383:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["path"], /) -> str, (key: Literal["test"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["bench"], /) -> bool, (key: Literal["doc"], /) -> bool, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["harness"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["required-features"], /) -> list[str]]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
++ mesonbuild/cargo/manifest.py:383:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
 + mesonbuild/cargo/manifest.py:384:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:398:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["path"], /) -> str, (key: Literal["test"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["bench"], /) -> bool, (key: Literal["doc"], /) -> bool, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["harness"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["required-features"], /) -> list[str]]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
++ mesonbuild/cargo/manifest.py:398:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
 + mesonbuild/cargo/manifest.py:399:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:413:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["path"], /) -> str, (key: Literal["test"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["bench"], /) -> bool, (key: Literal["doc"], /) -> bool, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["harness"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["required-features"], /) -> list[str]]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
++ mesonbuild/cargo/manifest.py:413:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
 + mesonbuild/cargo/manifest.py:414:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
 + mesonbuild/cargo/manifest.py:445:33: error[no-matching-overload] No overload of bound method `get` matches arguments
 + mesonbuild/cargo/manifest.py:448:45: error[no-matching-overload] No overload of bound method `get` matches arguments
@@ -407,12 +404,6 @@ meson (https://github.com/mesonbuild/meson)
 - Found 2152 diagnostics
 + Found 2187 diagnostics
 
-cwltool (https://github.com/common-workflow-language/cwltool)
-+ cwltool/job.py:193:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["listing"]` and `DirectoryType`
-+ cwltool/job.py:359:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["listing"]` and `DirectoryType`
-- Found 254 diagnostics
-+ Found 256 diagnostics
-
 archinstall (https://github.com/archlinux/archinstall)
 + archinstall/lib/models/users.py:192:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `UserSerialization` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + archinstall/lib/models/users.py:194:13: error[no-matching-overload] No overload of bound method `get` matches arguments
@@ -422,21 +413,20 @@ archinstall (https://github.com/archlinux/archinstall)
 - Found 67 diagnostics
 + Found 72 diagnostics
 
-hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
-+ src/hydra_zen/wrapper/_implementations.py:999:5: error[unsupported-operator] Operator `-` is not supported between objects of type `frozenset[Literal["name", "group", "package", "provider", "__kw", "to_config"]]` and `set[Unknown | str]`
-+ src/hydra_zen/wrapper/_implementations.py:1438:41: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Argument type `_StoreCallSig` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-- src/hydra_zen/wrapper/_implementations.py:1572:89: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ src/hydra_zen/wrapper/_implementations.py:1565:13: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `_defaults` of type `_StoreCallSig`
-+ src/hydra_zen/wrapper/_implementations.py:1565:28: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Argument type `_StoreCallSig` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ src/hydra_zen/wrapper/_implementations.py:1578:13: error[unresolved-attribute] Object of type `_StoreCallSig` has no attribute `update`
-- Found 521 diagnostics
-+ Found 525 diagnostics
-
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await]
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deployment.py:392:48: error[invalid-assignment] Invalid assignment to key "anchor_date" with declared type `str` on TypedDict `IntervalScheduleOptions`: value of type `datetime`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] 
 
-... (truncated 157 lines) ...
+... (truncated 75 lines) ...
 ```
 
 </details>

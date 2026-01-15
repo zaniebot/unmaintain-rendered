@@ -9,9 +9,9 @@ labels:
   - releases
 assignees: []
 created_at: 2025-01-06T23:03:52Z
-updated_at: 2026-01-15T19:55:13Z
+updated_at: 2026-01-15T22:41:44Z
 url: https://github.com/astral-sh/uv/issues/10336
-synced_at: 2026-01-15T20:50:54Z
+synced_at: 2026-01-15T23:03:05Z
 ```
 
 # Sign published executables for Windows
@@ -160,5 +160,17 @@ So I guess the question is, are these Microsoft rooted non-EV certificates suffi
 _Comment by @mattculler on 2026-01-15 19:55_
 
 @EliteTK I asked my company's IT department, they said that we can use non-EV certs to add uv to our allowlist just fine.  I believe our endpoint protection software is CyberArk.  Can't speak for any other systems or companies though.
+
+---
+
+_Comment by @EliteTK on 2026-01-15 22:41_
+
+@mattculler the signing certificates used by Azure Artifact Signing have very short (72 hours[^tsa]) lifetimes.
+
+Would this cause an issue in your company's case?
+
+I imagine this might mean that you would need to add a new certificate for (almost) every release of uv.
+
+[^tsa]: For anyone wondering if this means that uv's signature would become invalid after 3 days - no. The standard practice for code signing is to use time stamp contersigning. Microsoft provides a Time Stamping Authority which they recommend for this purpose when using AAS. In short, the TSA can attest that the signature was performed during the original validity period of the certificate.
 
 ---
