@@ -2,15 +2,15 @@
 number: 860
 title: "`__file__` import typed as `str | None`"
 type: issue
-state: open
+state: closed
 author: sinon
 labels:
   - runtime semantics
 assignees: []
 created_at: 2025-07-21T09:25:38Z
-updated_at: 2025-12-18T23:12:06Z
+updated_at: 2026-01-15T17:08:52Z
 url: https://github.com/astral-sh/ty/issues/860
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-15T17:50:06Z
 ```
 
 # `__file__` import typed as `str | None`
@@ -69,5 +69,9 @@ See https://github.com/astral-sh/ty/issues/2063 for a similar issue regarding `_
 ---
 
 _Added to milestone `Stable` by @carljm on 2025-12-18 23:12_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 17:08_
 
 ---

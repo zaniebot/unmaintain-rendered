@@ -2,18 +2,19 @@
 number: 22333
 title: "[ty] Override `__file__` to str when applicable on imported modules"
 type: pull_request
-state: open
+state: merged
 author: sinon
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-15T16:38:27Z
+updated_at: 2026-01-15T17:47:40Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-15T16:50:21Z
+synced_at: 2026-01-15T17:50:23Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -86,26 +87,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 20:23_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
 
-## Typing Conformance
-
-### Summary
-
-| Metric | Old | New | Diff | Outcome |
-|--------|-----|-----|------|---------|
-| True Positives  | 0 | 0 | +0 | ⏬ (❌) |
-| False Positives | 969 | 969 | +0 | ⏬ (✅) |
-| False Negatives | 1155 | 1155 | +0 | ⏬ (✅) |
-| Total Diagnostics | 969 | 969 | 0 | ⏬ |
-| Precision | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
-| Recall | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+No changes detected ✅
 
 
-The percentage of diagnostics emitted that were expected errors held steady at 0.00%, and the percentage of expected errors that received a diagnostic held steady at 0.00%.
-
-
-
-[Typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
 
 
 
@@ -124,29 +110,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 20:24_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-spack (https://github.com/spack/spack)
-- lib/spack/spack/test/concretization/core.py:4504:25: error[no-matching-overload] No overload of function `dirname` matches arguments
-- lib/spack/spack/test/schema.py:244:34: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 4334 diagnostics
-+ Found 4332 diagnostics
-
 pip (https://github.com/pypa/pip)
 - src/pip/_internal/build_env.py:70:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - src/pip/_internal/utils/virtualenv.py:87:36: error[no-matching-overload] No overload of function `abspath` matches arguments
-- Found 602 diagnostics
-+ Found 600 diagnostics
+- Found 590 diagnostics
++ Found 588 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/test/concretization/core.py:4504:25: error[no-matching-overload] No overload of function `dirname` matches arguments
+- lib/spack/spack/test/schema.py:244:34: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 4341 diagnostics
++ Found 4339 diagnostics
 
 bandersnatch (https://github.com/pypa/bandersnatch)
 - src/bandersnatch/tests/test_main.py:69:29: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - src/bandersnatch/tests/test_main.py:138:25: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - Found 80 diagnostics
 + Found 78 diagnostics
-
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/api/api.py:100:23: error[no-matching-overload] No overload of function `dirname` matches arguments
-- paasta_tools/utils.py:2364:20: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 1102 diagnostics
-+ Found 1100 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 - src/_pytest/_code/code.py:1526:20: warning[possibly-missing-attribute] Attribute `rstrip` may be missing on object of type `str | None`
@@ -157,28 +137,52 @@ pytest (https://github.com/pytest-dev/pytest)
 - Found 421 diagnostics
 + Found 416 diagnostics
 
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/api/api.py:100:23: error[no-matching-overload] No overload of function `dirname` matches arguments
+- paasta_tools/utils.py:2364:20: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 1099 diagnostics
++ Found 1097 diagnostics
+
 flake8 (https://github.com/pycqa/flake8)
 - tests/unit/plugins/pycodestyle_test.py:32:15: error[invalid-argument-type] Argument to function `open` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
 - Found 38 diagnostics
 + Found 37 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/tools/web/test_app.py:120:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- test/mitmproxy/tools/web/test_app.py:120:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- Found 2145 diagnostics
++ Found 2143 diagnostics
 
 mypy (https://github.com/python/mypy)
 - mypy/modulefinder.py:857:17: error[no-matching-overload] No overload of function `check_output` matches arguments
 - mypy/test/testmypyc.py:16:24: warning[possibly-missing-attribute] Attribute `endswith` may be missing on object of type `str | None`
 - mypy/test/testtypes.py:1605:17: warning[possibly-missing-attribute] Attribute `endswith` may be missing on object of type `str | None`
 - mypy/test/testtypes.py:1607:19: error[invalid-argument-type] Argument to function `open` is incorrect: Expected `int | str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
-- Found 1742 diagnostics
-+ Found 1738 diagnostics
+- Found 1744 diagnostics
++ Found 1740 diagnostics
 
-mitmproxy (https://github.com/mitmproxy/mitmproxy)
-- test/mitmproxy/tools/web/test_app.py:120:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- test/mitmproxy/tools/web/test_app.py:120:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 2146 diagnostics
-+ Found 2144 diagnostics
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
 artigraph (https://github.com/artigraph/artigraph)
 - tests/arti/internal/test_utils.py:56:20: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
@@ -199,6 +203,10 @@ mkdocs (https://github.com/mkdocs/mkdocs)
 - Found 227 diagnostics
 + Found 223 diagnostics
 
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/minstall.py:30:17: error[invalid-assignment] Object of type `None` is not assignable to `str`
+- run_tests.py:202:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+
 pyodide (https://github.com/pyodide/pyodide)
 - pyodide-build/pyodide_build/pypabuild.py:266:5: error[no-matching-overload] No overload of function `copy2` matches arguments
 - pyodide-build/pyodide_build/pypabuild.py:271:5: error[no-matching-overload] No overload of function `copy2` matches arguments
@@ -207,80 +215,63 @@ pyodide (https://github.com/pyodide/pyodide)
 - Found 939 diagnostics
 + Found 935 diagnostics
 
-meson (https://github.com/mesonbuild/meson)
-+ mesonbuild/minstall.py:30:17: error[invalid-assignment] Object of type `None` is not assignable to `str`
-- run_tests.py:202:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/plugins/admin/code.py:186:29: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 1147 diagnostics
++ Found 1146 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- doc/conf.py:377:36: error[no-matching-overload] No overload of function `dirname` matches arguments
+- xarray/core/utils.py:1236:20: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- Found 1763 diagnostics
++ Found 1761 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/job.py:1033:29: error[invalid-argument-type] Argument to function `copyfile` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
+- cwltool/job.py:1036:29: error[invalid-argument-type] Argument to function `copyfile` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
+- Found 254 diagnostics
++ Found 252 diagnostics
 
 cloud-init (https://github.com/canonical/cloud-init)
 - tests/helpers.py:11:17: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - tests/integration_tests/modules/test_combined.py:340:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - tests/unittests/config/test_cc_ntp.py:274:37: error[no-matching-overload] No overload of function `realpath` matches arguments
-- Found 1175 diagnostics
-+ Found 1172 diagnostics
-
-openlibrary (https://github.com/internetarchive/openlibrary)
-- openlibrary/plugins/admin/code.py:186:29: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 1146 diagnostics
-+ Found 1145 diagnostics
-
-xarray (https://github.com/pydata/xarray)
-- doc/conf.py:377:36: error[no-matching-overload] No overload of function `dirname` matches arguments
-- xarray/core/utils.py:1236:20: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 1771 diagnostics
-+ Found 1769 diagnostics
+- Found 1172 diagnostics
++ Found 1169 diagnostics
 
 setuptools (https://github.com/pypa/setuptools)
 - setuptools/_distutils/tests/test_sysconfig.py:296:42: error[no-matching-overload] No overload of function `dirname` matches arguments
 - setuptools/command/setopt.py:23:29: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 1266 diagnostics
-+ Found 1264 diagnostics
-
-cwltool (https://github.com/common-workflow-language/cwltool)
-- cwltool/job.py:1033:29: error[invalid-argument-type] Argument to function `copyfile` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
-- cwltool/job.py:1036:29: error[invalid-argument-type] Argument to function `copyfile` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | None`
-- Found 256 diagnostics
-+ Found 254 diagnostics
-
-dd-trace-py (https://github.com/DataDog/dd-trace-py)
-- ddtrace/bootstrap/sitecustomize.py:74:23: error[no-matching-overload] No overload of function `dirname` matches arguments
-- ddtrace/commands/ddtrace_run.py:95:16: error[no-matching-overload] No overload of function `dirname` matches arguments
-- ddtrace/internal/utils/config.py:19:12: error[no-matching-overload] No overload of function `basename` matches arguments
-- lib-injection/sources/sitecustomize.py:513:62: error[no-matching-overload] No overload of function `dirname` matches arguments
-- tests/commands/test_runner.py:25:19: error[no-matching-overload] No overload of function `dirname` matches arguments
-- tests/internal/test_auto.py:88:33: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 8400 diagnostics
-+ Found 8394 diagnostics
+- Found 1133 diagnostics
++ Found 1131 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
 - src/prefect/server/database/alembic_commands.py:44:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - src/prefect/server/database/orm_models.py:1592:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - src/prefect/server/database/orm_models.py:1608:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 5403 diagnostics
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+- Found 5408 diagnostics
 + Found 5405 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
@@ -298,13 +289,10 @@ pycryptodome (https://github.com/Legrandin/pycryptodome)
 + Found 1326 diagnostics
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
 - src/scikit_build_core/builder/builder.py:186:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-
-altair (https://github.com/vega/altair)
-- tests/vegalite/v6/test_theme.py:1086:17: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 1060 diagnostics
-+ Found 1059 diagnostics
+- Found 48 diagnostics
++ Found 46 diagnostics
 
 scikit-learn (https://github.com/scikit-learn/scikit-learn)
 - sklearn/tests/test_common.py:133:21: error[no-matching-overload] No overload of function `dirname` matches arguments
@@ -315,8 +303,45 @@ scikit-learn (https://github.com/scikit-learn/scikit-learn)
 - sklearn/tests/test_min_dependencies_readme.py:205:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - sklearn/utils/_testing.py:926:35: error[no-matching-overload] No overload of function `dirname` matches arguments
 + sklearn/utils/_testing.py:936:13: error[invalid-assignment] Cannot assign to a subscript on an object of type `str`
-- Found 2434 diagnostics
-+ Found 2428 diagnostics
+- Found 2429 diagnostics
++ Found 2423 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/bootstrap/sitecustomize.py:74:23: error[no-matching-overload] No overload of function `dirname` matches arguments
+- ddtrace/commands/ddtrace_run.py:95:16: error[no-matching-overload] No overload of function `dirname` matches arguments
+- ddtrace/internal/utils/config.py:19:12: error[no-matching-overload] No overload of function `basename` matches arguments
+- lib-injection/sources/sitecustomize.py:513:62: error[no-matching-overload] No overload of function `dirname` matches arguments
+- tests/commands/test_runner.py:25:19: error[no-matching-overload] No overload of function `dirname` matches arguments
+- tests/internal/test_auto.py:88:33: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- Found 8419 diagnostics
++ Found 8413 diagnostics
+
+altair (https://github.com/vega/altair)
+- tests/vegalite/v6/test_theme.py:1086:17: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- Found 1060 diagnostics
++ Found 1059 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/source_info_util.py:53:5: error[no-matching-overload] No overload of function `dirname` matches arguments
+- jax/_src/traceback_util.py:40:20: error[invalid-argument-type] Argument to function `register_exclusion` is incorrect: Expected `str`, found `str | None`
+- Found 2857 diagnostics
++ Found 2855 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/util/_exceptions.py:45:15: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 3758 diagnostics
++ Found 3757 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/util/warnings.py:74:15: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 878 diagnostics
++ Found 877 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/pyspark/tests/conftest.py:289:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
+- ibis/backends/snowflake/tests/test_udf.py:183:21: error[no-matching-overload] No overload of function `dirname` matches arguments
+- Found 4607 diagnostics
++ Found 4605 diagnostics
 
 pywin32 (https://github.com/mhammond/pywin32)
 - Pythonwin/pywin/scintilla/control.py:25:26: error[no-matching-overload] No overload of function `split` matches arguments
@@ -335,43 +360,27 @@ pywin32 (https://github.com/mhammond/pywin32)
 - win32/scripts/setup_d.py:26:21: error[no-matching-overload] No overload of function `basename` matches arguments
 - win32/test/testall.py:141:11: error[no-matching-overload] No overload of function `dirname` matches arguments
 - win32/test/testall.py:143:33: error[no-matching-overload] No overload of function `basename` matches arguments
-- Found 2712 diagnostics
-+ Found 2696 diagnostics
-
-bokeh (https://github.com/bokeh/bokeh)
-- src/bokeh/util/warnings.py:74:15: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 877 diagnostics
-+ Found 876 diagnostics
-
-ibis (https://github.com/ibis-project/ibis)
-- ibis/backends/pyspark/tests/conftest.py:289:30: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- ibis/backends/snowflake/tests/test_udf.py:183:21: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 4608 diagnostics
-+ Found 4606 diagnostics
+- Found 2710 diagnostics
++ Found 2694 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_ | Self@iloc]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
 + static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - Found 1823 diagnostics
-+ Found 1824 diagnostics
++ Found 1825 diagnostics
 
-jax (https://github.com/google/jax)
-- jax/_src/source_info_util.py:53:5: error[no-matching-overload] No overload of function `dirname` matches arguments
-- jax/_src/traceback_util.py:40:20: error[invalid-argument-type] Argument to function `register_exclusion` is incorrect: Expected `str`, found `str | None`
-- Found 2828 diagnostics
-+ Found 2826 diagnostics
-
-pandas (https://github.com/pandas-dev/pandas)
-- pandas/util/_exceptions.py:45:15: error[no-matching-overload] No overload of function `dirname` matches arguments
-- Found 3755 diagnostics
-+ Found 3754 diagnostics
+rotki (https://github.com/rotki/rotki)
++ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
++ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2053 diagnostics
++ Found 2054 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 - doc/source/conf.py:501:45: error[no-matching-overload] No overload of function `dirname` matches arguments
@@ -383,8 +392,8 @@ scipy (https://github.com/scipy/scipy)
 - scipy/fftpack/tests/test_import.py:23:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - tools/check_xp_untested.py:73:41: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - tools/check_xp_untested.py:73:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
-- Found 8121 diagnostics
-+ Found 8112 diagnostics
+- Found 8117 diagnostics
++ Found 8108 diagnostics
 
 
 ```
@@ -392,20 +401,7 @@ scipy (https://github.com/scipy/scipy)
 </details>
 
 
-
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
-
-```diff
-trio (https://github.com/python-trio/trio)
--     struct fields = ~11MB
-+     struct fields = ~12MB
-
-
-```
-
-</details>
-
+No memory usage changes detected ✅
 
 
 
@@ -626,5 +622,49 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/i
 Looking at this more deeply, it seems we don't understand any `types.ModuleType` attributes as being available on namespace packages right now! Which is something we should fix, but not in this PR. So I'll adjust the comments in this PR and land it.
 
 Thank you!!
+
+---
+
+_@AlexWaygood approved on 2026-01-15 17:02_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-15 17:08_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 17:08_
+
+---
+
+_@sinon reviewed on 2026-01-15 17:38_
+
+---
+
+_Review comment by @sinon on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 17:38_
+
+Thanks for landing this @AlexWaygood 😁 
+
+Yeah, as I started looking into this there is a lot of places similar to: 
+```
+let Some(module) = resolve_module(self.db, self.file, &module_name) else {
+    continue;
+};
+```
+so only `Module::File` is being considered and `Module::Namespace` is skipped.
+
+Seems like a `known_namespace_symbol` or similar is needed in `place.rs` to handle a scaled back version of the logic being done on modules 🤔
+
+I might continue poking around in this area and if I make some progress will create an Issue to track the `TODO` from the mdtest
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 17:47_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 17:47_
+
+Oh, sorry, I'm about to make a PR to fix this up 😶 I should have said!!
 
 ---

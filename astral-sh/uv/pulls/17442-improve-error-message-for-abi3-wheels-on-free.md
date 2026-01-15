@@ -2,18 +2,19 @@
 number: 17442
 title: Improve error message for abi3 wheels on free-threaded Python
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - bug
   - error messages
 assignees: []
+merged: true
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-15T14:05:51Z
+updated_at: 2026-01-15T16:58:11Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-15T14:51:33Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -118,5 +119,13 @@ _@konstin reviewed on 2026-01-15 14:05_
 _Review comment by @konstin on `crates/uv-platform-tags/src/tags.rs`:300 on 2026-01-15 14:05_
 
 Fine by me!
+
+---
+
+_Merged by @zanieb on 2026-01-15 16:58_
+
+---
+
+_Closed by @zanieb on 2026-01-15 16:58_
 
 ---

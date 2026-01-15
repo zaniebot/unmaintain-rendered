@@ -2,17 +2,18 @@
 number: 17478
 title: Refactor CI plan job
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: claude/refactor-ci-plan-job-CA3KE
 created_at: 2026-01-14T22:50:52Z
-updated_at: 2026-01-15T05:44:19Z
+updated_at: 2026-01-15T17:15:55Z
 url: https://github.com/astral-sh/uv/pull/17478
-synced_at: 2026-01-15T06:49:44Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Refactor CI plan job
@@ -49,5 +50,19 @@ _Comment by @zanieb on 2026-01-15 05:44_
 
 I'm not in love with where I landed here but it does seem like an improvement?
 
+
+---
+
+_Merged by @zanieb on 2026-01-15 17:15_
+
+---
+
+_Closed by @zanieb on 2026-01-15 17:15_
+
+---
+
+_Comment by @zanieb on 2026-01-15 17:15_
+
+I want to iterate on this, please feel free to review afterwards.
 
 ---

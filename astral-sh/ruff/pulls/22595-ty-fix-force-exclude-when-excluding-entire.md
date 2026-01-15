@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: micha/fix-force-exclude-directories
 created_at: 2026-01-15T09:13:42Z
-updated_at: 2026-01-15T09:52:22Z
+updated_at: 2026-01-15T17:34:44Z
 url: https://github.com/astral-sh/ruff/pull/22595
-synced_at: 2026-01-15T10:44:13Z
+synced_at: 2026-01-15T17:50:24Z
 ```
 
 # [ty] Fix `--force-exclude` when excluding entire directories
@@ -221,5 +221,9 @@ _Review requested from @BurntSushi by @MichaReiser on 2026-01-15 09:52_
 ---
 
 _Review requested from @Gankra by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_@BurntSushi approved on 2026-01-15 17:34_
 
 ---

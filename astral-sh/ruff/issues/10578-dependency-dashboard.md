@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T15:50:10Z
+updated_at: 2026-01-15T16:57:01Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T16:50:09Z
+synced_at: 2026-01-15T17:50:11Z
 ```
 
 # Dependency Dashboard
@@ -61,8 +61,10 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
  - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
+ - [ ] <!-- unschedule-branch=renovate/salsa-digest -->Update salsa digest to c49e550
  - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
  - [ ] <!-- unschedule-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
+ - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.12
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- unschedule-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
@@ -103,7 +105,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
 The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
 
  - [ ] <!-- recreate-branch=renovate/lsp-types-digest -->[Update lsp-types digest to ddc7dc8](../pull/20618)
- - [ ] <!-- recreate-branch=renovate/salsa-digest -->[Update salsa digest to b6398ec](../pull/22514)
  - [ ] <!-- recreate-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
  - [ ] <!-- recreate-branch=renovate/python-3.x -->[Update dependency python to 3.14](../pull/21237)
  - [ ] <!-- recreate-branch=renovate/imara-diff-0.x -->[Update Rust crate imara-diff to 0.2.0](../pull/19039)
@@ -1108,7 +1109,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>docs/requirements.txt (8)</summary>
 
  - `PyYAML ==6.0.3`
- - `ruff ==0.14.11`
+ - `ruff ==0.14.11` → [Updates: `==0.14.12`]
  - `mkdocs ==1.6.1`
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`

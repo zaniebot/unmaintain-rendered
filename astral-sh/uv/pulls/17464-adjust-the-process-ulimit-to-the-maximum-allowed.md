@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: claude/add-ulimit-adjustment-pbq7y
 created_at: 2026-01-14T14:49:11Z
-updated_at: 2026-01-15T16:43:30Z
+updated_at: 2026-01-15T17:27:53Z
 url: https://github.com/astral-sh/uv/pull/17464
-synced_at: 2026-01-15T16:50:35Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Adjust the process ulimit to the maximum allowed on startup
@@ -49,7 +49,7 @@ _Marked ready for review by @zanieb on 2026-01-15 05:41_
 
 ---
 
-_Review comment by @konstin on `crates/uv-unix/src/resource_limits.rs`:32 on 2026-01-15 16:27_
+_Review comment by @konstin on `crates/uv-unix/src/resource_limits.rs`:53 on 2026-01-15 16:27_
 
 :100: for the extensive comment
 
@@ -78,5 +78,15 @@ _@zanieb reviewed on 2026-01-15 16:43_
 _Review comment by @zanieb on `crates/uv-unix/src/resource_limits.rs`:41 on 2026-01-15 16:43_
 
 I imagine we might use it to tune concurrency limits in the future? I think that's the general idea in the other packages.
+
+---
+
+_Review comment by @zanieb on `crates/uv-unix/src/resource_limits.rs`:41 on 2026-01-15 16:50_
+
+Returning `0` is dumb though
+
+---
+
+_@zanieb reviewed on 2026-01-15 16:50_
 
 ---

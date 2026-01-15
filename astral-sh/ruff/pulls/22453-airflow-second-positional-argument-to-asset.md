@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
-updated_at: 2026-01-15T15:39:34Z
+updated_at: 2026-01-15T16:57:22Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-15T17:50:23Z
 ```
 
 # [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
@@ -190,5 +190,19 @@ Is this argument positional-only? I think it could also be passed as a keyword b
 _@ntBre reviewed on 2026-01-15 15:39_
 
 Thank you! This looks good to me overall, just a couple of minor suggestions about additional cases you could handle, if you want.
+
+---
+
+_@sjyangkevin reviewed on 2026-01-15 16:57_
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:143 on 2026-01-15 16:57_
+
+Thanks for the feedback!! If I understand the question correctly, and I think yes, the second argument `uri` can be passed as keyword based on the current function signature. I think the second positional argument in the old version is used to set the `extra`, but now it is changed to set the `uri`. This check then flags this change. Hope this answer the question.
+
+```python
+Dataset("ds1", {"some_extra": 1})
+```
 
 ---

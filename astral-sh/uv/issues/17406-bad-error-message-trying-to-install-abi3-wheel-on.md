@@ -2,16 +2,16 @@
 number: 17406
 title: Bad error message trying to install abi3 wheel on a free threaded venv
 type: issue
-state: open
+state: closed
 author: AngheloAlf
 labels:
   - good first issue
   - error messages
 assignees: []
 created_at: 2026-01-11T22:37:21Z
-updated_at: 2026-01-12T12:12:28Z
+updated_at: 2026-01-15T16:58:12Z
 url: https://github.com/astral-sh/uv/issues/17406
-synced_at: 2026-01-12T16:02:50Z
+synced_at: 2026-01-15T17:50:29Z
 ```
 
 # Bad error message trying to install abi3 wheel on a free threaded venv
@@ -97,5 +97,9 @@ _Comment by @nooscraft on 2026-01-12 12:12_
 
 @konstin @zanieb - https://github.com/astral-sh/uv/pull/17415 
 please review, thanks
+
+---
+
+_Closed by @zanieb on 2026-01-15 16:58_
 
 ---

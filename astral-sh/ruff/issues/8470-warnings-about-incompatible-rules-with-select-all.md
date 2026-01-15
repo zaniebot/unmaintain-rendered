@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2023-11-03T13:08:28Z
-updated_at: 2025-08-01T10:01:00Z
+updated_at: 2026-01-15T17:24:08Z
 url: https://github.com/astral-sh/ruff/issues/8470
-synced_at: 2026-01-12T15:54:48Z
+synced_at: 2026-01-15T17:50:11Z
 ```
 
 # Warnings about incompatible rules with `--select ALL`
@@ -230,5 +230,15 @@ I do like to take advantage of all the advice that the rules give me and only ex
 However, right now if I `select = ["ALL"]`, I need to exclude quite many individual conflicting rules and repeat this in all our projects.
 
 Please add something like `select = ["ALL_COMPAT"]` or `select = ["STRICT"]` to easily enable all rules without any conflicts. If there is something to pick (like `D203` _xor_ `D211`, or `D212` _xor_ `D213`), just pick one! Let us have a default default to follow.
+
+---
+
+_Comment by @lypwig on 2026-01-15 17:10_
+
+> If there is something to pick (like D203 xor D211, or D212 xor D213), just pick one! Let us have a default default to follow.
+
+I totally support this.
+I usually use `select = ["ALL"]` and then ignore some rules, and those warnings are annoying.
+I know I can disable them by ignoring D203 and D212 rules, but it adds mental load as every time I see them in my config I ask to myself why I wanted them in the first place.
 
 ---

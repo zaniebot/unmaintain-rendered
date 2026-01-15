@@ -6,12 +6,13 @@ state: open
 author: ppalucha
 labels: []
 assignees: []
+draft: true
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-13T15:51:13Z
+updated_at: 2026-01-15T17:06:29Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-13T16:27:49Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -107,5 +108,9 @@ https://github.com/pyro-ppl/pyro/archive/refs/heads/dev.zip
 (I believe that that endpoint is also recommended in general, since I *think* it's not subject to the same global IP restrictions as the `api.github.com` ones.)
 
 This is potentially something that uv could provide a hint/suggestion on 🙂 
+
+---
+
+_Converted to draft by @konstin on 2026-01-15 17:06_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-15T09:44:06Z
+updated_at: 2026-01-15T17:36:45Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-15T10:44:13Z
+synced_at: 2026-01-15T17:50:23Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -22,9 +22,12 @@ synced_at: 2026-01-15T10:44:13Z
 
 _@amyreese_
 
+- Adds `Tokens::split_at()` to get tokens before/after an offset.
+- Updates `Suppressions::load_from_tokens` to take an `Indexer` and use comment ranges to minimize the need for walking tokens looking for indent/dedent.
+
 Adapted from https://github.com/astral-sh/ruff/pull/21441#pullrequestreview-3503773083
 
-issue #22087
+Fixes #22087
 
 
 ---

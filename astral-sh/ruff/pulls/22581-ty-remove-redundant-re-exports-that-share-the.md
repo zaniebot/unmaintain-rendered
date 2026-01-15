@@ -2,18 +2,19 @@
 number: 22581
 title: "[ty] Remove redundant re-exports that share the same top-most module"
 type: pull_request
-state: open
+state: merged
 author: BurntSushi
 labels:
   - server
   - ty
 assignees: []
+merged: true
 base: main
 head: ag/remove-redundant-auto-import-symbols
 created_at: 2026-01-14T19:18:15Z
-updated_at: 2026-01-15T16:03:10Z
+updated_at: 2026-01-15T17:31:09Z
 url: https://github.com/astral-sh/ruff/pull/22581
-synced_at: 2026-01-15T16:50:22Z
+synced_at: 2026-01-15T17:50:24Z
 ```
 
 # [ty] Remove redundant re-exports that share the same top-most module
@@ -395,5 +396,17 @@ Fair enough. I don't feel strongly!
 ---
 
 _@BurntSushi reviewed on 2026-01-15 15:44_
+
+---
+
+_Merged by @BurntSushi on 2026-01-15 17:31_
+
+---
+
+_Closed by @BurntSushi on 2026-01-15 17:31_
+
+---
+
+_Branch deleted on 2026-01-15 17:31_
 
 ---

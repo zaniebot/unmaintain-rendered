@@ -2,15 +2,15 @@
 number: 17457
 title: Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat
 type: issue
-state: open
+state: closed
 author: BenjaminDAnjou
 labels:
   - needs-mre
 assignees: []
 created_at: 2026-01-14T02:48:15Z
-updated_at: 2026-01-14T14:43:02Z
+updated_at: 2026-01-15T17:37:07Z
 url: https://github.com/astral-sh/uv/issues/17457
-synced_at: 2026-01-14T15:39:47Z
+synced_at: 2026-01-15T17:50:29Z
 ```
 
 # Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat
@@ -278,5 +278,15 @@ _Label `bug` removed by @konstin on 2026-01-14 14:43_
 ---
 
 _Label `needs-mre` added by @konstin on 2026-01-14 14:43_
+
+---
+
+_Comment by @zanieb on 2026-01-15 17:37_
+
+(Closing for now, but happy to open if someone else encounters this)
+
+---
+
+_Closed by @zanieb on 2026-01-15 17:37_
 
 ---

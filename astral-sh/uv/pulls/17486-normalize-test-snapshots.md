@@ -2,17 +2,18 @@
 number: 17486
 title: Normalize test snapshots
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/insta-regenerate
 created_at: 2026-01-15T15:33:34Z
-updated_at: 2026-01-15T16:34:35Z
+updated_at: 2026-01-15T16:50:14Z
 url: https://github.com/astral-sh/uv/pull/17486
-synced_at: 2026-01-15T16:50:35Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Normalize test snapshots
@@ -49,5 +50,21 @@ Some important looking failures
 _Comment by @konstin on 2026-01-15 16:34_
 
 I was using the latest version of cargo insta, and hit a fixed but unreleased bug: https://github.com/mitsuhiko/insta/pull/858
+
+---
+
+_@gaborbernat approved on 2026-01-15 16:48_
+
+---
+
+_Merged by @konstin on 2026-01-15 16:50_
+
+---
+
+_Closed by @konstin on 2026-01-15 16:50_
+
+---
+
+_Branch deleted on 2026-01-15 16:50_
 
 ---

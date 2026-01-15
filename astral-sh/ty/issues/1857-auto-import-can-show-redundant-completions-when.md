@@ -2,16 +2,16 @@
 number: 1857
 title: Auto-import can show redundant completions when the same item is exposed from multiple modules
 type: issue
-state: open
+state: closed
 author: BurntSushi
 labels:
   - server
   - completions
 assignees: []
 created_at: 2025-12-11T18:03:36Z
-updated_at: 2026-01-09T15:06:58Z
+updated_at: 2026-01-15T17:31:08Z
 url: https://github.com/astral-sh/ty/issues/1857
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-15T17:50:06Z
 ```
 
 # Auto-import can show redundant completions when the same item is exposed from multiple modules
@@ -73,5 +73,9 @@ _Unassigned @Gankra by @BurntSushi on 2026-01-09 15:06_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2026-01-09 15:06_
+
+---
+
+_Closed by @BurntSushi on 2026-01-15 17:31_
 
 ---

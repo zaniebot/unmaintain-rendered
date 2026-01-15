@@ -2,7 +2,7 @@
 number: 17463
 title: "Retry on \"too many open file\" errors when uninstalling Python"
 type: pull_request
-state: open
+state: closed
 author: zanieb
 labels:
   - bug
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: claude/retry-open-files-error-o5T7E
 created_at: 2026-01-14T14:15:43Z
-updated_at: 2026-01-14T15:12:59Z
+updated_at: 2026-01-15T17:32:38Z
 url: https://github.com/astral-sh/uv/pull/17463
-synced_at: 2026-01-14T15:39:55Z
+synced_at: 2026-01-15T17:50:37Z
 ```
 
 # Retry on "too many open file" errors when uninstalling Python
@@ -91,5 +91,9 @@ Fair point, we definitely want to more conservative than `@max(limit.max, 163840
 _Comment by @zanieb on 2026-01-14 15:12_
 
 They only do that for musl libc, but yeah.
+
+---
+
+_Closed by @zanieb on 2026-01-15 17:32_
 
 ---

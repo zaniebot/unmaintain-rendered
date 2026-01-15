@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-15T16:44:05Z
+updated_at: 2026-01-15T16:56:32Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-15T16:50:04Z
+synced_at: 2026-01-15T17:50:06Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -88,5 +88,20 @@ We can also change our display for these types. I don't think a lot of deep thou
 _Comment by @AlexWaygood on 2026-01-15 16:44_
 
 the issue is that `<module collections.abc>` would be valid XML but `<module 'collections.abc'>` is not? I very weakly prefer it with the quotes, but yeah, if that breaks syntax highlighting then we can definitely remove them.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 16:54_
+
+`<module collections.abc>` is also not valid xml, the attribute msut be followed by an `=` and it also requires a closing tag.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 16:56_
+
+I'd have to take a closer look at what pylance does but it seems to use a simple code block for modules
+
+https://github.com/user-attachments/assets/9ee8eb51-9441-4b6a-bcae-c861fea816b5
+
 
 ---

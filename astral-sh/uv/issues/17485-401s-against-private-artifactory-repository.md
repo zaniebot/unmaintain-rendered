@@ -9,9 +9,9 @@ labels:
   - great writeup
 assignees: []
 created_at: 2026-01-15T15:28:39Z
-updated_at: 2026-01-15T15:47:53Z
+updated_at: 2026-01-15T17:08:32Z
 url: https://github.com/astral-sh/uv/issues/17485
-synced_at: 2026-01-15T16:50:27Z
+synced_at: 2026-01-15T17:50:29Z
 ```
 
 # 401s against private Artifactory repository
@@ -262,5 +262,11 @@ _Label `bug` added by @annettejanewilson on 2026-01-15 15:28_
 ---
 
 _Label `great writeup` added by @konstin on 2026-01-15 15:47_
+
+---
+
+_Comment by @konstin on 2026-01-15 16:55_
+
+Thank you for the detailed investigation! Could this be something specific with the auth server that's running behind it? We haven't seen this problem with other Artifactory users, so I wonder what's specific about this Artifactory deployment that causes these errors.
 
 ---
