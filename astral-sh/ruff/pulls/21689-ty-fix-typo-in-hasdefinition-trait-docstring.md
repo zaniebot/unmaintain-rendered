@@ -12,9 +12,9 @@ merged: true
 base: main
 head: fix-typo-has-definition-trait
 created_at: 2025-11-29T09:56:05Z
-updated_at: 2025-11-29T11:14:08Z
+updated_at: 2026-01-15T18:26:54Z
 url: https://github.com/astral-sh/ruff/pull/21689
-synced_at: 2026-01-12T15:57:31Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] fix typo in HasDefinition trait docstring
@@ -106,5 +106,9 @@ _Label `internal` added by @AlexWaygood on 2025-11-29 11:14_
 ---
 
 _Label `ty` added by @AlexWaygood on 2025-11-29 11:14_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

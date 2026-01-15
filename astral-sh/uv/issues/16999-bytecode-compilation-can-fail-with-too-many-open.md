@@ -2,15 +2,15 @@
 number: 16999
 title: "Bytecode compilation can fail with \"too many open files\" on default Ubuntu settings"
 type: issue
-state: open
+state: closed
 author: vient
 labels:
   - bug
 assignees: []
 created_at: 2025-12-05T13:22:53Z
-updated_at: 2025-12-11T11:10:44Z
+updated_at: 2026-01-15T18:17:49Z
 url: https://github.com/astral-sh/uv/issues/16999
-synced_at: 2026-01-12T16:02:42Z
+synced_at: 2026-01-15T18:49:38Z
 ```
 
 # Bytecode compilation can fail with "too many open files" on default Ubuntu settings
@@ -124,5 +124,9 @@ There's precedent for increasing the ulimit in the process:
 * nginx: https://github.com/nginx/nginx/blob/c70457482c4223b6fd9adc3caa6a302163e6030d/src/os/unix/ngx_process_cycle.c#L777-L797
 * redis: https://github.com/redis/redis/blob/9b7254c8107cee2251c3972c645bf21f23848865/src/server.c#L2576-L2597
 * OpenJDK: https://github.com/openjdk/jdk/blob/aa986be7529b7a2950202dbe6885e5224d331078/src/hotspot/os/linux/os_linux.cpp#L4564-L4578
+
+---
+
+_Closed by @zanieb on 2026-01-15 18:17_
 
 ---

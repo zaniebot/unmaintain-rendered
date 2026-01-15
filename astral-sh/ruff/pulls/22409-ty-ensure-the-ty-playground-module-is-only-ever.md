@@ -12,9 +12,9 @@ merged: true
 base: main
 head: fix-playground-bug
 created_at: 2026-01-05T20:21:33Z
-updated_at: 2026-01-06T09:52:02Z
+updated_at: 2026-01-15T18:26:45Z
 url: https://github.com/astral-sh/ruff/pull/22409
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Ensure the ty playground module is only ever loaded once
@@ -207,5 +207,9 @@ _Merged by @MichaReiser on 2026-01-06 09:52_
 ---
 
 _Closed by @MichaReiser on 2026-01-06 09:52_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

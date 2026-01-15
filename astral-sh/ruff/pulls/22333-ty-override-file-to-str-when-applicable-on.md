@@ -12,9 +12,9 @@ merged: true
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-15T17:47:40Z
+updated_at: 2026-01-15T18:37:15Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-15T17:50:23Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -666,5 +666,25 @@ _@AlexWaygood reviewed on 2026-01-15 17:47_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 17:47_
 
 Oh, sorry, I'm about to make a PR to fix this up 😶 I should have said!!
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 18:14_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 18:14_
+
+PR: https://github.com/astral-sh/ruff/pull/22606
+
+---
+
+_@sinon reviewed on 2026-01-15 18:37_
+
+---
+
+_Review comment by @sinon on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 18:37_
+
+Nice 🚀 no worries still a good opportunity to checkout your PR and learn some more of the dataflows
 
 ---

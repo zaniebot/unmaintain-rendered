@@ -12,9 +12,9 @@ merged: true
 base: main
 head: detect-all-expr-only-cases
 created_at: 2025-12-16T10:56:12Z
-updated_at: 2025-12-18T17:27:57Z
+updated_at: 2026-01-15T18:26:52Z
 url: https://github.com/astral-sh/ruff/pull/22002
-synced_at: 2026-01-12T15:57:38Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Don't suggest keyword statements when only expressions are valid
@@ -326,5 +326,9 @@ _Merged by @BurntSushi on 2025-12-18 17:27_
 ---
 
 _Closed by @BurntSushi on 2025-12-18 17:27_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

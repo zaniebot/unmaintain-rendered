@@ -12,9 +12,9 @@ merged: true
 base: main
 head: fix-import-alias-suggestions
 created_at: 2025-11-16T20:11:25Z
-updated_at: 2025-11-17T14:58:49Z
+updated_at: 2026-01-15T18:26:59Z
 url: https://github.com/astral-sh/ruff/pull/21484
-synced_at: 2026-01-12T15:57:25Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] suppress invalid suggestions in import statements
@@ -142,5 +142,9 @@ _Merged by @BurntSushi on 2025-11-17 14:58_
 ---
 
 _Closed by @BurntSushi on 2025-11-17 14:58_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

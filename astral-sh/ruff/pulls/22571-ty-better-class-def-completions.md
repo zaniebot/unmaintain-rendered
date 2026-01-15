@@ -12,9 +12,9 @@ merged: true
 base: main
 head: better-class-def-completions
 created_at: 2026-01-14T14:28:57Z
-updated_at: 2026-01-15T13:31:04Z
+updated_at: 2026-01-15T18:26:35Z
 url: https://github.com/astral-sh/ruff/pull/22571
-synced_at: 2026-01-15T13:52:05Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Better class def completions
@@ -114,5 +114,9 @@ _Merged by @BurntSushi on 2026-01-15 13:31_
 ---
 
 _Closed by @BurntSushi on 2026-01-15 13:31_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

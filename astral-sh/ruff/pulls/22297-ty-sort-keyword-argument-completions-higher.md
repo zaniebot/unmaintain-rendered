@@ -12,9 +12,9 @@ merged: true
 base: main
 head: fix-argument-completion-order
 created_at: 2025-12-30T13:47:22Z
-updated_at: 2026-01-06T20:19:37Z
+updated_at: 2026-01-15T18:26:45Z
 url: https://github.com/astral-sh/ruff/pull/22297
-synced_at: 2026-01-12T15:57:46Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Sort keyword argument completions higher
@@ -139,5 +139,9 @@ _@RasmusNygren reviewed on 2026-01-06 20:19_
 _Review comment by @RasmusNygren on `crates/ty_ide/src/completion.rs`:295 on 2026-01-06 20:19_
 
 Maybe that's what I should have done instead then, for next time :)
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

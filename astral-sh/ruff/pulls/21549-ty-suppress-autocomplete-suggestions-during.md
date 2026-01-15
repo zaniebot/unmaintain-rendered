@@ -12,9 +12,9 @@ merged: true
 base: main
 head: suppress-suggestions-when-naming
 created_at: 2025-11-20T21:50:57Z
-updated_at: 2025-11-21T17:06:58Z
+updated_at: 2026-01-15T18:26:55Z
 url: https://github.com/astral-sh/ruff/pull/21549
-synced_at: 2026-01-12T15:57:27Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] suppress autocomplete suggestions during variable binding
@@ -168,5 +168,9 @@ _Closed by @BurntSushi on 2025-11-21 17:06_
 _Comment by @BurntSushi on 2025-11-21 17:06_
 
 Thank you!!!
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

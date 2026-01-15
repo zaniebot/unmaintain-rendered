@@ -13,9 +13,9 @@ merged: true
 base: main
 head: fix-panic-in-semantic-token-visitor
 created_at: 2025-12-18T21:53:52Z
-updated_at: 2025-12-22T11:17:50Z
+updated_at: 2026-01-15T18:26:51Z
 url: https://github.com/astral-sh/ruff/pull/22063
-synced_at: 2026-01-12T15:57:40Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Visit class arguments in source order for semantic tokens
@@ -179,5 +179,9 @@ Guidance
 _@Pierce5080 reviewed on 2025-12-22 11:15_
 
 []()
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

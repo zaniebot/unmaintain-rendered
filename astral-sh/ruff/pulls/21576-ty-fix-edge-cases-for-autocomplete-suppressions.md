@@ -12,9 +12,9 @@ merged: true
 base: main
 head: improve-variable-binding-suggestions
 created_at: 2025-11-22T12:22:51Z
-updated_at: 2025-11-25T14:09:38Z
+updated_at: 2026-01-15T18:26:54Z
 url: https://github.com/astral-sh/ruff/pull/21576
-synced_at: 2026-01-12T15:57:28Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Fix edge cases for autocomplete suppressions in variable bindings
@@ -208,5 +208,9 @@ _Merged by @BurntSushi on 2025-11-25 14:09_
 ---
 
 _Closed by @BurntSushi on 2025-11-25 14:09_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

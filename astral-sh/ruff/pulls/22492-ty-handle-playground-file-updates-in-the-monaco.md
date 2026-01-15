@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
-updated_at: 2026-01-14T17:57:26Z
+updated_at: 2026-01-15T18:26:42Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-14T18:48:06Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
@@ -148,5 +148,9 @@ Thanks for working on this. You showed that the completions are fixed when subsc
 ---
 
 _Closed by @MichaReiser on 2026-01-14 17:57_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

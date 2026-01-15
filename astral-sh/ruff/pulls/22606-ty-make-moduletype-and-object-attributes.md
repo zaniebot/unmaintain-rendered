@@ -1,47 +1,42 @@
 ```yaml
-number: 22605
-title: "[ty] fix unary operators on `NewType`s of `float` and `complex`"
+number: 22606
+title: "[ty] Make `ModuleType` and `object` attributes available on namespace packages"
 type: pull_request
 state: open
-author: oconnor663
-labels: []
+author: AlexWaygood
+labels:
+  - ty
 assignees: []
-draft: true
 base: main
-head: newtype_unary
-created_at: 2026-01-15T17:42:25Z
-updated_at: 2026-01-15T18:23:04Z
-url: https://github.com/astral-sh/ruff/pull/22605
+head: alex/namespace-package-attrs
+created_at: 2026-01-15T18:08:24Z
+updated_at: 2026-01-15T18:26:50Z
+url: https://github.com/astral-sh/ruff/pull/22606
 synced_at: 2026-01-15T18:49:33Z
 ```
 
-# [ty] fix unary operators on `NewType`s of `float` and `complex`
+# [ty] Make `ModuleType` and `object` attributes available on namespace packages
 
 ---
 
-_@oconnor663_
+_@AlexWaygood_
 
-Closes https://github.com/astral-sh/ty/issues/2499.
+## Summary
 
----
+Currently we don't think that namespace packages (e.g. `google` after you've pip-installed `google-cloud-ndb`) have attributes such as `__file__`, `__name__`, etc. This PR fixes that.
 
-_Review requested from @carljm by @oconnor663 on 2026-01-15 17:42_
+## Test Plan
 
----
+Mdtests and snapshots.
 
-_Review requested from @AlexWaygood by @oconnor663 on 2026-01-15 17:42_
-
----
-
-_Review requested from @sharkdp by @oconnor663 on 2026-01-15 17:42_
 
 ---
 
-_Review requested from @dcreager by @oconnor663 on 2026-01-15 17:42_
+_Label `ty` added by @AlexWaygood on 2026-01-15 18:08_
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-15 17:44_
+_Comment by @astral-sh-bot[bot] on 2026-01-15 18:10_
 
 
 <!-- generated-comment typing_conformance_diagnostics_diff -->
@@ -57,7 +52,7 @@ No changes detected ✅
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-15 17:46_
+_Comment by @astral-sh-bot[bot] on 2026-01-15 18:12_
 
 
 <!-- generated-comment mypy_primer -->
@@ -71,8 +66,12 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 17:46_
 
 ```diff
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
 
 prefect (https://github.com/PrefectHQ/prefect)
 - src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
@@ -99,35 +98,33 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 46 diagnostics
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/xla_bridge.py:459:9: warning[possibly-missing-attribute] Attribute `__path__` may be missing on object of type `<module 'jax_plugins'> | (Any & ~AlwaysFalsy)`
+- jax/_src/xla_bridge.py:459:31: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `<module 'jax_plugins'> | (Any & ~AlwaysFalsy)`
+- Found 2855 diagnostics
++ Found 2853 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
 - static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
 + static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
 - static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
 - static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - Found 1825 diagnostics
 + Found 1821 diagnostics
 
-rotki (https://github.com/rotki/rotki)
-+ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-+ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2053 diagnostics
-+ Found 2054 diagnostics
-
-core (https://github.com/home-assistant/core)
-- homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14509 diagnostics
-+ Found 14508 diagnostics
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
++ tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 4349 diagnostics
++ Found 4351 diagnostics
 
 
 ```
@@ -141,82 +138,32 @@ No memory usage changes detected ✅
 
 ---
 
-_Converted to draft by @oconnor663 on 2026-01-15 17:46_
+_Marked ready for review by @AlexWaygood on 2026-01-15 18:13_
 
 ---
 
-_Comment by @oconnor663 on 2026-01-15 17:47_
-
-Actually this still needs some more work. The following example isn't supported yet:
-
-```py
-from typing import reveal_type, NewType
-
-Foo = NewType('Foo', float)
-
-def f(x: float | Foo):
-    print(-x)
-```
+_Review requested from @carljm by @AlexWaygood on 2026-01-15 18:13_
 
 ---
 
-_@chatgpt-codex-connector[bot] reviewed on 2026-01-15 17:50_
-
-
-### 💡 Codex Review
-
-Here are some automated review suggestions for this pull request.
-
-**Reviewed commit:** `8537aec04d`
-    
-
-<details> <summary>ℹ️ About Codex in GitHub</summary>
-<br/>
-
-[Your team has set up Codex to review pull requests in this repo](http://chatgpt.com/codex/settings/general). Reviews are triggered when you
-- Open a pull request for review
-- Mark a draft as ready
-- Comment "@codex review".
-
-If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
-
-
-
-Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
-</details>
+_Review requested from @sharkdp by @AlexWaygood on 2026-01-15 18:13_
 
 ---
 
-_Review comment by @chatgpt-codex-connector[bot] on `crates/ty_python_semantic/src/types/infer/builder.rs`:11749 on 2026-01-15 17:50_
-
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve NewType self-binding for unary dunders**
-
-This new arm always delegates unary ops on `NewType` instances to `concrete_base_type`, which changes how `Self` is bound for dunder methods: `-x` now binds `Self` to the base class, while a direct call `x.__neg__()` still binds `Self` to the `NewType` instance via normal member lookup. For a `NewType` wrapping a class that annotates `__neg__`/`__pos__`/`__invert__` with `typing.Self`, this makes `-x` return the base type instead of the `NewType`, diverging from `x.__neg__()` and from the pre-change behavior. Example: `class C: def __neg__(self) -> Self: ...; NT = NewType('NT', C)`; `NT(C()).__neg__()` remains `NT` but `-NT(C())` would now infer `C`.
-
-Useful? React with 👍 / 👎.
+_Review requested from @dcreager by @AlexWaygood on 2026-01-15 18:13_
 
 ---
 
-_@oconnor663 reviewed on 2026-01-15 18:23_
+_Review requested from @MichaReiser by @AlexWaygood on 2026-01-15 18:13_
 
 ---
 
-_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer/builder.rs`:11749 on 2026-01-15 18:23_
+_Review requested from @Gankra by @AlexWaygood on 2026-01-15 18:13_
 
-Hmm, I'm not sure Codex is correct above (need to double check), but it is pointing me to a different issue. This works, because we explicitly added binary operation support:
+---
 
-```py
-Foo = NewType("Foo", float)
-x = Foo(3.14)
-x + x
-```
+_Comment by @AlexWaygood on 2026-01-15 18:26_
 
-But _this_ doesn't currently work:
-
-```py
-x.__add__(x)  # error[invalid-argument-type]: Argument to bound method `__add__` is incorrect
-```
+(Two false-positive diagnostics going away on jax, it looks like 🎉)
 
 ---

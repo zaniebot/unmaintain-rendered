@@ -4,14 +4,15 @@ title: "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comment
 type: pull_request
 state: open
 author: leonace924
-labels: []
+labels:
+  - fixes
 assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-15T16:25:52Z
+updated_at: 2026-01-15T18:39:08Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-15T16:50:22Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments
@@ -115,5 +116,27 @@ All testing passed!
 ---
 
 _Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…" to "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments" by @leonace924 on 2026-01-15 16:25_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-15 18:25_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs`:315 on 2026-01-15 18:34_
+
+I think we need to add a `## Fix safety` section to the docs now saying that the fix is unsafe when it would delete comments in the replacement range.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:127 on 2026-01-15 18:35_
+
+Same here, I think we'll need a new `## Fix safety` section since the fix was previously always safe.
+
+---
+
+_@ntBre requested changes on 2026-01-15 18:39_
+
+Thank you! This looks great, we just need to update the rule docs to reflect the new unsafety.
 
 ---

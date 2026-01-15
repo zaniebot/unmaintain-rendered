@@ -12,9 +12,9 @@ merged: true
 base: main
 head: function-param-completions
 created_at: 2025-12-04T19:18:31Z
-updated_at: 2025-12-09T05:24:37Z
+updated_at: 2026-01-15T18:26:52Z
 url: https://github.com/astral-sh/ruff/pull/21796
-synced_at: 2026-01-12T15:57:33Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Add autocomplete suggestions for parameters in function calls
@@ -308,5 +308,9 @@ _Merged by @BurntSushi on 2025-12-08 19:19_
 ---
 
 _Closed by @BurntSushi on 2025-12-08 19:19_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

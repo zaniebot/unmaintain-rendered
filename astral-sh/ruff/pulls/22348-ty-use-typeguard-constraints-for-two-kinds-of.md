@@ -12,9 +12,9 @@ merged: true
 base: main
 head: alex/tgard-narrow
 created_at: 2026-01-02T21:59:41Z
-updated_at: 2026-01-13T23:37:10Z
+updated_at: 2026-01-15T18:16:59Z
 url: https://github.com/astral-sh/ruff/pull/22348
-synced_at: 2026-01-14T00:34:17Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Use "typeguard constraints" for two kinds of tuple narrowing
@@ -211,5 +211,15 @@ _Closed by @AlexWaygood on 2026-01-13 23:37_
 ---
 
 _Branch deleted on 2026-01-13 23:37_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/narrow.rs`:1053 on 2026-01-15 18:16_
+
+What terminology do you think would be good? Maybe `NarrowingConstraint::intersection()` and `NarrowingConstraint::replacement()`?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 18:16_
 
 ---

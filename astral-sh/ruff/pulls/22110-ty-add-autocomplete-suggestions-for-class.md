@@ -12,9 +12,9 @@ merged: true
 base: main
 head: add-class-parameter-completions
 created_at: 2025-12-20T12:46:09Z
-updated_at: 2026-01-06T14:36:55Z
+updated_at: 2026-01-15T18:26:49Z
 url: https://github.com/astral-sh/ruff/pull/22110
-synced_at: 2026-01-12T15:57:41Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Add autocomplete suggestions for class arguments
@@ -487,5 +487,9 @@ _Closed by @AlexWaygood on 2025-12-30 13:10_
 _@BurntSushi reviewed on 2026-01-06 14:36_
 
 This looks great to me! Awesome work!
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

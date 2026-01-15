@@ -2,7 +2,7 @@
 number: 2513
 title: "Missing diagnostics when parsing `NamedTuple()` and `namedtuple()` calls"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - runtime semantics
@@ -10,9 +10,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:23:11Z
-updated_at: 2026-01-15T12:23:11Z
+updated_at: 2026-01-15T18:24:27Z
 url: https://github.com/astral-sh/ty/issues/2513
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T18:49:16Z
 ```
 
 # Missing diagnostics when parsing `NamedTuple()` and `namedtuple()` calls
@@ -81,5 +81,9 @@ _Label `typing semantics` added by @AlexWaygood on 2026-01-15 12:23_
 ---
 
 _Label `namedtuples` added by @AlexWaygood on 2026-01-15 12:23_
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 18:24_
 
 ---

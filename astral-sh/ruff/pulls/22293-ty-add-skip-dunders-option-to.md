@@ -12,9 +12,9 @@ merged: true
 base: main
 head: add-skip-dunders-to-completions-test
 created_at: 2025-12-29T23:04:54Z
-updated_at: 2025-12-30T08:10:14Z
+updated_at: 2026-01-15T18:26:47Z
 url: https://github.com/astral-sh/ruff/pull/22293
-synced_at: 2026-01-12T15:57:46Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Add skip_dunders option to CompletionTestBuilder
@@ -93,5 +93,9 @@ _Merged by @MichaReiser on 2025-12-30 08:10_
 ---
 
 _Closed by @MichaReiser on 2025-12-30 08:10_
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

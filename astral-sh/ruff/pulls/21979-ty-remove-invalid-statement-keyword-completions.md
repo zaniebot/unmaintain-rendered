@@ -12,9 +12,9 @@ merged: true
 base: main
 head: filter-incorrect-keyword-completions
 created_at: 2025-12-14T19:15:14Z
-updated_at: 2025-12-15T18:27:36Z
+updated_at: 2026-01-15T18:26:51Z
 url: https://github.com/astral-sh/ruff/pull/21979
-synced_at: 2026-01-12T15:57:38Z
+synced_at: 2026-01-15T18:49:33Z
 ```
 
 # [ty] Remove invalid statement-keyword completions in for-statements
@@ -210,5 +210,9 @@ I share your concerns and in theory I like the approach of building a context (b
 To the extent it's doable, I do agree that we at the very least should stick to something like a single token-based pruning loop and a single AST-traversal pruning loop (I don't see how we can get away without both as long as we do any pruning at all) that either mutate completions in-place or builds some list of predicate functions that can be used to filter completions. This at least gets us away from a whole bunch of individual checks that all do their own AST traversal to remove bad suggestions. I'm not sure this would be quite as simple to do when we add new completions though (without bigger refactors), as that usually requires more work.
 
 At some point a refactor in some direction is probably due though to make this scale nicer (both in terms of performance and readability), but to me it's not obvious what the right refactor to do here is.
+
+---
+
+_Branch deleted on 2026-01-15 18:26_
 
 ---

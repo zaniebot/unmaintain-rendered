@@ -7,9 +7,9 @@ author: jeertmans
 labels: []
 assignees: []
 created_at: 2026-01-15T08:01:59Z
-updated_at: 2026-01-15T16:36:57Z
+updated_at: 2026-01-15T17:59:51Z
 url: https://github.com/astral-sh/ty/issues/2507
-synced_at: 2026-01-15T16:50:04Z
+synced_at: 2026-01-15T18:49:16Z
 ```
 
 # Bug: not deterministic reporting of `invalid-return-type`
@@ -180,5 +180,11 @@ Thanks for the report! Yes, we have some known non-determinism on some projects 
 ---
 
 _Added to milestone `Pre-stable 1` by @carljm on 2026-01-15 16:36_
+
+---
+
+_Comment by @jeertmans on 2026-01-15 17:59_
+
+Glad to hear I am not the only one :D Let me know if I can help
 
 ---

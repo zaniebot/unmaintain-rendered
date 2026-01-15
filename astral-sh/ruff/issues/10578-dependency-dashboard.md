@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T16:57:01Z
+updated_at: 2026-01-15T18:25:56Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T17:50:11Z
+synced_at: 2026-01-15T18:49:21Z
 ```
 
 # Dependency Dashboard
@@ -34,7 +34,7 @@ These dependencies are either deprecated or have replacements available:
 These dependencies have not received updates for an extended period and may be unmaintained:
 
 <details>
-<summary>View abandoned dependencies (18)</summary>
+<summary>View abandoned dependencies (19)</summary>
 
 | Datasource | Name | Last Updated |
 |------------|------|-------------|
@@ -46,6 +46,7 @@ These dependencies have not received updates for an extended period and may be u
 | npm | `lz-string` | `2023-03-04` |
 | npm | `wasm-pack` | `2024-10-29` |
 | pep621 | `mslex` | `2024-10-16` |
+| pep621 | `tomli_w` | `2025-01-15` |
 | pep621 | `unidiff` | `2023-03-10` |
 | pip_requirements | `mkdocs` | `2024-08-30` |
 | pip_requirements | `mkdocs-redirects` | `2024-11-07` |

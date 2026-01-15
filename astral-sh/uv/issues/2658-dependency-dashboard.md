@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-15T16:27:36Z
+updated_at: 2026-01-15T18:18:50Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-15T16:50:25Z
+synced_at: 2026-01-15T18:49:36Z
 ```
 
 # Dependency Dashboard
@@ -132,7 +132,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 ## Detected Dependencies
 
-<details><summary>cargo (63)</summary>
+<details><summary>cargo (64)</summary>
 <blockquote>
 
 <details><summary>Cargo.toml (145)</summary>
@@ -587,6 +587,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </details>
 
 <details><summary>crates/uv-types/Cargo.toml</summary>
+
+
+</details>
+
+<details><summary>crates/uv-unix/Cargo.toml</summary>
 
 
 </details>

@@ -2,17 +2,18 @@
 number: 17464
 title: Adjust the process ulimit to the maximum allowed on startup
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - preview
 assignees: []
+merged: true
 base: main
 head: claude/add-ulimit-adjustment-pbq7y
 created_at: 2026-01-14T14:49:11Z
-updated_at: 2026-01-15T17:27:53Z
+updated_at: 2026-01-15T18:17:48Z
 url: https://github.com/astral-sh/uv/pull/17464
-synced_at: 2026-01-15T17:50:37Z
+synced_at: 2026-01-15T18:49:46Z
 ```
 
 # Adjust the process ulimit to the maximum allowed on startup
@@ -88,5 +89,13 @@ Returning `0` is dumb though
 ---
 
 _@zanieb reviewed on 2026-01-15 16:50_
+
+---
+
+_Merged by @zanieb on 2026-01-15 18:17_
+
+---
+
+_Closed by @zanieb on 2026-01-15 18:17_
 
 ---
