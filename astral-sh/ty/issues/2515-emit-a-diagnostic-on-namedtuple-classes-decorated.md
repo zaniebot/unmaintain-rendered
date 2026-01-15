@@ -5,14 +5,15 @@ type: issue
 state: open
 author: AlexWaygood
 labels:
+  - dataclasses
   - runtime semantics
   - typing semantics
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:40:59Z
-updated_at: 2026-01-15T12:40:59Z
+updated_at: 2026-01-15T16:41:40Z
 url: https://github.com/astral-sh/ty/issues/2515
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Emit a diagnostic on `NamedTuple` classes decorated with `@dataclass`
@@ -56,5 +57,9 @@ _Label `typing semantics` added by @AlexWaygood on 2026-01-15 12:41_
 ---
 
 _Label `namedtuples` added by @AlexWaygood on 2026-01-15 12:41_
+
+---
+
+_Label `dataclasses` added by @AlexWaygood on 2026-01-15 16:41_
 
 ---

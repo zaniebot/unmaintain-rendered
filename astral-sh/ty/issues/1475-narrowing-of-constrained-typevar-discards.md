@@ -10,9 +10,9 @@ labels:
   - generics
 assignees: []
 created_at: 2025-11-04T00:19:54Z
-updated_at: 2026-01-15T10:01:50Z
+updated_at: 2026-01-15T16:34:02Z
 url: https://github.com/astral-sh/ty/issues/1475
-synced_at: 2026-01-15T10:43:56Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Narrowing of constrained typevar discards constraint static type generic information
@@ -118,5 +118,11 @@ Maybe we should simplify `T@foo & Top[list[Unknown]]` to `T@foo & list[int]` in 
 _Comment by @danielgafni on 2026-01-15 10:01_
 
 Possible duplicate? https://github.com/astral-sh/ty/issues/1503
+
+---
+
+_Comment by @carljm on 2026-01-15 16:34_
+
+This and #1503 are related, in that they both involve constrained type vars (which we don't handle very well right now), but I think they are distinct issues.
 
 ---

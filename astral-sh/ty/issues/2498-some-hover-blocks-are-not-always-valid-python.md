@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-15T08:00:13Z
+updated_at: 2026-01-15T16:44:05Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-15T08:47:00Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -76,5 +76,17 @@ Right, I've assumed the part about using python code block. But yeah, still not 
 _Comment by @MichaReiser on 2026-01-15 08:00_
 
 It's unfortunate that an LSP can't ship a custom syntax (at least to my knowledge)
+
+---
+
+_Comment by @carljm on 2026-01-15 16:37_
+
+We can also change our display for these types. I don't think a lot of deep thought went into these displays, we just sort of copied a style the runtime repr sometimes uses. I'm not sure the extra punctuation is all that helpful.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 16:44_
+
+the issue is that `<module collections.abc>` would be valid XML but `<module 'collections.abc'>` is not? I very weakly prefer it with the quotes, but yeah, if that breaks syntax highlighting then we can definitely remove them.
 
 ---

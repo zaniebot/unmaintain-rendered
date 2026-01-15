@@ -2,15 +2,15 @@
 number: 21630
 title: "Feature not working (Feature request: Ignore specific rule on per file basis via in-file comment #2446)"
 type: issue
-state: open
+state: closed
 author: red8888
 labels:
   - question
 assignees: []
 created_at: 2025-11-25T17:49:03Z
-updated_at: 2025-12-05T19:29:35Z
+updated_at: 2026-01-15T15:54:35Z
 url: https://github.com/astral-sh/ruff/issues/21630
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-15T16:50:10Z
 ```
 
 # Feature not working (Feature request: Ignore specific rule on per file basis via in-file comment #2446)
@@ -87,5 +87,19 @@ _Comment by @dylwil3 on 2025-12-05 19:29_
 Could you try using `# ruff: noqa: D101` instead of `# noqa: D101`? The former is the format for file-level suppressions, while the latter only works for in-line suppressions. See [the docs](https://docs.astral.sh/ruff/linter/#error-suppression) for the full specification.
 
 Edit: jinx @ntBre 😄 
+
+---
+
+_Comment by @red8888 on 2026-01-15 15:54_
+
+> Could you try using `# ruff: noqa: D101` instead of `# noqa: D101`? The former is the format for file-level suppressions, while the latter only works for in-line suppressions. See [the docs](https://docs.astral.sh/ruff/linter/#error-suppression) for the full specification.
+> 
+> Edit: jinx [@ntBre](https://github.com/ntBre) 😄
+
+That works!
+
+---
+
+_Closed by @red8888 on 2026-01-15 15:54_
 
 ---

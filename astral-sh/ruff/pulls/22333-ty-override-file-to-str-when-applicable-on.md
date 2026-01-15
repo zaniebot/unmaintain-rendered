@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-15T00:23:12Z
+updated_at: 2026-01-15T16:38:27Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-15T00:42:13Z
+synced_at: 2026-01-15T16:50:21Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -614,5 +614,17 @@ I think we _could_ keep _some_ version of the comment that states that for a stu
 ---
 
 _Review request for @carljm removed by @carljm on 2026-01-15 00:23_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 16:38_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-15 16:38_
+
+Looking at this more deeply, it seems we don't understand any `types.ModuleType` attributes as being available on namespace packages right now! Which is something we should fix, but not in this PR. So I'll adjust the comments in this PR and land it.
+
+Thank you!!
 
 ---

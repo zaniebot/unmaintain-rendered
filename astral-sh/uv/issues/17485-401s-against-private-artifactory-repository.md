@@ -6,11 +6,12 @@ state: open
 author: annettejanewilson
 labels:
   - bug
+  - great writeup
 assignees: []
 created_at: 2026-01-15T15:28:39Z
-updated_at: 2026-01-15T15:31:05Z
+updated_at: 2026-01-15T15:47:53Z
 url: https://github.com/astral-sh/uv/issues/17485
-synced_at: 2026-01-15T15:50:27Z
+synced_at: 2026-01-15T16:50:27Z
 ```
 
 # 401s against private Artifactory repository
@@ -257,5 +258,9 @@ Python 3.13.0
 ---
 
 _Label `bug` added by @annettejanewilson on 2026-01-15 15:28_
+
+---
+
+_Label `great writeup` added by @konstin on 2026-01-15 15:47_
 
 ---

@@ -7,9 +7,9 @@ author: jeertmans
 labels: []
 assignees: []
 created_at: 2026-01-15T08:01:59Z
-updated_at: 2026-01-15T08:01:59Z
+updated_at: 2026-01-15T16:36:57Z
 url: https://github.com/astral-sh/ty/issues/2507
-synced_at: 2026-01-15T08:47:00Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Bug: not deterministic reporting of `invalid-return-type`
@@ -170,5 +170,15 @@ sed -i 's/^differt_core/# differt_core/g' differt/pyproject.toml
 ### Version
 
 ty 0.0.12
+
+---
+
+_Comment by @carljm on 2026-01-15 16:36_
+
+Thanks for the report! Yes, we have some known non-determinism on some projects that we need to track down and fix; another example is helpful.
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-15 16:36_
 
 ---

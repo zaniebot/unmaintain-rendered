@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T12:39:14Z
+updated_at: 2026-01-15T15:50:10Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T12:52:58Z
+synced_at: 2026-01-15T16:50:09Z
 ```
 
 # Dependency Dashboard
@@ -794,13 +794,12 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/typing_conformance.yaml (6)</summary>
+<details><summary>.github/workflows/typing_conformance.yaml (5)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
 
 </details>

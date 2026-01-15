@@ -2,18 +2,19 @@
 number: 22596
 title: Further improvements to typing conformance script
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/conformance-script-improvements
 created_at: 2026-01-15T12:58:26Z
-updated_at: 2026-01-15T15:33:31Z
+updated_at: 2026-01-15T15:49:08Z
 url: https://github.com/astral-sh/ruff/pull/22596
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-15T16:50:22Z
 ```
 
 # Further improvements to typing conformance script
@@ -622,5 +623,17 @@ _@MichaReiser approved on 2026-01-15 15:25_
 > If both precision and recall improved as a result of the PR, state in the title of the MarkDown rendered that the results improved overall. If they both regressed, say that the results regressed overall.
 
 This is nice. But we're certainly reaching the point of too many emojis. I'd suggest removing the emoji from the title. There will be more than enough emojis in the content celebrating your success.
+
+---
+
+_Merged by @AlexWaygood on 2026-01-15 15:49_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 15:49_
+
+---
+
+_Branch deleted on 2026-01-15 15:49_
 
 ---

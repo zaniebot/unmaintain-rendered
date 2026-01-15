@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-15T15:45:11Z
+updated_at: 2026-01-15T16:27:36Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-15T15:50:25Z
+synced_at: 2026-01-15T16:50:25Z
 ```
 
 # Dependency Dashboard
@@ -787,13 +787,12 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/check-docs.yml (6)</summary>
+<details><summary>.github/workflows/check-docs.yml (5)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `webfactory/ssh-agent v0.9.1@a6f90b1f127823b31d4d4a8d96047790581349bd`
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.25`]
 
 </details>
@@ -880,12 +879,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/publish-docs.yml (5)</summary>
+<details><summary>.github/workflows/publish-docs.yml (4)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `webfactory/ssh-agent v0.9.1@a6f90b1f127823b31d4d4a8d96047790581349bd`
  - `python 3.12` → [Updates: `3.14`]
 
 </details>

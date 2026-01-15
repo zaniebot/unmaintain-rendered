@@ -10,9 +10,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2025-12-22T18:54:10Z
-updated_at: 2026-01-11T04:55:59Z
+updated_at: 2026-01-15T16:09:48Z
 url: https://github.com/astral-sh/ty/issues/2169
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Add ability to hide all warnings
@@ -93,5 +93,13 @@ Only **errors** should block their pre-commit (and CI), so I'd like to be able t
 Other flag possibilities:
 * --min-severity
 * --errors-only
+
+---
+
+_Comment by @tino on 2026-01-15 16:09_
+
+@MichaReiser my use case is the same, to use during CI/pre-commit. Seeing warnings in the editor is fine for me. We can already silence rules that we don't want, wether that's a warning or an error.
+
+Regarding the implementation, we'd start with the default config. So I'd rather have a single flag than having to compile some profile in which I determine what's a warning or not. `--errors-only` sounds reasonable.
 
 ---

@@ -1,6 +1,6 @@
 ```yaml
 number: 22600
-title: "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…"
+title: "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments"
 type: pull_request
 state: open
 author: leonace924
@@ -9,12 +9,12 @@ assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-15T15:17:43Z
+updated_at: 2026-01-15T16:25:52Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-15T16:50:22Z
 ```
 
-# [flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…
+# [flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments
 
 ---
 
@@ -111,5 +111,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 15:15_
 _Comment by @leonace924 on 2026-01-15 15:17_
 
 All testing passed!
+
+---
+
+_Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…" to "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments" by @leonace924 on 2026-01-15 16:25_
 
 ---

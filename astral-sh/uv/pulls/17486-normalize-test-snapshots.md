@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/insta-regenerate
 created_at: 2026-01-15T15:33:34Z
-updated_at: 2026-01-15T15:33:34Z
+updated_at: 2026-01-15T16:34:35Z
 url: https://github.com/astral-sh/uv/pull/17486
-synced_at: 2026-01-15T15:50:34Z
+synced_at: 2026-01-15T16:50:35Z
 ```
 
 # Normalize test snapshots
@@ -33,5 +33,21 @@ cargo insta test --accept --force-update-snapshots
 ---
 
 _Label `internal` added by @konstin on 2026-01-15 15:33_
+
+---
+
+_@zanieb approved on 2026-01-15 16:25_
+
+---
+
+_Comment by @zanieb on 2026-01-15 16:25_
+
+Some important looking failures
+
+---
+
+_Comment by @konstin on 2026-01-15 16:34_
+
+I was using the latest version of cargo insta, and hit a fixed but unreleased bug: https://github.com/mitsuhiko/insta/pull/858
 
 ---

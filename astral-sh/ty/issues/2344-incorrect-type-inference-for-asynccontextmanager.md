@@ -2,16 +2,16 @@
 number: 2344
 title: "Incorrect type inference for asynccontextmanager's yielding Self"
 type: issue
-state: open
+state: closed
 author: iyad-f
 labels:
   - generics
   - callables
 assignees: []
 created_at: 2026-01-05T15:05:37Z
-updated_at: 2026-01-15T15:42:46Z
+updated_at: 2026-01-15T15:47:01Z
 url: https://github.com/astral-sh/ty/issues/2344
-synced_at: 2026-01-15T15:50:04Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # Incorrect type inference for asynccontextmanager's yielding Self
@@ -124,5 +124,15 @@ i guess [#22407](https://github.com/astral-sh/ruff/pull/22407) fixes this, so ca
 _Comment by @carljm on 2026-01-15 15:42_
 
 Interesting, it looks like https://github.com/astral-sh/ruff/pull/22407 fixed the OP example here, but did not fix my version. So it seems like there are multiple issues here. I will close this issue and split my snippet into a separate issue.
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 15:46_
+
+---
+
+_Comment by @iyad-f on 2026-01-15 15:47_
+
+Looks like it was then probably associated with context manager and class method i guess
 
 ---

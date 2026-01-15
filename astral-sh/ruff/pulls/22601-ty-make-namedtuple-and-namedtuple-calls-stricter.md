@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/diags
 created_at: 2026-01-15T14:03:40Z
-updated_at: 2026-01-15T15:45:01Z
+updated_at: 2026-01-15T16:03:59Z
 url: https://github.com/astral-sh/ruff/pull/22601
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-15T16:50:22Z
 ```
 
 # [ty] Make `NamedTuple(...)` and `namedtuple(...)` calls stricter
@@ -334,5 +334,11 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/bu
 ---
 
 _@AlexWaygood reviewed on 2026-01-15 15:45_
+
+---
+
+_@AlexWaygood approved on 2026-01-15 16:03_
+
+LG other than my two suggested simplifications above!
 
 ---

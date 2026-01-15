@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: dcreager/lazy-sequent-map
 created_at: 2026-01-14T18:04:45Z
-updated_at: 2026-01-15T15:43:23Z
+updated_at: 2026-01-15T15:49:31Z
 url: https://github.com/astral-sh/ruff/pull/22577
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-15T16:50:22Z
 ```
 
 # [ty] Build constraint set sequent maps lazily
@@ -276,5 +276,15 @@ _Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constrai
 Creating any new interned values I think would be unsound. 
 
 I guess so is reading because reading an interned value with low durability **must** propagate to the outer query. So it's not just about the dependencies, it's also about the query's metadata that need to be reflected accordingly
+
+---
+
+_@dcreager reviewed on 2026-01-15 15:49_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:3308 on 2026-01-15 15:49_
+
+Okay that tells me I need to rethink this...
 
 ---

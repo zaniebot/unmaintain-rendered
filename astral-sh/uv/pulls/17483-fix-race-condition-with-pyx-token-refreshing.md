@@ -2,7 +2,7 @@
 number: 17483
 title: Fix race condition with pyx token refreshing
 type: pull_request
-state: open
+state: closed
 author: zsol
 labels: []
 assignees: []
@@ -10,9 +10,9 @@ draft: true
 base: main
 head: zsol/jj-kryxnlurmpxt
 created_at: 2026-01-15T14:38:57Z
-updated_at: 2026-01-15T14:44:52Z
+updated_at: 2026-01-15T16:43:25Z
 url: https://github.com/astral-sh/uv/pull/17483
-synced_at: 2026-01-15T14:51:33Z
+synced_at: 2026-01-15T16:50:35Z
 ```
 
 # Fix race condition with pyx token refreshing
@@ -125,5 +125,9 @@ _@zsol reviewed on 2026-01-15 14:44_
 _Review comment by @zsol on `crates/uv-auth/src/pyx.rs`:466 on 2026-01-15 14:44_
 
 This seems a bit weird. We're only locking for a specific token, but `read()` can read "outside of the scope" of that lock. Should we just lock the entire subdirectory?
+
+---
+
+_Closed by @zsol on 2026-01-15 16:43_
 
 ---

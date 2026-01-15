@@ -2,15 +2,15 @@
 number: 2508
 title: "\"ty\" can't find dist-packages when using the system packages (not a venv) on Linux"
 type: issue
-state: open
+state: closed
 author: a-h-ismail
 labels:
   - imports
 assignees: []
 created_at: 2026-01-15T09:13:48Z
-updated_at: 2026-01-15T15:05:06Z
+updated_at: 2026-01-15T16:35:03Z
 url: https://github.com/astral-sh/ty/issues/2508
-synced_at: 2026-01-15T15:50:04Z
+synced_at: 2026-01-15T16:50:04Z
 ```
 
 # "ty" can't find dist-packages when using the system packages (not a venv) on Linux
@@ -74,5 +74,15 @@ _Renamed from "Ty can't find dist-packages when using the system packages (not a
 ---
 
 _Label `imports` added by @AlexWaygood on 2026-01-15 15:05_
+
+---
+
+_Comment by @carljm on 2026-01-15 16:35_
+
+Thanks for the report! This is #1323 
+
+---
+
+_Closed by @carljm on 2026-01-15 16:35_
 
 ---
