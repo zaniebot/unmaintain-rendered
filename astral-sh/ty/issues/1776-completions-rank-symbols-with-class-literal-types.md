@@ -2,16 +2,16 @@
 number: 1776
 title: "[completions] Rank symbols with class-literal types higher inside class declarations"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - server
   - completions
 assignees: []
 created_at: 2025-12-05T14:49:50Z
-updated_at: 2025-12-05T14:49:50Z
+updated_at: 2026-01-15T13:31:05Z
 url: https://github.com/astral-sh/ty/issues/1776
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-15T13:51:48Z
 ```
 
 # [completions] Rank symbols with class-literal types higher inside class declarations
@@ -31,5 +31,9 @@ _Label `server` added by @AlexWaygood on 2025-12-05 14:49_
 ---
 
 _Label `completions` added by @AlexWaygood on 2025-12-05 14:49_
+
+---
+
+_Closed by @BurntSushi on 2026-01-15 13:31_
 
 ---

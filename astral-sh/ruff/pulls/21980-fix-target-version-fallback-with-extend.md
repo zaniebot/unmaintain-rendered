@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix/target-version-extended
 created_at: 2025-12-14T19:41:08Z
-updated_at: 2026-01-14T15:44:07Z
+updated_at: 2026-01-15T12:54:58Z
 url: https://github.com/astral-sh/ruff/pull/21980
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-15T13:52:05Z
 ```
 
 # fix: target-version fallback with extend
@@ -334,5 +334,17 @@ _Comment by @denyszhak on 2026-01-14 15:44_
 I wasn't able to locate the exact config files in these repos (may they be using chains or the ecosystem tests may inject configs?). However, the violations are clearly legitimate - the code uses modern Python syntax (walrus operators, match statements) that's incompatible with a Python 3.7 target version somewhere in their config chain. The fix is correctly detecting these incompatibilities that were previously hidden.
 
 facebookresearch/chameleon is archived though
+
+---
+
+_Assigned to @dylwil3 by @MichaReiser on 2026-01-15 12:54_
+
+---
+
+_Review requested from @dylwil3 by @MichaReiser on 2026-01-15 12:54_
+
+---
+
+_Added to milestone `v0.15` by @MichaReiser on 2026-01-15 12:54_
 
 ---

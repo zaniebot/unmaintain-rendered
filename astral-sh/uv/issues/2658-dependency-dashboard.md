@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-15T09:59:38Z
+updated_at: 2026-01-15T13:00:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-15T10:44:16Z
+synced_at: 2026-01-15T13:52:08Z
 ```
 
 # Dependency Dashboard
@@ -46,6 +46,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
  - [ ] <!-- unschedule-branch=renovate/container-image-digests -->Pin dependencies (`alpine`, `amazonlinux`, `debian`, `fedora`, `pyston/pyston`)
  - [ ] <!-- unschedule-branch=renovate/astral-sh-uv-0.x -->Update dependency astral-sh/uv to v0.9.25
+ - [ ] <!-- unschedule-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
  - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.36
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
@@ -109,7 +110,6 @@ The following updates have been manually edited so Renovate will no longer make 
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
- - [ ] <!-- approvePr-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0

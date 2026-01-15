@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: cetanu/junit_for_ty
 created_at: 2025-12-21T04:49:52Z
-updated_at: 2026-01-15T11:14:29Z
+updated_at: 2026-01-15T12:47:35Z
 url: https://github.com/astral-sh/ruff/pull/22125
-synced_at: 2026-01-15T11:54:41Z
+synced_at: 2026-01-15T13:52:05Z
 ```
 
 # JUnit output for `ty` lints
@@ -238,5 +238,39 @@ _Comment by @cetanu on 2026-01-15 11:14_
 
 Yes!
 Let me know if any changes or if commits need to be rebased
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/snapshots/ruff_db__diagnostic__render__junit__tests__sub_diagnostics.snap`:9 on 2026-01-15 12:39_
+
+We need to parametrize the output format with the tool name so that it mentions `ty` here (when using in ty), similar to how it's done for the `GithubEmitter`
+
+https://github.com/astral-sh/ruff/blob/1644786e38b781b92db96389cdc3ecead22a8145/crates/ruff_db/src/diagnostic/render/github.rs#L3-L6
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/junit.rs`:51 on 2026-01-15 12:42_
+
+We need to make changes to [`group_diagnostics_by_filename`](https://github.com/astral-sh/ruff/blob/1644786e38b781b92db96389cdc3ecead22a8145/crates/ruff_linter/src/message/grouped.rs#L106-L121) to support both ruff and ty files (it calls `expect_ruff_file`).
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/junit.rs`:67 on 2026-01-15 12:42_
+
+Nit: I've a slight preference to keep `status` mutable as it was before and setting its fields before passing it to `TestCase::new`
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_db/src/diagnostic/render/junit.rs`:85 on 2026-01-15 12:45_
+
+I don't think we should use `unwrap_or_default here`. We're very intentional about omitting line/column information in some diagnostics if they apply to the entire file and we should preserve this here
+
+---
+
+_@MichaReiser requested changes on 2026-01-15 12:47_
+
+Thank you. 
+
+This requires some more work to remove the remaining mentions of ruff and we should add a CLI test demonstrating that the output format works in ty (which I'd expect to panic right now). See https://github.com/astral-sh/ruff/blob/433b5a0d5894cc2b009e58df6f227193d4d87c91/crates/ty/tests/cli/main.rs#L656-L740
 
 ---

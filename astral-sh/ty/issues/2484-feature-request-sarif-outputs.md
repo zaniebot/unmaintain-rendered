@@ -10,9 +10,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-13T22:49:33Z
-updated_at: 2026-01-14T08:56:54Z
+updated_at: 2026-01-15T13:37:24Z
 url: https://github.com/astral-sh/ty/issues/2484
-synced_at: 2026-01-14T09:34:52Z
+synced_at: 2026-01-15T13:51:48Z
 ```
 
 # Feature Request: SARIF Outputs
@@ -58,5 +58,16 @@ _Added to milestone `Stable` by @MichaReiser on 2026-01-14 08:56_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2026-01-14 08:56_
+
+---
+
+_Comment by @11happy on 2026-01-15 13:05_
+
+I will work on this.
+Thank you : )
+
+---
+
+_Assigned to @11happy by @MichaReiser on 2026-01-15 13:37_
 
 ---

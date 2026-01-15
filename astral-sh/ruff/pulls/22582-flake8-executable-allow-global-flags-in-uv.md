@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/exe003-uv-global-args-21753
 created_at: 2026-01-14T19:36:02Z
-updated_at: 2026-01-14T19:46:29Z
+updated_at: 2026-01-15T12:49:48Z
 url: https://github.com/astral-sh/ruff/pull/22582
-synced_at: 2026-01-14T20:43:42Z
+synced_at: 2026-01-15T13:52:05Z
 ```
 
 # flake8-executable: allow global flags in uv shebangs (EXE003)
@@ -49,5 +49,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 19:46_
 
 
 
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 12:49_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_python.rs`:53 on 2026-01-15 12:49_
+
+I'd prefer a stricter regex as mentioned in the original issue. We should also make the same change for `uvx` and `uv tool run`.
 
 ---

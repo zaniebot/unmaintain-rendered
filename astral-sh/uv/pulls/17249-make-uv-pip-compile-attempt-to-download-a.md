@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T10:44:57Z
+updated_at: 2026-01-15T13:42:46Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-15T11:54:54Z
+synced_at: 2026-01-15T13:52:18Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -276,5 +276,31 @@ _Review requested from @zanieb by @EliteTK on 2026-01-14 21:09_
 _Comment by @EliteTK on 2026-01-15 10:44_
 
 Should probably do something similar to #17461 too...
+
+---
+
+_Comment by @zanieb on 2026-01-15 13:36_
+
+I wouldn't increase the scope here :)
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:42_
+
+It looks like we lost these logs due to your refactor, correct?
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:42_
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:42_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1486 on 2026-01-15 13:42_
+
+I think it's fairly important to explain what's happening when we're searching for a different version than you've requested.
 
 ---

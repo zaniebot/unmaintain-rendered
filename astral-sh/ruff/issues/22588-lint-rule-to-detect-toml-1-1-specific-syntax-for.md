@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-14T23:51:12Z
-updated_at: 2026-01-15T07:59:10Z
+updated_at: 2026-01-15T13:21:39Z
 url: https://github.com/astral-sh/ruff/issues/22588
-synced_at: 2026-01-15T08:47:06Z
+synced_at: 2026-01-15T13:51:54Z
 ```
 
 # Lint rule to detect TOML 1.1 specific syntax for `pyproject.toml`, `pylock.toml`, or any other Python packaging TOML file
@@ -49,5 +49,15 @@ _Comment by @MichaReiser on 2026-01-15 07:59_
 Is the concernthat the pyproject.toml isn't backwards compatible when publishing to pypi or that local tools might start failing or is it something else?
 
 If it's the latter, this won't be a rule we can enable by default, because it's overly pedantic if you don't use any such tool (and then it is unnecessarily restrictive). 
+
+---
+
+_Comment by @notatallshaw on 2026-01-15 13:19_
+
+Reading a `pyproject.toml` is needed for installing sdists (e.g. from pypi), archived source files, local building, local running of tools that store their configuration there, and by remote static analysis tools such as GitHub's dependency services (e.g. dependabot and security alerts).
+
+So the answer is for a  `pyproject.toml` that uses TOML 1.1 specific syntax affect all 3 situations, PyPI installation, local building, and other situations. 
+
+That said, I didn't imagine the rule would be on by default unless there was real world reports of users having issues with TOML 1.1 specific syntax. I assumed it would be advocated by proponents as good practice, and users would opt in. 
 
 ---

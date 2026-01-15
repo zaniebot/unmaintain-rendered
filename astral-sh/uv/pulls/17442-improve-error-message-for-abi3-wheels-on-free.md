@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-15T10:36:47Z
+updated_at: 2026-01-15T13:34:50Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-15T10:44:26Z
+synced_at: 2026-01-15T13:52:18Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -98,5 +98,15 @@ That condition looks to restricted, it doesn't cover the unstable API, e.g. `cp3
 _@konstin approved on 2026-01-15 10:36_
 
 The new error looks good, but we need to widen the condition to capture the popular unstable C API too
+
+---
+
+_@zanieb reviewed on 2026-01-15 13:34_
+
+---
+
+_Review comment by @zanieb on `crates/uv-platform-tags/src/tags.rs`:300 on 2026-01-15 13:34_
+
+Do you mind if I ship that separately so we can get this fix out if I'm still iterating?
 
 ---

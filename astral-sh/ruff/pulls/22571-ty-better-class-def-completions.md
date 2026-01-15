@@ -2,18 +2,19 @@
 number: 22571
 title: "[ty] Better class def completions"
 type: pull_request
-state: open
+state: merged
 author: RasmusNygren
 labels:
   - server
   - ty
 assignees: []
+merged: true
 base: main
 head: better-class-def-completions
 created_at: 2026-01-14T14:28:57Z
-updated_at: 2026-01-14T20:47:03Z
+updated_at: 2026-01-15T13:31:04Z
 url: https://github.com/astral-sh/ruff/pull/22571
-synced_at: 2026-01-14T21:43:07Z
+synced_at: 2026-01-15T13:52:05Z
 ```
 
 # [ty] Better class def completions
@@ -91,5 +92,27 @@ _Review request for @sharkdp removed by @MichaReiser on 2026-01-14 20:47_
 ---
 
 _Review requested from @BurntSushi by @MichaReiser on 2026-01-14 20:47_
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_ide/src/completion.rs`:853 on 2026-01-15 13:29_
+
+I haven't thought too much about this, no. But what you say sounds plausible to me. Possibly the challenge here is making sure we don't try to pre-compute too much stuff, particularly if we end up not needing it.
+
+But yeah I agree that this is fine for now. Especially given that `covering_node` is only computed once now. :-)
+
+---
+
+_@BurntSushi approved on 2026-01-15 13:30_
+
+Beautiful. This looks great as-is, thank you!!!
+
+---
+
+_Merged by @BurntSushi on 2026-01-15 13:31_
+
+---
+
+_Closed by @BurntSushi on 2026-01-15 13:31_
 
 ---

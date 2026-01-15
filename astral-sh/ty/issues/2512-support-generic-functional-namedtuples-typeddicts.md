@@ -10,9 +10,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:14:38Z
-updated_at: 2026-01-15T12:18:15Z
+updated_at: 2026-01-15T13:37:31Z
 url: https://github.com/astral-sh/ty/issues/2512
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T13:51:48Z
 ```
 
 # Support generic functional NamedTuples/TypedDicts
@@ -41,6 +41,8 @@ def _(p: GenericPoint[int], m: GenericMovie[str]):
 ```
 
 This is not _very_ important for `NamedTuple`s, because there's not really any reason to define `GenericPoint` using the functional syntax rather than using a `class` statement. It's more important for `TypedDict`s, however, because it's impossible to rewrite `GenericMovie` using a `class` statement: one of its keys is not a valid identifier.
+
+Failing tests for the `NamedTuple` part of this were added in https://github.com/astral-sh/ruff/commit/3e0299488e72fa80f59473565cf724041d0f3f3c.
 
 ---
 
