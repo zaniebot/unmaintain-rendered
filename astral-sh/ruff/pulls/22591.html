@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ty] Add support for dynamic dataclasses via `make_dataclass` - astral-sh/ruff #22586</title>
+    <title>[ty] Support starred unpacking in class bases - astral-sh/ruff #22591</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,27 +11,42 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[ty] Add support for dynamic dataclasses via <code>make_dataclass</code></h1>
+    <h1>[ty] Support starred unpacking in class bases</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
-        <a href="https://github.com/astral-sh/ruff/pull/22586">#22586</a>
+        <a href="https://github.com/astral-sh/ruff/pull/22591">#22591</a>
         opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
-        on 2026-01-14 22:20
+        on 2026-01-15 04:06
     </div>
 
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
             <div class="timeline-body"><h2>Summary</h2>
-<p>Like #22327, but for dataclasses.</p>
+<p>Closes https://github.com/astral-sh/ty/issues/2492.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @charliermarsh on 2026-01-14 22:21</div>
+            <div class="event">Label <span class="label">ty</span> added by @charliermarsh on 2026-01-15 04:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-14 22:22</div>
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2026-01-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2026-01-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @charliermarsh on 2026-01-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @charliermarsh on 2026-01-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-15 04:08</div>
             <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
 
 <h2>Typing Conformance</h2>
@@ -49,7 +64,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-14 22:23</div>
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-15 04:09</div>
             <div class="timeline-body"><!-- generated-comment mypy_primer -->
 
 <h2><code>mypy_primer</code> results</h2>
@@ -59,17 +74,6 @@
 <pre><code class="language-diff">tornado (https://github.com/tornadoweb/tornado)
 - tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 + tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-
-strawberry (https://github.com/strawberry-graphql/strawberry)
-+ strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 348 diagnostics
-+ Found 350 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
 - src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
@@ -176,14 +180,23 @@ prefect (https://github.com/PrefectHQ/prefect)
 + Found 5334 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
 + static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1822 diagnostics
++ Found 1825 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 4361 diagnostics
++ Found 4359 diagnostics
 
 
 </code></pre>
@@ -192,34 +205,10 @@ static-frame (https://github.com/static-frame/static-frame)
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
-        <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2026-01-15 02:58</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @charliermarsh on 2026-01-15 02:58</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2026-01-15 02:58</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @charliermarsh on 2026-01-15 02:58</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @charliermarsh on 2026-01-15 02:58</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Converted to draft by @charliermarsh on 2026-01-15 02:59</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2026-01-15 03:22</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2026-01-15 03:59</div>
-        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 04:42:27 UTC
+        Synced at 2026-01-15 04:42:28 UTC
     </footer>
 </body>
 </html>
