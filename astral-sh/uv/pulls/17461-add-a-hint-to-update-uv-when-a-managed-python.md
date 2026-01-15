@@ -11,9 +11,9 @@ merged: true
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-15T10:12:02Z
+updated_at: 2026-01-15T10:48:07Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-15T10:44:26Z
+synced_at: 2026-01-15T11:54:54Z
 ```
 
 # Add a hint to update uv when a managed Python download is not found
@@ -208,5 +208,9 @@ _Merged by @EliteTK on 2026-01-15 09:58_
 ---
 
 _Closed by @EliteTK on 2026-01-15 09:58_
+
+---
+
+_Branch deleted on 2026-01-15 10:48_
 
 ---

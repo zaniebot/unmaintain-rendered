@@ -8,9 +8,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2026-01-14T14:57:10Z
-updated_at: 2026-01-15T09:24:47Z
+updated_at: 2026-01-15T11:19:46Z
 url: https://github.com/astral-sh/ty/issues/2494
-synced_at: 2026-01-15T09:45:23Z
+synced_at: 2026-01-15T11:54:24Z
 ```
 
 # `unused-ignore-comment` should not handle unknown rules
@@ -217,7 +217,7 @@ I have too many warnings for both type-checkers that I need to disable with a co
 # type: ignore[reportGeneralTypeIssue] # ty: ignore[invalid-key,possibly-missing-attribute]
 ```
 
-At this point I just share my current use-case, I'm not really sure what is the ty, it's up to you to decide.
+At this point I just share my current use-case, I'm not really sure what is the best for ty, it's up to you to decide.
 
 ---
 
@@ -230,5 +230,11 @@ Thanks for providing more details. This makes sense to me, except that I don't f
 > The use case is that only ty is used (so this option should be deactivated by default I think).
 
 I understand that you use both ty and pyright. Is this correct? What option are you referring to in that sentence?
+
+---
+
+_Comment by @lypwig on 2026-01-15 11:17_
+
+Yes, I am currently using both ty and pyright. I suggested to *__eventually__ add an other rule to check if type: is used with an unknown rule* to take into account users that only use ty, because it seemed to make sense to me. Maybe I'm wrong, let me know.
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-14T21:09:08Z
+updated_at: 2026-01-15T10:44:57Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-14T21:43:20Z
+synced_at: 2026-01-15T11:54:54Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -270,5 +270,11 @@ Let me know what you think.
 ---
 
 _Review requested from @zanieb by @EliteTK on 2026-01-14 21:09_
+
+---
+
+_Comment by @EliteTK on 2026-01-15 10:44_
+
+Should probably do something similar to #17461 too...
 
 ---

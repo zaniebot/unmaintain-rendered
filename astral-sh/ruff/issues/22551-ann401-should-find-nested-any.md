@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T14:04:28Z
-updated_at: 2026-01-15T10:08:11Z
+updated_at: 2026-01-15T11:08:17Z
 url: https://github.com/astral-sh/ruff/issues/22551
-synced_at: 2026-01-15T10:44:02Z
+synced_at: 2026-01-15T11:54:30Z
 ```
 
 # ANN401 should find nested `Any`
@@ -60,5 +60,13 @@ _Comment by @MartinBernstorff on 2026-01-15 10:08_
 ---
 
 _Closed by @MartinBernstorff on 2026-01-15 10:08_
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 11:08_
+
+> 100%, sorry about the duplicate! Closing.
+
+Don't worry. It can be really hard to find those. GitHub isn't really a great help here. I only found it thanks to claude.
 
 ---

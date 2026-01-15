@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/conformance-bugfix
 created_at: 2026-01-15T08:56:01Z
-updated_at: 2026-01-15T09:49:38Z
+updated_at: 2026-01-15T11:37:03Z
 url: https://github.com/astral-sh/ruff/pull/22593
-synced_at: 2026-01-15T10:44:13Z
+synced_at: 2026-01-15T11:54:41Z
 ```
 
 # [ty] Try fixing conformance workflow
@@ -667,5 +667,31 @@ _Review request for @carljm removed by @AlexWaygood on 2026-01-15 09:49_
 ---
 
 _Review request for @sharkdp removed by @AlexWaygood on 2026-01-15 09:49_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 11:31_
+
+---
+
+_Review comment by @AlexWaygood on `.github/workflows/typing_conformance.yaml`:91 on 2026-01-15 11:31_
+
+```suggestion
+            git switch -
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 11:35_
+
+---
+
+_Review comment by @AlexWaygood on `.github/workflows/typing_conformance.yaml`:91 on 2026-01-15 11:35_
+
+I guess this is what the git error message suggests 
+
+```suggestion
+            git switch - --detach
+```
 
 ---

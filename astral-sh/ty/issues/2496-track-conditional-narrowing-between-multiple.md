@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-14T17:03:09Z
-updated_at: 2026-01-14T23:27:26Z
+updated_at: 2026-01-15T10:56:29Z
 url: https://github.com/astral-sh/ty/issues/2496
-synced_at: 2026-01-14T23:42:12Z
+synced_at: 2026-01-15T11:54:24Z
 ```
 
 # Track conditional narrowing between multiple variables
@@ -183,5 +183,15 @@ _Label `wish` added by @carljm on 2026-01-14 23:27_
 ---
 
 _Renamed from "Best practices for type detection with two variable logic" to "Track conditional narrowing between multiple variables" by @carljm on 2026-01-14 23:27_
+
+---
+
+_Comment by @nadav7679 on 2026-01-15 10:56_
+
+Thanks both!
+
+> we'd need to track that after if a is None and b is None: return, a is not None OR b is not None, so that later we know that a is None implies b is not None.
+
+Yeah that's exactly what I thought. Would be nice to have (and impressive) but definitely not a must.
 
 ---

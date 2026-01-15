@@ -7,13 +7,12 @@ author: cetanu
 labels:
   - ty
 assignees: []
-draft: true
 base: main
 head: cetanu/junit_for_ty
 created_at: 2025-12-21T04:49:52Z
-updated_at: 2026-01-12T08:27:17Z
+updated_at: 2026-01-15T11:14:29Z
 url: https://github.com/astral-sh/ruff/pull/22125
-synced_at: 2026-01-12T15:57:42Z
+synced_at: 2026-01-15T11:54:41Z
 ```
 
 # JUnit output for `ty` lints
@@ -212,5 +211,32 @@ No worries, I don't feel strongly about it's addition, the motivation was mostly
 _Comment by @MichaReiser on 2026-01-12 08:27_
 
 Is this PR ready for review ?
+
+---
+
+_Marked ready for review by @cetanu on 2026-01-15 11:13_
+
+---
+
+_Review requested from @carljm by @cetanu on 2026-01-15 11:13_
+
+---
+
+_Review requested from @sharkdp by @cetanu on 2026-01-15 11:13_
+
+---
+
+_Review requested from @dcreager by @cetanu on 2026-01-15 11:13_
+
+---
+
+_Review requested from @Gankra by @cetanu on 2026-01-15 11:13_
+
+---
+
+_Comment by @cetanu on 2026-01-15 11:14_
+
+Yes!
+Let me know if any changes or if commits need to be rebased
 
 ---
