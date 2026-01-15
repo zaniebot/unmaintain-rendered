@@ -342,7 +342,7 @@ __all__ += [&quot;a&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py</code>:22 on 2026-01-01 16:38</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py</code>:23 on 2026-01-01 16:38</div>
             <div class="timeline-body"><p>Let's throw in one multi-line case without comments.</p>
 </div>
         </div>
@@ -574,10 +574,81 @@ info: rule `duplicate-base` is enabled by default
 <p>https://github.com/astral-sh/ruff/blob/2245355931f66def488809a6b9b784f7c294bd49/crates/ruff_linter/src/checkers/ast/mod.rs#L3309-L3311</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-14 23:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you! This is looking great. I just had a few more very small nits, and a couple of suggestions about additional tests (but I think they'll be handled well already).</p>
+<p>I also think it might be worth manually testing the CLI to make sure cases with multiple deletions in the same assignment are fixed correctly. I think they should be, but we have a mechanism to <a href="https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_diagnostics/src/fix.rs#L168"><code>isolate</code></a> fixes if we need it. I think just testing something like:</p>
+<pre><code class="language-shell">$ cargo run -p ruff -- check --preview --select RUF069 --fix - &lt;&lt;&lt;'__all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]'
+</code></pre>
+<p>should work. If it <em>doesn't</em> work, we should add an actual CLI test, but I think it's okay as long as the manual test works as expected.</p>
+</blockquote>
+<p>It does work:</p>
+<pre><code class="language-console">$ cargo run -p ruff -- check --preview --select RUF069 --fix - &lt;&lt;&lt;'__all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]'
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.98s
+     Running `target/debug/ruff check --preview --select RUF069 --fix -`
+warning: Detected debug build without --no-cache.
+__all__ = [&quot;A&quot;, &quot;B&quot;]
+Found 2 errors (2 fixed, 0 remaining).
+</code></pre>
+<p>I also have tested it in the <a href="https://github.com/astral-sh/ruff/pull/22114/changes#diff-c23d55609dc272d6a87875a04cb84bfcc9ee07964e1bbb101b2506c6318e48cf">crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py</a> file and the fix works flawless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF069_RUF069.py.snap</code>:9 on 2026-01-15 00:28</div>
+            <div class="timeline-body"><p>What do you think about this?</p>
+<pre><code class="language-console">$ cargo run -p ruff -- check --preview --select RUF069 - &lt;&lt;&lt;'__all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]'
+RUF069 [*] `__all__` contains duplicate entries
+ --&gt; -:1:12
+  |
+1 | __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]
+  |            ---  ^^^ `A` duplicated here
+  |            |
+  |            previous occurrence of `A` here
+  |
+help: Remove duplicate entries from `__all__`
+  - __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]
+1 + __all__ = [&quot;A&quot;, &quot;B&quot;, &quot;B&quot;]
+
+RUF069 [*] `__all__` contains duplicate entries
+ --&gt; -:1:22
+  |
+1 | __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]
+  |                      ---  ^^^ `B` duplicated here
+  |                      |
+  |                      previous occurrence of `B` here
+  |
+help: Remove duplicate entries from `__all__`
+  - __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;]
+1 + __all__ = [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;]
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2026-01-15 00:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @leandrobbraga on 2026-01-15 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @leandrobbraga on 2026-01-15 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-15 00:38</div>
+            <div class="timeline-body"><p>I should have addressed all concerns now, sorry for the delay</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @chirizxc by @leandrobbraga on 2026-01-15 00:38</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 21:26:55 UTC
+        Synced at 2026-01-15 00:45:05 UTC
     </footer>
 </body>
 </html>

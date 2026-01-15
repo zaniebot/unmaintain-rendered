@@ -44,10 +44,78 @@
 <p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:03</div>
+            <div class="timeline-body"><p>Thanks for the report! I'm having trouble reproducing your results. With numpy 2.3.0 or 2.4.1, the snippet you provided works correctly for me (we infer <code>tuple[int, int]</code> for the shape). Can you clarify the version of numpy you are using, and verify you are checking exactly the code snippet provided?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2026-01-15 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntjohnson1">@ntjohnson1</a> on 2026-01-15 00:17</div>
+            <div class="timeline-body"><p>Background context:</p>
+<p>In my PR I linked above I added a minimal ty setup for us to start checking it out. Running <code>uv run ty check</code> from the root without the index-out-of-bounds ignore triggers on https://github.com/rerun-io/rerun/blob/42f2479854d591c21eea1eccb2c47a4a9b7ae39d/rerun_py/rerun_sdk/rerun/datatypes/rgba32_ext.py#L56 however I pasted the snippet above in that same file and it also triggered.</p>
+<p>Minimal standalone repro:</p>
+<pre><code class="language-python">#example.py
+import numpy as np
+from typing import Sequence
+
+def example(data: int | Sequence[int | float]) -&gt; None:
+    if isinstance(data, Sequence):
+        np_data = np.array(data).reshape((1, -1))
+        if np_data.shape[1] not in (3, 4): # &lt;---
+            raise ValueError(f&quot;expected sequence of length of 3 or 4, received {np_data.shape[1]}&quot;)
+    return None
+</code></pre>
+<pre><code class="language-bash">uv venv --python=3.11
+source .venv/bin/activate
+uv pip install ty==0.0.11 numpy==2.3.5
+ty check example.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:36</div>
+            <div class="timeline-body"><p>Thanks for the additional info! There still seems to be some mysterious additional factor in play, because when I follow your exact instructions, the issue still doesn't reproduce for me:</p>
+<pre><code>➜ mkdir issue2501 &amp;&amp; cd issue2501
+
+➜ uv venv --python=3.11
+Using CPython 3.11.7
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+➜ source .venv/bin/activate
+
+➜ uv pip install ty==0.0.11 numpy==2.3.5
+Resolved 2 packages in 110ms
+Prepared 1 package in 611ms
+Installed 2 packages in 12ms
+ + numpy==2.3.5
+ + ty==0.0.11
+
+➜ cat &gt;example.py
+import numpy as np
+from typing import Sequence
+
+def example(data: int | Sequence[int | float]) -&gt; None:
+    if isinstance(data, Sequence):
+        np_data = np.array(data).reshape((1, -1))
+        if np_data.shape[1] not in (3, 4): # &lt;---
+            raise ValueError(f&quot;expected sequence of length of 3 or 4, received {np_data.shape[1]}&quot;)
+    return None
+
+➜ ty check .
+All checks passed!
+</code></pre>
+<p>(ty actually doesn't care about the Python version in the virtualenv, but explicitly passing <code>--python-version 3.11</code> to ty doesn't make any difference, either.)</p>
+<p>Is there any chance <code>ty</code> in your environment is resolving to some older ty elsewhere, rather than the 0.0.11 just installed in the venv?</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 22:45:51 UTC
+        Synced at 2026-01-15 00:45:29 UTC
     </footer>
 </body>
 </html>
