@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zb/no-sources-package
 created_at: 2025-07-25T21:11:34Z
-updated_at: 2026-01-14T17:50:52Z
+updated_at: 2026-01-15T03:38:19Z
 url: https://github.com/astral-sh/uv/pull/14910
-synced_at: 2026-01-14T18:48:19Z
+synced_at: 2026-01-15T03:52:24Z
 ```
 
 # Add `--no-sources-package`
@@ -34,5 +34,35 @@ _Label `cli` added by @zanieb on 2025-07-25 21:11_
 ---
 
 _Marked ready for review by @zanieb on 2026-01-14 17:50_
+
+---
+
+_Review requested from @charliermarsh by @zanieb on 2026-01-15 03:33_
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 03:35_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-build-frontend/src/lib.rs`:1044 on 2026-01-15 03:35_
+
+`no_sources.no_sources()` is a bit awkward.
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 03:36_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-dispatch/src/lib.rs`:219 on 2026-01-15 03:36_
+
+I think I would expect this to return `&NoSources`? Callers can clone if they need to.
+
+---
+
+_@charliermarsh approved on 2026-01-15 03:38_
+
+Looks reasonable. I find `NoSources` name to be a bit confusing because it's sort of like a double-negative? I probably would've left it as `SourceStrategy` and just added a `Disabled(Vec<Package>)` variant.
 
 ---
