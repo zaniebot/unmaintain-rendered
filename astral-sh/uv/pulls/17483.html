@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>auth-helper: only refresh pyx tokens expiring in 30 minutes - astral-sh/uv #17482</title>
+    <title>Fix race condition with pyx token refreshing - astral-sh/uv #17483</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,24 +11,31 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>auth-helper: only refresh pyx tokens expiring in 30 minutes</h1>
+    <h1>Fix race condition with pyx token refreshing</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
-        <a href="https://github.com/astral-sh/uv/pull/17482">#17482</a>
+        <a href="https://github.com/astral-sh/uv/pull/17483">#17483</a>
         opened by <a href="https://github.com/zsol">@zsol</a>
-        on 2026-01-15 10:27
+        on 2026-01-15 14:38
     </div>
 
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a></div>
             <div class="timeline-body"><h2>Summary</h2>
-<p><code>uv auth helper</code> currently passes in a tolerance of zero seconds to <code>pyx_store.access_token()</code> which forces a refresh every time. That is excessive.</p>
-<p>This PR changes that behavior to allow for a tolerance of 30 minutes. This is more than the default for <code>uv auth token</code> (5 minutes), because bazel builds might run for a long time, so it might take a while for the bazel-native downloader to get to actually fetching the file (although currently bazel seems to call the auth helper directly before attempting a fetch).</p>
-<p>We might want to expose this as a CLI parameter in the future.</p>
+<p>This PR fixes a race condition when refreshing pyx tokens in uv.</p>
+<p>It's mostly plagiarized from #17479, but drops the debouncing bits. The logic for refreshing now looks like:</p>
+<ol>
+<li>if the passed token is fresh enough, return it</li>
+<li>acquire a lock</li>
+<li>read the token from the cache and use that if <em>that</em>'s fresh enough (releasing the lock and returning)</li>
+<li>do the refresh dance</li>
+<li>write back the refreshed token to the cache</li>
+<li>release the lock and return the refreshed token</li>
+</ol>
 <h2>Test Plan</h2>
-<p>The following script exercises the credential helper concurrently:</p>
+<p>Using this script with concurrency=300 no longer produces failures:</p>
 <pre><code class="language-python">#!/usr/bin/env python3
 &quot;&quot;&quot;Request pyx auth tokens from uv in concurrent attempts.&quot;&quot;&quot;
 
@@ -103,33 +110,18 @@ if __name__ == &quot;__main__&quot;:
     args = parser.parse_args()
     asyncio.run(main(args.invocations, args.uv))
 </code></pre>
-<p>Running this script with <code>-n 1000</code> takes about five minutes on my machine before this PR, and about two seconds after this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @zsol on 2026-01-15 10:28</div>
+            <div class="event">Renamed from "Help rustfmt a little (#17004)" to "Fix race condition with pyx token refreshing" by @zsol on 2026-01-15 14:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "auth-helper: don't force refresh the token" to "auth-helper: don't force refresh the pyx token" by @zsol on 2026-01-15 10:29</div>
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> reviewed on 2026-01-15 14:44</div>
+            <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "auth-helper: don't force refresh the pyx token" to "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" by @zsol on 2026-01-15 10:30</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Renamed from "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" to "auth-helper: only refresh pyx tokens expiring in 30 minutes" by @zsol on 2026-01-15 10:30</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Marked ready for review by @zsol on 2026-01-15 10:31</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-15 13:26</div>
-            <div class="timeline-body"><p>I'm wondering why <code>uv auth token</code> and <code>uv auth credential-helper</code> should have different tolerance behavior? I think it make sense that Bazel builds will take longer want want a higher tolerance, but at a high-level, I'm not sure it makes sense?</p>
-<p>I think I might expect <code>uv auth token</code> and <code>uv auth credential-helper</code> to take a <code>--refresh-tolerance</code> option rather than have multiple default values?</p>
-</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2026-01-15 14:19</div>
-            <div class="timeline-body"><p>I've changed the tolerance so it matches <code>uv auth token</code> for now. We can pontificate the merits of a command line flag later</p>
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv-auth/src/pyx.rs</code>:466 on 2026-01-15 14:44</div>
+            <div class="timeline-body"><p>This seems a bit weird. We're only locking for a specific token, but <code>read()</code> can read &quot;outside of the scope&quot; of that lock. Should we just lock the entire subdirectory?</p>
 </div>
         </div>
     </div>

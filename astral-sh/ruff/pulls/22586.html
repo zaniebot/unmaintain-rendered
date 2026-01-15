@@ -163,10 +163,62 @@ rotki (https://github.com/rotki/rotki)
         <div class="timeline-entry">
             <div class="event">Reopened by @AlexWaygood on 2026-01-15 13:34</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 13:46</div>
+            <div class="timeline-body"><p>I'm a <em>bit</em> hesitant about this one. The typing spec doesn't say anything about this function AFAIK, and I don't remember seeing any user requests on the issue tracker for us to add special-cased support. Mypy_primer only shows two diagnostics going away in the ecosystem, on <code>strawberry</code> -- and it looks like those lines already have <code>type: ignore</code>s on them for mypy.</p>
+<p>Meanwhile, this is <em>quite</em> a bit of new code, and the manual parsing of arguments in <code>infer/builder.rs</code> is quite complicated and error-prone.</p>
+<p>Do any other type checkers have special-cased support for this function? We do have to draw the line <em>somewhere</em>.</p>
+<p>I think I'd feel differently if we could share more of the call-expression-parsing logic with what we've already added for namedtuples (which definitely <em>was</em> necessary), but the schema <code>make_dataclass()</code> expects is <em>just</em> different enough that sharing more of the code seeems like it could be pretty difficult?</p>
+<p>Another -- much simpler -- way to avoid false positives with the objects returned by this function would be to just special-case the return type so that we infer <code>type[Unknown]</code> rather than <code>type</code> -- that wouldn't involve any custom call-expression parsing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 13:59</div>
+            <div class="timeline-body"><p>AFAICT, Mypy and Pyright do not support it. But... I would still advocate for us to support it? We have all the infrastructure to do so! And almost all of the new code is in argument parsing -- which is very verbose, but at least fairly mechanical and testable? (E.g., it's much easier to know when we have that right, as opposed to something deep in type inference.) I think I don't agree that <em>this</em> is where we should draw the line, unless it's a feature that we can't support for reasons that I don't yet understand or would be uncovered by your review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 14:01</div>
+            <div class="timeline-body"><p>(I'm curious for @carljm's and @dcreager's opinions!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 14:08</div>
+            <div class="timeline-body"><p>Ditto and am totally fine to be overruled on it of course. I took it as a given that we'd support this given that it's in the <a href="https://github.com/astral-sh/ty/issues/1889">type system overview</a>; that may have been a mistake!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Ditto and am totally fine to be overruled on it of course. I took it as a given that we'd support this given that it's in the <a href="https://github.com/astral-sh/ty/issues/1889">type system overview</a>; that may have been a mistake!</p>
+</blockquote>
+<p>Well, that issue just says that we don't have any tests for the function right now. But this PR adds a lot more than just test coverage 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:7616 on 2026-01-15 14:12</div>
+            <div class="timeline-body"><p>Can we match on the elements here. The same in other positions</p>
+<pre><code class="language-suggestion">                    [name_expr, type_expr] =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-15 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:5817 on 2026-01-15 14:13</div>
+            <div class="timeline-body"><p>It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-15 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 13:54:40 UTC
+        Synced at 2026-01-15 14:54:04 UTC
     </footer>
 </body>
 </html>

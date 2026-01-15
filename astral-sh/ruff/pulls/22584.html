@@ -307,10 +307,52 @@ rotki (https://github.com/rotki/rotki)
         <div class="timeline-entry">
             <div class="event">Renamed from "[ty] Infer implicit type of `self` in `__new__` methods" to "[ty] Infer implicit type of `cls` in `__new__` methods" by @AlexWaygood on 2026-01-15 09:21</div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-15 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 13:59</div>
+            <div class="timeline-body"><p>It looks like the <code>__new__</code> method we synthesize for <code>NamedTuple</code> classes is buggy -- here's some minimal repros of some diagnostics in the ecosystem report on this PR:</p>
+<pre><code class="language-py">from collections import namedtuple
+from typing import NamedTuple, Self
+
+class Foo(NamedTuple):
+    x: int
+
+class Bar(Foo):
+    def __new__(cls) -&gt; &quot;Bar&quot;:
+        return super().__new__(cls, x=42)  # error[invalid-return-type] &quot;Return type does not match returned value: expected `Bar`, found `Foo`&quot;
+
+class Bar2(Foo):
+    def __new__(cls) -&gt; Self:
+        return super().__new__(cls, x=42)  # error[invalid-return-type] &quot;Return type does not match returned value: expected `Self@__new__`, found `Foo`&quot;
+
+Baz = namedtuple(&quot;Baz&quot;, &quot;x y&quot;)
+
+class Spam(Baz):
+    def __new__(cls) -&gt; &quot;Spam&quot;:
+        return super().__new__(cls, x=42, y=56)  # error[invalid-return-type] &quot;Return type does not match returned value: expected `Spam`, found `Baz`&quot;
+
+class Spam2(Baz):
+    def __new__(cls) -&gt; Self:
+        return super().__new__(cls, x=42, y=56)  # error[invalid-return-type] &quot;Return type does not match returned value: expected `Self@__new__`, found `Baz`&quot;
+</code></pre>
+<p>I think the return type we synthesize for these methods changed in https://github.com/astral-sh/ruff/commit/3e0299488e72fa80f59473565cf724041d0f3f3c. We need to infer these methods as returning <code>Self</code> rather than an instance of the namedtuple class, I think. cc. @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>The new ecosystem diagnostics here are technically false positives, but they are also emitted by pyright and strict-mode mypy, and they look expected, in that it's known that we won't see attributes dynamically attached in <code>__new__</code> or in metaclasses.</p>
+</blockquote>
+<p>I wouldn't necessarily characterise setting an attribute in <code>__new__</code> as &quot;dynamically attaching&quot; an attribute. I thought it was often considered best practice to set an attribute in <code>__new__</code>, and not have an <code>__init__</code> method at all, if you wanted instances of your class to be considered pseudo-immutable for outside consumers. (For example, the stdlib <a href="https://github.com/python/cpython/blob/3514ba2175764e4d746e6862e2fcfc06b5fcd6c2/Lib/fractions.py#L205-L206"><code>fractions.Fraction</code></a> class.)</p>
+<p>So I'd love to support recognising implicit instance attributes set in <code>__new__</code> at <em>some</em> point. That said, I agree that it shouldn't block this PR being merged! Especially if mypy/pyright don't support it.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 09:48:19 UTC
+        Synced at 2026-01-15 14:54:04 UTC
     </footer>
 </body>
 </html>

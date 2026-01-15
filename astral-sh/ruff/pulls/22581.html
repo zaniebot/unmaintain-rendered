@@ -177,10 +177,78 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
         <div class="timeline-entry">
             <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2026-01-14 19:24</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:80 on 2026-01-15 13:14</div>
+            <div class="timeline-body"><p>Nit, it could be assigning the result of <code>AllSymbolInfo::</code> to a variable before acquiring the lock, if whatever we do in <code>::from_module </code>is expensive. The same applies for line 85</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:295 on 2026-01-15 13:18</div>
+            <div class="timeline-body"><p><code>ModuleName</code> is also a compact str, meaning we only clone a heap allocation if the string is more than 24 bytes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:837 on 2026-01-15 13:19</div>
+            <div class="timeline-body"><p>Nit: I have a slight preference for using our own enum here (which could also have methods like <code>symbol_kind</code>). Reading <code>is_left</code>, <code>either</code> in this body feels rather cryptic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_module_resolver/src/module_name.rs</code>:96 on 2026-01-15 13:29</div>
+            <div class="timeline-body"><p>Nit: I'm leaning towards using <code>root</code> here, which IMO goes better with <code>ancestors</code> and <code>parent</code> than <code>top</code>, but I can't specifically say why :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:239 on 2026-01-15 13:35</div>
+            <div class="timeline-body"><p>One concern that I have with removing it without considering the outer context is if you're working on said library. Let's say I work on pandas and are writing a module in <code>pandas.io.parsers.readers</code> or a sibling package of it. It's probably desired to then import the symbol from the closest module rather than always preferring the outer most module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:257 on 2026-01-15 13:39</div>
+            <div class="timeline-body"><p>This <code>impl</code> block is a bit larger than what I normally would feel comfortable having within a function body. Should we make <code>merge</code> a module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:254 on 2026-01-15 13:40</div>
+            <div class="timeline-body"><p>I'd find a a short comment on what the meaning of these fields helpful. The code here is complicated enough that I'm failing to easily infer the meaning (and all the invariants) by simply scanning the method bodies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:245 on 2026-01-15 13:51</div>
+            <div class="timeline-body"><p>All the lints emitted by clippy here seem reasonable to me (except maybe the match one but can we just disable this specific lint). Any specific reason why you disabled all warning lints?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:436 on 2026-01-15 13:55</div>
+            <div class="timeline-body"><p>Is this semantically the same as &quot;finishing&quot; a group? If so, should we add a <code>finish_into(&amp;mut self, target: &amp;mut Vec)</code> method (or <code>finish(&amp;mut self) -&gt; impl Iterator&lt;...&gt;</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:447 on 2026-01-15 13:55</div>
+            <div class="timeline-body"><p>haha, you're not one of the <code>is_some_and</code> fans :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:308 on 2026-01-15 14:01</div>
+            <div class="timeline-body"><p>What are cases where the kind between two symbols with the same fully qualified name is different?</p>
+<p>Would two different kinds suggest that these are different symbols?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/all_symbols.rs</code>:250 on 2026-01-15 14:05</div>
+            <div class="timeline-body"><p>Nit: This might be more annoying, so I leave it up to you. As I understand it, the <code>origin_keep</code> act as a mechanism to remove elements from <code>origin</code> and <code>reexport</code> without having to actually remove them (because <code>swap_remove</code> would change the ordering).</p>
+<p>An alternative (but maybe too annoying to deal with) approach would be to &quot;tombstone&quot; elements that have been removed, e.g. by making <code>orign</code> a <code>Vec</code> over <code>Option&lt;AllSymbolInfo&gt;</code> where <code>None</code> is the tombstone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-15 14:09</div>
+            <div class="timeline-body"><p>This looks good. There's certainly a fair amount of complexity in <code>merge</code> (functional but also to avoid allocations) that requires a fair amount of concentration to understand what's going on.</p>
+<p>I have one design question on whether filtering out re-export must be sensitive to the current module.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 19:53:14 UTC
+        Synced at 2026-01-15 14:54:03 UTC
     </footer>
 </body>
 </html>
