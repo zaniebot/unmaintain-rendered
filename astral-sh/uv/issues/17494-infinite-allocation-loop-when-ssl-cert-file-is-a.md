@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-15T18:59:50Z
-updated_at: 2026-01-15T19:05:07Z
+updated_at: 2026-01-15T20:56:40Z
 url: https://github.com/astral-sh/uv/issues/17494
-synced_at: 2026-01-15T20:01:13Z
+synced_at: 2026-01-15T22:02:12Z
 ```
 
 # Infinite allocation loop when SSL_CERT_FILE is a directory
@@ -51,5 +51,11 @@ Python 3.13.11
 ---
 
 _Label `bug` added by @pieterdavid on 2026-01-15 18:59_
+
+---
+
+_Comment by @zanieb on 2026-01-15 20:56_
+
+Thank you!
 
 ---

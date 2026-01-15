@@ -11,9 +11,9 @@ draft: true
 base: charlie/functional-dict
 head: charlie/functional-typed
 created_at: 2026-01-15T20:31:56Z
-updated_at: 2026-01-15T20:48:37Z
+updated_at: 2026-01-15T21:50:52Z
 url: https://github.com/astral-sh/ruff/pull/22611
-synced_at: 2026-01-15T21:12:57Z
+synced_at: 2026-01-15T22:02:06Z
 ```
 
 # [ty] Add support for functional `TypedDict`
@@ -34,50 +34,49 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 20:33_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## Typing Conformance
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+
+The percentage of diagnostics emitted that were expected errors decreased from 69.52% to 69.22%. The percentage of expected errors that received a diagnostic increased from 58.44% to 58.79%.
 
 ### Summary
 
 | Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
-| True Positives  | 675 | 678 | +3 | ⏫ (✅) |
-| False Positives | 296 | 305 | +9 | ⏫ (❌) |
-| False Negatives | 480 | 477 | -3 | ⏬ (✅) |
-| Total Diagnostics | 971 | 983 | 12 | ⏫ |
-| Precision | 69.52% | 68.97% | -0.54% | ⏬ (❌) |
-| Recall | 58.44% | 58.70% | +0.26% | ⏫ (✅) |
+| True Positives  | 675 | 679 | +4 | ⏫ (✅) |
+| False Positives | 296 | 302 | +6 | ⏫ (❌) |
+| False Negatives | 480 | 476 | -4 | ⏬ (✅) |
+| Total Diagnostics | 971 | 981 | 10 | ⏫ |
+| Precision | 69.52% | 69.22% | -0.30% | ⏬ (❌) |
+| Recall | 58.44% | 58.79% | +0.35% | ⏫ (✅) |
 
 
-The percentage of diagnostics emitted that were expected errors decreased from 69.52% to 68.97%, and the percentage of expected errors that received a diagnostic increased from 58.44% to 58.70%.
 
-## True positives added 🎉
+### True positives added
 
 <details>
 
 | Location | Name | Message |
 |----------|------|---------|
-| [typeddicts_alt_syntax.py:35:72](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_alt_syntax.py#L35) | unknown-argument | unknown-argument: Argument `other` does not match any known parameter of `TypedDict` |
-| [typeddicts_extra_items.py:22:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_extra_items.py#L22) | invalid-key | invalid-key: Unknown key "year" for TypedDict `MovieFunctional`: Unknown key "year" |
-| [typeddicts_type_consistency.py:107:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L107) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
+| [typeddicts_alt_syntax.py:35:72](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_alt_syntax.py#L35) | unknown-argument | unknown-argument: Argument `other` does not match any known parameter of `TypedDict` |
+| [typeddicts_alt_syntax.py:45:43](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_alt_syntax.py#L45) | invalid-argument-type | invalid-argument-type: Invalid argument to key "year" with declared type `int` on TypedDict `Movie2`: value of type `Literal[""]` |
+| [typeddicts_extra_items.py:22:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_extra_items.py#L22) | invalid-key | invalid-key: Unknown key "year" for TypedDict `MovieFunctional`: Unknown key "year" |
+| [typeddicts_type_consistency.py:107:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L107) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
 
 
 </details>
 
-## False positives added 🫤
+### False positives added
 
 <details>
 
 | Location | Name | Message |
 |----------|------|---------|
-| [typeddicts_alt_syntax.py:43:9](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_alt_syntax.py#L43) | invalid-type-form | invalid-type-form: Variable of type `type[TypedDictFallback]` is not allowed in a type expression |
-| [typeddicts_extra_items.py:19:63](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_extra_items.py#L19) | unknown-argument | unknown-argument: Argument `extra_items` does not match any known parameter of `TypedDict` |
-| [typeddicts_extra_items.py:21:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_extra_items.py#L21) | invalid-key | invalid-key: Unknown key "novel_adaptation" for TypedDict `MovieFunctional`: Unknown key "novel_adaptation" |
-| [typeddicts_required.py:71:63](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_required.py#L71) | invalid-type-form | invalid-type-form: Invalid type `Literal["RecursiveMovie"]` in `TypedDict` field type |
-| [typeddicts_type_consistency.py:103:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L103) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:105:19](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L105) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:91:14](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L91) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:92:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L92) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:97:21](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/typeddicts_type_consistency.py#L97) | invalid-argument-type | invalid-argument-type: Argument to bound method `get` is incorrect: Argument type `UserType2` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self` |
+| [typeddicts_extra_items.py:21:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_extra_items.py#L21) | invalid-key | invalid-key: Unknown key "novel_adaptation" for TypedDict `MovieFunctional`: Unknown key "novel_adaptation" |
+| [typeddicts_type_consistency.py:103:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L103) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
+| [typeddicts_type_consistency.py:105:19](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L105) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
+| [typeddicts_type_consistency.py:91:14](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L91) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
+| [typeddicts_type_consistency.py:92:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L92) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
+| [typeddicts_type_consistency.py:97:21](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L97) | invalid-argument-type | invalid-argument-type: Argument to bound method `get` is incorrect: Argument type `UserType2` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self` |
 
 
 </details>

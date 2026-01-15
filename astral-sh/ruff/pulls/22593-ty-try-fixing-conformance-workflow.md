@@ -12,9 +12,9 @@ merged: true
 base: main
 head: wld/conformance-bugfix
 created_at: 2026-01-15T08:56:01Z
-updated_at: 2026-01-15T12:38:14Z
+updated_at: 2026-01-15T21:16:38Z
 url: https://github.com/astral-sh/ruff/pull/22593
-synced_at: 2026-01-15T12:53:10Z
+synced_at: 2026-01-15T22:02:06Z
 ```
 
 # [ty] Try fixing conformance workflow
@@ -749,5 +749,9 @@ _Merged by @MichaReiser on 2026-01-15 12:38_
 ---
 
 _Closed by @MichaReiser on 2026-01-15 12:38_
+
+---
+
+_Branch deleted on 2026-01-15 21:16_
 
 ---
