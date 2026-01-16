@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isolate test environment from user configuration - astral-sh/uv #17456</title>
+    <title>Isolate test environment from user configuration and remove redundant env_remove calls - astral-sh/uv #17456</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Isolate test environment from user configuration</h1>
+    <h1>Isolate test environment from user configuration and remove redundant env_remove calls</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -24,15 +24,25 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a></div>
             <div class="timeline-body"><p>Isolates the test environment from user-specific configuration that can cause test failures:</p>
+<h2>User config isolation in <code>with_real_home()</code></h2>
+<p>The <code>with_real_home()</code> method sets <code>HOME</code> to the real home directory, which is required for tests that use the macOS keychain for authentication. However, this causes a problem: when <code>HOME</code> is set but <code>XDG_CONFIG_HOME</code> is not, uv resolves the config directory to <code>$HOME/.config/uv</code> per the XDG specification. This means tests would read the user's real configuration files (like <code>.python-version</code> or <code>uv.toml</code>), which can override test-specified settings and cause failures.</p>
+<p>This PR sets <code>XDG_CONFIG_HOME</code> to the test's isolated config directory in <code>with_real_home()</code>, ensuring that even when the real HOME is needed for keychain access, configuration files are read from an isolated location.</p>
+<h2>Removed redundant <code>env_remove</code> calls</h2>
+<p>With #14080 merged, <code>TestContext::new_command_with()</code> now automatically clears all environment variables defined in <code>EnvVars::all_names()</code>. This makes the following explicit <code>env_remove</code> calls redundant:</p>
 <ul>
-<li><p><strong>Internal package mirrors</strong>: Remove <code>UV_INDEX_URL</code>, <code>UV_EXTRA_INDEX_URL</code>, <code>UV_PYTHON_INSTALL_MIRROR</code>, and <code>UV_INSTALLER_GHE_BASE_URL</code> from test environment to ensure tests use public PyPI instead of internal mirrors that may lack upload date metadata</p>
-</li>
-<li><p><strong>User config files</strong>: Set <code>XDG_CONFIG_HOME</code> in <code>with_real_home()</code> to prevent tests from reading user configuration files (like <code>.python-version</code>) that could override test-specified Python versions</p>
-</li>
-<li><p><strong>Documentation</strong>: Add guidance to CONTRIBUTING.md for developers behind corporate firewalls that block access to external test services like <code>pypi-proxy.fly.dev</code></p>
-</li>
+<li><code>UV_CACHE_DIR</code> - test cache directory isolation</li>
+<li><code>UV_TOOL_BIN_DIR</code> - tool binary directory isolation</li>
+<li><code>XDG_CONFIG_HOME</code> - config directory isolation</li>
+<li><code>UV_INDEX_URL</code> - package index override</li>
+<li><code>UV_EXTRA_INDEX_URL</code> - extra package index override</li>
+<li><code>UV_PYTHON_INSTALL_MIRROR</code> - Python installation mirror override</li>
+<li><code>UV_INSTALLER_GHE_BASE_URL</code> - GitHub Enterprise installer URL override</li>
 </ul>
-<p>These were the one that I noticed and were a blocker for me to work on https://github.com/astral-sh/uv/pull/14728</p>
+<p>These were previously added to ensure tests use public PyPI and isolated directories, but are now handled automatically by #14080.</p>
+<h2>Documentation for network-dependent tests</h2>
+<p>Adds guidance to CONTRIBUTING.md for developers running tests in offline environments, behind corporate firewalls, or on VPNs that block access to external test services like <code>pypi-proxy.fly.dev</code>. Documents how to skip network-dependent tests locally using nextest filtersets or by disabling features like <code>native-auth</code>.</p>
+<hr />
+<p>These were blockers for me to work on https://github.com/astral-sh/uv/pull/14728</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,7 +74,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1536 on 2026-01-14 11:28</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1530 on 2026-01-14 11:28</div>
             <div class="timeline-body"><p>Would this be necessary with #14080? I think if <code>$HOME</code> is set and <code>$XDG_CONFIG_HOME</code> is unset then the whole problem will be avoided?</p>
 </div>
         </div>
@@ -104,7 +114,7 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1536 on 2026-01-14 13:10</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1530 on 2026-01-14 13:10</div>
             <div class="timeline-body"><p>Didn't test it, so not sure as that pr is not merged yet.</p>
 </div>
         </div>
@@ -135,10 +145,67 @@
             <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/14080 is now merged.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Isolate test environment from user configuration" to "Isolate test environment from user configuration and remove redundant env_remove calls" by @gaborbernat on 2026-01-16 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2026-01-16 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>CONTRIBUTING.md</code>:102 on 2026-01-16 15:07</div>
+            <div class="timeline-body"><p>Addressed 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2026-01-16 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>CONTRIBUTING.md</code>:122 on 2026-01-16 15:07</div>
+            <div class="timeline-body"><p>Addressed 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2026-01-16 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>CONTRIBUTING.md</code>:96 on 2026-01-16 15:07</div>
+            <div class="timeline-body"><p>Addressed 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2026-01-16 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1044 on 2026-01-16 15:07</div>
+            <div class="timeline-body"><p>Addressed 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2026-01-16 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>crates/uv/tests/it/common/mod.rs</code>:1530 on 2026-01-16 15:07</div>
+            <div class="timeline-body"><p>Addressed 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @gaborbernat on 2026-01-16 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @gaborbernat on 2026-01-16 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @EliteTK by @gaborbernat on 2026-01-16 15:08</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 10:59:54 UTC
+        Synced at 2026-01-16 16:03:04 UTC
     </footer>
 </body>
 </html>

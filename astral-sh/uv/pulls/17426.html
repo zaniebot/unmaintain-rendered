@@ -112,10 +112,35 @@ Co-authored-by: Copilot Agent</p>
 <p>And, for the particular package I'm showing as an example, this is not a problem at all. The no-extensions URLs are used for testing dependencies, that we don't even plan to install. Just having them in metadata prevents uv from installing package that is otherwise perfectly installable/usable.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-16 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>But we would have exactly the same problem for URLs with file extension - you don't really know what is behind tar.gz file.</p>
+</blockquote>
+<p>Yeah, but this is an issue at a different layer: PEP 625 says that an sdist has the <code>.tar.gz</code> extension, so that's an initial check. If the retrieved content then isn't actually a valid tarball, we'd fail subsequently.</p>
+<blockquote>
+<p>Also, content-disposition is not a mime-type/content-type, it's a filename with extension. So it's not <code>tar+gz</code> but rather <code>file.tar.gz</code> or <code>package-1.0.sdist</code>.</p>
+</blockquote>
+<p>Sorry, yeah, this was my misunderstanding. I think it'd be reasonable for uv to handle URLs that don't have an extension but that <em>do</em> have a valid <code>.tar.gz</code> filename in their <code>Content-Disposition</code> header's filename field. One nuance there is that it's unclear what uv should do in this case:</p>
+<pre><code class="language-http">GET /foo/bar/abc-1.2.3.tar.gz
+
+200 OK
+...
+Content-Disposition: attachment; filename=&quot;def-4.5.6.tar.gz&quot;
+...
+</code></pre>
+<p>i.e., whether we should prefer the filename inferred from the URL or from the <code>Content-Disposition</code> header. I suspect the HTTP specs say the latter, but we should see what pip and other tools do (if anything) in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-16 15:30</div>
+            <div class="timeline-body"><p>Looks like pip handles <code>Content-Disposition</code> and gives it precedence, at least: https://github.com/pypa/pip/blob/545eda389c41478e2f99d23212254d757d8c2cef/src/pip/_internal/network/download.py#L105-L117</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 09:59:54 UTC
+        Synced at 2026-01-16 16:03:03 UTC
     </footer>
 </body>
 </html>
