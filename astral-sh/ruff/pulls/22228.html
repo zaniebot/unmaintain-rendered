@@ -230,10 +230,155 @@ class Planet2(Enum):
             <div class="timeline-body"><p>Thank you for working on this. Almost the entire team is out this week. It may take a few days before someone finds time to answer your question. We're sorry for that. Happy holidays.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/enums.md</code>:1 on 2026-01-16 13:57</div>
+            <div class="timeline-body"><p>Can you also add a test that shows that we do not emit false positives in stub files? For example:</p>
+<pre><code class="language-md">```pyi
+from enum import Enum
+
+class Foo(Enum):
+    _value_ = list[int]
+    X = ...  # no error, because it's a stub file
+    Y = []  # also fine
+    Z = None  # error (only `...` is exempted from the normal rules in stub files)
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:1 on 2026-01-16 14:10</div>
+            <div class="timeline-body"><p>I wonder if it might be more efficient to put this check in <code>overrides.rs</code>, where we already iterate over all definitions and declarations in every class?</p>
+<p>You could do something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/overrides.rs b/crates/ty_python_semantic/src/types/overrides.rs
+index 15094518e8..5741fd86b6 100644
+--- a/crates/ty_python_semantic/src/types/overrides.rs
++++ b/crates/ty_python_semantic/src/types/overrides.rs
+@@ -10,13 +10,13 @@ use rustc_hash::FxHashSet;
+ use crate::{
+     Db,
+     lint::LintId,
+-    place::{DefinedPlace, Place},
++    place::{DefinedPlace, Place, place_from_declarations},
+     semantic_index::{
+         definition::DefinitionKind, place::ScopedPlaceId, place_table, scope::ScopeId,
+         symbol::ScopedSymbolId, use_def_map,
+     },
+     types::{
+-        ClassBase, ClassType, KnownClass, StaticClassLiteral, Type,
++        ClassBase, ClassLiteral, ClassType, KnownClass, StaticClassLiteral, Type,
+         class::CodeGeneratorKind,
+         context::InferContext,
+         diagnostic::{
+@@ -24,6 +24,7 @@ use crate::{
+             OVERRIDE_OF_FINAL_METHOD, report_invalid_method_override,
+             report_overridden_final_method,
+         },
++        enums::{EnumMetadata, enum_metadata},
+         function::{FunctionDecorators, FunctionType, KnownFunction},
+         list_members::{Member, MemberWithDefinition, all_end_of_scope_members},
+     },
+@@ -45,6 +46,30 @@ const PROHIBITED_NAMEDTUPLE_ATTRS: &amp;[&amp;str] = &amp;[
+     &quot;_source&quot;,
+ ];
+ 
++struct EnumClassInfo&lt;'db&gt; {
++    metadata: &amp;'db EnumMetadata&lt;'db&gt;,
++    value_sunder_type: Type&lt;'db&gt;,
++}
++
++impl&lt;'db&gt; EnumClassInfo&lt;'db&gt; {
++    fn from_class(db: &amp;'db dyn Db, class: StaticClassLiteral&lt;'db&gt;) -&gt; Option&lt;EnumClassInfo&lt;'db&gt;&gt; {
++        let metadata = enum_metadata(db, class.into())?;
++
++        let scope = class.body_scope(db);
++        let value_sunder_symbol = place_table(db, scope).symbol_id(&quot;_value_&quot;)?;
++        let value_sunder_declarations =
++            use_def_map(db, scope).end_of_scope_symbol_declarations(value_sunder_symbol);
++        let value_sunder_type = place_from_declarations(db, value_sunder_declarations)
++            .ignore_conflicting_declarations()
++            .ignore_possibly_undefined()?;
++
++        Some(EnumClassInfo {
++            metadata,
++            value_sunder_type,
++        })
++    }
++}
++
+ // TODO: Support dynamic class literals. If we allow dynamic classes to define attributes in their
+ // namespace dictionary, we should also check whether those attributes are valid overrides of
+ // attributes in their superclasses.
+@@ -58,15 +83,24 @@ pub(super) fn check_class&lt;'db&gt;(context: &amp;InferContext&lt;'db, '_&gt;, class: StaticCla
+     let class_specialized = class.identity_specialization(db);
+     let scope = class.body_scope(db);
+     let own_class_members: FxHashSet&lt;_&gt; = all_end_of_scope_members(db, scope).collect();
++    let enum_info = EnumClassInfo::from_class(db, class);
+ 
+     for member in own_class_members {
+-        check_class_declaration(context, configuration, class_specialized, scope, &amp;member);
++        check_class_declaration(
++            context,
++            configuration,
++            enum_info.as_ref(),
++            class_specialized,
++            scope,
++            &amp;member,
++        );
+     }
+ }
+ 
+ fn check_class_declaration&lt;'db&gt;(
+     context: &amp;InferContext&lt;'db, '_&gt;,
+     configuration: OverrideRulesConfig,
++    enum_info: Option&lt;&amp;EnumClassInfo&lt;'db&gt;&gt;,
+     class: ClassType&lt;'db&gt;,
+     class_scope: ScopeId&lt;'db&gt;,
+     member: &amp;MemberWithDefinition&lt;'db&gt;,
+</code></pre>
+<p>and then you'd have the necessary information to do the member-verification check inside <code>check_class_declaration</code> if <code>enum_info</code> is <code>Some()</code> (in which case you know you're dealing with an enum class that has a <code>_value_</code> sunder), and skip the check if <code>enum_info</code> is <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-16 14:10</div>
+            <div class="timeline-body"><p>Nice, thank you! Sorry for the delay in reviewing this!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 14:16</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-python">from enum import Enum
+
+class Color(Enum):
+    _value_: int
+    RED = 1
+
+reveal_type(Color.RED.value)  # revealed: Literal[1]
+reveal_type(Color.RED._value_)  # revealed: Literal[1]
+</code></pre>
+<p>The <em>value</em> revealed still holds Literal[1] there, while some other type checkers will show up int. What would we do here?</p>
+</blockquote>
+<p>I think inferring <code>Literal[1]</code> there is fine, since <code>Literal[1]</code> is assignable to <code>int</code>. Possibly it's unsound to infer <code>Literal[1]</code> if the enum class has a custom constructor method...? But the enum class in your example does not.</p>
+<blockquote>
+<p>Second, this example came out the comformance testing:</p>
+<pre><code class="language-python">from enum import Enum
+
+class Planet2(Enum):
+    _value_: str
+
+    def __init__(self, value: int, mass: float, radius: float):
+        self._value_ = value  # E
+
+    MERCURY = (1, 3.303e23, 2.4397e6)
+</code></pre>
+<p>It's throwing an diagnostic currently on the last MERCURY line, while it shouldn't. While it's obviously what's happening here, it's not so obviously to me how to fix it.</p>
+</blockquote>
+<p>The spec explains what to do here at https://typing.python.org/en/latest/spec/enums.html#member-values</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:27 UTC
+        Synced at 2026-01-16 15:01:00 UTC
     </footer>
 </body>
 </html>

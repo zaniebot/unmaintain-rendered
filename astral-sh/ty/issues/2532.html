@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is lack of narrowing after an untyped dict's key is set expected? - astral-sh/ty #2532</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is lack of narrowing after an untyped dict's key is set expected?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2532">#2532</a>
+        opened by <a href="https://github.com/sitsofe">@sitsofe</a>
+        on 2026-01-16 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sitsofe">@sitsofe</a></div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi,</p>
+<p>In the following some type checkers narrow the type of <code>d</code> to <code>dict[str, int]</code> but <code>ty</code> does not:</p>
+<pre><code class="language-python">import typing
+
+d = {}
+d[&quot;s&quot;] = 1
+typing.reveal_type(d)
+</code></pre>
+<p>ty:</p>
+<pre><code>&gt; ty check main.py
+info[revealed-type]: Revealed type
+ --&gt; main.py:5:20
+  |
+3 | d = {}
+4 | d[&quot;s&quot;] = 1
+5 | typing.reveal_type(d)
+  |                    ^ `dict[Unknown, Unknown]`
+  |
+
+Found 1 diagnostic
+</code></pre>
+<p>pyright:</p>
+<pre><code>&gt; pyright main.py
+/private/tmp/main.py
+  /private/tmp/main.py:5:20 - information: Type of &quot;d&quot; is &quot;dict[Unknown, Unknown]&quot;
+0 errors, 0 warnings, 1 information
+</code></pre>
+<p>mypy:</p>
+<pre><code>&gt; mypy main.py
+main.py:5: note: Revealed type is &quot;builtins.dict[builtins.str, builtins.int]&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<p>pyrefly:</p>
+<pre><code>&gt; pyrefly check main.py
+ INFO revealed type: dict[str, int] (_[&quot;s&quot;]: Literal[1]) [reveal-type]
+ --&gt; main.py:5:19
+  |
+5 | typing.reveal_type(d)
+  |                   ---
+  |
+ INFO 0 errors
+</code></pre>
+<p>As I lack the proper vocabulary to describe the desired behaviour (gradual type narrowing of a <code>dict</code>?) done by mypy and pyrefly I struggled to to find what I was looking for in the existing issues. Is this just another case of #1248 ?</p>
+<p>(Curiously, asking for the type before a key is set changes the revealed type reported for the <code>d</code> by pyrefly after the key is set:</p>
+<pre><code class="language-python">import typing
+
+d = {}
+typing.reveal_type(d)
+d[&quot;s&quot;] = 1
+typing.reveal_type(d)
+</code></pre>
+<pre><code> INFO revealed type: dict[@_, @_] [reveal-type]
+ --&gt; main.py:4:19
+  |
+4 | typing.reveal_type(d)
+  |                   ---
+  |
+ INFO revealed type: dict[Unknown, Unknown] (_[&quot;s&quot;]: Literal[1]) [reveal-type]
+ --&gt; main.py:6:19
+  |
+6 | typing.reveal_type(d)
+  |                   ---
+  |
+ INFO 0 errors
+</code></pre>
+<p>but perhaps all bets are off when you don't explicitly type code...
+)</p>
+<h3>Version</h3>
+<p>ty 0.0.12 (4b74e4ded 2026-01-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sitsofe on 2026-01-16 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Is lack of narrowing after dict's key is set expected?" to "Is lack of narrowing after an untyped dict's key is set expected?" by @sitsofe on 2026-01-16 14:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 15:01:30 UTC
+    </footer>
+</body>
+</html>

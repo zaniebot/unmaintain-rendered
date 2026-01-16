@@ -585,10 +585,73 @@ let Some(stmt_c) = var_to_var_assignment(stmt_c) else { return; }
         <div class="timeline-entry">
             <div class="event">Review requested from @ntBre by @MichaReiser on 2026-01-16 08:59</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-16 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs</code>:145 on 2026-01-16 14:33</div>
+            <div class="timeline-body"><p>Ah, I think you can use <code>as_name_expr</code>, which borrows. I tried this patch locally, and it seemed to work:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs b/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
+index f75b0a4ea3..38e9b006f4 100644
+--- a/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
++++ b/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
+@@ -136,14 +136,14 @@ pub(crate) fn swap_with_temporary_variable(checker: &amp;Checker, stmts: &amp;[Stmt]) {
+ }
+ 
+ #[derive(Eq, PartialEq, Debug, Clone)]
+-struct VarToVarAssignment {
+-    target: Name,
+-    value: Name,
++struct VarToVarAssignment&lt;'a&gt; {
++    target: &amp;'a Name,
++    value: &amp;'a Name,
+     range: TextRange,
+ }
+ 
+-impl VarToVarAssignment {
+-    fn from_stmt(stmt: &amp;Stmt) -&gt; Option&lt;VarToVarAssignment&gt; {
++impl&lt;'a&gt; VarToVarAssignment&lt;'a&gt; {
++    fn from_stmt(stmt: &amp;'a Stmt) -&gt; Option&lt;VarToVarAssignment&lt;'a&gt;&gt; {
+         let (target, value) = match stmt {
+             Stmt::Assign(stmt_assign) =&gt; {
+                 // only one variable is expected for matching the pattern
+@@ -167,12 +167,11 @@ impl VarToVarAssignment {
+         };
+ 
+         // assignment value is more complex than just a simple variable, skip such cases.
+-        if let (Some(target_expr), Some(value_expr)) =
+-            (target.clone().name_expr(), value.clone().name_expr())
++        if let (Some(target_expr), Some(value_expr)) = (target.as_name_expr(), value.as_name_expr())
+         {
+             Some(Self {
+-                target: target_expr.id,
+-                value: value_expr.id,
++                target: &amp;target_expr.id,
++                value: &amp;value_expr.id,
+                 range: stmt.range(),
+             })
+         } else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py</code>:5 on 2026-01-16 14:47</div>
+            <div class="timeline-body"><p>Ah that's not good. I think what's happening is that the suite analysis is run before the semantic model is really built, so we can't access the bindings that way here. This usually means that we need to move a rule to a different phase of the analysis. I think this rule might have some helpful code for that:</p>
+<p>https://github.com/astral-sh/ruff/blob/10fd3b2415eaf618ecf0fc8f9da729dabcb4e7cb/crates/ruff_linter/src/rules/refurb/rules/repeated_append.rs#L176-L179</p>
+<p>and it runs in <code>analyze::statement</code> instead of <code>analyze::suite</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/10fd3b2415eaf618ecf0fc8f9da729dabcb4e7cb/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L1614-L1616</p>
+<p>although I think your rule will need to be in the <code>Stmt::Assign</code> (and <code>AnnAssign</code>) block instead of <code>Stmt::Expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-16 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 09:58:09 UTC
+        Synced at 2026-01-16 15:01:00 UTC
     </footer>
 </body>
 </html>
