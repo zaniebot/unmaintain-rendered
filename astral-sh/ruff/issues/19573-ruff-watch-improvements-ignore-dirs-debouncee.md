@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-07-27T10:47:38Z
-updated_at: 2026-01-15T14:16:36Z
+updated_at: 2026-01-16T08:57:13Z
 url: https://github.com/astral-sh/ruff/issues/19573
-synced_at: 2026-01-15T14:51:08Z
+synced_at: 2026-01-16T10:07:21Z
 ```
 
 # ruff --watch improvements: ignore dirs, debouncee
@@ -90,5 +90,11 @@ _Comment by @leonace924 on 2026-01-15 14:16_
 
 @MichaReiser  may I work on this as well? would you assign to me?
 I am gonna put the PR today as I put the one already
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 08:56_
+
+Sure. You may be interested in https://github.com/astral-sh/ruff/blob/5b240fbe72151c93129469b7534cc838c721c696/crates/ty_project/src/watch/watcher.rs#L209 which has been working pretty well in ty. I don't think we need the same degree of complexity but it may help to understand which events we can skip
 
 ---

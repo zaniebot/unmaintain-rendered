@@ -8,9 +8,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2025-11-28T13:42:39Z
-updated_at: 2025-12-19T18:28:56Z
+updated_at: 2026-01-16T09:14:03Z
 url: https://github.com/astral-sh/ruff/issues/21677
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-16T10:07:21Z
 ```
 
 # false positive syntax errors when using syntax for newer python version in `.pyi` files
@@ -191,5 +191,19 @@ _Comment by @flying-sheep on 2025-12-19 18:27_
 Right, instead of a `pyproject.toml`, scripts would have an [inline script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/) block that could define the `requires-python`.
 
 I haven’t checked how monorepo support works for uv/ruff. Is it just adding more `pyproject.toml` files? If so, inline script metadata should work the same!
+
+---
+
+_Comment by @flying-sheep on 2026-01-16 09:12_
+
+OK, so it seems like the plan could be
+
+independent task 1
+- add subproject support to ty
+- treat files with inline script metadata as single-file subprojects in ty
+
+independent task 2
+- parse .pyi files with the newest syntax in both ruff and ty
+  - **maybe** add a boolean setting called `allow-new-stub-syntax` (default `true`) for projects that want to `ast.parse` their .pyi files for some reason?
 
 ---

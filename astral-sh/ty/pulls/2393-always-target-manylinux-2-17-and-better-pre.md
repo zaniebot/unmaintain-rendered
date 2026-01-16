@@ -7,13 +7,12 @@ author: konstin
 labels:
   - internal
 assignees: []
-draft: true
 base: main
 head: konsti/manylinux_2_17
 created_at: 2026-01-08T08:40:07Z
-updated_at: 2026-01-09T12:05:12Z
+updated_at: 2026-01-16T09:05:02Z
 url: https://github.com/astral-sh/ty/pull/2393
-synced_at: 2026-01-12T15:54:28Z
+synced_at: 2026-01-16T10:07:16Z
 ```
 
 # Always target manylinux 2_17 and better pre-upload checks
@@ -56,5 +55,17 @@ _Renamed from "Always target manylinux_2_17" to "Always target manylinux 2_17 an
 ---
 
 _Converted to draft by @konstin on 2026-01-09 12:05_
+
+---
+
+_Comment by @konstin on 2026-01-16 09:05_
+
+I've verified these changes with testpypi: https://test.pypi.org/project/ty-konsti-test/#files
+
+I'll leave merging to the person who makes the release.
+
+---
+
+_Marked ready for review by @konstin on 2026-01-16 09:05_
 
 ---

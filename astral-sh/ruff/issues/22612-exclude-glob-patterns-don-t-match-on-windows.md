@@ -5,13 +5,13 @@ type: issue
 state: open
 author: ahochheiden
 labels:
-  - bug
   - windows
+  - needs-mre
 assignees: []
 created_at: 2026-01-15T23:48:03Z
-updated_at: 2026-01-16T05:53:02Z
+updated_at: 2026-01-16T09:53:11Z
 url: https://github.com/astral-sh/ruff/issues/22612
-synced_at: 2026-01-16T05:54:32Z
+synced_at: 2026-01-16T10:07:21Z
 ```
 
 # --exclude glob patterns don't match on Windows
@@ -141,5 +141,43 @@ That works. So it seems the issue is with how glob patterns are expanded when us
 _Comment by @ahochheiden on 2026-01-16 05:53_
 
 I think this is the culprit: https://github.com/astral-sh/ruff/blob/0ce5ce4de11c7e3dc3aa131287c671618e61c014/crates/ruff/src/main.rs#L42
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 09:52_
+
+I can't reproduce this on my machine. I checked out your repository and manually created the file.
+
+Without force-exclude:
+
+```
+❯ uvx ruff@latest format --check --exclude "build/moz.configure/*.configure" build/moz.configure/bindgen.configure --preview
+unformatted: File would be reformatted
+ --> build\moz.configure\bindgen.configure:1:1
+  - a   = 3
+1 + a = 3
+
+1 file would be reformatted
+```
+
+With `--force-exclude`
+
+```
+❯ uvx ruff@latest format --check --exclude "build/moz.configure/*.configure" build/moz.configure/bindgen.configure --preview --force-exclude
+warning: No Python files found under the given path(s)
+```
+
+But that's when using powershell. Any chanace you're using WSL or some other unix terminal?
+
+
+Can you try running ruff with `-v`, it should then print why it includes/excludes certain files
+
+---
+
+_Label `bug` removed by @MichaReiser on 2026-01-16 09:53_
+
+---
+
+_Label `needs-mre` added by @MichaReiser on 2026-01-16 09:53_
 
 ---
