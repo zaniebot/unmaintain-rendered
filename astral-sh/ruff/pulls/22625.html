@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Correct return type for synthesized NamedTuple.__new__ methods - astral-sh/ruff #22625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Correct return type for synthesized NamedTuple.<strong>new</strong> methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22625">#22625</a>
+        opened by <a href="https://github.com/bxff">@bxff</a>
+        on 2026-01-16 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a></div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixed the synthesized <code>NamedTuple.__new__</code> method to correctly return <code>Self</code> instead of the base class literal. This resolves <code>invalid-return-type</code> errors in subclasses that override <code>__new__</code> and call <code>super().__new__()</code>.</p>
+<p>The change introduces a synthetic <code>Self</code> type variable for the <code>__new__</code> signature, making it properly generic. The <code>cls</code> parameter now uses <code>type[Self]</code> and the return type is <code>Self</code>, matching Python's runtime behavior and typing conventions.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/2522</p>
+<h2>Test Plan</h2>
+<ul>
+<li><p>Added regression test to <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code> verifying:</p>
+<ul>
+<li><code>reveal_type(instance)</code> inside <code>Child.__new__</code> shows <code>Self@__new__</code></li>
+<li><code>reveal_type(Child(1, 2))</code> correctly shows <code>Child</code></li>
+</ul>
+</li>
+<li><p>Updated existing assertions in <code>named_tuple.md</code> to reflect the new generic signature:</p>
+<pre><code>reveal_type(Url.__new__)  # revealed: [Self](cls: type[Self], protocol: str, host: str, port: int | None = ...) -&gt; Self
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @bxff on 2026-01-16 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-16 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @bxff on 2026-01-16 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @bxff on 2026-01-16 17:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 18:04:03 UTC
+    </footer>
+</body>
+</html>

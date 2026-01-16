@@ -677,10 +677,53 @@ index f75b0a4ea3..38e9b006f4 100644
 <p>In this case, a dirty workaround would be to reverse the direction of the <code>match_consecutive_assignments</code> method, i.e. we build a list of assignments by collecting all <code>previous_siblings</code> of the current <code>stmt</code>? But I'm not sure if that's desired...</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-16 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py</code>:5 on 2026-01-16 17:19</div>
+            <div class="timeline-body"><p>Awesome, thanks for all your work here!</p>
+<p>Hmm, maybe <code>analyze::statement</code> still isn't late enough in the process. I would have at least expected <code>is_global</code> to work, I thought we extracted <code>global</code> statements very early on. These should be the latest stages of analysis:</p>
+<p>https://github.com/astral-sh/ruff/blob/12a4ca003fb89e4ca079d1922375d17e7225877d/crates/ruff_linter/src/checkers/ast/mod.rs#L3307-L3316</p>
+<p>None of them immediately jump out to me as sounding right here, but that's where I would look next. I guess this kind of aligns with my initial suggestion since <code>manual-list-comprehension</code> runs in <code>deferred_for_loops</code>, though I didn't realize it at the time, sorry!</p>
+<p>I think you could make something work in <code>analyze::definitions</code> because each <code>Definition</code> does have (somewhat indirect) access to its suite of statements, but most of the other rules there currently seem to relate to docstrings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bnyro">@Bnyro</a> reviewed on 2026-01-16 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Bnyro">@Bnyro</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py</code>:5 on 2026-01-16 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I would have at least expected is_global to work, I thought we extracted global statements very early on</p>
+</blockquote>
+<p>You're right, absolutely my bad in this case. <code>global</code> statements work properly. I didn't know that <code>is_global</code> is only set when we explicitly declare it as <code>global</code> variable.</p>
+<p>I changed the test case from</p>
+<pre><code class="language-py">foo = 3
+
+def x():
+    foo = 4
+</code></pre>
+<p>to</p>
+<pre><code class="language-py">foo = 3
+
+def x():
+    global foo
+    foo = 4
+</code></pre>
+<p>and now at least this test case passes, so only the one with later <code>references</code> to the temporary variable left :)</p>
+<blockquote>
+<p>I think you could make something work in analyze::definitions because each Definition does have (somewhat indirect) access to its suite of statements, but most of the other rules there currently seem to relate to docstrings.</p>
+</blockquote>
+<p>Thanks for pointing me there! I'll look into this when I find some time in the coming days, for now I have to get a break to free my mind first :)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 17:02:42 UTC
+        Synced at 2026-01-16 18:04:03 UTC
     </footer>
 </body>
 </html>

@@ -365,10 +365,56 @@ reveal_type(my_iter(get_int, None))
 <p>The behaviour on this branch seems like an improvement, so it seems like there's a pre-existing bug on <code>main</code> that this PR accidentally fixes.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 17:51</div>
+            <div class="timeline-body"><blockquote>
+<p>With Claude's help, I minimized the behaviour change on this PR to:</p>
+<pre><code class="language-python">from typing import Callable, overload
+
+class Box[T]:
+    def get(self) -&gt; T:
+        raise NotImplementedError
+
+@overload
+def my_iter[T](f: Callable[[], T | None], sentinel: None) -&gt; Box[T]: ...
+@overload
+def my_iter[T](f: Callable[[], T]) -&gt; Box[T]: ...
+def my_iter(f: Callable[[], object], sentinel: object = ...) -&gt; Box[object]:
+    return Box()
+
+def get_int() -&gt; int | None: ...
+
+# reveals `Box[int | None]` on `main`, `Box[int]` on this branch
+reveal_type(my_iter(get_int, None))
+</code></pre>
+<p>The behaviour on this branch seems like an improvement, so it seems like there's a pre-existing bug on <code>main</code> that this PR accidentally fixes.</p>
+</blockquote>
+<p>Even smaller:</p>
+<pre><code class="language-py">from typing import Callable
+
+class Box[T]:
+    def get(self) -&gt; T:
+        raise NotImplementedError
+
+def my_iter[T](f: Callable[[], T | None]) -&gt; Box[T]:
+    return Box()
+
+def get_int() -&gt; int | None: ...
+
+# reveals `Box[int | None]` on `main`, `Box[int]` on this branch
+reveal_type(my_iter(get_int))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 17:54</div>
+            <div class="timeline-body"><p>Planning on opening https://github.com/astral-sh/ruff/pull/22495 for review first, then rebasing this on top of that to see if switching to a set instead of a vec still provides any meaningful speedup after that PR's landed (and then we can debate whether it's worth the memory-usage regression, if so).</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:50 UTC
+        Synced at 2026-01-16 18:04:03 UTC
     </footer>
 </body>
 </html>
