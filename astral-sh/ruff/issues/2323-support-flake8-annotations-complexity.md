@@ -8,9 +8,9 @@ labels:
   - plugin
 assignees: []
 created_at: 2023-01-29T10:00:49Z
-updated_at: 2026-01-15T22:08:33Z
+updated_at: 2026-01-15T23:38:03Z
 url: https://github.com/astral-sh/ruff/issues/2323
-synced_at: 2026-01-15T23:02:47Z
+synced_at: 2026-01-16T00:02:53Z
 ```
 
 # Support flake8-annotations-complexity
@@ -143,5 +143,12 @@ I'll get the PR to implement the following:
 - Ignore `Annotated` types for complexity annotation
 - Consider PEP-604 union syntax as complex as the `Union` type
 - Leave it as one rule which we can revisit later or move to the `RUF` group
+
+---
+
+_Comment by @danjones1618 on 2026-01-15 23:38_
+
+I have updated #22427 with the aforementioned changes and is ready to review.
+Before merging, we should decide if we wish to keep it under the `TAE` group or migrate it to the `RUF` group. Similarly, we should decide if we wish to split it into smaller rules following as similar pattern seen in the `ANN` group.
 
 ---

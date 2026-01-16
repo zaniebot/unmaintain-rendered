@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-15T22:36:03Z
-updated_at: 2026-01-15T22:39:11Z
+updated_at: 2026-01-15T23:05:57Z
 url: https://github.com/astral-sh/uv/issues/17504
-synced_at: 2026-01-15T23:03:06Z
+synced_at: 2026-01-16T00:03:13Z
 ```
 
 # editable dependency and name binding
@@ -60,5 +60,13 @@ _Renamed from "editable dependency" to "editable dependency and name binding" by
 _Comment by @zanieb on 2026-01-15 22:39_
 
 I think you're looking to understand https://typing.python.org/en/latest/spec/distributing.html#library-interface-public-and-private-symbols
+
+---
+
+_Comment by @vsashidh on 2026-01-15 22:53_
+
+Thanks for your quick response.  I was hoping for a behavior as referenced here : https://docs.python.org/3/reference/import.html#submodules . Are you suggesting I use a list of module names in `__all__` to list out the submodules along with the relative import in `__init__.py` as an alternative approach?
+
+EDIT: I ended up trying the above and synced the project referencing the library and it worked as I wanted to import.
 
 ---

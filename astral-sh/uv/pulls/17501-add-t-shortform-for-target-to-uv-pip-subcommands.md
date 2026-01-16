@@ -4,14 +4,15 @@ title: "Add `-t` shortform for `--target` to `uv pip` subcommands"
 type: pull_request
 state: open
 author: fifty-six
-labels: []
+labels:
+  - compatibility
 assignees: []
 base: main
 head: shortform-t
 created_at: 2026-01-15T21:36:12Z
-updated_at: 2026-01-15T21:36:12Z
+updated_at: 2026-01-15T23:11:19Z
 url: https://github.com/astral-sh/uv/pull/17501
-synced_at: 2026-01-15T22:02:19Z
+synced_at: 2026-01-16T00:03:20Z
 ```
 
 # Add `-t` shortform for `--target` to `uv pip` subcommands
@@ -44,5 +45,15 @@ uv pip list -t test
 echo 'ansible' > requirements.txt
 uv pip sync -t test requirements.txt
 ```
+
+---
+
+_@zanieb approved on 2026-01-15 23:11_
+
+cc @charliermarsh 
+
+---
+
+_Label `compatibility` added by @zanieb on 2026-01-15 23:11_
 
 ---

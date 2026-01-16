@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-15T22:19:06Z
+updated_at: 2026-01-15T23:04:14Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-15T23:03:01Z
+synced_at: 2026-01-16T00:03:07Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -864,5 +864,11 @@ _Comment by @leandrobbraga on 2026-01-15 22:18_
 > 
 
 I guess we can defer this to later and have an specific MR for refactors. 
+
+---
+
+_Comment by @ntBre on 2026-01-15 23:04_
+
+Yeah I think this is probably okay. I'll try to take another look tomorrow!
 
 ---

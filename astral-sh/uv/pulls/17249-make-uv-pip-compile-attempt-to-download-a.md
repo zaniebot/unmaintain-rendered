@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T20:17:53Z
+updated_at: 2026-01-15T23:46:58Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-15T20:53:27Z
+synced_at: 2026-01-16T00:03:20Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -458,5 +458,27 @@ _@zanieb reviewed on 2026-01-15 20:17_
 _Review comment by @zanieb on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 20:17_
 
 Shouldn't you be creating a fake top-level error so it's all one chain?
+
+---
+
+_@EliteTK reviewed on 2026-01-15 23:17_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 23:17_
+
+Didn't think of that... But the bold would be gone, it would look different to the warning below.
+
+Still... Probably a neater look overall. Will sort it tomorrow.
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 23:46_
+
+I think that sounds like a bug in the warning chain print? Should it be bolding the first error in warnings for parity?
+
+---
+
+_@zanieb reviewed on 2026-01-15 23:46_
 
 ---
