@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
-updated_at: 2026-01-03T12:52:30Z
+updated_at: 2026-01-16T08:59:29Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-12T15:57:44Z
+synced_at: 2026-01-16T09:55:09Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
@@ -655,5 +655,9 @@ I've implemented this now, but it's not yet working because it looks like `check
 
 ```
 doesn't find the binding definition and panics.
+
+---
+
+_Review requested from @ntBre by @MichaReiser on 2026-01-16 08:59_
 
 ---

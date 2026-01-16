@@ -10,9 +10,9 @@ draft: true
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-15T17:06:29Z
+updated_at: 2026-01-16T09:29:35Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-15T17:50:37Z
+synced_at: 2026-01-16T09:55:23Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -112,5 +112,17 @@ This is potentially something that uv could provide a hint/suggestion on 🙂
 ---
 
 _Converted to draft by @konstin on 2026-01-15 17:06_
+
+---
+
+_Comment by @ppalucha on 2026-01-16 09:25_
+
+> > If you get content-disposition header specifying a filename with extension, is it not enough?
+> 
+> Unfortunately I think it's not enough -- at the moment a disposition of `tar+gz` is a decent proxy for a "source archive," but as @konstin notes we can't clearly distinguish that from a well-formed sdist (and in the future, `tar+gz` could potentially signal a wheel or other distribution format as well).
+
+But we would have exactly the same problem for URLs with file extension - you don't really know what is behind tar.gz file. So using content disposition would just make it behave the same as URL with file extension. Also, content-disposition is not a mime-type/content-type, it's a filename with extension. So it's not `tar+gz` but rather `file.tar.gz` or `package-1.0.sdist`.
+
+And, for the particular package I'm showing as an example, this is not a problem at all. The no-extensions URLs are used for testing dependencies, that we don't even plan to install. Just having them in metadata prevents uv from installing package that is otherwise perfectly installable/usable. 
 
 ---

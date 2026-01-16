@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-03-03T23:12:31Z
-updated_at: 2025-09-25T00:49:47Z
+updated_at: 2026-01-16T09:45:49Z
 url: https://github.com/astral-sh/uv/issues/11937
-synced_at: 2026-01-12T16:00:50Z
+synced_at: 2026-01-16T09:55:14Z
 ```
 
 # Keeping extras when running `uv sync`
@@ -233,5 +233,15 @@ Any chance we could at least make the `--all-extras` configurable in pyproject.t
 _Comment by @Butanium on 2025-09-25 00:49_
 
 having an environment variable would also be good, e.g. i deployed a streamlit app that failed because i need some extra in my project for the app
+
+---
+
+_Comment by @osma on 2026-01-16 09:45_
+
+@ssbarnea 
+
+> Any chance we could at least make the --all-extras configurable in pyproject.toml? This would allow us to ensure that uv sync would also install them. Otherwise we would have to type a lot and remember about each project. We have a solution for the dependency-groups but not for the extras.
+
+I'm also struggling with this, and I found a neat solution in another comment https://github.com/astral-sh/uv/issues/8607#issuecomment-2540156984. If you want to make sure `uv sync` installs a set of extras by default, you can do that by adding your own package, with the "default" extras, to the dev dependency group, like the "litestar" package does.
 
 ---

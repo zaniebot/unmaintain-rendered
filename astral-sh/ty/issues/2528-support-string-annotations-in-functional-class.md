@@ -4,12 +4,14 @@ title: Support string annotations in functional class annotations
 type: issue
 state: open
 author: charliermarsh
-labels: []
+labels:
+  - typing semantics
+  - namedtuples
 assignees: []
 created_at: 2026-01-16T03:00:32Z
-updated_at: 2026-01-16T03:06:03Z
+updated_at: 2026-01-16T09:12:37Z
 url: https://github.com/astral-sh/ty/issues/2528
-synced_at: 2026-01-16T04:05:13Z
+synced_at: 2026-01-16T09:54:51Z
 ```
 
 # Support string annotations in functional class annotations
@@ -36,5 +38,17 @@ Object of type `Literal["set[int]"]` is not valid as a `NamedTuple` field type(i
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-16 03:06_
+
+---
+
+_Added to milestone `Stable` by @AlexWaygood on 2026-01-16 09:12_
+
+---
+
+_Label `namedtuples` added by @AlexWaygood on 2026-01-16 09:12_
+
+---
+
+_Label `typing semantics` added by @AlexWaygood on 2026-01-16 09:12_
 
 ---
