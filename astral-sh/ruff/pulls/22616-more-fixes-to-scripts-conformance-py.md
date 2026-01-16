@@ -2,18 +2,19 @@
 number: 22616
 title: "More fixes to `scripts/conformance.py`"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/more-conformance-fixes
 created_at: 2026-01-16T11:41:26Z
-updated_at: 2026-01-16T11:52:29Z
+updated_at: 2026-01-16T12:47:59Z
 url: https://github.com/astral-sh/ruff/pull/22616
-synced_at: 2026-01-16T11:56:11Z
+synced_at: 2026-01-16T12:56:31Z
 ```
 
 # More fixes to `scripts/conformance.py`
@@ -24,7 +25,7 @@ _@AlexWaygood_
 
 ## Summary
 
-- Escape `|` characters in diagnostic messages, because in the context of a MarkDown table cell `|` can indicate the end of a cell, which is leading to diagnostic messages being truncated in comments. For example, see the table in the "True positives removed" table in https://github.com/astral-sh/ruff/pull/22611#issuecomment-3756748440.
+- Escape `|` characters in diagnostic messages, because in the context of a MarkDown table cell `|` can indicate the end of a cell, which is leading to diagnostic messages being truncated in comments. For example, see the "True positives removed" table in https://github.com/astral-sh/ruff/pull/22611#issuecomment-3756748440.
 - If the number of total diagnostics increases, format that cell as e.g. `+5` rather than simply `5`.
 - Add some missing type annotations and improve one instance of confusing formatting.
 
@@ -90,5 +91,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 11:52_
 
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-16 12:46_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-16 12:47_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 12:47_
+
+---
+
+_Branch deleted on 2026-01-16 12:47_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T11:49:59Z
+updated_at: 2026-01-16T12:03:06Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T11:56:11Z
+synced_at: 2026-01-16T12:56:31Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -292,8 +292,132 @@ The fact that other type checkers don't support it means I wouldn't have conside
 
 ---
 
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:55 on 2026-01-16 11:44_
+
+```suggestion
+from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+Point2 = make_dataclass("Point2", [("x", int), ("y", int)])
+
+reveal_type(Point2)  # revealed: <class 'Point2'>
+reveal_mro(Point2)  # revealed: (<class 'Point2'>, <class 'object'>)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:74 on 2026-01-16 11:44_
+
+nice!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:108 on 2026-01-16 11:45_
+
+I'm not sure this test shows that much as-is, because all Python types inherit an `__eq__` method from `object` even if they don't define `__eq__`, so you should be able to compare nearly all Python types using `==` without it failing
+
+---
+
 _Comment by @AlexWaygood on 2026-01-16 11:49_
 
 Okiedokie
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:163 on 2026-01-16 11:51_
+
+Can we also test that we view these attributes as immutable? (I can't remember exactly what error we should be emitting here)
+
+```suggestion
+from dataclasses import make_dataclass
+
+PointFrozen = make_dataclass("PointFrozen", [("x", int), ("y", int)], frozen=True)
+
+p = PointFrozen(1, 2)
+
+# frozen dataclasses generate __hash__
+reveal_type(hash(p))  # revealed: int
+
+# These should both fail, since frozen dataclasses are immutable
+p.x = 42  # error
+p.y = 56  # error
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:212 on 2026-01-16 11:53_
+
+```suggestion
+from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+class Base:
+    def greet(self) -> str:
+        return "Hello"
+
+Derived = make_dataclass("Derived", [("value", int)], bases=(Base,))
+reveal_mro(Derived)  # revealed: (<class 'Derived'>, <class 'Base'>, <class 'object'>)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:235 on 2026-01-16 11:57_
+
+```suggestion
+from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+def get_fields():
+    return [("x", int)]
+
+fields = get_fields()
+PointDynamic = make_dataclass("PointDynamic", fields)
+
+p = PointDynamic(1)  # No error - accepts any arguments
+reveal_type(p.x)  # revealed: Any
+
+# the class is still inferred as inheriting directly from `object`
+# (`Unknown` is not inserted into the MRO)
+reveal_mro(PointDynamic)  # revealed: (<class 'PointDynamic'>, <class 'object'>)
+
+# ...but nontheless, we assume that all attributes are available,
+# similar to attribute access on `Unknown`
+reveal_type(p.unknown)  # revealed: Any
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:240 on 2026-01-16 11:58_
+
+But you don't currently emit a diagnostic on this branch for too _few_ positional arguments -- this does not cause us to emit an error on this branch, but it fails at runtime:
+
+```py
+from dataclasses import make_dataclass
+
+make_dataclass("foo")
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:323 on 2026-01-16 12:00_
+
+You don't currently emit an error for `make_dataclass("foo", bases=12345)` on this branch
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:343 on 2026-01-16 12:02_
+
+I think we'd be able to infer the MRO just fine, but `Protocol` classes are heavily special-cased elsewhere, and it would significantly complicate our internal logic to support dynamically constructed `Protocol` classes (which anyway aren't mentioned anywhere by the typing spec)
+
+```suggestion
+Protocol bases use a different lint (`unsupported-dynamic-base`) because they're technically valid
+Python but not supported by ty for dynamic classes.
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-16 12:02_
+
+A tests-only review for now
 
 ---

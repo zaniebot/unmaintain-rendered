@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-16T10:47:02Z
+updated_at: 2026-01-16T12:37:40Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-16T11:07:34Z
+synced_at: 2026-01-16T12:56:31Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -268,5 +268,13 @@ Could it be that the collect calls are expensive? Given that `distributed_or` an
 
 Another alternative is to use a `SmallVec` instead. But I wonder if part of the perf regression simply comes from writing all the constraints to a vec
 
+
+---
+
+_Comment by @dcreager on 2026-01-16 12:37_
+
+> From the summary, I expect this to improve performance and reduce memory usage. Both don't seem to be the case. Do you have an understanding where the performance regression comes from? Could we keep using the "old approach" when not dealing with many overloads?
+
+Me too! Maybe the collecting is the culprit, as you suggest? Or maybe because we're not short circuiting anymore? I have an idea that might help with both.
 
 ---

@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T10:33:02Z
+updated_at: 2026-01-16T12:44:12Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T11:07:39Z
+synced_at: 2026-01-16T12:56:37Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -91,5 +91,25 @@ I assume that's https://github.com/astral-sh/uv/pull/14080, do you know which en
 ---
 
 _Assigned to @konstin by @konstin on 2026-01-16 10:33_
+
+---
+
+_Comment by @mgorny on 2026-01-16 12:40_
+
+> I assume that's [#14080](https://github.com/astral-sh/uv/pull/14080), do you know which env var is missing?
+
+`PATH` is, for a start.
+
+---
+
+_Comment by @mgorny on 2026-01-16 12:41_
+
+(I'm going to test further to see if any failures remain after adding `PATH`.)
+
+---
+
+_Comment by @konstin on 2026-01-16 12:44_
+
+https://github.com/astral-sh/uv/pull/17515 - If you have more env vars to share, I'll try to batch them in that PR.
 
 ---

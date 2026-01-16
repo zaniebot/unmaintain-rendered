@@ -8,9 +8,9 @@ labels:
   - imports
 assignees: []
 created_at: 2026-01-15T09:13:48Z
-updated_at: 2026-01-16T07:49:29Z
+updated_at: 2026-01-16T12:37:57Z
 url: https://github.com/astral-sh/ty/issues/2508
-synced_at: 2026-01-16T07:54:48Z
+synced_at: 2026-01-16T12:56:13Z
 ```
 
 # "ty" can't find dist-packages when using the system packages (not a venv) on Linux
@@ -97,5 +97,13 @@ I can help you test any patches for Debian.
 _Comment by @MichaReiser on 2026-01-16 07:49_
 
 @a-h-ismail see https://github.com/astral-sh/ty/issues/1323#issuecomment-3726358944
+
+---
+
+_Comment by @a-h-ismail on 2026-01-16 12:37_
+
+@MichaReiser Thank you. I have tried the `extra-paths` workaround and it didn't work for some reason. However the `PYTHONPATH` did work. I still get an error from "ty Language server" on startup, but the packages are getting recognized.
+
+I got the directories to add to PYTHONPATH by running `python -c "import sys; print(':'.join(sys.path))"` and removing the leading ':' then exporting the remaining text into PYTHONPATH in `.profile`.
 
 ---

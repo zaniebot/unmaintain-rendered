@@ -1,6 +1,6 @@
 ```yaml
 number: 22615
-title: "[ty] Support overriding `respect-type-ignore-comments"
+title: "[ty] Support overriding `respect-type-ignore-comments`"
 type: pull_request
 state: open
 author: MichaReiser
@@ -11,12 +11,12 @@ assignees: []
 base: main
 head: micha/analysis-file-level-overrides
 created_at: 2026-01-16T11:07:32Z
-updated_at: 2026-01-16T11:30:18Z
+updated_at: 2026-01-16T12:40:39Z
 url: https://github.com/astral-sh/ruff/pull/22615
-synced_at: 2026-01-16T11:56:11Z
+synced_at: 2026-01-16T12:56:31Z
 ```
 
-# [ty] Support overriding `respect-type-ignore-comments
+# [ty] Support overriding `respect-type-ignore-comments`
 
 ---
 
@@ -263,5 +263,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 11:30_
 
 
 
+
+---
+
+_Renamed from "[ty] Support overriding `respect-type-ignore-comments" to "[ty] Support overriding `respect-type-ignore-comments`" by @AlexWaygood on 2026-01-16 12:40_
 
 ---
