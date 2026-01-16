@@ -8,9 +8,9 @@ labels:
   - imports
 assignees: []
 created_at: 2026-01-15T09:13:48Z
-updated_at: 2026-01-16T06:06:37Z
+updated_at: 2026-01-16T07:49:29Z
 url: https://github.com/astral-sh/ty/issues/2508
-synced_at: 2026-01-16T06:54:39Z
+synced_at: 2026-01-16T07:54:48Z
 ```
 
 # "ty" can't find dist-packages when using the system packages (not a venv) on Linux
@@ -91,5 +91,11 @@ _Comment by @a-h-ismail on 2026-01-16 06:06_
 
 @carljm Do you have any workaround for the time being?
 I can help you test any patches for Debian.
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 07:49_
+
+@a-h-ismail see https://github.com/astral-sh/ty/issues/1323#issuecomment-3726358944
 
 ---
