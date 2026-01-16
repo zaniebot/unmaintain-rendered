@@ -2,14 +2,14 @@
 number: 2534
 title: "[invalid-parameter-default] on ellipsis in `TYPE_CHECKING` section"
 type: issue
-state: open
+state: closed
 author: robsdedude
 labels: []
 assignees: []
 created_at: 2026-01-16T14:44:08Z
-updated_at: 2026-01-16T15:25:53Z
+updated_at: 2026-01-16T16:32:40Z
 url: https://github.com/astral-sh/ty/issues/2534
-synced_at: 2026-01-16T15:58:04Z
+synced_at: 2026-01-16T16:59:27Z
 ```
 
 # [invalid-parameter-default] on ellipsis in `TYPE_CHECKING` section
@@ -49,5 +49,9 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2026-01-16 14:47_
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-16 15:25_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 16:32_
 
 ---

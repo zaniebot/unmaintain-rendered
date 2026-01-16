@@ -6,13 +6,14 @@ state: open
 author: charliermarsh
 labels:
   - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-14T14:20:33Z
+updated_at: 2026-01-16T16:12:58Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-14T14:41:25Z
+synced_at: 2026-01-16T16:59:45Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -572,5 +573,25 @@ _Renamed from "[ty] Fix incorrect `Self` binding for bound methods stored as ins
 ---
 
 _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-14 14:20_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types.rs`:2543 on 2026-01-16 15:54_
+
+Is this change necessary, when [the implementation of `instance_member` for `Type::NominalInstance` already delegates to `.class`](https://github.com/astral-sh/ruff/blob/27d60685d018eb93805af91cebf528448344594f/crates/ty_python_semantic/src/types.rs#L2505)?
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types.rs`:2558 on 2026-01-16 16:09_
+
+I'm a little confused about the purpose of this type mapping, it seems to be mapping `typing.Self` to itself?
+
+---
+
+_Label `ecosystem-analyzer` added by @ibraheemdev on 2026-01-16 16:11_
+
+---
+
+_@ibraheemdev reviewed on 2026-01-16 16:12_
 
 ---

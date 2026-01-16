@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
-updated_at: 2026-01-16T14:47:50Z
+updated_at: 2026-01-16T16:46:39Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T16:59:44Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
@@ -730,5 +730,44 @@ although I think your rule will need to be in the `Stmt::Assign` (and `AnnAssign
 ---
 
 _@ntBre reviewed on 2026-01-16 14:47_
+
+---
+
+_Review comment by @Bnyro on `crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs`:145 on 2026-01-16 16:40_
+
+That does the job, thank you!
+
+---
+
+_@Bnyro reviewed on 2026-01-16 16:40_
+
+---
+
+_@Bnyro reviewed on 2026-01-16 16:46_
+
+---
+
+_Review comment by @Bnyro on `crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py`:5 on 2026-01-16 16:46_
+
+Thanks for looking into this, I can feel that we're getting close to getting it done :)
+
+(I've pushed the code changes now, so that it's easier to follow.)
+
+We now get the correct `Assignment` (:tada:), but it appears to have no real data about the variable and no `references`. I.e. 
+```rs
+variable_binding.is_global() || variable_binding.is_nonlocal()
+```
+is always `false`
+
+and
+
+```rs
+variable_bindings.references()
+```
+is always empty...
+
+I assume that the other statements we're inspecting here are not yet being visited by the `SemanticModel` either, so they haven't encountered the references yet? :/ 
+
+In this case, a dirty workaround would be to reverse the direction of the `match_consecutive_assignments` method, i.e. we build a list of assignments by collecting all `previous_siblings` of the current `stmt`? But I'm not sure if that's desired...
 
 ---

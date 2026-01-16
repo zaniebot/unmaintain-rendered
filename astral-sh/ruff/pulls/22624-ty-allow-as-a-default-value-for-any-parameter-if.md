@@ -2,17 +2,18 @@
 number: 22624
 title: "[ty] Allow `...` as a default value for any parameter if the function is in an `if TYPE_CHECKING` block"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/invalid-parameter-default-type-checking
 created_at: 2026-01-16T14:50:52Z
-updated_at: 2026-01-16T14:53:50Z
+updated_at: 2026-01-16T16:32:40Z
 url: https://github.com/astral-sh/ruff/pull/22624
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T16:59:45Z
 ```
 
 # [ty] Allow `...` as a default value for any parameter if the function is in an `if TYPE_CHECKING` block
@@ -141,5 +142,21 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_@carljm approved on 2026-01-16 16:23_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-16 16:32_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 16:32_
+
+---
+
+_Branch deleted on 2026-01-16 16:32_
 
 ---

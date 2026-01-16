@@ -11,9 +11,9 @@ merged: true
 base: main
 head: claude/setup-cargo-xwin-clippy-Wc4BH
 created_at: 2026-01-15T23:50:43Z
-updated_at: 2026-01-16T13:16:23Z
+updated_at: 2026-01-16T16:22:07Z
 url: https://github.com/astral-sh/uv/pull/17507
-synced_at: 2026-01-16T13:57:23Z
+synced_at: 2026-01-16T16:59:58Z
 ```
 
 # Add cargo-xwin to the CONTRIBUTING guide
@@ -89,5 +89,25 @@ _Merged by @zanieb on 2026-01-16 13:16_
 ---
 
 _Closed by @zanieb on 2026-01-16 13:16_
+
+---
+
+_Review comment by @konstin on `CONTRIBUTING.md`:152 on 2026-01-16 16:21_
+
+That's my fault: https://github.com/Jake-Shadle/xwin/issues/168, https://github.com/rust-cross/cargo-xwin/pull/181
+
+---
+
+_@konstin reviewed on 2026-01-16 16:21_
+
+---
+
+_@konstin reviewed on 2026-01-16 16:22_
+
+---
+
+_Review comment by @konstin on `CONTRIBUTING.md`:152 on 2026-01-16 16:22_
+
+`cargo install cargo-xwin --locked` also works
 
 ---

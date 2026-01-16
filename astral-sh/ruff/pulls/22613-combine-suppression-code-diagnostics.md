@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-grouping
 created_at: 2026-01-16T00:34:42Z
-updated_at: 2026-01-16T08:36:49Z
+updated_at: 2026-01-16T16:54:22Z
 url: https://github.com/astral-sh/ruff/pull/22613
-synced_at: 2026-01-16T08:55:18Z
+synced_at: 2026-01-16T16:59:45Z
 ```
 
 # Combine suppression code diagnostics
@@ -100,5 +100,132 @@ Is my understanding correct that the suppressions in `self.valid` are sorted by 
 ---
 
 _@MichaReiser approved on 2026-01-16 08:36_
+
+---
+
+_@amyreese reviewed on 2026-01-16 16:08_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:235 on 2026-01-16 16:08_
+
+I don't think they're actually sorted at the moment, because outer scopes get matched after inner scopes, but suppression objects from the same range should always end up in the list next to each other.
+
+---
+
+_@MichaReiser reviewed on 2026-01-16 16:10_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap`:416 on 2026-01-16 16:10_
+
+Don't bother with this if this matches what we do for noqa today.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:246 on 2026-01-16 16:30_
+
+small nit: I think this is the same as the variable above:
+
+
+```suggestion
+                entry.invalid_codes.push(code_str);
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:266 on 2026-01-16 16:33_
+
+nit: could we use [`count`](https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html#method.count) here?
+
+
+```suggestion
+                        .filter(|code| *code == code_str)
+                        .count()
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:299 on 2026-01-16 16:35_
+
+I think `join` will handle this automatically:
+
+
+```suggestion
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:287 on 2026-01-16 16:41_
+
+It looks like this doesn't actually help here because of how `group` is used, but in principle you can use `into_values` to avoid cloning sometimes.
+
+---
+
+_@amyreese reviewed on 2026-01-16 16:42_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap`:416 on 2026-01-16 16:42_
+
+It looks like noqa highlights the entire noqa comment:
+
+```
+RUF100 [*] Unused `noqa` directive (unused: `F401`, `E741`)
+ --> foo.py:2:12
+  |
+1 | def f():
+2 |     x = 1  # noqa: F401, F841, E741
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unused `noqa` directive
+1 | def f():
+  -     x = 1  # noqa: F401, F841, E741
+2 +     x = 1  # noqa: F841
+```
+
+---
+
+_@MichaReiser reviewed on 2026-01-16 16:43_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap`:416 on 2026-01-16 16:43_
+
+I would then suggest aligning with noqa (which I think should be relatively easy?)
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:321 on 2026-01-16 16:47_
+
+This is probably better suited for a follow-up, and I thought I saw some previous discussion of this, but do these need to be `String`s? I tried making `UnusedCodes::disabled` a `Vec<&'a str>` and it seems to be working locally. Combining that with `into_values` makes this a little nicer:
+
+
+```suggestion
+                            disabled: group.disabled_codes
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:427 on 2026-01-16 16:51_
+
+This might be getting too clever, but I think we could go ahead and do the `join` here. The empty string will also work for the `is_empty` check, and then we can avoid allocating a separate `Vec` first.
+
+
+```suggestion
+                .join(", ");
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap`:416 on 2026-01-16 16:53_
+
+Yeah I liked the idea in https://github.com/astral-sh/ruff/issues/21873#issuecomment-3634167989 of extending the range to only the adjacent codes (if I understood correctly), but aligning with noqa makes sense too.
+
+---
+
+_@ntBre approved on 2026-01-16 16:54_
+
+Nice!
 
 ---

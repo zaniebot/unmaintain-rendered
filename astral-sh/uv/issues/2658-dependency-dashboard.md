@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-16T14:25:21Z
+updated_at: 2026-01-16T16:36:20Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-16T14:57:58Z
+synced_at: 2026-01-16T16:59:48Z
 ```
 
 # Dependency Dashboard
@@ -65,6 +65,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/tokio-rustls-0.x-lockfile -->Update Rust crate tokio-rustls to v0.26.4
  - [ ] <!-- unschedule-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
  - [ ] <!-- unschedule-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
+ - [ ] <!-- unschedule-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/pubgrub -->Update Rust crate version-ranges to v0.1.4
  - [ ] <!-- unschedule-branch=renovate/tokio-tracing-monorepo -->Update tokio-tracing monorepo (`tracing`, `tracing-subscriber`)
@@ -74,7 +75,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/crate-ci-typos-1.x -->Update crate-ci/typos action to v1.42.0
  - [ ] <!-- unschedule-branch=renovate/python-3.x -->Update dependency python to v3.14.2
  - [ ] <!-- unschedule-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
- - [ ] <!-- unschedule-branch=renovate/assert_cmd-2.x-lockfile -->Update Rust crate assert_cmd to v2.1.1
+ - [ ] <!-- unschedule-branch=renovate/assert_cmd-2.x-lockfile -->Update Rust crate assert_cmd to v2.1.2
  - [ ] <!-- unschedule-branch=renovate/backon-1.x-lockfile -->Update Rust crate backon to v1.6.0
  - [ ] <!-- unschedule-branch=renovate/bitflags-2.x-lockfile -->Update Rust crate bitflags to v2.10.0
  - [ ] <!-- unschedule-branch=renovate/criterion-4.x-lockfile -->Update Rust crate criterion to v4.2.1
@@ -101,6 +102,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
+ - [ ] <!-- rebase-branch=renovate/rust-1.x -->[Update Rust to v1.92.0](../pull/17523)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
 
 ## Pending Status Checks
@@ -108,7 +110,6 @@ The following updates have been manually edited so Renovate will no longer make 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
- - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
@@ -121,7 +122,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
  - [ ] <!-- rebase-branch=renovate/msrv -->[Update MSRV to v1.90.0](../pull/17522)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
- - [ ] <!-- rebase-branch=renovate/rust-1.x -->[Update Rust to v1.92.0](../pull/17523)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
 ## PR Closed (Blocked)

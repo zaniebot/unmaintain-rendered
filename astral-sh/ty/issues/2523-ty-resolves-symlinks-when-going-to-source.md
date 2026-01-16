@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-15T21:11:10Z
-updated_at: 2026-01-16T08:01:40Z
+updated_at: 2026-01-16T16:29:25Z
 url: https://github.com/astral-sh/ty/issues/2523
-synced_at: 2026-01-16T08:55:00Z
+synced_at: 2026-01-16T16:59:27Z
 ```
 
 # ty resolves symlinks when going to source
@@ -44,5 +44,28 @@ _Comment by @MichaReiser on 2026-01-16 08:01_
 > So I work in C:\whatever but the physical location of all my files is actually S:\whatever. In VS Code, when I hit F12 on a symbol, ty opens the source code in the S:\whatever location.
 
 I think you mixed up the path here as `C:\whatever` is both the pyhysical and actual location. Can you try to describe the problem again. What behavior are you seen and what behavior would do expect
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 16:29_
+
+Does this apply to project files or only to third-party files (pandas, etc)? We're very careful not to canonicalize paths and do so only in very few instances. But I'd have to take a closer look at what's happening. 
+
+What steps should I use to reproduce this? E.g. is it something like:
+
+**lib.py**:
+
+```
+class A: ...
+```
+
+**main.py**:
+
+```py
+from lib import A
+
+a = A()
+    ^ click here
+```
 
 ---

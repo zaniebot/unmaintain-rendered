@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-06-11T19:12:08Z
-updated_at: 2026-01-13T17:31:35Z
+updated_at: 2026-01-16T16:32:17Z
 url: https://github.com/astral-sh/uv/issues/13974
-synced_at: 2026-01-13T18:50:06Z
+synced_at: 2026-01-16T16:59:49Z
 ```
 
 # Add support for requesting indexes with `--index <name>`
@@ -89,5 +89,15 @@ Two interesting quirks came up:
 2. We could include also include the index name in `uv-receipt.toml` for a tool, instead of the index URL, if it is installed.
 
 #1 seems like it could lead to surprises. I think #2 might be an okay idea. But for now, I'm going to not do/allow either of those... Just wanted to document this decision in case there were interesting objections to this choice.
+
+---
+
+_Comment by @EliteTK on 2026-01-16 16:28_
+
+As written, my PR makes passing `--index name` equivalent to passing `--index name=uri` which has the impact that, for a workspace child package, it will copy the index definition into it.
+
+Additionally, this means that if you're in the directory of a workspace child or using --project in the workspace root, and the child has its own index defined with a conflicting name, the definition will get overwritten by the workspace's. This again matches the behaviour of doing `--index name=url` and the resolution logic matches our normal resolution logic (which honestly seems a bit unusual to me).
+
+While it would in some sense deviate from the behaviour of `--index name=uri`, I think we shouldn't write new index definitions when picking up an `--index` by name. Not quite sure how to make that happen yet though...
 
 ---

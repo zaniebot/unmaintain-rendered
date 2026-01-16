@@ -11,9 +11,9 @@ merged: true
 base: main
 head: konsti/better-manylinux-maturin-handling
 created_at: 2026-01-09T12:36:39Z
-updated_at: 2026-01-16T14:26:54Z
+updated_at: 2026-01-16T16:00:24Z
 url: https://github.com/astral-sh/ruff/pull/22477
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T16:59:44Z
 ```
 
 # Use explicit manylinux/musllinux targets and better pre-upload checks
@@ -85,5 +85,11 @@ _Closed by @ntBre on 2026-01-16 14:26_
 ---
 
 _Branch deleted on 2026-01-16 14:26_
+
+---
+
+_Comment by @konstin on 2026-01-16 16:00_
+
+Ping me if there's any problems!
 
 ---

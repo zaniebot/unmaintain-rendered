@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-16T14:04:15Z
+updated_at: 2026-01-16T16:34:18Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-16T14:57:42Z
+synced_at: 2026-01-16T16:59:32Z
 ```
 
 # Dependency Dashboard
@@ -72,7 +72,9 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
+ - [ ] <!-- unschedule-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
  - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
+ - [ ] <!-- unschedule-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.15
@@ -88,11 +90,10 @@ The following updates are awaiting their schedule. To get an update now, click o
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
- - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
- - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
+ - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
 
 ## Open
 
@@ -136,7 +137,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `clap_complete_command 0.6.0`
  - `clearscreen 4.0.0`
  - `codspeed-criterion-compat 4.0.4` → [Updates: `4.0.4`]
- - `colored 3.0.0`
+ - `colored 3.0.0` → [Updates: `3.0.0`]
  - `compact_str 0.9.0`
  - `console_error_panic_hook 0.1.7`
  - `console_log 1.0.0`

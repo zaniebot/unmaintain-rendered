@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/rename-typeguard-constraint
 created_at: 2026-01-16T12:13:34Z
-updated_at: 2026-01-16T12:16:41Z
+updated_at: 2026-01-16T16:37:09Z
 url: https://github.com/astral-sh/ruff/pull/22618
-synced_at: 2026-01-16T12:56:31Z
+synced_at: 2026-01-16T16:59:45Z
 ```
 
 # [ty] Rename some narrowing-related machinery
@@ -116,5 +116,9 @@ No changes detected ✅
 
 
 
+
+---
+
+_@ibraheemdev approved on 2026-01-16 16:37_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T15:05:20Z
+updated_at: 2026-01-16T16:31:35Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T15:58:22Z
+synced_at: 2026-01-16T16:59:45Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -362,5 +362,63 @@ _Converted to draft by @charliermarsh on 2026-01-16 13:40_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-16 14:59_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md`:1 on 2026-01-16 16:23_
+
+Not sure you have any tests yet for what happens if `*args` or `**kwargs` are passed into a `make_dataclass` call.
+
+Also (sorry): you should probably add tests for recursive and stringified types, e.g.
+
+```py
+from dataclasses import make_dataclass
+
+X = make_dataclass("X", [("a", "X | None")])
+```
+
+Since we'll _have_ to support recursive and stringified types for functional `typing.NamedTuple`s and functional `typing.TypedDict`s, we should probably be consistent and support them for functional dataclasses too.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:674 on 2026-01-16 16:25_
+
+do we have tests for what happens if functional dataclasses with and without `order=True` are passed to `total_ordering()`?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:710 on 2026-01-16 16:29_
+
+I think you could reduce duplication between the branches a little bit in this method, e.g.
+
+```rs
+    /// Returns the type definition for this class.
+    ///
+    /// For static classes, returns `TypeDefinition::StaticClass`.
+    /// For dynamic classes, returns `TypeDefinition::DynamicClass` if a definition is available.
+    pub(crate) fn type_definition(self, db: &'db dyn Db) -> Option<TypeDefinition<'db>> {
+        let definition = match self {
+            Self::Dynamic(class) => class.definition(db),
+            Self::DynamicNamedTuple(namedtuple) => namedtuple.definition(db),
+            Self::DynamicDataclass(dataclass) => dataclass.definition(db),
+
+            // This is the only variant that returns `TypeDefinition::StaticClass`
+            // rather than `TypeDefinition::DynamicClass`.
+            Self::Static(class) => return Some(TypeDefinition::StaticClass(class.definition(db))),
+        };
+
+        definition.map(TypeDefinition::DynamicClass)
+    }
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:769 on 2026-01-16 16:30_
+
+do we have a test that demonstrates that a `slots=True` functional dataclass is understood as a disjoint base?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-16 16:31_
 
 ---

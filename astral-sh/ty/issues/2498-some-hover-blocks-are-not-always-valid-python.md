@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-16T15:50:12Z
+updated_at: 2026-01-16T16:33:59Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-16T15:58:04Z
+synced_at: 2026-01-16T16:59:27Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -109,5 +109,43 @@ https://github.com/user-attachments/assets/9ee8eb51-9441-4b6a-bcae-c861fea816b5
 _Comment by @MichaReiser on 2026-01-16 15:50_
 
 @Gankra, you'll find this interesting.
+
+---
+
+_Comment by @carljm on 2026-01-16 15:58_
+
+When I mentioned "extra punctuation" I didn't just mean quotes -- I think we could reconsider the angle brackets entirely.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 16:15_
+
+> When I mentioned "extra punctuation" I didn't just mean quotes -- I think we could reconsider the angle brackets entirely.
+
+Sure. What would we replace them with, though? Very early on, we displayed `<class 'int'>` as `Literal[int]`, and I think that was much more confusing for users than what we have now. Part of the reason why we went for `<class 'int'>`, `<module 'typing'>`, etc., was that it matched the runtime repr, as you say, but also I think because we didn't have other great ideas.
+
+We could go with something like `ModuleLiteral[typing]` and `ClassLiteral[int]`, I guess? Pyright appears to use regular parentheses, but (subjectively) that doesn't feel particularly "Pythonic" to me -- it's different to almost all our other displays right now, and different to what you'd usually see in Python types.
+
+Other ways of solving this that were touched on above could be to:
+- Just use a code fence without a language tag for the LSP tooltip (though we do get nice highlighting currently from editors that _don't_ care about the invalid XML syntax, and it's a _bit_ of a shame to lose that)
+- Use an entirely different display in the LSP tooltip to the one we use in diagnostics. This appears to be what pyright does, for example:
+
+  <img width="532" height="594" alt="Image" src="https://github.com/user-attachments/assets/dddca3b7-70c0-4669-9906-d3947f2898a1" />
+
+  
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 16:31_
+
+> Use an entirely different display in the LSP tooltip to the one we use in diagnostics. This appears to be what pyright does, for example:
+
+I'm not 100% certain about this, but my impression was that Pyright opts out of syntax highlighting if it uses `(module) sys`. We could also just do that if we generate any type of syntax that isn't valid Python.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 16:33_
+
+Yeah. But my point there was that as _well_ as opting out of syntax highlighting there, `(module) sys` is also totally different to what pyright shows in the `reveal_type` diagnostic (`Module("sys")`)
 
 ---

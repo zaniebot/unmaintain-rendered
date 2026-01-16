@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: typed-dict-as-call-parameter
 created_at: 2025-12-23T13:07:37Z
-updated_at: 2026-01-08T15:23:07Z
+updated_at: 2026-01-16T16:43:15Z
 url: https://github.com/astral-sh/ruff/pull/22161
-synced_at: 2026-01-12T15:57:43Z
+synced_at: 2026-01-16T16:59:44Z
 ```
 
 # [ty] Add support for dict literals and dict() calls as default values for parameters with TypedDict types
@@ -254,5 +254,9 @@ oof sorry, "standalone expression" was rly confusing wording on my part! 🫠 I 
 The issue is scope, `infer_parameter_definition` runs with the function body scope, but the parameter defaults are indexed in the enclosing scope. `infer_expression` resolves names using the current scope’s `ast_ids` map. So when defaults reference names from the outer scope (like `outer_default_x` in my above example), the lookup hits `ast_ids.use_id(...)` and this is where we panic with `no entry found for key`.
 
 I hope it makes better sense now?
+
+---
+
+_Assigned to @ibraheemdev by @ibraheemdev on 2026-01-16 16:43_
 
 ---

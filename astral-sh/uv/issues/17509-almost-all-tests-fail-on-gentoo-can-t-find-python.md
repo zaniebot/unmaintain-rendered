@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T14:21:43Z
+updated_at: 2026-01-16T16:51:28Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T14:58:01Z
+synced_at: 2026-01-16T16:59:50Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -236,5 +236,25 @@ https://github.com/astral-sh/uv/blob/681e8e060fdc4ca2d0a180159ce63a720d3b93cf/cr
 _Comment by @musicinmybrain on 2026-01-16 14:21_
 
 Aha, I was struggling with this in Fedora as well, although I didn’t have nearly as many failing tests. Thank you for reporting it. It looks like passing through `PATH` (#17515) will be sufficient for the way we build packages in Fedora. I also needed #17520.
+
+---
+
+_Comment by @mgorny on 2026-01-16 16:15_
+
+Uh, now I'm seeing failures again, even with all the variables I've listed. Either I've done something wrong over the way, or there are new regressions on main. Lemme rollback to the previous commit and test again.
+
+---
+
+_Comment by @konstin on 2026-01-16 16:46_
+
+Is the test harness you're using locally runnable (e.g. a docker container)? That way I could reproduce the failures you are seeing.
+
+---
+
+_Comment by @mgorny on 2026-01-16 16:51_
+
+Well, yes, but not that easily. You could start with the Gentoo docker image and use `emerge` to run the test suite; but it'd have to install all the test deps, and I'm not sure if we have binary package of them all.
+
+That said, I can try to make a `Dockerfile` to give you a fully prepared image later today.
 
 ---

@@ -10,9 +10,9 @@ draft: true
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-16T15:30:08Z
+updated_at: 2026-01-16T16:03:05Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-16T15:58:35Z
+synced_at: 2026-01-16T16:59:57Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -153,5 +153,19 @@ i.e., whether we should prefer the filename inferred from the URL or from the `C
 _Comment by @woodruffw on 2026-01-16 15:30_
 
 Looks like pip handles `Content-Disposition` and gives it precedence, at least: https://github.com/pypa/pip/blob/545eda389c41478e2f99d23212254d757d8c2cef/src/pip/_internal/network/download.py#L105-L117
+
+---
+
+_Comment by @ppalucha on 2026-01-16 15:59_
+
+I'll be leaving for PTO soon, I can work on it when I'm back.
+
+---
+
+_Comment by @woodruffw on 2026-01-16 16:03_
+
+> I'll be leaving for PTO soon, I can work on it when I'm back.
+
+Don't worry about it 🙂 -- we don't have consensus on this yet, so PRs won't be easy for us to review until we have a clear idea of _what_ we want to support yet. I'll open an issue tracking design/consensus for this and link it here.
 
 ---
