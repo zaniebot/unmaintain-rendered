@@ -4,15 +4,15 @@ title: Support Trusted Publishing with pyx
 type: pull_request
 state: open
 author: woodruffw
-labels: []
+labels:
+  - registry
 assignees: []
-draft: true
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-16T02:20:25Z
+updated_at: 2026-01-16T03:17:15Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-16T03:05:02Z
+synced_at: 2026-01-16T04:05:43Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -23,7 +23,7 @@ _@woodruffw_
 
 ## Summary
 
-WIP. This follows #17418 and adds a `PyxPublishingService` that speaks the pyx-specific APIs for Trusted Publishing.
+~~WIP.~~ This follows #17418 and adds a `PyxPublishingService` that speaks the pyx-specific APIs for Trusted Publishing.
 
 TODOs:
 
@@ -80,5 +80,21 @@ _@woodruffw reviewed on 2026-01-15 22:38_
 _Review comment by @woodruffw on `scripts/publish/test_publish.py`:794 on 2026-01-15 22:38_
 
 The log volume was a bit extreme (and not helpful), so I've dropped it back down to `INFO`.
+
+---
+
+_Marked ready for review by @woodruffw on 2026-01-16 03:02_
+
+---
+
+_Review requested from @zanieb by @woodruffw on 2026-01-16 03:16_
+
+---
+
+_Review requested from @konstin by @woodruffw on 2026-01-16 03:16_
+
+---
+
+_Label `registry` added by @woodruffw on 2026-01-16 03:17_
 
 ---
