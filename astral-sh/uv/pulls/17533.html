@@ -72,10 +72,35 @@
 <p>[^gh-path]: GITHUB_PATH seems to be for appending only, which isn't helpful here.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-16 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the real weird thing here is that there's no actual guarantee that py -3.9 would pick the chocolatey version if some other 3.9 was installed, but I couldn't find any good way to verify this invariant.</p>
+</blockquote>
+<p>Can't we just use the path that chocolatey is at instead of <code>py -3.9</code>? Maybe I'm missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-16 19:05</div>
+            <div class="timeline-body"><p>But yeah I think a point of these tests is uv's discovery of system Python versions, so overriding that with our custom test path seems janky. That variable shouldn't really be used in more places, it's quite the blemish already imo (I added it, alas)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-16 19:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Can't we just use the path that chocolatey is at instead of <code>py -3.9</code>? Maybe I'm missing something?</p>
+</blockquote>
+<p>Yeah, sorry, I just realised there was a key bit of context I forgot:</p>
+<p>It seems you can tell chocolatey where you'd like to put the installation, but it won't listen if that version is already installed (it will overwrite at the existing location). There also doesn't seem to be any good way of asking chocolatey where it did install it either.</p>
+<p>This means using <code>C:\Python39\</code> (the default path) could break if we revert the runner image or a future image starts shipping python 3.9 again.</p>
+<p>But, having thought about it, prepending <code>C:\Python39\</code> and then using <code>C:\Python39\python.exe .\script</code> is probably the safest option: it will fail if anything weird happens to the image which could cause us to e.g. start testing a non-chocolatey python version.</p>
+<p>What might also work: We could try to set <code>$env:PATH</code> from the registry and invoke <code>python</code> instead of <code>py -3.9</code>. But we'd have to verify the version matches what we expect.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 19:06:30 UTC
+        Synced at 2026-01-16 20:08:21 UTC
     </footer>
 </body>
 </html>
