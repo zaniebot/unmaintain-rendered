@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule: iterator use after exhaustion - astral-sh/ruff #22628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule: iterator use after exhaustion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22628">#22628</a>
+        opened by <a href="https://github.com/GideonBear">@GideonBear</a>
+        on 2026-01-16 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/GideonBear">@GideonBear</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Forgetting to use <code>list(map(</code> bit me today, and it occurred to me that this is statically findable!</p>
+<h2>Rule suggestion</h2>
+<p>When an iterator is assigned to a variable, and that iterator is used exhaustively, any further use of that iterator (use of that variable without re-assigning) is disallowed, as the iterator will be empty.</p>
+<p>In addition:</p>
+<ul>
+<li>Any exhaustive use in a loop is definitely wrong</li>
+<li>Any use in a loop is probably wrong (like <a href="https://docs.astral.sh/ruff/rules/reuse-of-groupby-generator/#reuse-of-groupby-generator-b031">reuse-of-groupby-generator (B031)</a> flags)</li>
+</ul>
+<p>Examples of iterators:</p>
+<ul>
+<li>Calls to <code>iter</code>, <code>enumerate</code>, <code>map</code>, <code>filter</code>, <code>zip</code>, <code>reversed</code></li>
+<li>In the future when type-awareness is a thing, calls to any function or generator that returns an <code>Iterator</code></li>
+<li>Generator expressions</li>
+<li>...?</li>
+</ul>
+<p>Examples of exhaustive use:</p>
+<ul>
+<li><code>list(it)</code>, probably some other types and builtins as well</li>
+<li>Unsound possibility: passing it to any function<ul>
+<li>9/10 times the iterator is exhausted immediately in the function. Would like to see a primer on this. A function taking and not exhausting an iterator seems really rare.</li>
+</ul>
+</li>
+<li><code>for x in it</code> without <code>break</code>s<ul>
+<li><code>return</code>s are allowed as the iterator is dropped after returning</li>
+<li><code>raise</code>s are allowed unless the loop is located in a <code>try</code> block and the iterator is assigned outside the <code>try</code> block</li>
+</ul>
+</li>
+<li>...?</li>
+<li>List/set/dict comprehension</li>
+<li>Unsound possibility: generator expressions<ul>
+<li>Not completely sound, since you could technically do something like:</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-py">it = iter(l)
+gx = (foo for el in it)
+print(next(it))
+print(list(gx))
+</code></pre>
+<p>But then you could (and should) define <code>gx</code> after <code>print(next(it))</code>, so I still think this should be considered as exhausting the iterator. Especially since we want to catch <code>f(el for el in it)</code>, just like with &quot;passing it to any function&quot;.</p>
+<h2>Examples</h2>
+<pre><code class="language-py">it = iter(l)
+for el in it:
+    print(el)
+for el in it:
+    print(el)
+
+it = iter(l)
+for el in it:
+    print(el)
+print(next(it))
+
+# This was mine
+it = iter(l)
+for el in it:
+    print(el)
+[el for el in it]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-16 18:39</div>
+            <div class="timeline-body"><p>Thanks for the suggestion! I have personally been bitten by this in the past. We have a rule for one specific instance of this in <a href="https://docs.astral.sh/ruff/rules/reuse-of-groupby-generator/#reuse-of-groupby-generator-b031">reuse-of-groupby-generator (B031)</a> but something more general would be helpful.</p>
+<p>I'll put needs-decision on this for now to let others weigh in, but I think this would be a useful rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2026-01-16 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2026-01-16 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2026-01-16 18:48</div>
+            <div class="timeline-body"><p>FWIW a simple not-type-aware version of this lint would not flag <a href="https://docs.astral.sh/ruff/rules/reuse-of-groupby-generator/#reuse-of-groupby-generator-b031">reuse-of-groupby-generator (B031)</a>. I've also broadened my suggestion a bit according to what B031 does.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 19:03:36 UTC
+    </footer>
+</body>
+</html>
