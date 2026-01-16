@@ -2,18 +2,18 @@
 number: 22623
 title: "Remove `ty_python_semantic` dependency from `ruff_graph`"
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - internal
 assignees: []
-draft: true
+merged: true
 base: main
 head: claude/remove-ty-python-semantic-O58SM
 created_at: 2026-01-16T14:26:17Z
-updated_at: 2026-01-16T14:47:00Z
+updated_at: 2026-01-16T15:17:07Z
 url: https://github.com/astral-sh/ruff/pull/22623
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T15:58:22Z
 ```
 
 # Remove `ty_python_semantic` dependency from `ruff_graph`
@@ -24,11 +24,11 @@ _@MichaReiser_
 
 ## Summary
 
-
+The motivation for this change is to reduce compilation time. It also reduces the size of the ruff binary from 33 to 25 MB (release build, but without stripping symbols). 
 
 ## Test Plan
 
-<!-- How was it tested? -->
+CLI tests
 
 
 ---
@@ -132,5 +132,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 14:42_
 ---
 
 _@charliermarsh approved on 2026-01-16 14:47_
+
+---
+
+_Marked ready for review by @MichaReiser on 2026-01-16 15:17_
+
+---
+
+_Merged by @MichaReiser on 2026-01-16 15:17_
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 15:17_
+
+---
+
+_Branch deleted on 2026-01-16 15:17_
 
 ---

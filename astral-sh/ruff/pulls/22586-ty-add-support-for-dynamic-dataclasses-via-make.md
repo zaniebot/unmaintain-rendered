@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T14:37:44Z
+updated_at: 2026-01-16T15:05:20Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T15:58:22Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -63,14 +62,6 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 22:23_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-
 strawberry (https://github.com/strawberry-graphql/strawberry)
 + strawberry/experimental/pydantic/error_type.py:149:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/experimental/pydantic/object_type.py:255:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -78,12 +69,11 @@ strawberry (https://github.com/strawberry-graphql/strawberry)
 + Found 350 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- Found 1823 diagnostics
++ Found 1822 diagnostics
 
 
 ```
@@ -144,17 +134,14 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:23_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 1 | 2 | 5 |
-| `invalid-argument-type` | 1 | 3 | 3 |
+| `invalid-return-type` | 1 | 3 | 7 |
+| `invalid-argument-type` | 1 | 2 | 3 |
 | `invalid-assignment` | 0 | 0 | 5 |
-| `unused-ignore-comment` | 5 | 0 | 0 |
-| `possibly-missing-attribute` | 0 | 3 | 1 |
-| `invalid-await` | 0 | 2 | 0 |
-| `unresolved-attribute` | 0 | 0 | 2 |
-| **Total** | **7** | **10** | **16** |
+| `unused-ignore-comment` | 4 | 0 | 0 |
+| **Total** | **6** | **5** | **15** |
 
 
-**[Full report with detailed diff](https://3e6e5850.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3e6e5850.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://fc910ef3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://fc910ef3.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -222,7 +209,7 @@ _@MichaReiser reviewed on 2026-01-15 14:12_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:5936 on 2026-01-15 14:13_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:5931 on 2026-01-15 14:13_
 
 It seems unfortunate that we have to repeat all those methods for every dynamic class literal. Can't we share more infrastructure?
 
@@ -371,5 +358,9 @@ A tests-only review for now
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-16 13:40_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-16 14:59_
 
 ---

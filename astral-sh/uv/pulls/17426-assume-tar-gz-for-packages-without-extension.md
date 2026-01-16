@@ -10,9 +10,9 @@ draft: true
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-16T09:29:35Z
+updated_at: 2026-01-16T15:30:08Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-16T09:55:23Z
+synced_at: 2026-01-16T15:58:35Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -124,5 +124,34 @@ _Comment by @ppalucha on 2026-01-16 09:25_
 But we would have exactly the same problem for URLs with file extension - you don't really know what is behind tar.gz file. So using content disposition would just make it behave the same as URL with file extension. Also, content-disposition is not a mime-type/content-type, it's a filename with extension. So it's not `tar+gz` but rather `file.tar.gz` or `package-1.0.sdist`.
 
 And, for the particular package I'm showing as an example, this is not a problem at all. The no-extensions URLs are used for testing dependencies, that we don't even plan to install. Just having them in metadata prevents uv from installing package that is otherwise perfectly installable/usable. 
+
+---
+
+_Comment by @woodruffw on 2026-01-16 15:25_
+
+> But we would have exactly the same problem for URLs with file extension - you don't really know what is behind tar.gz file.
+
+Yeah, but this is an issue at a different layer: PEP 625 says that an sdist has the `.tar.gz` extension, so that's an initial check. If the retrieved content then isn't actually a valid tarball, we'd fail subsequently. 
+
+> Also, content-disposition is not a mime-type/content-type, it's a filename with extension. So it's not `tar+gz` but rather `file.tar.gz` or `package-1.0.sdist`.
+
+Sorry, yeah, this was my misunderstanding. I think it'd be reasonable for uv to handle URLs that don't have an extension but that *do* have a valid `.tar.gz` filename in their `Content-Disposition` header's filename field. One nuance there is that it's unclear what uv should do in this case:
+
+```http
+GET /foo/bar/abc-1.2.3.tar.gz
+
+200 OK
+...
+Content-Disposition: attachment; filename="def-4.5.6.tar.gz"
+...
+```
+
+i.e., whether we should prefer the filename inferred from the URL or from the `Content-Disposition` header. I suspect the HTTP specs say the latter, but we should see what pip and other tools do (if anything) in this case.
+
+---
+
+_Comment by @woodruffw on 2026-01-16 15:30_
+
+Looks like pip handles `Content-Disposition` and gives it precedence, at least: https://github.com/pypa/pip/blob/545eda389c41478e2f99d23212254d757d8c2cef/src/pip/_internal/network/download.py#L105-L117
 
 ---

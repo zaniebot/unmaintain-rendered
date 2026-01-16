@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-15T16:56:32Z
+updated_at: 2026-01-16T15:50:12Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-15T17:50:06Z
+synced_at: 2026-01-16T15:58:04Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -103,5 +103,11 @@ I'd have to take a closer look at what pylance does but it seems to use a simple
 
 https://github.com/user-attachments/assets/9ee8eb51-9441-4b6a-bcae-c861fea816b5
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 15:50_
+
+@Gankra, you'll find this interesting.
 
 ---

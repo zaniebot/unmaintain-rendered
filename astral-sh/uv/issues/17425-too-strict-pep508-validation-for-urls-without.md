@@ -8,9 +8,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-12T20:30:56Z
-updated_at: 2026-01-13T07:59:15Z
+updated_at: 2026-01-16T15:55:37Z
 url: https://github.com/astral-sh/uv/issues/17425
-synced_at: 2026-01-13T08:23:16Z
+synced_at: 2026-01-16T15:58:28Z
 ```
 
 # Too strict PEP508 validation for URLs without file extension
@@ -77,5 +77,11 @@ _Label `bug` removed by @konstin on 2026-01-13 07:59_
 ---
 
 _Label `needs-decision` added by @konstin on 2026-01-13 07:59_
+
+---
+
+_Comment by @konstin on 2026-01-16 15:55_
+
+Can you use a regular git dependency for this?
 
 ---

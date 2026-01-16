@@ -2,14 +2,14 @@
 number: 2533
 title: Compatibility with GitHub CI python install action
 type: issue
-state: open
+state: closed
 author: BrianSipos
 labels: []
 assignees: []
 created_at: 2026-01-16T14:31:54Z
-updated_at: 2026-01-16T14:32:40Z
+updated_at: 2026-01-16T15:33:37Z
 url: https://github.com/astral-sh/ty/issues/2533
-synced_at: 2026-01-16T14:57:38Z
+synced_at: 2026-01-16T15:58:04Z
 ```
 
 # Compatibility with GitHub CI python install action
@@ -40,5 +40,25 @@ ty 0.0.9
 _Comment by @BrianSipos on 2026-01-16 14:32_
 
 This is a distinct issue from #1323 about Python path for Debian/Ubuntu hosts.
+
+---
+
+_Comment by @carljm on 2026-01-16 15:30_
+
+Thanks for the report!
+
+ty does not currently ever use the shell path to find a Python installation to use. I suspect, though, that you are installing ty into the Python environment you want to use, meaning that this would be fixed by #2068 .
+
+I think as a workaround, explicitly setting `--python ${Python3_ROOT_DIR}` in your invocation of ty would be a bit simpler than setting `PYTHONPATH` to the site-packages directory, and more correct in that it would cause ty to actually find the Python installation and treat the site-packages directory as a site-packages dir.
+
+---
+
+_Comment by @carljm on 2026-01-16 15:33_
+
+Going to go ahead and close this as duplicate of #2068 for now, as I think it's quite likely that's the fix here. Please comment if you are _not_ installing ty into the setup-python Python installation -- if so, this would represent a different use case we need to consider.
+
+---
+
+_Closed by @carljm on 2026-01-16 15:33_
 
 ---

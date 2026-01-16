@@ -2,17 +2,18 @@
 number: 17514
 title: "Remove now redundant `env_remove` calls"
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/clear-env-removals-in-tests
 created_at: 2026-01-16T12:13:42Z
-updated_at: 2026-01-16T13:10:55Z
+updated_at: 2026-01-16T15:17:52Z
 url: https://github.com/astral-sh/uv/pull/17514
-synced_at: 2026-01-16T13:57:23Z
+synced_at: 2026-01-16T15:58:35Z
 ```
 
 # Remove now redundant `env_remove` calls
@@ -51,5 +52,17 @@ Hm makes sense, so we should drop it?
 ---
 
 _@zanieb approved on 2026-01-16 13:10_
+
+---
+
+_Merged by @konstin on 2026-01-16 15:17_
+
+---
+
+_Closed by @konstin on 2026-01-16 15:17_
+
+---
+
+_Branch deleted on 2026-01-16 15:17_
 
 ---

@@ -12,9 +12,9 @@ draft: true
 base: main
 head: dcreager/genprop
 created_at: 2025-12-10T18:22:13Z
-updated_at: 2026-01-16T14:53:38Z
+updated_at: 2026-01-16T15:01:43Z
 url: https://github.com/astral-sh/ruff/pull/21902
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T15:58:22Z
 ```
 
 # [ty] Infer typevar specializations for implicit generic protocols
@@ -81,32 +81,27 @@ _Comment by @codspeed-hq[bot] on 2025-12-16 00:58_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **degrade performance by 73.27%**
+### Merging this PR will **improve performance by 9.33%**
 
-<sub>Comparing <code>dcreager/genprop</code> (bb07775) with <code>main</code> (1f49e8e)</sub>
+<sub>Comparing <code>dcreager/genprop</code> (9c4668c) with <code>main</code> (10fd3b2)</sub>
 
 
 
 ### Summary
 
 `⚡ 1` improved benchmark  
-`❌ 3` regressed benchmarks  
-`✅ 17` untouched benchmarks  
-`⏩ 32` skipped benchmarks[^skipped]  
+`✅ 13` untouched benchmarks  
+`⏩ 39` skipped benchmarks[^skipped]  
 
 
-> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
 
 ### Performance Changes
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` pandas ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apandas&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 62.8 s | 235 s | -73.27% |
-| ❌ | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 87 s | 130.2 s | -33.15% |
-| ⚡ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 232.9 ms | 214.7 ms | +8.47% |
-| ❌ | Simulation | [`` attrs ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aattrs%3A%3Aproject%3A%3Aattrs&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 429.6 ms | 450.7 ms | -4.69% |
+| ⚡ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment&utm_content=benchmark) | 236.7 ms | 216.5 ms | +9.33% |
 
-[^skipped]: 32 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+[^skipped]: 39 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fgenprop?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
 
 ---
@@ -147,27 +142,35 @@ _Comment by @astral-sh-bot[bot] on 2026-01-07 16:45_
 
 ## `ecosystem-analyzer` results
 
+**Failing projects**:
+
+| Project | Old Status | New Status | Old Return Code | New Return Code |
+|---------|------------|------------|-----------------|------------------|
+| `scipy` | success | timeout | `1` | `None` |
+
+**Diagnostic changes:**
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `type-assertion-failure` | 88 | 356 | 443 |
-| `invalid-argument-type` | 260 | 59 | 88 |
-| `unused-ignore-comment` | 11 | 222 | 0 |
-| `unsupported-operator` | 149 | 0 | 7 |
-| `no-matching-overload` | 98 | 2 | 0 |
-| `invalid-assignment` | 50 | 0 | 20 |
-| `possibly-missing-attribute` | 44 | 4 | 12 |
-| `invalid-return-type` | 17 | 17 | 16 |
-| `unresolved-attribute` | 29 | 11 | 3 |
-| `not-subscriptable` | 12 | 0 | 0 |
+| `type-assertion-failure` | 87 | 356 | 433 |
+| `invalid-argument-type` | 248 | 74 | 102 |
+| `unsupported-operator` | 261 | 0 | 15 |
+| `no-matching-overload` | 155 | 2 | 0 |
+| `invalid-assignment` | 36 | 6 | 14 |
+| `unused-ignore-comment` | 13 | 42 | 0 |
+| `possibly-missing-attribute` | 20 | 2 | 21 |
+| `invalid-return-type` | 10 | 17 | 13 |
+| `unresolved-attribute` | 25 | 11 | 1 |
+| `not-subscriptable` | 12 | 4 | 0 |
 | `call-non-callable` | 8 | 0 | 0 |
-| `not-iterable` | 6 | 0 | 2 |
-| `invalid-await` | 0 | 2 | 0 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-await` | 0 | 0 | 6 |
+| `not-iterable` | 3 | 1 | 2 |
 | `missing-argument` | 0 | 1 | 0 |
-| **Total** | **772** | **674** | **591** |
+| **Total** | **878** | **516** | **614** |
 
 
-**[Full report with detailed diff](https://551f965f.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://551f965f.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://aad9f949.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://aad9f949.ty-ecosystem-ext.pages.dev/timing))
 
 
 

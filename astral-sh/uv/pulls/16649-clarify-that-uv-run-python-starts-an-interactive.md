@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: clarify-uv-run-python-in-document
 created_at: 2025-11-09T05:48:52Z
-updated_at: 2025-11-09T05:52:50Z
+updated_at: 2026-01-16T15:05:07Z
 url: https://github.com/astral-sh/uv/pull/16649
-synced_at: 2026-01-12T16:12:22Z
+synced_at: 2026-01-16T15:58:35Z
 ```
 
 # Clarify that uv run python starts an interactive REPL
@@ -32,5 +32,9 @@ Thank you for contributing to uv! To help us out with reviewing, please consider
 
 Adds a documentation tip to clarify that uv run python (without arguments) starts an interactive Python REPL in the project environment. This makes the REPL functionality more discoverable for users. Fixes #6548
 
+
+---
+
+_Assigned to @zanieb by @zanieb on 2026-01-16 15:05_
 
 ---

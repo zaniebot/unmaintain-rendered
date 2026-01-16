@@ -7,9 +7,9 @@ author: robsdedude
 labels: []
 assignees: []
 created_at: 2026-01-16T14:44:08Z
-updated_at: 2026-01-16T14:47:32Z
+updated_at: 2026-01-16T15:25:53Z
 url: https://github.com/astral-sh/ty/issues/2534
-synced_at: 2026-01-16T14:57:38Z
+synced_at: 2026-01-16T15:58:04Z
 ```
 
 # [invalid-parameter-default] on ellipsis in `TYPE_CHECKING` section
@@ -45,5 +45,9 @@ yeah fair enough! This is easy to fix
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2026-01-16 14:47_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-16 15:25_
 
 ---
