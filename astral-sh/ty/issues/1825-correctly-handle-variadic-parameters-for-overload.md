@@ -9,9 +9,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-12-09T14:56:40Z
-updated_at: 2025-12-10T16:53:58Z
+updated_at: 2026-01-16T04:10:12Z
 url: https://github.com/astral-sh/ty/issues/1825
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-16T05:06:04Z
 ```
 
 # Correctly handle variadic parameters for overload step 5 filtering
@@ -57,5 +57,22 @@ _Added to milestone `Stable` by @dhruvmanila on 2025-12-10 16:53_
 _Comment by @dhruvmanila on 2025-12-10 16:53_
 
 (I'm moving this into Stable as resolving the cycle during function inference is more important to resolve.)
+
+---
+
+_Comment by @fosskers on 2026-01-16 04:09_
+
+A sample reproduction of what currently doesn't work:
+```python
+class Foo[T]:
+    pass
+
+
+class Bar[*U]:
+    pass
+
+
+Baz = Foo[Bar[int]]  # <- ty claims that `Bar` can't be subscripted
+```
 
 ---
