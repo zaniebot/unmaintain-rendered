@@ -24,10 +24,22 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><h2>Summary</h2>
-<p>Inspired by https://github.com/astral-sh/ruff/pull/22511</p>
+<p>This PR reworks the big <code>match</code> statement <a href="https://github.com/astral-sh/ruff/blob/3c323559ed8a24c4d3f99ca92fe8aef154812f5a/crates/ty_python_semantic/src/types/narrow.rs#L1181">here</a> into two <code>let</code> chains that are independently evaluated. This allows us to apply type narrowing on many expressions where we weren't able to before, including:</p>
+<ul>
+<li>Right-hand-side narrowing for <code>if Y is type(x)</code></li>
+<li>Right-hand side narrowing for <code>if Y is not type(x)</code></li>
+<li>Right-hand side narrowing for <code>&lt;CALL EXPRESSION&gt; is x</code> where <code>&lt;CALL_EXPRESSION&gt;</code> is <em>not</em> a call to <code>builtins.type</code></li>
+<li>Right-hand side narrowing for <code>&lt;CALL EXPRESSION&gt; is not x</code> where <code>&lt;CALL_EXPRESSION&gt;</code> is <em>not</em> a call to <code>builtins.type</code></li>
+</ul>
+<p>The last two in particular are quite interesting: the AST for <code>if type(x) is Y</code> is very similar syntactically to <code>if foo() is z</code>, but we want to apply different kinds of narrowing for the two constructs:</p>
+<ul>
+<li>For the former, we want to apply left-hand side narrowing for <code>x</code>, intersecting <code>x</code>'s existing type with the top materialization of an instance of <code>Y</code></li>
+<li>For the latter, we want to apply right-hand side narrowing for <code>z</code>, intersecting <code>z</code>'s type with the annotated return type of <code>foo</code>.</li>
+</ul>
+<p>This is the key reason why a <code>match</code> no longer serves us well here: <code>match</code> arms are mutually exclusive! But we don't necessarily know which kind of narrowing we need to apply here until we've examined some of the types, so mutually exclusive branching is not what we want. We only want to <code>continue</code> if we succeeded in applying a narrowing constraint; otherwise, we want to fall through and check whether the other kind of narrowing would apply.</p>
+<p>This PR is inspired by https://github.com/astral-sh/ruff/pull/22511, and seems to result in a surprising number of false positives going away in the ecosystem.</p>
 <h2>Test Plan</h2>
-<!-- How was it tested? -->
-
+<p>mdtests</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -49,43 +61,53 @@
 <details>
 <summary>Changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -&gt; Any)`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -&gt; Any) &amp; ((*args: object, **kwargs: object) -&gt; object))`
-- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
-+ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 5411 diagnostics
-+ Found 5406 diagnostics
+<pre><code class="language-diff">tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -&gt; Any) &amp; ((*args: object, **kwargs: object) -&gt; object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -&gt; Any)`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5406 diagnostics
++ Found 5411 diagnostics
 
 xarray (https://github.com/pydata/xarray)
 - xarray/tests/test_variable.py:2753:53: warning[possibly-missing-attribute] Attribute `dtype` may be missing on object of type `Unknown | list[Unknown | list[Unknown | int]] | DataFrame`
 - Found 1761 diagnostics
 + Found 1760 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-- Found 1825 diagnostics
-+ Found 1823 diagnostics
-
-pandas (https://github.com/pandas-dev/pandas)
-- pandas/tests/scalar/test_na_scalar.py:249:12: error[no-matching-overload] No overload matches arguments
-- pandas/tests/scalar/test_na_scalar.py:250:14: error[no-matching-overload] No overload matches arguments
-- pandas/tests/scalar/test_na_scalar.py:253:14: error[no-matching-overload] No overload matches arguments
-- pandas/tests/scalar/test_na_scalar.py:275:14: error[no-matching-overload] No overload matches arguments
-- Found 3756 diagnostics
-+ Found 3752 diagnostics
 
 sympy (https://github.com/sympy/sympy)
 - sympy/functions/elementary/tests/test_complexes.py:43:12: error[no-matching-overload] No overload of function `__new__` matches arguments
@@ -96,6 +118,34 @@ sympy (https://github.com/sympy/sympy)
 - sympy/functions/elementary/tests/test_exponential.py:625:12: error[unresolved-attribute] Object of type `Expr` has no attribute `epsilon_eq`
 - Found 15623 diagnostics
 + Found 15617 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/tests/scalar/test_na_scalar.py:249:12: error[no-matching-overload] No overload matches arguments
+- pandas/tests/scalar/test_na_scalar.py:250:14: error[no-matching-overload] No overload matches arguments
+- pandas/tests/scalar/test_na_scalar.py:253:14: error[no-matching-overload] No overload matches arguments
+- pandas/tests/scalar/test_na_scalar.py:275:14: error[no-matching-overload] No overload matches arguments
+- Found 3756 diagnostics
++ Found 3752 diagnostics
+
+rotki (https://github.com/rotki/rotki)
++ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
++ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2056 diagnostics
++ Found 2057 diagnostics
+
+core (https://github.com/home-assistant/core)
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -&gt; _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14508 diagnostics
++ Found 14509 diagnostics
 
 
 </code></pre>
@@ -114,21 +164,35 @@ sympy (https://github.com/sympy/sympy)
 <h2><code>ecosystem-analyzer</code> results</h2>
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| <code>invalid-return-type</code> | 2 | 1 | 5 |
+| <code>invalid-parameter-default</code> | 0 | 0 | 7 |
 | <code>no-matching-overload</code> | 0 | 7 | 0 |
+| <code>invalid-argument-type</code> | 0 | 1 | 4 |
 | <code>invalid-assignment</code> | 0 | 0 | 5 |
-| <code>invalid-argument-type</code> | 0 | 0 | 3 |
-| <code>unresolved-attribute</code> | 0 | 3 | 0 |
-| <code>type-assertion-failure</code> | 2 | 0 | 0 |
-| <code>possibly-missing-attribute</code> | 0 | 1 | 0 |
-| <strong>Total</strong> | <strong>4</strong> | <strong>12</strong> | <strong>13</strong> |</p>
-<p><strong><a href="https://c22c05e0.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://c22c05e0.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+| <code>invalid-return-type</code> | 0 | 0 | 5 |
+| <code>possibly-missing-attribute</code> | 0 | 4 | 1 |
+| <code>unresolved-attribute</code> | 0 | 3 | 2 |
+| <code>invalid-await</code> | 0 | 2 | 0 |
+| <code>unused-ignore-comment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>1</strong> | <strong>17</strong> | <strong>24</strong> |</p>
+<p><strong><a href="https://d41ee235.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://d41ee235.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
 </div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2026-01-16 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2026-01-16 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2026-01-16 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2026-01-16 13:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 12:59:22 UTC
+        Synced at 2026-01-16 14:00:18 UTC
     </footer>
 </body>
 </html>
