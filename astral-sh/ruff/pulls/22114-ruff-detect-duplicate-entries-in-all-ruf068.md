@@ -13,9 +13,9 @@ merged: true
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-16T19:58:07Z
+updated_at: 2026-01-16T20:14:58Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-16T20:03:42Z
+synced_at: 2026-01-16T21:04:11Z
 ```
 
 # [`ruff`] Detect duplicate entries in `__all__` (`RUF068`)
@@ -939,5 +939,9 @@ _Merged by @ntBre on 2026-01-16 19:58_
 ---
 
 _Closed by @ntBre on 2026-01-16 19:58_
+
+---
+
+_Branch deleted on 2026-01-16 20:14_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/defer
 created_at: 2026-01-16T18:27:15Z
-updated_at: 2026-01-16T19:58:55Z
+updated_at: 2026-01-16T20:04:12Z
 url: https://github.com/astral-sh/ruff/pull/22627
-synced_at: 2026-01-16T20:03:42Z
+synced_at: 2026-01-16T21:04:12Z
 ```
 
 # [ty] Support deferred and recursive type evaluation in `NamedTuple(...)`
@@ -140,5 +140,33 @@ _Review requested from @dcreager by @charliermarsh on 2026-01-16 19:40_
 ---
 
 _Label `ecosystem-analyzer` added by @charliermarsh on 2026-01-16 19:58_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-16 20:04_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-return-type` | 0 | 3 | 6 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-argument-type` | 0 | 1 | 5 |
+| `invalid-assignment` | 0 | 0 | 5 |
+| `possibly-missing-attribute` | 0 | 3 | 1 |
+| `invalid-await` | 0 | 2 | 0 |
+| `unresolved-attribute` | 0 | 0 | 2 |
+| `unused-ignore-comment` | 1 | 0 | 0 |
+| **Total** | **1** | **9** | **26** |
+
+
+**[Full report with detailed diff](https://1ce19951.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://1ce19951.ty-ecosystem-ext.pages.dev/timing))
+
+
 
 ---

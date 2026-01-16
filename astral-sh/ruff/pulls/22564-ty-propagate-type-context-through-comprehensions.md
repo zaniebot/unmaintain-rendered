@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-16T07:57:29Z
+updated_at: 2026-01-16T20:29:38Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-16T08:55:18Z
+synced_at: 2026-01-16T21:04:12Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -480,5 +480,37 @@ _@MichaReiser reviewed on 2026-01-16 07:57_
 _Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_model.rs`:470 on 2026-01-16 07:57_
 
 Having specific implementations for comprehension (and other expressions that require bidi) that uses the outer scope does make sense to me (I wasn't aware when I added the implementation that scope could be narrow er than a block)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_model.rs`:470 on 2026-01-16 20:22_
+
+Yeah, I feel like deferring to the parent scope here if given a comprehension scope would be consistent with the general approach in this PR. Add a TODO?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types.rs`:210 on 2026-01-16 20:24_
+
+Similar to the SemanticModel comment, it might be useful to have a helper that doesn't take a type context and infers the parent scope instead (for comprehensions). We might also need to merge comprehension scopes into their parent scope `TypeInference` for this to work?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8895 on 2026-01-16 20:27_
+
+In order to handle some of the other comments about "external" `infer_scope_types` requests for comprehension scopes, we might need to do a full extend here (incl expression and definition types, not just diagnostics)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8938 on 2026-01-16 20:28_
+
+This is still a fair bit to duplicate for all comprehension kinds... seems like `KnownClass::Set` is the only set-distinct thing in here?
+
+---
+
+_@carljm approved on 2026-01-16 20:29_
+
+Looks good!
+
+I'm guessing we may want similar treatment for generator expressions at some point, but those have enough of their own wrinkles that it makes sense to handle them separately.
 
 ---

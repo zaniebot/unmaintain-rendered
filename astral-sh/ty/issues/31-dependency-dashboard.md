@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-15T21:41:46Z
+updated_at: 2026-01-16T20:26:05Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-15T22:01:48Z
+synced_at: 2026-01-16T21:03:53Z
 ```
 
 # Dependency Dashboard
@@ -42,6 +42,12 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
  - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `astral-sh/uv-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
+
+## Pending Status Checks
+
+The following updates await pending status checks. To force their creation now, click on a checkbox below.
+
+ - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
 
 ## Detected Dependencies
 
@@ -126,7 +132,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
+ - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb` → [Updates: `v5.0.2`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -185,7 +191,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 <details><summary>.pre-commit-config.yaml (13)</summary>
 
- - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.22`]
+ - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.23`]
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `abravalheri/validate-pyproject v0.24.1`

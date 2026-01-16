@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-16T19:59:47Z
+updated_at: 2026-01-16T20:57:47Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-16T20:03:42Z
+synced_at: 2026-01-16T21:04:11Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -797,5 +797,57 @@ In my humble opinion, avoiding the heap is worth a few extra lines of code.
 ---
 
 _@akawd reviewed on 2026-01-16 19:59_
+
+---
+
+_@akawd reviewed on 2026-01-16 20:07_
+
+---
+
+_Review comment by @akawd on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:92 on 2026-01-16 20:07_
+
+As far as I can see, the root cause of the comment deletion is (somewhere) here:
+https://github.com/akawd/ruff/blob/d08e41417971f1d05b9daa75f794536a1dd4bedf/crates/ruff_linter/src/fix/edits.rs#L248
+
+If this is a real issue, it may be better to be addressed in a separate issue?
+Here, I simply added the unsafe marker to the class containing the comment:
+https://github.com/astral-sh/ruff/pull/22234/changes/a2091751f553191f7af42777def94d5e522c423b
+
+---
+
+_Comment by @akawd on 2026-01-16 20:14_
+
+@ntBre , sorry for delay with the answer. 
+Thank you for your suggestions, I added them.
+
+Could you please clarify what docs you meant here?
+
+> We'd also need to update the docs.
+
+---
+
+_Review requested from @ntBre by @akawd on 2026-01-16 20:14_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:92 on 2026-01-16 20:49_
+
+Sorry, I think my comment here may have been a bit confusing! I'll open a separate issue for this and try to explain the problem better.
+
+Edit: https://github.com/astral-sh/ruff/issues/22631
+
+---
+
+_@ntBre reviewed on 2026-01-16 20:49_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:92 on 2026-01-16 20:57_
+
+Oh oops, you took care of this, nice work! I should have looked at the code first. We just need to update the fix safety documentation on line 42 of this file to say that the fix can also be unsafe if it would remove comments in the base class list.
+
+---
+
+_@ntBre reviewed on 2026-01-16 20:57_
 
 ---

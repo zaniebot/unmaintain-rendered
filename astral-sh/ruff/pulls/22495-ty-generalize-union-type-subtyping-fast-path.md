@@ -7,13 +7,14 @@ author: AlexWaygood
 labels:
   - performance
   - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: alex/union-fast-path-still-vec
 created_at: 2026-01-10T15:30:40Z
-updated_at: 2026-01-16T19:57:14Z
+updated_at: 2026-01-16T20:37:18Z
 url: https://github.com/astral-sh/ruff/pull/22495
-synced_at: 2026-01-16T20:03:42Z
+synced_at: 2026-01-16T21:04:11Z
 ```
 
 # [ty] Generalize union-type subtyping fast path
@@ -42,7 +43,7 @@ A | B | C |
 
 Unfortunately, `A` and `B` are both complex recursive structural types (*cough* pydantic's huge `TypedDict`s), and checking whether `C` is a subtype of `A` or `B` is a question that takes us a long time to answer. But with our current generalized handling for determining whether `C <: U` for a union type `U`, we _must_ answer these questions before we even ask the question "Is `C` a subtype of `C`?", for which the answer is trivial.
 
-By extending the trivial `if union.elements(db).contains(self)` check early on in `Type::has_relation_to()` to _all_ types (not just type variables), we can achieve a significant speedup over what we have on the `main` branch. Now, in the above example, we quickly iterate over the elements of `U` once, discover that `C` is trivially contained in `U`'s elements, and return `true` for the overall subtyping check without ever having to ask whether `C` is a subtype of `A` and `B`.
+By extending the trivial `if union.elements(db).contains(self)` check early on in `Type::has_relation_to()` to _all_ types (not just type variables), we can achieve a significant speedup over what we have on the `main` branch. Now, in the above example, we quickly iterate over the elements of `U` once, discover that `C` is trivially contained in `U`'s elements, and return `true` for the overall subtyping check without ever having to ask whether `C` is a subtype of `A` or `B`.
 
 Essentially this means that for _any_ type `T`, if we want to check whether `T` is a subtype of a union `U` we _may_ iterate over the elements of the union twice: once for this fast path to check whether the union trivially contains `T` in its elements, and (if it is not trivially contained) once again to do the full (slow) `has_relation_to_impl` check for each element in the union.
 
@@ -75,7 +76,7 @@ https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/
 
 ## Reduction in nondeterminism??
 
-I _may_ be imagining it -- and it's very hard to tell -- but I think this PR _may_ reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I _think_ the level of flakes on this PR has been consistently lower than I've seen on other PRs. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in `Callable` types, I wonder if this _might_ also accidentally be improving the situation there somewhat?
+I _may_ be imagining it -- and it's very hard to tell -- but I think this PR _may_ reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I _think_ the level of flakes on this PR has been consistently lower than I've seen on other ty PRs recently. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in `Callable` types, I wonder if this _might_ also accidentally be improving the situation there somewhat?
 
 It's again a bit of a mystery to me why this would be the case, however. It's also hard to confirm, since there is definitely still some flakiness in the ecosystem report (and there was _some_ flakiness in the report prior to #21551, too!).
 
@@ -342,5 +343,46 @@ _Review requested from @sharkdp by @AlexWaygood on 2026-01-16 19:57_
 ---
 
 _Review requested from @dcreager by @AlexWaygood on 2026-01-16 19:57_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2026-01-16 20:04_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-16 20:09_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 8 | 79 | 2 |
+| `possibly-missing-attribute` | 0 | 10 | 3 |
+| `unresolved-attribute` | 0 | 10 | 3 |
+| `invalid-assignment` | 0 | 6 | 4 |
+| `invalid-await` | 0 | 9 | 0 |
+| `invalid-return-type` | 0 | 3 | 4 |
+| `not-subscriptable` | 0 | 4 | 0 |
+| `no-matching-overload` | 0 | 2 | 0 |
+| `unused-ignore-comment` | 1 | 1 | 0 |
+| `not-iterable` | 0 | 1 | 0 |
+| `redundant-cast` | 0 | 1 | 0 |
+| **Total** | **9** | **126** | **16** |
+
+
+**[Full report with detailed diff](https://5622a012.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://5622a012.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_@carljm approved on 2026-01-16 20:37_
+
+This looks good to me, nice work! I think the behavior change is an improvement, and I don't think we necessarily need to fully explain it. It's intuitive to me that it arises from doing fewer unnecessary `has_relation_to` comparisons in union cases, though I haven't fully traced out the details.
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T16:31:35Z
+updated_at: 2026-01-16T20:00:38Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T16:59:45Z
+synced_at: 2026-01-16T21:04:12Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -420,5 +420,11 @@ do we have a test that demonstrates that a `slots=True` functional dataclass is 
 ---
 
 _@AlexWaygood reviewed on 2026-01-16 16:31_
+
+---
+
+_Comment by @charliermarsh on 2026-01-16 20:00_
+
+Can probably hold off on further review until https://github.com/astral-sh/ruff/pull/22627 is resolved, since it will have implications for this PR.
 
 ---
