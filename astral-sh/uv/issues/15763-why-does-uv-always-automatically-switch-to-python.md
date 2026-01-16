@@ -2,15 +2,15 @@
 number: 15763
 title: Why does uv always automatically switch to Python 3.11?
 type: issue
-state: open
+state: closed
 author: ConanZH429
 labels:
   - question
 assignees: []
 created_at: 2025-09-10T03:34:11Z
-updated_at: 2026-01-16T01:02:26Z
+updated_at: 2026-01-16T04:28:34Z
 url: https://github.com/astral-sh/uv/issues/15763
-synced_at: 2026-01-16T02:04:15Z
+synced_at: 2026-01-16T04:54:00Z
 ```
 
 # Why does uv always automatically switch to Python 3.11?
@@ -127,5 +127,15 @@ It seems someone else [had a similar problem](https://forum.manjaro.org/t/proble
 I like the speed of uv but the above is kind of confusing and seems like a deal breaker.
 
 Thanks for all your effort on uv.
+
+---
+
+_Comment by @zanieb on 2026-01-16 04:28_
+
+@emin63 could you please open a new issue with a reproduction and verbose logs? It's unclear what you're doing that encountered that. If you're using managed Python versions from uv, you'll want to do `uv self upgrade && uv python upgrade --reinstall` to ensure you have the latest version as we've fixed a similar looking bug in our Python distributions.
+
+---
+
+_Closed by @zanieb on 2026-01-16 04:28_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-15T22:36:03Z
-updated_at: 2026-01-15T23:05:57Z
+updated_at: 2026-01-16T04:31:32Z
 url: https://github.com/astral-sh/uv/issues/17504
-synced_at: 2026-01-16T00:03:13Z
+synced_at: 2026-01-16T04:54:00Z
 ```
 
 # editable dependency and name binding
@@ -68,5 +68,11 @@ _Comment by @vsashidh on 2026-01-15 22:53_
 Thanks for your quick response.  I was hoping for a behavior as referenced here : https://docs.python.org/3/reference/import.html#submodules . Are you suggesting I use a list of module names in `__all__` to list out the submodules along with the relative import in `__init__.py` as an alternative approach?
 
 EDIT: I ended up trying the above and synced the project referencing the library and it worked as I wanted to import.
+
+---
+
+_Comment by @zanieb on 2026-01-16 04:31_
+
+Basically once you're interacting with the project as a _library_ from another project then you need to follow the rules for defining a public interface for Pylance (the type checker in your IDE) to allow the import without raising a diagnostic. So yeah you can use `__all__` or use `import foo as foo` as a redundant alias to indicate it's being "exported" for another library to import.
 
 ---
