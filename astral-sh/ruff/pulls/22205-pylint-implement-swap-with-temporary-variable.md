@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
-updated_at: 2026-01-16T17:50:14Z
+updated_at: 2026-01-16T18:30:29Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-16T18:01:01Z
+synced_at: 2026-01-16T19:01:47Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
@@ -822,5 +822,15 @@ and now at least this test case passes, so only the one with later `references` 
 > I think you could make something work in analyze::definitions because each Definition does have (somewhat indirect) access to its suite of statements, but most of the other rules there currently seem to relate to docstrings.
 >
 Thanks for pointing me there! I'll look into this when I find some time in the coming days, for now I have to get a break to free my mind first :)
+
+---
+
+_@ntBre reviewed on 2026-01-16 18:30_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py`:5 on 2026-01-16 18:30_
+
+Sounds good, no rush! And thanks again for your work here!
 
 ---

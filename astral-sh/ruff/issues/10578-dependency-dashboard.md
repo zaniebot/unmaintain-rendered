@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-16T16:34:18Z
+updated_at: 2026-01-16T18:58:13Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-16T16:59:32Z
+synced_at: 2026-01-16T19:01:34Z
 ```
 
 # Dependency Dashboard
@@ -89,6 +89,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
+ - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
  - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
@@ -629,7 +630,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
- - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
+ - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb` → [Updates: `v5.0.2`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`

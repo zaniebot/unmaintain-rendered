@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T17:46:31Z
+updated_at: 2026-01-16T17:59:52Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T18:01:07Z
+synced_at: 2026-01-16T19:01:52Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -262,5 +262,76 @@ That said, I can try to make a `Dockerfile` to give you a fully prepared image l
 _Comment by @mgorny on 2026-01-16 17:46_
 
 Okay, so with `PATH` and `XDG_CONFIG_DIRS` I'm down to 27 failures. `HOME` fixes one test, so I suppose we can just look into figuring out why the existing logic doesn't apply to it. I'll try the patch from #17515 now, and then try to figure out why I still have 26 failures.
+
+---
+
+_Comment by @mgorny on 2026-01-16 17:59_
+
+With #17515, it's down to the one test failing over `HOME`:
+
+```
+---- publish::read_index_credential_env_vars_for_check_url stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+Publishing 1 file to http://127.0.0.1:43805/upload
+Uploading astral_test_private-0.1.0-py3-none-any.whl (1.1KiB)
+error: Failed to publish `dist/astral_test_private-0.1.0-py3-none-any.whl` to http://127.0.0.1:43805/upload
+  Caused by: Failed to send POST request
+  Caused by: Missing credentials for http://127.0.0.1:43805/upload
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+Publishing 1 file to http://127.0.0.1:43805/upload
+error: Failed to query check URL
+  Caused by: Failed to write to the client cache
+  Caused by: failed to create directory `/var/lib/portage/home/.cache/uv/simple-v18/index/cbbfa8f4a87b6c73`: Permission denied (os erro
+r 13)
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: read_index_credential_env_vars_for_check_url-2
+Source: crates/uv/tests/it/publish.rs:481
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1       │-success: true
+    2       │-exit_code: 0
+          1 │+success: false
+          2 │+exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6     6 │ Publishing 1 file to http://[LOCALHOST]/upload
+    7       │-File astral_test_private-0.1.0-py3-none-any.whl already exists, skipping
+          7 │+error: Failed to query check URL
+          8 │+  Caused by: Failed to write to the client cache
+          9 │+  Caused by: failed to create directory `/var/lib/portage/home/.cache/uv/simple-v18/index/cbbfa8f4a87b6c73`: Permission d
+enied (os error 13)
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+
+thread 'publish::read_index_credential_env_vars_for_check_url' (66141) panicked at /var/tmp/portage/dev-python/uv-9999/work/cargo_home/
+gentoo/insta/src/runtime.rs:708:13:
+snapshot assertion for 'read_index_credential_env_vars_for_check_url-2' failed in line 481
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    publish::read_index_credential_env_vars_for_check_url
+
+```
 
 ---

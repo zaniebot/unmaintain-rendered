@@ -2,7 +2,7 @@
 number: 2522
 title: "Incorrect return type for synthesised `__new__` methods of `NamedTuple` classes"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T20:44:43Z
-updated_at: 2026-01-16T00:17:17Z
+updated_at: 2026-01-16T18:56:58Z
 url: https://github.com/astral-sh/ty/issues/2522
-synced_at: 2026-01-16T01:03:50Z
+synced_at: 2026-01-16T19:01:29Z
 ```
 
 # Incorrect return type for synthesised `__new__` methods of `NamedTuple` classes
@@ -69,5 +69,9 @@ _Label `typing semantics` added by @AlexWaygood on 2026-01-15 20:45_
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-16 00:17_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 18:56_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/gentoo-passthrough
 created_at: 2026-01-16T12:43:23Z
-updated_at: 2026-01-16T17:15:30Z
+updated_at: 2026-01-16T17:59:02Z
 url: https://github.com/astral-sh/uv/pull/17515
-synced_at: 2026-01-16T18:01:14Z
+synced_at: 2026-01-16T19:02:00Z
 ```
 
 # Add linux distro env vars to passthrough
@@ -50,5 +50,11 @@ _@zanieb reviewed on 2026-01-16 17:15_
 _Review comment by @zanieb on `crates/uv/tests/it/common/mod.rs`:1020 on 2026-01-16 17:15_
 
 Can we join a child directory as we do below?
+
+---
+
+_@mgorny approved on 2026-01-16 17:59_
+
+LGTM, thanks! It fixes almost all my issues.
 
 ---

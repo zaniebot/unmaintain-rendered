@@ -2,15 +2,15 @@
 number: 17529
 title: Broken links on GitHub Documentation - looking fro
 type: issue
-state: open
+state: closed
 author: michellepace
 labels:
   - question
 assignees: []
 created_at: 2026-01-16T16:46:20Z
-updated_at: 2026-01-16T17:29:18Z
+updated_at: 2026-01-16T18:19:11Z
 url: https://github.com/astral-sh/uv/issues/17529
-synced_at: 2026-01-16T18:01:07Z
+synced_at: 2026-01-16T19:01:52Z
 ```
 
 # Broken links on GitHub Documentation - looking fro
@@ -81,5 +81,9 @@ You should scrape from https://docs.astral.sh/uv/llms.txt instead
 _Comment by @michellepace on 2026-01-16 17:29_
 
 Thank you!!!
+
+---
+
+_Closed by @zanieb on 2026-01-16 18:19_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-16T17:15:27Z
+updated_at: 2026-01-16T18:50:58Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-16T18:01:04Z
+synced_at: 2026-01-16T19:01:50Z
 ```
 
 # Dependency Dashboard
@@ -25,14 +25,11 @@ This issue lists Renovate updates and detected dependencies. Read the [Dependenc
 These dependencies have not received updates for an extended period and may be unmaintained:
 
 <details>
-<summary>View abandoned dependencies (5)</summary>
+<summary>View abandoned dependencies (2)</summary>
 
 | Datasource | Name | Last Updated |
 |------------|------|-------------|
-| github-actions | `SebRollen/toml-action` | `2024-01-27` |
 | github-actions | `addnab/docker-run-action` | `2021-03-17` |
-| github-actions | `ludeeus/action-shellcheck` | `2023-01-29` |
-| pre-commit | `pre-commit/mirrors-prettier` | `2023-12-21` |
 
 </details>
 
@@ -117,7 +114,7 @@ The following updates await pending status checks. To force their creation now, 
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 98f3aa9](../pull/17302)
+ - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 6865550](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
@@ -638,7 +635,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/build-dev-binaries.yml (33)</summary>
+<details><summary>.github/workflows/build-dev-binaries.yml (32)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
@@ -667,7 +664,6 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `SebRollen/toml-action v1.2.0@b1b3628f55fc3a28208d4203ada8b737e9687876`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -818,14 +814,13 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/check-lint.yml (23)</summary>
+<details><summary>.github/workflows/check-lint.yml (22)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `ludeeus/action-shellcheck 2.0.0@00cae500b08a931fb5698e11e79bfbd38e612a38`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -1121,7 +1116,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `abravalheri/validate-pyproject v0.24.1`
  - `crate-ci/typos v1.37.2` → [Updates: `v1.42.0`]
- - `pre-commit/mirrors-prettier v3.1.0`
+ - `prettier 3`
  - `astral-sh/ruff-pre-commit v0.13.3` → [Updates: `v0.14.11`]
 
 </details>
@@ -1129,14 +1124,8 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </blockquote>
 </details>
 
-<details><summary>regex (4)</summary>
+<details><summary>regex (3)</summary>
 <blockquote>
-
-<details><summary>.github/workflows/check-lint.yml (1)</summary>
-
- - `koalaman/shellcheck v0.11.0`
-
-</details>
 
 <details><summary>Cargo.toml (1)</summary>
 

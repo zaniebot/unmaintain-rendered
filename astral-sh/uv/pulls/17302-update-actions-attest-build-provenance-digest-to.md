@@ -1,6 +1,6 @@
 ```yaml
 number: 17302
-title: Update actions/attest-build-provenance digest to 98f3aa9
+title: Update actions/attest-build-provenance digest to 6865550
 type: pull_request
 state: open
 author: renovate
@@ -10,12 +10,12 @@ assignees: []
 base: main
 head: renovate/actions-attest-build-provenance-digest
 created_at: 2026-01-02T17:35:54Z
-updated_at: 2026-01-09T21:30:18Z
+updated_at: 2026-01-16T18:20:41Z
 url: https://github.com/astral-sh/uv/pull/17302
-synced_at: 2026-01-12T16:12:42Z
+synced_at: 2026-01-16T19:02:00Z
 ```
 
-# Update actions/attest-build-provenance digest to 98f3aa9
+# Update actions/attest-build-provenance digest to 6865550
 
 ---
 
@@ -25,7 +25,7 @@ This PR contains the following updates:
 
 | Package | Type | Update | Change |
 |---|---|---|---|
-| actions/attest-build-provenance | action | digest | `00014ed` → `98f3aa9` |
+| actions/attest-build-provenance | action | digest | `00014ed` → `6865550` |
 
 ---
 
@@ -82,5 +82,9 @@ _Comment by @woodruffw on 2026-01-09 21:30_
 That would explain it, although I thought it would still honor tags only because of our presets. That seems to work for the other action references in `ci.yml` like https://github.com/astral-sh/uv/pull/13905.
 
 Maybe we should just exclude this workflow entirely? I could look again at making a custom Renovate matcher for the dist config.
+
+---
+
+_Renamed from "Update actions/attest-build-provenance digest to 98f3aa9" to "Update actions/attest-build-provenance digest to 6865550" by @renovate[bot] on 2026-01-16 18:20_
 
 ---

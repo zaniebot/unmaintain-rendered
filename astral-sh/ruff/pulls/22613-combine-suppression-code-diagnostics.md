@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-grouping
 created_at: 2026-01-16T00:34:42Z
-updated_at: 2026-01-16T17:22:51Z
+updated_at: 2026-01-16T18:50:53Z
 url: https://github.com/astral-sh/ruff/pull/22613
-synced_at: 2026-01-16T18:01:01Z
+synced_at: 2026-01-16T19:01:47Z
 ```
 
 # Combine suppression code diagnostics
@@ -207,7 +207,7 @@ This is probably better suited for a follow-up, and I thought I saw some previou
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:448 on 2026-01-16 16:51_
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:427 on 2026-01-16 16:51_
 
 This might be getting too clever, but I think we could go ahead and do the `join` here. The empty string will also work for the `is_empty` check, and then we can avoid allocating a separate `Vec` first.
 
@@ -241,5 +241,15 @@ I've updated the highlighting logic so that:
 - otherwise, it highlights the entire suppression
 
 I think this matches noqa now.
+
+---
+
+_@amyreese reviewed on 2026-01-16 18:50_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:321 on 2026-01-16 18:50_
+
+I didn't like this either, but since it would also affect the noqa system I'd prefer to put that change in a different PR
 
 ---
