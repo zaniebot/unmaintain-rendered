@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-15T20:44:25Z
+updated_at: 2026-01-16T00:58:20Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-15T21:12:57Z
+synced_at: 2026-01-16T02:04:10Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -228,7 +228,7 @@ Meanwhile, this is _quite_ a bit of new code, and the manual parsing of argument
 
 Do any other type checkers have special-cased support for this function? We do have to draw the line _somewhere_.
 
-I think I'd feel differently if we could share more of the call-expression-parsing logic with what we've already added for namedtuples (which definitely _was_ necessary), but the schema `make_dataclass()` expects is _just_ different enough that sharing more of the code seeems like it could be pretty difficult?
+I think I'd feel differently if we could share more of the call-expression-parsing logic with what we've already added for namedtuples (which definitely _was_ necessary), but the schema `make_dataclass()` expects is _just_ different enough that sharing more of the code seems like it could be pretty difficult?
 
 Another -- much simpler -- way to avoid false positives with the objects returned by this function would be to just special-case the return type so that we infer `type[Unknown]` rather than `type` -- that wouldn't involve any custom call-expression parsing.
 
@@ -281,5 +281,13 @@ It seems unfortunate that we have to repeat all those methods for every dynamic 
 ---
 
 _@MichaReiser reviewed on 2026-01-15 14:13_
+
+---
+
+_Comment by @carljm on 2026-01-16 00:53_
+
+I think it's pretty natural to support this (along with similar forms for namedtuple and TypedDict) and it seems pretty easy to do. I'm not really concerned by the argument parsing. It's a chunk of code, sure, but it's not a chunk of code that interacts with other things in a way that multiplies complexity; it's pretty much standalone, we'll only ever touch it if literally `make_dataclass` support is broken, and then we'll know right where to look.
+
+The fact that other type checkers don't support it means I wouldn't have considered it a priority for stable -- but if it's done and working, I don't see any significant downside to merging it.
 
 ---

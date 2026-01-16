@@ -11,9 +11,9 @@ draft: true
 base: charlie/functional-dict
 head: charlie/functional-typed
 created_at: 2026-01-15T20:31:56Z
-updated_at: 2026-01-15T21:52:46Z
+updated_at: 2026-01-16T01:47:08Z
 url: https://github.com/astral-sh/ruff/pull/22611
-synced_at: 2026-01-15T23:03:01Z
+synced_at: 2026-01-16T02:04:10Z
 ```
 
 # [ty] Add support for functional `TypedDict`
@@ -36,18 +36,18 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 20:33_
 
 ## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
 
-The percentage of diagnostics emitted that were expected errors decreased from 69.52% to 69.22%. The percentage of expected errors that received a diagnostic increased from 58.44% to 58.79%.
+The percentage of diagnostics emitted that were expected errors decreased from 69.52% to 69.51%. The percentage of expected errors that received a diagnostic increased from 58.44% to 58.61%.
 
 ### Summary
 
 | Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
-| True Positives  | 675 | 679 | +4 | ⏫ (✅) |
-| False Positives | 296 | 302 | +6 | ⏫ (❌) |
-| False Negatives | 480 | 476 | -4 | ⏬ (✅) |
-| Total Diagnostics | 971 | 981 | 10 | ⏫ |
-| Precision | 69.52% | 69.22% | -0.30% | ⏬ (❌) |
-| Recall | 58.44% | 58.79% | +0.35% | ⏫ (✅) |
+| True Positives  | 675 | 677 | +2 | ⏫ (✅) |
+| False Positives | 296 | 297 | +1 | ⏫ (❌) |
+| False Negatives | 480 | 478 | -2 | ⏬ (✅) |
+| Total Diagnostics | 971 | 974 | 3 | ⏫ |
+| Precision | 69.52% | 69.51% | -0.01% | ⏬ (❌) |
+| Recall | 58.44% | 58.61% | +0.17% | ⏫ (✅) |
 
 
 
@@ -60,7 +60,6 @@ The percentage of diagnostics emitted that were expected errors decreased from 6
 | [typeddicts_alt_syntax.py:35:72](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_alt_syntax.py#L35) | unknown-argument | unknown-argument: Argument `other` does not match any known parameter of `TypedDict` |
 | [typeddicts_alt_syntax.py:45:43](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_alt_syntax.py#L45) | invalid-argument-type | invalid-argument-type: Invalid argument to key "year" with declared type `int` on TypedDict `Movie2`: value of type `Literal[""]` |
 | [typeddicts_extra_items.py:22:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_extra_items.py#L22) | invalid-key | invalid-key: Unknown key "year" for TypedDict `MovieFunctional`: Unknown key "year" |
-| [typeddicts_type_consistency.py:107:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L107) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
 
 
 </details>
@@ -72,11 +71,17 @@ The percentage of diagnostics emitted that were expected errors decreased from 6
 | Location | Name | Message |
 |----------|------|---------|
 | [typeddicts_extra_items.py:21:47](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_extra_items.py#L21) | invalid-key | invalid-key: Unknown key "novel_adaptation" for TypedDict `MovieFunctional`: Unknown key "novel_adaptation" |
-| [typeddicts_type_consistency.py:103:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L103) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:105:19](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L105) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:91:14](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L91) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:92:13](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L92) | no-matching-overload | no-matching-overload: No overload of bound method `get` matches arguments |
-| [typeddicts_type_consistency.py:97:21](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L97) | invalid-argument-type | invalid-argument-type: Argument to bound method `get` is incorrect: Argument type `UserType2` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self` |
+
+
+</details>
+
+### True positives removed
+
+<details>
+
+| Location | Name | Message |
+|----------|------|---------|
+| [typeddicts_type_consistency.py:101:14](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/typeddicts_type_consistency.py#L101) | invalid-assignment | invalid-assignment: Object of type `Unknown | None` is not assignable to `str` |
 
 
 </details>
@@ -106,14 +111,6 @@ isort (https://github.com/pycqa/isort)
 - isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `@Todo | None | list[Unknown]`
 + isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Any | None | list[Unknown]`
 
-alerta (https://github.com/alerta/alerta)
-+ alerta/utils/logging.py:48:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:57:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:60:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
-+ alerta/utils/logging.py:61:25: error[invalid-key] Unknown key "facility" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "facility"
-- Found 620 diagnostics
-+ Found 624 diagnostics
-
 graphql-core (https://github.com/graphql-python/graphql-core)
 - tests/utilities/test_build_client_schema.py:90:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - tests/utilities/test_build_client_schema.py:498:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -124,29 +121,20 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - Found 641 diagnostics
 + Found 635 diagnostics
 
-porcupine (https://github.com/Akuli/porcupine)
-+ porcupine/plugins/aboutdialog.py:55:31: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["x"]` on object of type `_PlaceInfo`
-+ porcupine/plugins/aboutdialog.py:55:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Misc`
-+ porcupine/plugins/aboutdialog.py:55:55: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["y"]` on object of type `_PlaceInfo`
-+ porcupine/plugins/aboutdialog.py:55:55: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Misc`
-+ porcupine/plugins/aboutdialog.py:68:20: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["y"]` on object of type `_PlaceInfo`
-+ porcupine/plugins/aboutdialog.py:68:20: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Misc`
-+ porcupine/plugins/aboutdialog.py:99:21: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["x"]` on object of type `_PlaceInfo`
-+ porcupine/plugins/aboutdialog.py:99:21: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Misc`
-+ porcupine/plugins/aboutdialog.py:100:21: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["y"]` on object of type `_PlaceInfo`
-+ porcupine/plugins/aboutdialog.py:100:21: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | Misc`
-+ porcupine/settings.py:641:18: error[invalid-argument-type] Argument to bound method `grid_configure` is incorrect: Expected `int`, found `Misc`
-+ porcupine/settings.py:641:22: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["row"]` on object of type `_GridInfo`
-+ porcupine/settings.py:643:23: error[invalid-argument-type] Argument to bound method `grid_configure` is incorrect: Expected `int`, found `Misc`
-+ porcupine/settings.py:643:27: error[invalid-argument-type] Method `__getitem__` of type `(key: Literal["in"], /) -> Misc` cannot be called with key of type `Literal["row"]` on object of type `_GridInfo`
-- Found 18 diagnostics
-+ Found 32 diagnostics
+alerta (https://github.com/alerta/alerta)
++ alerta/utils/logging.py:48:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:57:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:60:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:61:25: error[invalid-key] Unknown key "facility" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "facility"
+- Found 620 diagnostics
++ Found 624 diagnostics
 
 ppb-vector (https://github.com/ppb/ppb-vector)
 - ppb_vector/__init__.py:567:16: error[invalid-return-type] Return type does not match returned value: expected `Vector`, found `int | float`
 - ppb_vector/__init__.py:588:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[Vector, Vector]`, found `tuple[int | float, Vector]`
 + ppb_vector/__init__.py:188:45: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["x"]` and `(Sequence[SupportsFloat] & Top[Mapping[Unknown, object]] & ~Vector) | VectorLikeDict`
 + ppb_vector/__init__.py:188:62: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["y"]` and `(Sequence[SupportsFloat] & Top[Mapping[Unknown, object]] & ~Vector) | VectorLikeDict`
++ ppb_vector/__init__.py:188:83: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Sequence[SupportsFloat] & Top[Mapping[Unknown, object]] & ~Vector) | VectorLikeDict`
 - tests/test_length.py:41:20: error[unresolved-attribute] Object of type `int | float` has no attribute `length`
 - tests/test_project.py:50:8: error[unresolved-attribute] Object of type `int | float` has no attribute `isclose`
 - tests/test_scalar_multiplication.py:10:28: error[unresolved-attribute] Object of type `int | float` has no attribute `x`
@@ -155,30 +143,19 @@ ppb-vector (https://github.com/ppb/ppb-vector)
 - tests/test_scalar_multiplication.py:24:12: error[unresolved-attribute] Object of type `int | float` has no attribute `isclose`
 - tests/test_scalar_multiplication.py:32:20: error[unresolved-attribute] Object of type `int | float` has no attribute `length`
 - Found 21 diagnostics
-+ Found 14 diagnostics
-
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ Found 15 diagnostics
 
 dragonchain (https://github.com/dragonchain/dragonchain)
-+ dragonchain/lib/database/redisearch.py:122:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + dragonchain/lib/database/redisearch_utest.py:71:55: error[invalid-argument-type] Argument to function `create_transaction_index` is incorrect: Expected `Iterable[custom_index] | None`, found `list[dict[Unknown | str, Unknown | str]]`
 + dragonchain/lib/database/redisearch_utest.py:71:56: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
 - dragonchain/lib/dto/api_key_model_utest.py:265:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["transactions"]` on object of type `str`
 - dragonchain/lib/dto/api_key_model_utest.py:265:9: error[not-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
 + dragonchain/lib/dto/api_key_model.py:175:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `permissions_doc`, found `permissions_doc | dict[Unknown | str, Unknown | str | bool | dict[Unknown, Unknown]]`
 + dragonchain/lib/dto/api_key_model.py:209:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `permissions_doc`, found `permissions_doc | dict[Unknown | str, Unknown | str | bool | dict[Unknown, Unknown]]`
-+ dragonchain/lib/dto/api_key_model.py:250:12: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `permissions_doc` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ dragonchain/lib/dto/api_key_model.py:254:73: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `permissions_doc` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + dragonchain/transaction_processor/level_3_actions_utest.py:247:86: error[invalid-argument-type] Argument to function `verify_blocks` is incorrect: Expected `L1Headers`, found `dict[Unknown | str, Unknown | str]`
 + dragonchain/transaction_processor/level_4_actions_utest.py:73:63: error[invalid-argument-type] Argument to function `verify_blocks` is incorrect: Expected `L1Headers`, found `dict[Unknown | str, Unknown | int | str]`
 + dragonchain/transaction_processor/level_4_actions_utest.py:73:73: error[invalid-argument-type] Invalid argument to key "dc_id" with declared type `str` on TypedDict `L1Headers`: value of type `Literal[123]`
 + dragonchain/transaction_processor/level_4_actions_utest.py:73:90: error[invalid-argument-type] Invalid argument to key "block_id" with declared type `str` on TypedDict `L1Headers`: value of type `Literal[124]`
-+ dragonchain/webserver/helpers.py:208:22: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ dragonchain/webserver/helpers.py:210:49: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ dragonchain/webserver/helpers.py:212:48: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ dragonchain/webserver/helpers.py:214:51: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `custom_index` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + dragonchain/webserver/helpers_utest.py:169:47: error[invalid-argument-type] Argument to function `verify_custom_indexes_options` is incorrect: Expected `Iterable[custom_index]`, found `list[dict[Unknown | str, Unknown | str]]`
 + dragonchain/webserver/helpers_utest.py:169:48: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
 + dragonchain/webserver/helpers_utest.py:172:47: error[invalid-argument-type] Argument to function `verify_custom_indexes_options` is incorrect: Expected `Iterable[custom_index]`, found `list[dict[Unknown | str, Unknown | str]]`
@@ -196,36 +173,13 @@ dragonchain (https://github.com/dragonchain/dragonchain)
 + dragonchain/webserver/lib/api_keys_utest.py:91:59: error[missing-typed-dict-key] Missing required key 'version' in TypedDict `permissions_doc` constructor
 + dragonchain/webserver/lib/api_keys_utest.py:91:60: error[invalid-key] Unknown key "definitely" for TypedDict `permissions_doc`: Unknown key "definitely"
 - Found 436 diagnostics
-+ Found 465 diagnostics
++ Found 458 diagnostics
 
 operator (https://github.com/canonical/operator)
 + ops/_private/harness.py:980:9: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown` and value of type `dict[Unknown | str, Unknown | str | list[Unknown]]` on object of type `dict[int, _RelationEntities]`
 + ops/_private/harness.py:1640:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[str | None, int | None]` and value of type `dict[Unknown | str, Unknown | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]]]] | list[str]]` on object of type `dict[tuple[str | None, int | None], _NetworkDict]`
-+ ops/_private/harness.py:2275:41: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/_private/harness.py:2282:18: error[no-matching-overload] No overload of bound method `get` matches arguments
 + ops/_private/harness.py:3351:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | LayerDict | None`, found `str | (LayerDict & Top[dict[Unknown, Unknown]]) | (Layer & Top[dict[Unknown, Unknown]])`
-+ ops/charm.py:2040:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2040:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2044:22: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_RelationMetaDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/charm.py:2052:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2088:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2089:23: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2090:26: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2091:29: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_StorageMetaDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/charm.py:2092:25: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_StorageMetaDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + ops/charm.py:2094:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["multiple"]` and `_StorageMetaDict`
-+ ops/charm.py:2103:27: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2127:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2128:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2328:23: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/charm.py:2329:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/hookcmds/_types.py:86:59: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `BindAddressDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/hookcmds/_types.py:88:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/hookcmds/_types.py:89:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/hookcmds/_types.py:363:64: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/model.py:1126:31: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/model.py:1134:24: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/model.py:1138:23: error[no-matching-overload] No overload of bound method `get` matches arguments
 - ops/model.py:3730:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + ops/model.py:3729:16: error[invalid-return-type] Return type does not match returned value: expected `_StatusDict`, found `dict[Unknown | str, Unknown | str]`
 + ops/model.py:3843:16: error[invalid-return-type] Return type does not match returned value: expected `_NetworkDict`, found `dict[Unknown | str, Unknown | list[dict[Unknown | str, Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown]] | Unknown] | list[str]]`
@@ -233,87 +187,21 @@ operator (https://github.com/canonical/operator)
 - ops/pebble.py:630:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - ops/pebble.py:720:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - ops/pebble.py:789:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ ops/pebble.py:631:20: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_WarningDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:716:17: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_TaskDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:721:20: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_TaskDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:724:18: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_TaskDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:784:47: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_ChangeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:786:17: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_ChangeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:790:20: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_ChangeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:793:18: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_ChangeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:829:63: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:832:57: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:835:63: error[no-matching-overload] No overload of bound method `get` matches arguments
 + ops/pebble.py:884:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
-+ ops/pebble.py:917:24: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:918:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:920:63: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:922:68: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:924:63: error[no-matching-overload] No overload of bound method `get` matches arguments
 + ops/pebble.py:946:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
 + ops/pebble.py:963:28: error[invalid-assignment] Object of type `(ServiceDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `ServiceDict`
-+ ops/pebble.py:964:24: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:965:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:966:24: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:967:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:968:24: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:969:27: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:970:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:971:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:972:33: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:973:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:974:24: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ServiceDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:975:22: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:976:25: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ServiceDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:977:28: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:978:27: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:979:27: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:980:38: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:981:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:982:31: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ServiceDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:983:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:984:27: error[no-matching-overload] No overload of bound method `get` matches arguments
 + ops/pebble.py:1033:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
 + ops/pebble.py:1101:26: error[invalid-assignment] Object of type `(CheckDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `CheckDict`
-+ ops/pebble.py:1102:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1104:50: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1106:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1108:37: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1109:35: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1110:36: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1111:38: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `CheckDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1113:16: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `CheckDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1118:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `CheckDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1123:17: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `CheckDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + ops/pebble.py:1148:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
-+ ops/pebble.py:1165:28: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `ExecDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1169:27: error[no-matching-overload] No overload of bound method `get` matches arguments
++ ops/pebble.py:1165:28: error[unresolved-attribute] Object of type `ExecDict` has no attribute `items`
 + ops/pebble.py:1173:27: error[invalid-assignment] Cannot assign value of type `Unknown & ~AlwaysFalsy` to key of type `Unknown & ~Literal["environment"]` on TypedDict `ExecDict`
-+ ops/pebble.py:1183:28: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `HttpDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1187:27: error[no-matching-overload] No overload of bound method `get` matches arguments
++ ops/pebble.py:1183:28: error[unresolved-attribute] Object of type `HttpDict` has no attribute `items`
 + ops/pebble.py:1191:27: error[invalid-assignment] Cannot assign value of type `Unknown & ~AlwaysFalsy` to key of type `Unknown & ~Literal["headers"]` on TypedDict `HttpDict`
-+ ops/pebble.py:1201:28: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `TcpDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
++ ops/pebble.py:1201:28: error[unresolved-attribute] Object of type `TcpDict` has no attribute `items`
 + ops/pebble.py:1262:30: error[invalid-assignment] Object of type `(LogTargetDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `LogTargetDict`
-+ ops/pebble.py:1263:30: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1264:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1265:25: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1266:41: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1267:18: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `LogTargetDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + ops/pebble.py:1286:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
-+ ops/pebble.py:1391:18: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_FileInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1394:21: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_FileInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1395:18: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_FileInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1396:22: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_FileInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1397:19: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_FileInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1503:32: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1505:21: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_CheckInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + ops/pebble.py:1510:49: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["change-id"]` and `_CheckInfoDict`
 + ops/pebble.py:1511:30: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["startup"]` and `_CheckInfoDict`
-+ ops/pebble.py:1518:34: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1520:23: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_CheckInfoDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1521:22: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ ops/pebble.py:1677:21: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_NoticeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ ops/pebble.py:1684:23: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_NoticeDict` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + ops/pebble.py:1686:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["repeat-after"]` and `_NoticeDict`
 + ops/pebble.py:1689:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["expire-after"]` and `_NoticeDict`
 + ops/pebble.py:2096:56: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["local"]` and `IdentityDict`
@@ -322,64 +210,37 @@ operator (https://github.com/canonical/operator)
 + ops/pebble.py:2102:32: error[missing-typed-dict-key] Missing required key 'local' in TypedDict `IdentityDict` constructor
 + ops/pebble.py:2103:23: error[invalid-argument-type] Invalid argument to key "access" with declared type `Literal["untrusted", "metrics", "read", "admin"]` on TypedDict `IdentityDict`: value of type `str`
 + ops/pebble.py:2556:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | LayerDict | None`, found `(LayerDict & Top[dict[Unknown, Unknown]]) | (Layer & Top[dict[Unknown, Unknown]])`
-+ ops/pebble.py:2666:17: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `_Item` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 - Found 132 diagnostics
-+ Found 248 diagnostics
++ Found 158 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
 
 pyproject-metadata (https://github.com/pypa/pyproject-metadata)
 - pyproject_metadata/__init__.py:397:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pyproject_metadata/pyproject.py:171:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + pyproject_metadata/__init__.py:398:12: error[unsupported-operator] Operator `not in` is not supported between objects of type `Literal["project"]` and `PyProjectTable`
-+ pyproject_metadata/__init__.py:427:20: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/__init__.py:438:23: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/__init__.py:462:35: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/__init__.py:469:31: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/__init__.py:500:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:503:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:505:44: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:508:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:512:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:516:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:520:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:524:21: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/__init__.py:527:21: error[no-matching-overload] No overload of bound method `get` matches arguments
 + pyproject_metadata/project_table.py:142:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
 + pyproject_metadata/project_table.py:144:17: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
 + pyproject_metadata/project_table.py:146:24: error[missing-argument] No argument provided for required parameter `name`
 + pyproject_metadata/project_table.py:147:17: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
 + pyproject_metadata/project_table.py:156:39: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
-+ pyproject_metadata/pyproject.py:164:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/pyproject.py:215:25: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + pyproject_metadata/pyproject.py:230:12: error[unsupported-operator] Operator `not in` is not supported between objects of type `Literal["readme"]` and `ProjectTable`
-+ pyproject_metadata/pyproject.py:305:35: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/pyproject.py:328:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `ProjectTable` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ pyproject_metadata/pyproject.py:379:15: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ pyproject_metadata/pyproject.py:422:19: error[no-matching-overload] No overload of bound method `get` matches arguments
 - Found 4 diagnostics
-+ Found 29 diagnostics
++ Found 9 diagnostics
 
 meson (https://github.com/mesonbuild/meson)
 + mesonbuild/cargo/interpreter.py:485:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["workspace"]` and `Manifest`
 + mesonbuild/cargo/interpreter.py:487:14: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["package"]` and `Manifest`
++ mesonbuild/cargo/manifest.py:310:22: error[no-matching-overload] No overload of function `_depv_to_dep` matches arguments
++ mesonbuild/cargo/manifest.py:568:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["package"]` and `Manifest`
 - mesonbuild/cargo/manifest.py:304:16: error[missing-typed-dict-key] Missing required key 'workspace' in TypedDict `FromWorkspace` constructor
 - mesonbuild/cargo/manifest.py:304:17: error[invalid-key] Unknown key "version" for TypedDict `FromWorkspace`: Unknown key "version"
-+ mesonbuild/cargo/manifest.py:310:22: error[no-matching-overload] No overload of function `_depv_to_dep` matches arguments
-+ mesonbuild/cargo/manifest.py:354:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `LibTarget`
-+ mesonbuild/cargo/manifest.py:370:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
-+ mesonbuild/cargo/manifest.py:371:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:383:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
-+ mesonbuild/cargo/manifest.py:384:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:398:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
-+ mesonbuild/cargo/manifest.py:399:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:413:16: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["bench"], /) -> bool, (key: Literal["crate-type"], /) -> list[Literal["bin", "lib", "dylib", "staticlib", "cdylib", "rlib", "proc-macro"]], (key: Literal["doc"], /) -> bool, (key: Literal["doctest"], /) -> bool, (key: Literal["edition"], /) -> Literal["2015", "2018", "2021"], (key: Literal["harness"], /) -> bool, (key: Literal["path"], /) -> str, (key: Literal["plugin"], /) -> bool, (key: Literal["proc-macro"], /) -> bool, (key: Literal["required-features"], /) -> list[str], (key: Literal["test"], /) -> bool]` cannot be called with key of type `Literal["name"]` on object of type `BuildTarget`
-+ mesonbuild/cargo/manifest.py:414:34: error[invalid-argument-type] Argument to function `_raw_to_dataclass` is incorrect: Expected `Mapping[str, object]`, found `BuildTarget`
-+ mesonbuild/cargo/manifest.py:445:33: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ mesonbuild/cargo/manifest.py:448:45: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ mesonbuild/cargo/manifest.py:568:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["package"]` and `Manifest`
-+ mesonbuild/optinterpreter.py:202:38: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `FuncOptionArgs` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ mesonbuild/scripts/depaccumulate.py:61:18: error[no-matching-overload] No overload of bound method `get` matches arguments
+- mesonbuild/cargo/manifest.py:516:40: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `LibTarget`, found `dict[Unknown, Unknown]`
++ mesonbuild/optinterpreter.py:202:38: error[unresolved-attribute] Object of type `FuncOptionArgs` has no attribute `items`
 + mesonbuild/scripts/depaccumulate.py:81:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["provides"]` and `Rule`
 + mesonbuild/scripts/depaccumulate.py:83:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["requires"]` and `Rule`
-+ mesonbuild/scripts/depaccumulate.py:85:27: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `Require` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
 + mesonbuild/scripts/depscan.py:186:25: error[unresolved-attribute] Object of type `Require` has no attribute `update`
 - unittests/cargotests.py:377:68: error[invalid-key] Unknown key "optional" for TypedDict `FromWorkspace`: Unknown key "optional"
 - unittests/cargotests.py:385:62: error[invalid-key] Unknown key "features" for TypedDict `FromWorkspace`: Unknown key "features"
@@ -402,31 +263,82 @@ meson (https://github.com/mesonbuild/meson)
 + unittests/cargotests.py:547:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
 + unittests/cargotests.py:567:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
 - Found 2152 diagnostics
-+ Found 2187 diagnostics
++ Found 2173 diagnostics
 
-archinstall (https://github.com/archlinux/archinstall)
-+ archinstall/lib/models/users.py:192:15: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `UserSerialization` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ archinstall/lib/models/users.py:194:13: error[no-matching-overload] No overload of bound method `get` matches arguments
-+ archinstall/lib/models/users.py:195:16: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `UserSerialization` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ archinstall/lib/models/users.py:196:19: error[invalid-argument-type] Argument to bound method `get` is incorrect: Argument type `UserSerialization` does not satisfy upper bound `dict[_KT@dict, _VT@dict]` of type variable `Self`
-+ archinstall/lib/models/users.py:210:10: error[no-matching-overload] No overload of bound method `get` matches arguments
-- Found 67 diagnostics
-+ Found 72 diagnostics
+cwltool (https://github.com/common-workflow-language/cwltool)
++ cwltool/job.py:193:12: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["listing"]` and `DirectoryType`
++ cwltool/job.py:359:16: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["listing"]` and `DirectoryType`
+- Found 252 diagnostics
++ Found 254 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ src/hydra_zen/wrapper/_implementations.py:999:5: error[unsupported-operator] Operator `-` is not supported between objects of type `frozenset[Literal["__kw", "group", "name", "package", "provider", "to_config"]]` and `set[Unknown | str]`
++ src/hydra_zen/wrapper/_implementations.py:1438:41: error[unresolved-attribute] Object of type `_StoreCallSig` has no attribute `copy`
+- src/hydra_zen/wrapper/_implementations.py:1572:89: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/hydra_zen/wrapper/_implementations.py:1565:28: error[unresolved-attribute] Object of type `_StoreCallSig` has no attribute `copy`
+- Found 521 diagnostics
++ Found 523 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_vendor/pyproject_metadata/__init__.py:337:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/scikit_build_core/_vendor/pyproject_metadata/pyproject.py:169:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/scikit_build_core/_vendor/pyproject_metadata/__init__.py:338:12: error[unsupported-operator] Operator `not in` is not supported between objects of type `Literal["project"]` and `PyProjectTable`
++ src/scikit_build_core/_vendor/pyproject_metadata/project_table.py:134:9: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/scikit_build_core/_vendor/pyproject_metadata/project_table.py:136:17: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/scikit_build_core/_vendor/pyproject_metadata/project_table.py:138:24: error[missing-argument] No argument provided for required parameter `name`
++ src/scikit_build_core/_vendor/pyproject_metadata/project_table.py:139:17: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/scikit_build_core/_vendor/pyproject_metadata/project_table.py:148:39: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ src/scikit_build_core/_vendor/pyproject_metadata/pyproject.py:228:12: error[unsupported-operator] Operator `not in` is not supported between objects of type `Literal["readme"]` and `ProjectTable`
+- Found 46 diagnostics
++ Found 51 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
 + src/prefect/cli/deployment.py:392:48: error[invalid-assignment] Invalid assignment to key "anchor_date" with declared type `str` on TypedDict `IntervalScheduleOptions`: value of type `datetime`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] 
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+- Found 5410 diagnostics
++ Found 5406 diagnostics
 
-... (truncated 75 lines) ...
+static-frame (https://github.com/static-frame/static-frame)
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | ndarray[Never, Never] | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- Found 1821 diagnostics
++ Found 1823 diagnostics
+
+
 ```
 
 </details>
@@ -445,5 +357,23 @@ _Label `ty` added by @AlexWaygood on 2026-01-15 20:36_
 _Comment by @charliermarsh on 2026-01-15 20:48_
 
 (I just wanted to see conformance, etc.)
+
+---
+
+_Comment by @charliermarsh on 2026-01-16 01:30_
+
+At present, I believe the conformance changes are correct.
+
+- `typeddicts_alt_syntax.py:35:72` is now caught.
+- `typeddicts_alt_syntax.py:45:43` is now caught.
+- `typeddicts_extra_items.py:22:47` is now caught.
+- `typeddicts_extra_items.py:21:47` is a false positive because we don't support `extra_items` (but matches our class-based `TypedDict` behavior).
+- `typeddicts_type_consistency.py:101:14` is flagged as a true positive removed, but the test suite says either option is acceptable.
+
+---
+
+_Comment by @charliermarsh on 2026-01-16 01:46_
+
+I believe the Alerta diagnostics are "correct" in that they're also emitted by other type checkers: `"()"` is not accepted to `_FormatterConfigurationTypedDict` (https://mypy-play.net/?mypy=latest&python=3.12&gist=efa01b423c6f56db2042f3dbce0d01df).
 
 ---

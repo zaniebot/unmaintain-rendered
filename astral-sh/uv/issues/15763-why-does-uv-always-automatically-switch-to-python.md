@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-09-10T03:34:11Z
-updated_at: 2025-10-30T01:21:25Z
+updated_at: 2026-01-16T01:02:26Z
 url: https://github.com/astral-sh/uv/issues/15763
-synced_at: 2026-01-12T16:02:16Z
+synced_at: 2026-01-16T02:04:15Z
 ```
 
 # Why does uv always automatically switch to Python 3.11?
@@ -110,5 +110,22 @@ I've explicitly set .python-verison to be 3.12. For `UV_PYTHON`, I will try to r
 _Comment by @ConanZH429 on 2025-10-30 01:21_
 
 In addition to these steps @Yuli-yx , I also completely uninstalled UV and reinstalled it twice before resolving the issue.
+
+---
+
+_Comment by @emin63 on 2026-01-16 01:02_
+
+Is there a way to explicitly disable/prevent uv from messing with the currently installed python version? I had an application which uses tkinter (requiring `apt install python3-tk`). When I try to use uv in that project it silently replaces my desired python with something else and then I get the following error:
+```
+[xcb] Unknown sequence number while appending request
+[xcb] You called XInitThreads, this is not your fault
+[xcb] Aborting, sorry about that.
+python3: ../../src/xcb_io.c:157: append_pending_request: Assertion `!xcb_xlib_unknown_seq_number' failed.
+```
+It seems someone else [had a similar problem](https://forum.manjaro.org/t/problem-using-uv-with-a-tkinter-application/181724)
+
+I like the speed of uv but the above is kind of confusing and seems like a deal breaker.
+
+Thanks for all your effort on uv.
 
 ---
