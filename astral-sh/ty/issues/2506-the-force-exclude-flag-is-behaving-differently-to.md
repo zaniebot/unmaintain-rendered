@@ -2,16 +2,16 @@
 number: 2506
 title: "The `--force-exclude` flag is behaving differently to `ruff`"
 type: issue
-state: open
+state: closed
 author: btalb
 labels:
   - bug
   - cli
 assignees: []
 created_at: 2026-01-15T07:08:50Z
-updated_at: 2026-01-15T09:01:15Z
+updated_at: 2026-01-16T08:23:28Z
 url: https://github.com/astral-sh/ty/issues/2506
-synced_at: 2026-01-15T09:45:23Z
+synced_at: 2026-01-16T08:55:00Z
 ```
 
 # The `--force-exclude` flag is behaving differently to `ruff`
@@ -99,5 +99,9 @@ _Label `cli` added by @MichaReiser on 2026-01-15 09:00_
 _Comment by @MichaReiser on 2026-01-15 09:01_
 
 Thanks, this is a bug
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 08:23_
 
 ---

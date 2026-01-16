@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/exe003-uv-global-args-21753
 created_at: 2026-01-14T19:36:02Z
-updated_at: 2026-01-15T15:54:59Z
+updated_at: 2026-01-16T08:50:30Z
 url: https://github.com/astral-sh/ruff/pull/22582
-synced_at: 2026-01-15T16:50:22Z
+synced_at: 2026-01-16T08:55:18Z
 ```
 
 # flake8-executable: allow global flags in uv shebangs (EXE003)
@@ -69,5 +69,17 @@ _@Jkhall81 reviewed on 2026-01-15 15:54_
 _Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_python.rs`:53 on 2026-01-15 15:54_
 
 I used switched out contains() for a regex check.  It's 'stricter' than the contains() check but I didn't want to make it too strict.  I initially got caught up in trying to account for every possible flag a user might use.... that turned into a monster.  I chopped it down to this.  Added some tests and included uvx and uv tool run.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_python.rs`:12 on 2026-01-16 08:50_
+
+`uvx` doesn't require `run`. So I don't thinkw e need to change anything for `uvx`.
+
+For uv and `uv tool`, would a regex like this work `uv\s+(?:--?[a-zA-Z][\w-]*(?:[=\s]\S+)?\s+)*run(?:\s+.*)?`
+
+---
+
+_@MichaReiser reviewed on 2026-01-16 08:50_
 
 ---

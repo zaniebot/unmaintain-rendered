@@ -9,9 +9,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-12-09T14:56:40Z
-updated_at: 2026-01-16T04:10:12Z
+updated_at: 2026-01-16T08:29:29Z
 url: https://github.com/astral-sh/ty/issues/1825
-synced_at: 2026-01-16T05:06:04Z
+synced_at: 2026-01-16T08:54:59Z
 ```
 
 # Correctly handle variadic parameters for overload step 5 filtering
@@ -74,5 +74,11 @@ class Bar[*U]:
 
 Baz = Foo[Bar[int]]  # <- ty claims that `Bar` can't be subscripted
 ```
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 08:29_
+
+@fosskers that's unrelated to this issue — that's https://github.com/astral-sh/ty/issues/156
 
 ---

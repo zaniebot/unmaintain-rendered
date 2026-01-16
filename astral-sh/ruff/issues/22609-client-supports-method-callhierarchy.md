@@ -2,15 +2,15 @@
 number: 22609
 title: "client:supports_method(callHierarchy/outgoingCalls) is incorrect"
 type: issue
-state: open
+state: closed
 author: bvdmitri
 labels:
   - server
 assignees: []
 created_at: 2026-01-15T19:01:03Z
-updated_at: 2026-01-15T19:53:43Z
+updated_at: 2026-01-16T08:23:00Z
 url: https://github.com/astral-sh/ruff/issues/22609
-synced_at: 2026-01-15T21:12:43Z
+synced_at: 2026-01-16T08:55:06Z
 ```
 
 # client:supports_method(callHierarchy/outgoingCalls) is incorrect
@@ -40,5 +40,15 @@ TLDR:
 ---
 
 _Label `server` added by @ntBre on 2026-01-15 19:53_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 08:23_
+
+I commented upstream because Ruff never registers support for any call hierarchy capability. Let's track this upstream. We can re-open if necessary
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 08:23_
 
 ---

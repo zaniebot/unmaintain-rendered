@@ -4,12 +4,14 @@ title: "Emit a diagnostic on `TypedDict` classes decorated with `@dataclass`"
 type: issue
 state: open
 author: MeGaGiGaGon
-labels: []
+labels:
+  - dataclasses
+  - typeddict
 assignees: []
 created_at: 2026-01-16T02:02:56Z
-updated_at: 2026-01-16T02:02:56Z
+updated_at: 2026-01-16T08:26:27Z
 url: https://github.com/astral-sh/ty/issues/2527
-synced_at: 2026-01-16T03:04:31Z
+synced_at: 2026-01-16T08:55:00Z
 ```
 
 # Emit a diagnostic on `TypedDict` classes decorated with `@dataclass`
@@ -30,5 +32,13 @@ class Foo(TypedDict):
 
 print(Foo(1))  # No error because ty thinks it is a dataclass, but fails at runtime
 ```
+
+---
+
+_Label `dataclasses` added by @AlexWaygood on 2026-01-16 08:26_
+
+---
+
+_Label `typeddict` added by @AlexWaygood on 2026-01-16 08:26_
 
 ---

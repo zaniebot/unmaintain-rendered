@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-15T21:11:10Z
-updated_at: 2026-01-15T21:16:14Z
+updated_at: 2026-01-16T08:01:40Z
 url: https://github.com/astral-sh/ty/issues/2523
-synced_at: 2026-01-15T22:01:48Z
+synced_at: 2026-01-16T08:55:00Z
 ```
 
 # ty resolves symlinks when going to source
@@ -36,5 +36,13 @@ Any chance you could implement a similar fix in `ty` please?
 ---
 
 _Label `server` added by @AlexWaygood on 2026-01-15 21:16_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 08:01_
+
+> So I work in C:\whatever but the physical location of all my files is actually S:\whatever. In VS Code, when I hit F12 on a symbol, ty opens the source code in the S:\whatever location.
+
+I think you mixed up the path here as `C:\whatever` is both the pyhysical and actual location. Can you try to describe the problem again. What behavior are you seen and what behavior would do expect
 
 ---

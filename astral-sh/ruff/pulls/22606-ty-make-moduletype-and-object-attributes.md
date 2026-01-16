@@ -2,17 +2,18 @@
 number: 22606
 title: "[ty] Make `ModuleType` and `object` attributes available on namespace packages"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/namespace-package-attrs
 created_at: 2026-01-15T18:08:24Z
-updated_at: 2026-01-15T18:26:50Z
+updated_at: 2026-01-16T08:42:59Z
 url: https://github.com/astral-sh/ruff/pull/22606
-synced_at: 2026-01-15T18:49:33Z
+synced_at: 2026-01-16T08:55:18Z
 ```
 
 # [ty] Make `ModuleType` and `object` attributes available on namespace packages
@@ -165,5 +166,17 @@ _Review requested from @Gankra by @AlexWaygood on 2026-01-15 18:13_
 _Comment by @AlexWaygood on 2026-01-15 18:26_
 
 (Two false-positive diagnostics going away on jax, it looks like 🎉)
+
+---
+
+_@MichaReiser approved on 2026-01-16 08:38_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-16 08:42_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 08:42_
 
 ---

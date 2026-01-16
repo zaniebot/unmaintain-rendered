@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-15T20:30:46Z
+updated_at: 2026-01-16T07:57:29Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-15T21:12:57Z
+synced_at: 2026-01-16T08:55:18Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -470,5 +470,15 @@ _@ibraheemdev reviewed on 2026-01-15 20:27_
 _Review comment by @ibraheemdev on `crates/ty_python_semantic/src/semantic_model.rs`:470 on 2026-01-15 20:27_
 
 I think this can mean the LSP shows a different type than the inferred type? We may have to infer the parent scope here (if the expression is within a comprehension scope, at least).
+
+---
+
+_@MichaReiser reviewed on 2026-01-16 07:57_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_model.rs`:470 on 2026-01-16 07:57_
+
+Having specific implementations for comprehension (and other expressions that require bidi) that uses the outer scope does make sense to me (I wasn't aware when I added the implementation that scope could be narrow er than a block)
 
 ---

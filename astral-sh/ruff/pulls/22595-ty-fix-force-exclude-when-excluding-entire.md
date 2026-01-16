@@ -2,19 +2,20 @@
 number: 22595
 title: "[ty] Fix `--force-exclude` when excluding entire directories"
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - bug
   - cli
   - ty
 assignees: []
+merged: true
 base: main
 head: micha/fix-force-exclude-directories
 created_at: 2026-01-15T09:13:42Z
-updated_at: 2026-01-15T17:34:44Z
+updated_at: 2026-01-16T08:23:28Z
 url: https://github.com/astral-sh/ruff/pull/22595
-synced_at: 2026-01-15T17:50:24Z
+synced_at: 2026-01-16T08:55:18Z
 ```
 
 # [ty] Fix `--force-exclude` when excluding entire directories
@@ -225,5 +226,17 @@ _Review requested from @Gankra by @MichaReiser on 2026-01-15 09:52_
 ---
 
 _@BurntSushi approved on 2026-01-15 17:34_
+
+---
+
+_Merged by @MichaReiser on 2026-01-16 08:23_
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 08:23_
+
+---
+
+_Branch deleted on 2026-01-16 08:23_
 
 ---

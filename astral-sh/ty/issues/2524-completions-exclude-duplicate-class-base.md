@@ -9,9 +9,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-15T21:16:11Z
-updated_at: 2026-01-15T21:16:46Z
+updated_at: 2026-01-16T07:59:33Z
 url: https://github.com/astral-sh/ty/issues/2524
-synced_at: 2026-01-15T22:01:48Z
+synced_at: 2026-01-16T08:55:00Z
 ```
 
 # [completions] Exclude duplicate class base completions
@@ -37,5 +37,9 @@ _Label `server` added by @AlexWaygood on 2026-01-15 21:16_
 ---
 
 _Label `completions` added by @AlexWaygood on 2026-01-15 21:16_
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-16 07:59_
 
 ---

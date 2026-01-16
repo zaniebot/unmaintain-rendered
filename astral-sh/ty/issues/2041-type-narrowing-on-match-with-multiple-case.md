@@ -8,9 +8,9 @@ labels:
   - narrowing
 assignees: []
 created_at: 2025-12-17T21:27:50Z
-updated_at: 2026-01-16T07:18:16Z
+updated_at: 2026-01-16T08:27:01Z
 url: https://github.com/astral-sh/ty/issues/2041
-synced_at: 2026-01-16T07:54:47Z
+synced_at: 2026-01-16T08:54:59Z
 ```
 
 # Type Narrowing on match with multiple case
@@ -81,7 +81,7 @@ _Comment by @olejorgenb on 2026-01-16 07:18_
 
 Another similar example: https://play.ty.dev/dd9b2a98-4cfa-43ef-9bc4-0d30bae78fb6
 
-```
+```python 
 from typing import reveal_type
 
 class A:

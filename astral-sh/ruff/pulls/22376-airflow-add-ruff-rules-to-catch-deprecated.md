@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-15T15:26:20Z
+updated_at: 2026-01-16T08:33:38Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-15T15:50:21Z
+synced_at: 2026-01-16T08:55:17Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -420,5 +420,61 @@ Thanks!
 
 <img width="985" height="295" alt="Screenshot from 2026-01-15 10-21-47" src="https://github.com/user-attachments/assets/a71fddfb-fdf1-4dc0-97bf-827bf54de7a7" />
 
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:141 on 2026-01-16 08:30_
+
+```suggestion
+        [
+            "airflow",
+            "utils",
+            "setup_teardown",
+            rest @ ("BaseSetupTeardownContext", "SetupTeardownContext")
+        ] => Replacement::Message(
+            format!(
+                "`{rest}` has been moved to `airflow.sdk.definitions._internal.setup_teardown` \
+                since Airflow 3.1. This is an internal module and is subject to change without notice."
+            ),
+        )
+```
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:150 on 2026-01-16 08:31_
+
+I think `airflow.models` is not supposed to be used. We should make it a warning message.
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:184 on 2026-01-16 08:32_
+
+```suggestion
+        [
+            "airflow",
+            "utils",
+            "decorators",
+            rest @ ("fixup_decorator_warning_stack", "remove_task_decorator"),
+        ] => Replacement::Message(
+            "`{rest}` has been moved to `airflow.sdk.definitions._internal.decorators` \
+            since Airflow 3.1. This is an internal module and is subject to change without notice.",
+        ),
+```
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:184 on 2026-01-16 08:33_
+
+we can apply ths to elsewhere as well
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:184 on 2026-01-16 08:33_
+
+or even make it a new enum item? the message are similair
+
+---
+
+_@Lee-W reviewed on 2026-01-16 08:33_
 
 ---
