@@ -238,14 +238,119 @@ core (https://github.com/home-assistant/core)
 </div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:55 on 2026-01-16 11:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+Point2 = make_dataclass(&quot;Point2&quot;, [(&quot;x&quot;, int), (&quot;y&quot;, int)])
+
+reveal_type(Point2)  # revealed: &lt;class 'Point2'&gt;
+reveal_mro(Point2)  # revealed: (&lt;class 'Point2'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:74 on 2026-01-16 11:44</div>
+            <div class="timeline-body"><p>nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:108 on 2026-01-16 11:45</div>
+            <div class="timeline-body"><p>I'm not sure this test shows that much as-is, because all Python types inherit an <code>__eq__</code> method from <code>object</code> even if they don't define <code>__eq__</code>, so you should be able to compare nearly all Python types using <code>==</code> without it failing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 11:49</div>
             <div class="timeline-body"><p>Okiedokie</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:163 on 2026-01-16 11:51</div>
+            <div class="timeline-body"><p>Can we also test that we view these attributes as immutable? (I can't remember exactly what error we should be emitting here)</p>
+<pre><code class="language-suggestion">from dataclasses import make_dataclass
+
+PointFrozen = make_dataclass(&quot;PointFrozen&quot;, [(&quot;x&quot;, int), (&quot;y&quot;, int)], frozen=True)
+
+p = PointFrozen(1, 2)
+
+# frozen dataclasses generate __hash__
+reveal_type(hash(p))  # revealed: int
+
+# These should both fail, since frozen dataclasses are immutable
+p.x = 42  # error
+p.y = 56  # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:212 on 2026-01-16 11:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+class Base:
+    def greet(self) -&gt; str:
+        return &quot;Hello&quot;
+
+Derived = make_dataclass(&quot;Derived&quot;, [(&quot;value&quot;, int)], bases=(Base,))
+reveal_mro(Derived)  # revealed: (&lt;class 'Derived'&gt;, &lt;class 'Base'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:235 on 2026-01-16 11:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">from dataclasses import make_dataclass
+from ty_extensions import reveal_mro
+
+def get_fields():
+    return [(&quot;x&quot;, int)]
+
+fields = get_fields()
+PointDynamic = make_dataclass(&quot;PointDynamic&quot;, fields)
+
+p = PointDynamic(1)  # No error - accepts any arguments
+reveal_type(p.x)  # revealed: Any
+
+# the class is still inferred as inheriting directly from `object`
+# (`Unknown` is not inserted into the MRO)
+reveal_mro(PointDynamic)  # revealed: (&lt;class 'PointDynamic'&gt;, &lt;class 'object'&gt;)
+
+# ...but nontheless, we assume that all attributes are available,
+# similar to attribute access on `Unknown`
+reveal_type(p.unknown)  # revealed: Any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:240 on 2026-01-16 11:58</div>
+            <div class="timeline-body"><p>But you don't currently emit a diagnostic on this branch for too <em>few</em> positional arguments -- this does not cause us to emit an error on this branch, but it fails at runtime:</p>
+<pre><code class="language-py">from dataclasses import make_dataclass
+
+make_dataclass(&quot;foo&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:323 on 2026-01-16 12:00</div>
+            <div class="timeline-body"><p>You don't currently emit an error for <code>make_dataclass(&quot;foo&quot;, bases=12345)</code> on this branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:343 on 2026-01-16 12:02</div>
+            <div class="timeline-body"><p>I think we'd be able to infer the MRO just fine, but <code>Protocol</code> classes are heavily special-cased elsewhere, and it would significantly complicate our internal logic to support dynamically constructed <code>Protocol</code> classes (which anyway aren't mentioned anywhere by the typing spec)</p>
+<pre><code class="language-suggestion">Protocol bases use a different lint (`unsupported-dynamic-base`) because they're technically valid
+Python but not supported by ty for dynamic classes.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-16 12:02</div>
+            <div class="timeline-body"><p>A tests-only review for now</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 11:58:58 UTC
+        Synced at 2026-01-16 12:59:22 UTC
     </footer>
 </body>
 </html>

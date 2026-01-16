@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not autofix F541 `f-string without any placeholders` / mark as risky - astral-sh/ruff #22620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not autofix F541 <code>f-string without any placeholders</code> / mark as risky</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22620">#22620</a>
+        opened by <a href="https://github.com/k0pernikus">@k0pernikus</a>
+        on 2026-01-16 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/k0pernikus">@k0pernikus</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given this code:</p>
+<pre><code class="language-python">class Greeter:
+    def hello(self, name: str) -&gt; str:
+        return f&quot;Hello name!&quot;
+</code></pre>
+<p>ruff will correctly report:</p>
+<pre><code>F541 [*] f-string without any placeholders
+ --&gt; utils\src\utils\greeting.py:3:16
+  |
+1 | class Greeter:
+2 |     def hello(self, name: str) -&gt; str:
+3 |         return f&quot;Hello name!&quot;
+  |                ^^^^^^^^^^^^^^
+  |
+</code></pre>
+<p>Yet its autofix hides the bug the developer made:</p>
+<pre><code>help: Remove extraneous `f` prefix
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>It doesn't really help that it does not produce an output:</p>
+<pre><code>ruff check --fix
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>File will now contain:</p>
+<pre><code>class Greeter:
+    def hello(self, name: str) -&gt; str:
+        return &quot;Hello name!&quot;
+</code></pre>
+<hr />
+<p>This is my <code>ruff.toml</code>:</p>
+<pre><code>target-version = &quot;py314&quot;
+line-length = 88
+indent-width = 4
+
+[lint]
+select = [
+    &quot;E&quot;,
+    &quot;F&quot;,
+    &quot;UP&quot;,
+    &quot;B&quot;,
+    &quot;SIM&quot;,
+    &quot;I&quot;,
+    &quot;W&quot;,
+]
+ignore = []
+
+[lint.isort]
+combine-as-imports = true
+lines-after-imports = 2
+
+[format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+skip-magic-trailing-comma = false
+</code></pre>
+<hr />
+<p>Small unit test for the Greeter:</p>
+<pre><code class="language-python">def test_hello_world():
+    greeter = Greeter()
+    msg = greeter.hello(&quot;User&quot;)
+
+    assert msg == &quot;Hello User!&quot;
+</code></pre>
+<p>The code as was intended by the devloper:</p>
+<pre><code class="language-python">class Greeter:
+    def hello(self, name: str) -&gt; str:
+        return f&quot;Hello {name}!&quot;
+</code></pre>
+<hr />
+<p>This might also relate to how <a href="https://docs.astral.sh/ruff/rules/unused-function-argument/">ARG001</a>, <a href="https://docs.astral.sh/ruff/rules/unused-method-argument/">ARG002</a> are not part of the recommended rule set, but <code>F</code> is:</p>
+<blockquote>
+<p>For example, a configuration that enables some of the most popular rules (without being too pedantic) might look like the following:</p>
+<pre><code>[lint]
+select = [
+    # pycodestyle
+    &quot;E&quot;,
+    # Pyflakes
+    &quot;F&quot;,
+    # pyupgrade
+    &quot;UP&quot;,
+    # flake8-bugbear
+    &quot;B&quot;,
+    # flake8-simplify
+    &quot;SIM&quot;,
+    # isort
+    &quot;I&quot;,
+]
+</code></pre>
+</blockquote>
+<p>-- <a href="https://docs.astral.sh/ruff/linter/#rule-selection">ruff on rule selection</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k0pernikus">@k0pernikus</a> on 2026-01-16 12:43</div>
+            <div class="timeline-body"><p>I added <a href="https://docs.astral.sh/ruff/settings/#lint_extend-unsafe-fixes"><code>extend-unsafe-fixes</code></a> for that rule in my project's <code>ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint]
+select = [
+    &quot;E&quot;,
+    &quot;F&quot;,
+    &quot;UP&quot;,
+    &quot;B&quot;,
+    &quot;SIM&quot;,
+    &quot;I&quot;,
+    &quot;W&quot;,
+]
+
+ignore = []
+
+extend-unsafe-fixes = [&quot;F541&quot;]
+</code></pre>
+<p>That works for me:</p>
+<pre><code class="language-shell">ruff check --fix 
+F541 f-string without any placeholders
+ --&gt; utils\src\utils\greeting.py:3:16
+  |
+1 | class Greeter:
+2 |     def hello(self, name: str) -&gt; str:
+3 |         return f&quot;Hello name!&quot;
+  |                ^^^^^^^^^^^^^^
+  |
+help: Remove extraneous `f` prefix
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>It is also really great that you have also included the <code>--unsafe-fixes</code>-flag!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 12:58:19 UTC
+    </footer>
+</body>
+</html>
