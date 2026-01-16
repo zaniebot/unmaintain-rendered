@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-14T13:28:06Z
+updated_at: 2026-01-16T10:00:33Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-14T13:42:35Z
+synced_at: 2026-01-16T11:07:47Z
 ```
 
 # Isolate test environment from user configuration
@@ -136,5 +136,15 @@ We could add a `fly-proxy` feature like we have for other tests which interact w
 ---
 
 _@zanieb reviewed on 2026-01-14 13:28_
+
+---
+
+_@konstin reviewed on 2026-01-16 10:00_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/common/mod.rs`:1044 on 2026-01-16 10:00_
+
+https://github.com/astral-sh/uv/pull/14080 is now merged.
 
 ---

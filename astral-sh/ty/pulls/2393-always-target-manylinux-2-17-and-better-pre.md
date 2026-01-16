@@ -2,17 +2,18 @@
 number: 2393
 title: Always target manylinux 2_17 and better pre-upload checks
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/manylinux_2_17
 created_at: 2026-01-08T08:40:07Z
-updated_at: 2026-01-16T09:05:02Z
+updated_at: 2026-01-16T09:58:11Z
 url: https://github.com/astral-sh/ty/pull/2393
-synced_at: 2026-01-16T10:07:16Z
+synced_at: 2026-01-16T11:07:16Z
 ```
 
 # Always target manylinux 2_17 and better pre-upload checks
@@ -67,5 +68,39 @@ I'll leave merging to the person who makes the release.
 ---
 
 _Marked ready for review by @konstin on 2026-01-16 09:05_
+
+---
+
+_@MichaReiser approved on 2026-01-16 09:54_
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 09:55_
+
+---
+
+_Reopened by @MichaReiser on 2026-01-16 09:55_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 09:56_
+
+> I'll leave merging to the person who makes the release.
+
+I don't know who that will be, but happy to take the blame :sweat
+
+Thank you
+
+---
+
+_Merged by @MichaReiser on 2026-01-16 09:58_
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 09:58_
+
+---
+
+_Branch deleted on 2026-01-16 09:58_
 
 ---

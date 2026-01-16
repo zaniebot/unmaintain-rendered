@@ -9,9 +9,9 @@ labels:
   - fatal
 assignees: []
 created_at: 2026-01-07T16:07:15Z
-updated_at: 2026-01-09T15:03:12Z
+updated_at: 2026-01-16T10:46:47Z
 url: https://github.com/astral-sh/ty/issues/2378
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-16T11:07:16Z
 ```
 
 # panic on Tauon's codebase
@@ -162,6 +162,8 @@ run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 2026-01-09 15:42:51.818080410  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
 2026-01-09 15:42:52.087561468  WARN Propagating panic for cycle head that panicked in an earlier execution in that revision
 ```
+
+EDIT: Panics still exist even on `Version: 0.0.12 (4b74e4ded 2026-01-14)`
 
 ---
 

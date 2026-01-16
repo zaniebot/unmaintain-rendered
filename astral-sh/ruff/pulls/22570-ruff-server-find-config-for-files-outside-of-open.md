@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-17944-alt
 created_at: 2026-01-14T12:08:40Z
-updated_at: 2026-01-15T07:34:48Z
+updated_at: 2026-01-16T10:43:47Z
 url: https://github.com/astral-sh/ruff/pull/22570
-synced_at: 2026-01-15T07:48:27Z
+synced_at: 2026-01-16T11:07:34Z
 ```
 
 # [ruff server] Find config for files outside of open workspaces
@@ -105,5 +105,24 @@ _Review requested from @dhruvmanila by @MichaReiser on 2026-01-14 12:46_
 _Comment by @dhruvmanila on 2026-01-15 07:34_
 
 (I've this on my TODO, I'll look at this later today after a meeting.)
+
+---
+
+_Comment by @dhruvmanila on 2026-01-16 10:30_
+
+Thank you for this PR!
+
+The setting resolution is a little bit complicated for the Ruff language server. I think it would be very useful (and would also help me review this faster) if you can link the specific changes to the directory structure which it tries to solve. For example, which directory structure is `RuffSettings::fallback` trying to resolve?
+
+---
+
+_Comment by @ZedThree on 2026-01-16 10:43_
+
+Previously, `RuffSettings::fallback` just tried to look for user-specific config files. Now, it looks in the parent directory of the file being opened, and then its ancestors. So it now ends up searching the following in order, for example:
+
+- `/tmp/mvce/dir_0/`
+- `/tmp/mvce/`
+- `/tmp/`
+- `~/.config/ruff/`
 
 ---

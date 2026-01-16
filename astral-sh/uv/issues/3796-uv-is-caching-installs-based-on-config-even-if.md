@@ -8,9 +8,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2024-05-23T14:48:50Z
-updated_at: 2024-05-24T21:01:55Z
+updated_at: 2026-01-16T10:22:40Z
 url: https://github.com/astral-sh/uv/issues/3796
-synced_at: 2026-01-12T15:58:45Z
+synced_at: 2026-01-16T11:07:37Z
 ```
 
 # `uv` is caching installs based on config, even if build-backend is in-tree
@@ -133,5 +133,32 @@ Yeah, we _could_ treat these as if they're dynamic.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-24 21:01_
+
+---
+
+_Comment by @xmo-odoo on 2026-01-16 10:13_
+
+> Oh, the thing that's changing here is literally the build backend itself? No, we definitely don't support that right now. I'm not sure that we will -- how can we reliably detect that it has changed? Any ideas? `--refresh` feels like the right answer here.
+
+`cache-keys` seems like it would be a good solution there, however:
+
+- it doesn't really work in the case I hit (which I assume is the original case) where the build backend collates dependencies information from various sources, as those sources may be changeable and even dynamically resolved, and I didn't find a dynamic version of `cache-keys`
+- adding the in-tree build backend to the cache keys behaves very strangely, I have a test backend which simply overrides `prepare_metadata_for_build_editable` to append a bunch of `Requires-Dist` to `METADATA`, if I add the file to the cache-keys, sync, remove one of the dependencies, sync, uv sees that and removes the dep from the env, but then on the next run it somehow finds cached metadata with *no* dependencies, and removes everything from the env
+
+I also tried using `reinstall-package` but it does a bit *too* much: as the name indicates it always reinstalls the thing, not checking if the metadata have changed. So when there are lots of non-trivial dependencies (as is likely the case for a project which needs to resolve dependencies dynamically) it's quite painful.
+
+`--refresh` currently seems the least bad option, but having to specify it every time is icky.
+
+---
+
+_Comment by @xmo-odoo on 2026-01-16 10:22_
+
+Incidentally the `reinstall` setting says
+
+> Reinstall all packages, regardless of whether they're already installed. Implies `refresh`.
+
+but `refresh` is not currently a valid setting (I assume reinstall is both a setting and a flag and the docs are shared).
+
+Maybe `refresh` could be promoted to whatever status `reinstall` has, so a project which needs this behavior could just set `tool.uv.refresh = true` and be on its merry way? Obviously at the cost of re-resolving the metadata every time but...
 
 ---

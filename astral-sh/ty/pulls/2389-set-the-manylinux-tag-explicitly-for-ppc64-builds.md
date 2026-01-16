@@ -2,16 +2,16 @@
 number: 2389
 title: Set the manylinux tag explicitly for ppc64 builds
 type: pull_request
-state: open
+state: closed
 author: zanieb
 labels: []
 assignees: []
 base: main
 head: zb/ppc-force
 created_at: 2026-01-07T23:32:03Z
-updated_at: 2026-01-08T13:05:11Z
+updated_at: 2026-01-16T09:58:11Z
 url: https://github.com/astral-sh/ty/pull/2389
-synced_at: 2026-01-12T15:54:28Z
+synced_at: 2026-01-16T11:07:16Z
 ```
 
 # Set the manylinux tag explicitly for ppc64 builds
@@ -43,5 +43,9 @@ I don't think so, but I could put up a branch on top to check?
 _Comment by @zanieb on 2026-01-08 13:05_
 
 Superseded by https://github.com/astral-sh/ty/pull/2393
+
+---
+
+_Closed by @MichaReiser on 2026-01-16 09:58_
 
 ---

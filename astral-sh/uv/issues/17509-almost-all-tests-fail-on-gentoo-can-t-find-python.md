@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T04:46:41Z
+updated_at: 2026-01-16T10:33:02Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T05:06:28Z
+synced_at: 2026-01-16T11:07:39Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -81,5 +81,15 @@ Gentoo Linux amd64
 ---
 
 _Label `bug` added by @mgorny on 2026-01-16 04:46_
+
+---
+
+_Comment by @konstin on 2026-01-16 10:32_
+
+I assume that's https://github.com/astral-sh/uv/pull/14080, do you know which env var is missing?
+
+---
+
+_Assigned to @konstin by @konstin on 2026-01-16 10:33_
 
 ---

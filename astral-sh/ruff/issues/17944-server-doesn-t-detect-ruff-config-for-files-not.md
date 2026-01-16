@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-05-08T11:12:40Z
-updated_at: 2026-01-14T10:33:27Z
+updated_at: 2026-01-16T10:38:52Z
 url: https://github.com/astral-sh/ruff/issues/17944
-synced_at: 2026-01-14T11:33:15Z
+synced_at: 2026-01-16T11:07:22Z
 ```
 
 # Server doesn't detect ruff config for files not under working directory of server
@@ -294,5 +294,66 @@ _Comment by @ZedThree on 2026-01-14 10:33_
 Sorry @MichaReiser, I didn't see your comment till after I made the PR! I tried the workspace approach first, because that seems to be the only way to cache the discovered settings.
 
 I'll try your approach instead
+
+---
+
+_Comment by @dhruvmanila on 2026-01-16 10:00_
+
+Sorry for the delay!
+
+I'm not sure if this is going to be the case for Neovim mainly because Neovim will start a separate server for each of these directories because it has all of the possible configuration files for Ruff to [detect the project root](https://github.com/neovim/nvim-lspconfig/blob/92ee7d42320edfbb81f3cad851314ab197fa324a/lua/lspconfig/configs/ruff.lua#L14-L17) which it uses to detect if there's a common root. In this case, there isn't but if there was a config file in the root project, then it might not spawn a separate server for each of these directories:
+
+```
+- ruff (id: 2)
+  - Version: 0.14.11
+  - Root directory: ~/playground/ruff/issue-17944/project-b
+  - Command: { "ruff", "server" }
+  - Settings: {}
+  - Attached buffers: 6
+
+- ruff (id: 5)
+  - Version: 0.14.11
+  - Root directory: ~/playground/ruff/issue-17944/project-a
+  - Command: { "ruff", "server" }
+  - Settings: {}
+  - Attached buffers: 13
+```
+
+> * cwd at top-level, opening `dir_0/test_0.py`
+> * cwd at top-level, opening `dir_0/test_0.py`, then `../dir_1/test_1.py` in same session
+> * cwd in `dir_0`, opening `../dir_1/test_1.py`
+> * cwd in `dir_0`, opening `test_0.py` first, then `../dir_1/test_1.py` in same session
+
+So, all of these cases (copied from the linked PR) works as expected at least in Neovim because it spawns two separate Ruff servers with different project root.
+
+Although I do see the issue in VS Code.
+
+I'm going to look at the PR now, but I wanted to understand the issue first.
+
+---
+
+_Comment by @dhruvmanila on 2026-01-16 10:16_
+
+> 2\. `nvim dir_0/test_0.py` or `nvim dir_1/test_1.py` only gives one warning (bug)
+
+In this case in Neovim, I'm actually seeing
+- both warnings from Ruff for `nvim dir_0/test_0.py` which is as expected, doesn't look like a bug)
+- seeing no warnings for `nvim dir_1/test_1.py` which is also as expected because the `dir_1/ruff.toml` doesn't have `F` selected, preview is disabled so `FURB101` will not be checked
+
+> 3\. `cd dir_0; nvim test_0.py` then `:edit dir_0_1/test_0_1.py` gives two warnings (bug)   - this is because `dir_0/ruff.toml` is used instead of `dir_0_1/ruff.toml`
+
+I'm seeing the expected behavior in this case as well for Neovim where the later addition of `dir_0_1/test_0_1.py` gives me zero warnings from Ruff as it spawns a different LSP for that file because it is considered to have a different root than the existing LSP.
+
+> 4\. `cd dir_0; nvim test_0.py` then `:edit ../dir_1/test_1.py` gives one warning (bug)
+
+Same here, I'm seeing expected behavior because of the way Neovim tries to find project root for the LSP.
+
+---
+
+_Comment by @ZedThree on 2026-01-16 10:38_
+
+Ah, I hadn't set `root_markers` in my neovim config. That does indeed make things work correctly. It's not my usual editor, so I hadn't realised that was required -- could be useful to add this to the docs?
+
+The issue does seem to also affect other editors like VS Code in single file mode, and helix.
 
 ---

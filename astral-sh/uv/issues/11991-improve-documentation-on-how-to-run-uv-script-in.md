@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-03-05T22:02:26Z
-updated_at: 2025-12-02T20:52:37Z
+updated_at: 2026-01-16T10:09:13Z
 url: https://github.com/astral-sh/uv/issues/11991
-synced_at: 2026-01-12T16:00:52Z
+synced_at: 2026-01-16T11:07:38Z
 ```
 
 # Improve documentation on how to run uv script in a cron
@@ -93,5 +93,29 @@ I want to emphasize tobi-or-not's comment.
 `/Users/name/Python_Projects/chron_scrape/main.py` *the path to the entry point to launch the project*
 
 
+
+---
+
+_Comment by @technicaltitch on 2026-01-16 10:09_
+
+I'm using:
+
+```
+uv --project /usr/src/project /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+```
+
+And getting:
+
+```
+error: unrecognized subcommand '/usr/src/project/manage.py'
+```
+
+But the following works:
+
+```
+/usr/src/project/.venv/bin/python3.13 /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+```
+
+What am I missing? (Suspect I'll kick myself..!)
 
 ---

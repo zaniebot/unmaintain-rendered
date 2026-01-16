@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: claude/investigate-issues-tN0fc
 created_at: 2026-01-15T22:00:23Z
-updated_at: 2026-01-15T22:20:53Z
+updated_at: 2026-01-16T09:55:43Z
 url: https://github.com/astral-sh/uv/pull/17503
-synced_at: 2026-01-15T23:03:14Z
+synced_at: 2026-01-16T11:07:47Z
 ```
 
 # Fix infinite loop when `SSL_CERT_FILE` is a directory
@@ -34,5 +34,9 @@ _Label `bug` added by @zanieb on 2026-01-15 22:00_
 ---
 
 _Marked ready for review by @zanieb on 2026-01-15 22:20_
+
+---
+
+_@konstin approved on 2026-01-16 09:55_
 
 ---

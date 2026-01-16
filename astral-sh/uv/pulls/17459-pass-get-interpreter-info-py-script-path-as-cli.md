@@ -7,12 +7,13 @@ author: ryanking13
 labels:
   - needs-decision
 assignees: []
+draft: true
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-15T10:18:45Z
+updated_at: 2026-01-16T10:30:54Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-15T10:44:26Z
+synced_at: 2026-01-16T11:07:47Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -129,5 +130,9 @@ I am trying a different approach that converts `sys.path` inside the Pyodide env
 _Comment by @konstin on 2026-01-15 10:18_
 
 We generally assume that Windows interpreters can use Windows paths, and can e.g. use Windows paths inside a templated Python script.
+
+---
+
+_Converted to draft by @konstin on 2026-01-16 10:30_
 
 ---
