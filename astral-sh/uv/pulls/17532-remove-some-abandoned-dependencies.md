@@ -7,13 +7,12 @@ author: zanieb
 labels:
   - internal
 assignees: []
-draft: true
 base: main
 head: zb/abandoned-deps
 created_at: 2026-01-16T16:54:35Z
-updated_at: 2026-01-16T16:54:37Z
+updated_at: 2026-01-16T17:18:57Z
 url: https://github.com/astral-sh/uv/pull/17532
-synced_at: 2026-01-16T16:59:58Z
+synced_at: 2026-01-16T18:01:14Z
 ```
 
 # Remove some abandoned dependencies
@@ -22,10 +21,14 @@ synced_at: 2026-01-16T16:59:58Z
 
 _@zanieb_
 
-_No description provided._
+#2658 reports these as abandoned, so let's move off them?
 
 ---
 
 _Label `internal` added by @zanieb on 2026-01-16 16:54_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-16 17:18_
 
 ---

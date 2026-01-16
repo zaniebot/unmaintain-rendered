@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: enum_value_annotation
 created_at: 2025-12-27T19:17:26Z
-updated_at: 2026-01-16T14:16:32Z
+updated_at: 2026-01-16T17:16:41Z
 url: https://github.com/astral-sh/ruff/pull/22228
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # [ty] support enum `_value_` annotation
@@ -423,5 +423,9 @@ I think inferring `Literal[1]` there is fine, since `Literal[1]` is assignable t
 > It's throwing an diagnostic currently on the last MERCURY line, while it shouldn't. While it's obviously what's happening here, it's not so obviously to me how to fix it.
 
 The spec explains what to do here at https://typing.python.org/en/latest/spec/enums.html#member-values
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-16 17:16_
 
 ---

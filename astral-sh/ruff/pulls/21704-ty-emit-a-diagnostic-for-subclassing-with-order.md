@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/order
 created_at: 2025-11-30T16:12:08Z
-updated_at: 2026-01-07T01:01:56Z
+updated_at: 2026-01-16T17:17:49Z
 url: https://github.com/astral-sh/ruff/pull/21704
-synced_at: 2026-01-12T15:57:31Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # [ty] Emit a diagnostic for subclassing with `order=True`
@@ -327,5 +327,9 @@ I think the Expression diagnostic is correct:
   - Try inherits from Result without defining its own comparison methods
   - True positive: At runtime, Try(Success(1)) < Result(Success(2)) would raise TypeError
 ```
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-16 17:17_
 
 ---

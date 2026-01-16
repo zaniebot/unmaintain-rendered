@@ -2,18 +2,19 @@
 number: 22618
 title: "[ty] Rename some narrowing-related machinery"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - internal
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/rename-typeguard-constraint
 created_at: 2026-01-16T12:13:34Z
-updated_at: 2026-01-16T16:37:09Z
+updated_at: 2026-01-16T17:10:36Z
 url: https://github.com/astral-sh/ruff/pull/22618
-synced_at: 2026-01-16T16:59:45Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # [ty] Rename some narrowing-related machinery
@@ -120,5 +121,17 @@ No changes detected ✅
 ---
 
 _@ibraheemdev approved on 2026-01-16 16:37_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-16 17:10_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 17:10_
+
+---
+
+_Branch deleted on 2026-01-16 17:10_
 
 ---

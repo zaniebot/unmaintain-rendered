@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: protocol-property-check
 created_at: 2025-06-29T16:31:03Z
-updated_at: 2025-08-26T15:56:53Z
+updated_at: 2026-01-16T17:18:13Z
 url: https://github.com/astral-sh/ruff/pull/19029
-synced_at: 2026-01-12T15:56:30Z
+synced_at: 2026-01-16T18:01:00Z
 ```
 
 # [ty] Implement protocol property check
@@ -619,5 +619,9 @@ _@mtshiba reviewed on 2025-08-26 15:56_
 _Review comment by @mtshiba on `crates/ty_python_semantic/src/types/protocol_class.rs`:430 on 2025-08-26 15:56_
 
 OK, let's move on!
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-16 17:18_
 
 ---

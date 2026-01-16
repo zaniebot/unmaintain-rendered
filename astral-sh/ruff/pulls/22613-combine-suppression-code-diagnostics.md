@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-grouping
 created_at: 2026-01-16T00:34:42Z
-updated_at: 2026-01-16T16:54:22Z
+updated_at: 2026-01-16T17:22:51Z
 url: https://github.com/astral-sh/ruff/pull/22613
-synced_at: 2026-01-16T16:59:45Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # Combine suppression code diagnostics
@@ -207,7 +207,7 @@ This is probably better suited for a follow-up, and I thought I saw some previou
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:427 on 2026-01-16 16:51_
+_Review comment by @ntBre on `crates/ruff_linter/src/suppression.rs`:448 on 2026-01-16 16:51_
 
 This might be getting too clever, but I think we could go ahead and do the `join` here. The empty string will also work for the `is_empty` check, and then we can avoid allocating a separate `Vec` first.
 
@@ -227,5 +227,19 @@ Yeah I liked the idea in https://github.com/astral-sh/ruff/issues/21873#issuecom
 _@ntBre approved on 2026-01-16 16:54_
 
 Nice!
+
+---
+
+_@amyreese reviewed on 2026-01-16 17:17_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap`:416 on 2026-01-16 17:17_
+
+I've updated the highlighting logic so that:
+- if only one code exists or only one is being removed, it highlights that one code
+- otherwise, it highlights the entire suppression
+
+I think this matches noqa now.
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-16T16:46:20Z
-updated_at: 2026-01-16T16:56:15Z
+updated_at: 2026-01-16T17:29:18Z
 url: https://github.com/astral-sh/uv/issues/17529
-synced_at: 2026-01-16T16:59:50Z
+synced_at: 2026-01-16T18:01:07Z
 ```
 
 # Broken links on GitHub Documentation - looking fro
@@ -57,5 +57,29 @@ _Label `question` added by @zanieb on 2026-01-16 16:48_
 _Comment by @chilin0525 on 2026-01-16 16:56_
 
 FYI — this commit may be relevant: 5a6f2ea
+
+---
+
+_Comment by @zanieb on 2026-01-16 17:14_
+
+Yes we no longer commit those generated files.
+
+---
+
+_Comment by @michellepace on 2026-01-16 17:23_
+
+@zanieb Thanks for the reply. Because when I scrape the file with FireCrawl it is not 100% clean. I save them offline so I can easily reference them when working with Claude Code. Its cleaner when I come directly to GitHub 99% of the time. 
+
+---
+
+_Comment by @zanieb on 2026-01-16 17:28_
+
+You should scrape from https://docs.astral.sh/uv/llms.txt instead
+
+---
+
+_Comment by @michellepace on 2026-01-16 17:29_
+
+Thank you!!!
 
 ---

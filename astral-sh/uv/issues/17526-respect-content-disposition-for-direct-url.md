@@ -8,9 +8,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T16:16:15Z
-updated_at: 2026-01-16T16:16:15Z
+updated_at: 2026-01-16T17:53:24Z
 url: https://github.com/astral-sh/uv/issues/17526
-synced_at: 2026-01-16T16:59:50Z
+synced_at: 2026-01-16T18:01:07Z
 ```
 
 # Respect `Content-Disposition` for direct URL installations?
@@ -38,5 +38,11 @@ Some things we need clarity on (these may already have answers, I just haven't c
 ---
 
 _Label `needs-decision` added by @woodruffw on 2026-01-16 16:16_
+
+---
+
+_Comment by @notatallshaw on 2026-01-16 17:53_
+
+FYI, I'm following this discussion, if you think this puts pip out of standards compliance I will take a look. Although this is hairy enough I'm not likely going to change the behavior beyond logging a warning when content disposition does not match with the actual filename.
 
 ---

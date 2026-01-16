@@ -2,15 +2,15 @@
 number: 22610
 title: "Remove `ty_python_semantic` dependency from `ruff_graph`"
 type: issue
-state: open
+state: closed
 author: MichaReiser
 labels:
   - internal
 assignees: []
 created_at: 2026-01-15T20:17:59Z
-updated_at: 2026-01-15T20:17:59Z
+updated_at: 2026-01-16T17:31:32Z
 url: https://github.com/astral-sh/ruff/issues/22610
-synced_at: 2026-01-15T21:12:43Z
+synced_at: 2026-01-16T18:00:50Z
 ```
 
 # Remove `ty_python_semantic` dependency from `ruff_graph`
@@ -26,5 +26,21 @@ We could move `PythonEnvironment` to `ty_module_resolver` or its own crate (that
 ---
 
 _Label `internal` added by @MichaReiser on 2026-01-15 20:18_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 17:22_
+
+fixed in https://github.com/astral-sh/ruff/pull/22623
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 17:22_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 17:31_
+
+Thank you
 
 ---

@@ -13,9 +13,9 @@ draft: true
 base: main
 head: alex/union-set
 created_at: 2026-01-08T14:12:30Z
-updated_at: 2026-01-10T15:36:18Z
+updated_at: 2026-01-16T17:54:51Z
 url: https://github.com/astral-sh/ruff/pull/22458
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # [ty] Optimize subtyping/assignability/redundancy checks against union types
@@ -425,5 +425,57 @@ reveal_type(my_iter(get_int, None))
 ```
 
 The behaviour on this branch seems like an improvement, so it seems like there's a pre-existing bug on `main` that this PR accidentally fixes.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 17:51_
+
+> With Claude's help, I minimized the behaviour change on this PR to:
+> 
+> ```python
+> from typing import Callable, overload
+> 
+> class Box[T]:
+>     def get(self) -> T:
+>         raise NotImplementedError
+> 
+> @overload
+> def my_iter[T](f: Callable[[], T | None], sentinel: None) -> Box[T]: ...
+> @overload
+> def my_iter[T](f: Callable[[], T]) -> Box[T]: ...
+> def my_iter(f: Callable[[], object], sentinel: object = ...) -> Box[object]:
+>     return Box()
+> 
+> def get_int() -> int | None: ...
+> 
+> # reveals `Box[int | None]` on `main`, `Box[int]` on this branch
+> reveal_type(my_iter(get_int, None))
+> ```
+> 
+> The behaviour on this branch seems like an improvement, so it seems like there's a pre-existing bug on `main` that this PR accidentally fixes.
+
+Even smaller:
+
+```py
+from typing import Callable
+
+class Box[T]:
+    def get(self) -> T:
+        raise NotImplementedError
+
+def my_iter[T](f: Callable[[], T | None]) -> Box[T]:
+    return Box()
+
+def get_int() -> int | None: ...
+
+# reveals `Box[int | None]` on `main`, `Box[int]` on this branch
+reveal_type(my_iter(get_int))
+```
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 17:54_
+
+Planning on opening https://github.com/astral-sh/ruff/pull/22495 for review first, then rebasing this on top of that to see if switching to a set instead of a vec still provides any meaningful speedup after that PR's landed (and then we can debate whether it's worth the memory-usage regression, if so).
 
 ---

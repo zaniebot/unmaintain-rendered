@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T16:51:28Z
+updated_at: 2026-01-16T17:46:31Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T16:59:50Z
+synced_at: 2026-01-16T18:01:07Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -256,5 +256,11 @@ _Comment by @mgorny on 2026-01-16 16:51_
 Well, yes, but not that easily. You could start with the Gentoo docker image and use `emerge` to run the test suite; but it'd have to install all the test deps, and I'm not sure if we have binary package of them all.
 
 That said, I can try to make a `Dockerfile` to give you a fully prepared image later today.
+
+---
+
+_Comment by @mgorny on 2026-01-16 17:46_
+
+Okay, so with `PATH` and `XDG_CONFIG_DIRS` I'm down to 27 failures. `HOME` fixes one test, so I suppose we can just look into figuring out why the existing logic doesn't apply to it. I'll try the patch from #17515 now, and then try to figure out why I still have 26 failures.
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-03-05T22:02:26Z
-updated_at: 2026-01-16T10:09:13Z
+updated_at: 2026-01-16T17:00:54Z
 url: https://github.com/astral-sh/uv/issues/11991
-synced_at: 2026-01-16T11:07:38Z
+synced_at: 2026-01-16T18:01:06Z
 ```
 
 # Improve documentation on how to run uv script in a cron
@@ -117,5 +117,41 @@ But the following works:
 ```
 
 What am I missing? (Suspect I'll kick myself..!)
+
+---
+
+_Comment by @rwkopcke on 2026-01-16 16:59_
+
+i took only a quick look. But you should have run before  —projectSent from my iPhone.On Jan 16, 2026, at 05:09, technicaltitch ***@***.***> wrote:﻿technicaltitch left a comment (astral-sh/uv#11991)
+I'm using:
+uv --project /usr/src/project /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+
+And getting:
+error: unrecognized subcommand '/usr/src/project/manage.py'
+
+But the following works:
+/usr/src/project/.venv/bin/python3.13 /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+
+What am I missing? (Suspect I'll kick myself..!)
+
+—Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you commented.Message ID: ***@***.***>
+
+---
+
+_Comment by @rwkopcke on 2026-01-16 17:00_
+
+and you should the full path to uv instead of just uvSent from my iPhone.On Jan 16, 2026, at 05:09, technicaltitch ***@***.***> wrote:﻿technicaltitch left a comment (astral-sh/uv#11991)
+I'm using:
+uv --project /usr/src/project /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+
+And getting:
+error: unrecognized subcommand '/usr/src/project/manage.py'
+
+But the following works:
+/usr/src/project/.venv/bin/python3.13 /usr/src/project/manage.py dumpdata -o /usr/src/project/backup/prd_$(date +%Y%m%d).json.gz
+
+What am I missing? (Suspect I'll kick myself..!)
+
+—Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you commented.Message ID: ***@***.***>
 
 ---

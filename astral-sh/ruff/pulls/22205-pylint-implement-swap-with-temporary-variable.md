@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
-updated_at: 2026-01-16T16:46:39Z
+updated_at: 2026-01-16T17:50:14Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-16T16:59:44Z
+synced_at: 2026-01-16T18:01:01Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
@@ -769,5 +769,58 @@ is always empty...
 I assume that the other statements we're inspecting here are not yet being visited by the `SemanticModel` either, so they haven't encountered the references yet? :/ 
 
 In this case, a dirty workaround would be to reverse the direction of the `match_consecutive_assignments` method, i.e. we build a list of assignments by collecting all `previous_siblings` of the current `stmt`? But I'm not sure if that's desired...
+
+---
+
+_@ntBre reviewed on 2026-01-16 17:19_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py`:5 on 2026-01-16 17:19_
+
+Awesome, thanks for all your work here!
+
+Hmm, maybe `analyze::statement` still isn't late enough in the process. I would have at least expected `is_global` to work, I thought we extracted `global` statements very early on. These should be the latest stages of analysis:
+
+https://github.com/astral-sh/ruff/blob/12a4ca003fb89e4ca079d1922375d17e7225877d/crates/ruff_linter/src/checkers/ast/mod.rs#L3307-L3316
+
+None of them immediately jump out to me as sounding right here, but that's where I would look next. I guess this kind of aligns with my initial suggestion since `manual-list-comprehension` runs in `deferred_for_loops`, though I didn't realize it at the time, sorry!
+
+I think you could make something work in `analyze::definitions` because each `Definition` does have (somewhat indirect) access to its suite of statements, but most of the other rules there currently seem to relate to docstrings.
+
+---
+
+_@Bnyro reviewed on 2026-01-16 17:50_
+
+---
+
+_Review comment by @Bnyro on `crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py`:5 on 2026-01-16 17:50_
+
+> I would have at least expected is_global to work, I thought we extracted global statements very early on
+>
+You're right, absolutely my bad in this case. `global` statements work properly. I didn't know that `is_global` is only set when we explicitly declare it as `global` variable. 
+
+I changed the test case from 
+```py
+foo = 3
+
+def x():
+    foo = 4
+```
+ 
+to
+
+```py
+foo = 3
+
+def x():
+    global foo
+    foo = 4
+```
+and now at least this test case passes, so only the one with later `references` to the temporary variable left :)
+
+> I think you could make something work in analyze::definitions because each Definition does have (somewhat indirect) access to its suite of statements, but most of the other rules there currently seem to relate to docstrings.
+>
+Thanks for pointing me there! I'll look into this when I find some time in the coming days, for now I have to get a break to free my mind first :)
 
 ---

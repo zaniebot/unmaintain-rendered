@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-16T16:36:20Z
+updated_at: 2026-01-16T17:15:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-16T16:59:48Z
+synced_at: 2026-01-16T18:01:04Z
 ```
 
 # Dependency Dashboard
@@ -102,7 +102,6 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/rust-1.x -->[Update Rust to v1.92.0](../pull/17523)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
 
 ## Pending Status Checks
@@ -110,6 +109,7 @@ The following updates have been manually edited so Renovate will no longer make 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
+ - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
@@ -120,7 +120,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 98f3aa9](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
- - [ ] <!-- rebase-branch=renovate/msrv -->[Update MSRV to v1.90.0](../pull/17522)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
@@ -1141,7 +1140,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>Cargo.toml (1)</summary>
 
- - `msrv 1.89` → [Updates: `1.90.0`]
+ - `msrv 1.90.0` → [Updates: `1.92.0`]
 
 </details>
 
@@ -1173,7 +1172,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>rust-toolchain.toml (1)</summary>
 
- - `rust 1.91` → [Updates: `1.92.0`]
+ - `rust 1.92.0`
 
 </details>
 
