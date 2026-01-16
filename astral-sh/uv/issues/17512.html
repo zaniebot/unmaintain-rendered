@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigate why uv holds so many file handles open - astral-sh/uv #17512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Investigate why uv holds so many file handles open</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17512">#17512</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2026-01-16 09:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
+            <div class="timeline-body"><p>We got reports that uv overruns the default open files limit (ulimit) for users on Linux and macOS:</p>
+<ul>
+<li>During sync/building packages: https://github.com/astral-sh/uv/issues/11296</li>
+<li>During bytecode compilation: https://github.com/astral-sh/uv/issues/16999</li>
+<li>When uninstall Python versions (no GitHub issue yet)</li>
+</ul>
+<p>The default ulimits can be low, for example 1024 on linux, and we spawn up to a thread per core and several subprocesses. However, Cargo and other Rust tools which have very similar workloads and often very similar problems to us, don't have any problems with ulimits. A cargo maintainer <a href="https://rust-lang.zulipchat.com/#narrow/channel/246057-t-cargo/topic/Do.20cargo.2Frustc.20handle.20low.20ulimits.3F/near/568121917">told us</a>:</p>
+<blockquote>
+<p>From my testing for fine grain locking (unstable feature), I found that Cargo generally peaks with around ~70-80 file descriptors opened at once, and this remainly mostly static even for large projects.</p>
+</blockquote>
+<p>So the question is, why are we running into the ulimit, while Cargo doesn't? What file descriptors is uv even holding, do we need them? Is Cargo doing something different that we can adopt to avoid this?</p>
+<p>This requires some Unix expertise and rust parallelism knowledge, but should otherwise not require much uv specific details, this is mostly around figuring out how to analyze this this in uv and determining the differences to Cargo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2026-01-16 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2026-01-16 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @konstin on 2026-01-16 09:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 09:59:15 UTC
+    </footer>
+</body>
+</html>
