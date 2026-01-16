@@ -9,9 +9,9 @@ labels:
   - windows
 assignees: []
 created_at: 2026-01-15T23:48:03Z
-updated_at: 2026-01-16T02:28:20Z
+updated_at: 2026-01-16T05:53:02Z
 url: https://github.com/astral-sh/ruff/issues/22612
-synced_at: 2026-01-16T03:04:37Z
+synced_at: 2026-01-16T05:54:32Z
 ```
 
 # --exclude glob patterns don't match on Windows
@@ -124,5 +124,22 @@ _Label `bug` added by @amyreese on 2026-01-16 02:28_
 ---
 
 _Label `windows` added by @amyreese on 2026-01-16 02:28_
+
+---
+
+_Comment by @ahochheiden on 2026-01-16 05:27_
+
+```
+/d/mozilla-source/firefox-fresh
+$ ruff format --check --force-exclude --exclude="build/moz.configure/*.configure" build/moz.configure/bindgen.configure
+warning: No Python files found under the given path(s)
+```
+That works. So it seems the issue is with how glob patterns are expanded when using `--exclude "pattern"` vs `--exclude="pattern"` on Windows.
+
+---
+
+_Comment by @ahochheiden on 2026-01-16 05:53_
+
+I think this is the culprit: https://github.com/astral-sh/ruff/blob/0ce5ce4de11c7e3dc3aa131287c671618e61c014/crates/ruff/src/main.rs#L42
 
 ---
