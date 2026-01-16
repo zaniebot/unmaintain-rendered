@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: dcreager/lazy-sequent-map
 created_at: 2026-01-14T18:04:45Z
-updated_at: 2026-01-15T21:14:14Z
+updated_at: 2026-01-16T00:49:41Z
 url: https://github.com/astral-sh/ruff/pull/22577
-synced_at: 2026-01-15T22:02:06Z
+synced_at: 2026-01-16T01:04:07Z
 ```
 
 # [ty] Build constraint set sequent maps lazily
@@ -296,5 +296,9 @@ _@ibraheemdev reviewed on 2026-01-15 21:14_
 _Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/constraints.rs`:3308 on 2026-01-15 21:14_
 
 Yeah, interior mutability will not play well with Salsa here. If the interior mutability code creates an interned value without the `sequent_map` query having a dependency on that interned value, the interned value may be garbage collected, and later calls to `sequent_map` will read stale data.
+
+---
+
+_Review request for @carljm removed by @carljm on 2026-01-16 00:49_
 
 ---

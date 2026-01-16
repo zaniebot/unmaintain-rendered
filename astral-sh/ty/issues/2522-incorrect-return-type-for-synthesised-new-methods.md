@@ -10,9 +10,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T20:44:43Z
-updated_at: 2026-01-15T20:45:39Z
+updated_at: 2026-01-16T00:17:17Z
 url: https://github.com/astral-sh/ty/issues/2522
-synced_at: 2026-01-15T21:12:37Z
+synced_at: 2026-01-16T01:03:50Z
 ```
 
 # Incorrect return type for synthesised `__new__` methods of `NamedTuple` classes
@@ -65,5 +65,9 @@ _Label `bug` added by @AlexWaygood on 2026-01-15 20:45_
 ---
 
 _Label `typing semantics` added by @AlexWaygood on 2026-01-15 20:45_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-16 00:17_
 
 ---

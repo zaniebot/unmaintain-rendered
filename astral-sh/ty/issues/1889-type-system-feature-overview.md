@@ -7,9 +7,9 @@ author: sharkdp
 labels: []
 assignees: []
 created_at: 2025-12-15T13:10:30Z
-updated_at: 2026-01-04T21:54:41Z
+updated_at: 2026-01-16T00:11:17Z
 url: https://github.com/astral-sh/ty/issues/1889
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-16T01:03:50Z
 ```
 
 # Type system feature overview
@@ -470,6 +470,7 @@ If a top-level item is marked completed without any sub-items, you can generally
 - [ ] #1877
 - [ ] https://github.com/astral-sh/ty/issues/1923
 - [ ] https://github.com/astral-sh/ty/issues/1927
+- [ ] https://github.com/astral-sh/ty/issues/2525
 
 ## `__slots__`
 
