@@ -279,10 +279,67 @@ DEBUG Received exit notification, exiting
 <p>I'll try your approach instead</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-16 10:00</div>
+            <div class="timeline-body"><p>Sorry for the delay!</p>
+<p>I'm not sure if this is going to be the case for Neovim mainly because Neovim will start a separate server for each of these directories because it has all of the possible configuration files for Ruff to <a href="https://github.com/neovim/nvim-lspconfig/blob/92ee7d42320edfbb81f3cad851314ab197fa324a/lua/lspconfig/configs/ruff.lua#L14-L17">detect the project root</a> which it uses to detect if there's a common root. In this case, there isn't but if there was a config file in the root project, then it might not spawn a separate server for each of these directories:</p>
+<pre><code>- ruff (id: 2)
+  - Version: 0.14.11
+  - Root directory: ~/playground/ruff/issue-17944/project-b
+  - Command: { &quot;ruff&quot;, &quot;server&quot; }
+  - Settings: {}
+  - Attached buffers: 6
+
+- ruff (id: 5)
+  - Version: 0.14.11
+  - Root directory: ~/playground/ruff/issue-17944/project-a
+  - Command: { &quot;ruff&quot;, &quot;server&quot; }
+  - Settings: {}
+  - Attached buffers: 13
+</code></pre>
+<blockquote>
+<ul>
+<li>cwd at top-level, opening <code>dir_0/test_0.py</code></li>
+<li>cwd at top-level, opening <code>dir_0/test_0.py</code>, then <code>../dir_1/test_1.py</code> in same session</li>
+<li>cwd in <code>dir_0</code>, opening <code>../dir_1/test_1.py</code></li>
+<li>cwd in <code>dir_0</code>, opening <code>test_0.py</code> first, then <code>../dir_1/test_1.py</code> in same session</li>
+</ul>
+</blockquote>
+<p>So, all of these cases (copied from the linked PR) works as expected at least in Neovim because it spawns two separate Ruff servers with different project root.</p>
+<p>Although I do see the issue in VS Code.</p>
+<p>I'm going to look at the PR now, but I wanted to understand the issue first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-16 10:16</div>
+            <div class="timeline-body"><blockquote>
+<p>2. <code>nvim dir_0/test_0.py</code> or <code>nvim dir_1/test_1.py</code> only gives one warning (bug)</p>
+</blockquote>
+<p>In this case in Neovim, I'm actually seeing</p>
+<ul>
+<li>both warnings from Ruff for <code>nvim dir_0/test_0.py</code> which is as expected, doesn't look like a bug)</li>
+<li>seeing no warnings for <code>nvim dir_1/test_1.py</code> which is also as expected because the <code>dir_1/ruff.toml</code> doesn't have <code>F</code> selected, preview is disabled so <code>FURB101</code> will not be checked</li>
+</ul>
+<blockquote>
+<p>3. <code>cd dir_0; nvim test_0.py</code> then <code>:edit dir_0_1/test_0_1.py</code> gives two warnings (bug)   - this is because <code>dir_0/ruff.toml</code> is used instead of <code>dir_0_1/ruff.toml</code></p>
+</blockquote>
+<p>I'm seeing the expected behavior in this case as well for Neovim where the later addition of <code>dir_0_1/test_0_1.py</code> gives me zero warnings from Ruff as it spawns a different LSP for that file because it is considered to have a different root than the existing LSP.</p>
+<blockquote>
+<p>4. <code>cd dir_0; nvim test_0.py</code> then <code>:edit ../dir_1/test_1.py</code> gives one warning (bug)</p>
+</blockquote>
+<p>Same here, I'm seeing expected behavior because of the way Neovim tries to find project root for the LSP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZedThree">@ZedThree</a> on 2026-01-16 10:38</div>
+            <div class="timeline-body"><p>Ah, I hadn't set <code>root_markers</code> in my neovim config. That does indeed make things work correctly. It's not my usual editor, so I hadn't realised that was required -- could be useful to add this to the docs?</p>
+<p>The issue does seem to also affect other editors like VS Code in single file mode, and helix.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 11:34:59 UTC
+        Synced at 2026-01-16 10:57:03 UTC
     </footer>
 </body>
 </html>

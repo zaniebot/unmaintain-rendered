@@ -128,10 +128,34 @@ $ uv pip install --python .venv/bin/python ./foo
         <div class="timeline-entry">
             <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-24 21:01</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2026-01-16 10:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, the thing that's changing here is literally the build backend itself? No, we definitely don't support that right now. I'm not sure that we will -- how can we reliably detect that it has changed? Any ideas? <code>--refresh</code> feels like the right answer here.</p>
+</blockquote>
+<p><code>cache-keys</code> seems like it would be a good solution there, however:</p>
+<ul>
+<li>it doesn't really work in the case I hit (which I assume is the original case) where the build backend collates dependencies information from various sources, as those sources may be changeable and even dynamically resolved, and I didn't find a dynamic version of <code>cache-keys</code></li>
+<li>adding the in-tree build backend to the cache keys behaves very strangely, I have a test backend which simply overrides <code>prepare_metadata_for_build_editable</code> to append a bunch of <code>Requires-Dist</code> to <code>METADATA</code>, if I add the file to the cache-keys, sync, remove one of the dependencies, sync, uv sees that and removes the dep from the env, but then on the next run it somehow finds cached metadata with <em>no</em> dependencies, and removes everything from the env</li>
+</ul>
+<p>I also tried using <code>reinstall-package</code> but it does a bit <em>too</em> much: as the name indicates it always reinstalls the thing, not checking if the metadata have changed. So when there are lots of non-trivial dependencies (as is likely the case for a project which needs to resolve dependencies dynamically) it's quite painful.</p>
+<p><code>--refresh</code> currently seems the least bad option, but having to specify it every time is icky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmo-odoo">@xmo-odoo</a> on 2026-01-16 10:22</div>
+            <div class="timeline-body"><p>Incidentally the <code>reinstall</code> setting says</p>
+<blockquote>
+<p>Reinstall all packages, regardless of whether they're already installed. Implies <code>refresh</code>.</p>
+</blockquote>
+<p>but <code>refresh</code> is not currently a valid setting (I assume reinstall is both a setting and a flag and the docs are shared).</p>
+<p>Maybe <code>refresh</code> could be promoted to whatever status <code>reinstall</code> has, so a project which needs this behavior could just set <code>tool.uv.refresh = true</code> and be on its merry way? Obviously at the cost of re-resolving the metadata every time but...</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:00 UTC
+        Synced at 2026-01-16 10:58:55 UTC
     </footer>
 </body>
 </html>
