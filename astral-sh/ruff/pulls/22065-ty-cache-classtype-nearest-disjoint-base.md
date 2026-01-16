@@ -12,9 +12,9 @@ draft: true
 base: main
 head: zb/cache-nearest
 created_at: 2025-12-18T22:32:26Z
-updated_at: 2026-01-06T15:49:52Z
+updated_at: 2026-01-16T14:39:30Z
 url: https://github.com/astral-sh/ruff/pull/22065
-synced_at: 2026-01-12T15:57:40Z
+synced_at: 2026-01-16T14:57:55Z
 ```
 
 # [ty] Cache `ClassType::nearest_disjoint_base`
@@ -761,5 +761,11 @@ For sure. The main point I wanted to make is that (unlike many instances where w
 There are only two reported performance regressions (vs seven reported improvements)... but I suppose it is a bit concerning that there is a 3% regression reported on the multithreaded benchmark. Most real-world uses of ty are going to invoke it with multithreading enabled, and the regression on that benchmark could indicate that the cache is leading to lock contention between threads, I suppose?
 
 I guess it could be worth also running the ty_benchmark script to see if any regressions are reported there.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 14:39_
+
+I merged `main` into this branch locally and then used `ty_benchmark` to compare this branch with `main`. I didn't see any significant regressions locally, but I saw speedups of 4-7% on `pandas`, and speedups of ~2% on `Black`, `prefect` and `pytorch`.
 
 ---

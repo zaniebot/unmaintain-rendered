@@ -8,9 +8,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-10-08T08:29:59Z
-updated_at: 2026-01-16T13:49:34Z
+updated_at: 2026-01-16T14:25:48Z
 url: https://github.com/astral-sh/ty/issues/1323
-synced_at: 2026-01-16T13:56:52Z
+synced_at: 2026-01-16T14:57:37Z
 ```
 
 # support finding packages installed into Debian `dist-packages` directories
@@ -149,5 +149,11 @@ But this PR still requires validation on a real Debian/Ubuntu system, and I don'
 _Comment by @rivershah on 2026-01-16 13:49_
 
 @carljm Your suggested fixes are working. Tested this inside a devcontainer and issue is resolved
+
+---
+
+_Comment by @BrianSipos on 2026-01-16 14:25_
+
+With this patch I still see problems using ty without a PYTHONPATH environment in GitHub CI job configured by [actions/setup-python](https://github.com/marketplace/actions/setup-python). I suppose that is a different problem than this Debian/Ubuntu compat issue. I can write that up separately.
 
 ---

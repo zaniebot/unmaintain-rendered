@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T20:33:07Z
+updated_at: 2026-01-16T14:04:15Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T21:12:42Z
+synced_at: 2026-01-16T14:57:42Z
 ```
 
 # Dependency Dashboard
@@ -114,7 +114,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 ## Detected Dependencies
 
-<details><summary>cargo (46)</summary>
+<details><summary>cargo (47)</summary>
 <blockquote>
 
 <details><summary>Cargo.toml (122)</summary>
@@ -438,6 +438,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </details>
 
 <details><summary>crates/ty_server/Cargo.toml</summary>
+
+
+</details>
+
+<details><summary>crates/ty_site_packages/Cargo.toml</summary>
 
 
 </details>

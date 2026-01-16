@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: temporary-variable-swap
 created_at: 2025-12-26T11:15:04Z
-updated_at: 2026-01-16T08:59:29Z
+updated_at: 2026-01-16T14:47:50Z
 url: https://github.com/astral-sh/ruff/pull/22205
-synced_at: 2026-01-16T09:55:09Z
+synced_at: 2026-01-16T14:57:55Z
 ```
 
 # [`pylint`] Implement `swap-with-temporary-variable` (`PLR1712`)
@@ -659,5 +659,76 @@ doesn't find the binding definition and panics.
 ---
 
 _Review requested from @ntBre by @MichaReiser on 2026-01-16 08:59_
+
+---
+
+_@ntBre reviewed on 2026-01-16 14:33_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs`:145 on 2026-01-16 14:33_
+
+Ah, I think you can use `as_name_expr`, which borrows. I tried this patch locally, and it seemed to work:
+
+```diff
+diff --git a/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs b/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
+index f75b0a4ea3..38e9b006f4 100644
+--- a/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
++++ b/crates/ruff_linter/src/rules/pylint/rules/swap_with_temporary_variable.rs
+@@ -136,14 +136,14 @@ pub(crate) fn swap_with_temporary_variable(checker: &Checker, stmts: &[Stmt]) {
+ }
+ 
+ #[derive(Eq, PartialEq, Debug, Clone)]
+-struct VarToVarAssignment {
+-    target: Name,
+-    value: Name,
++struct VarToVarAssignment<'a> {
++    target: &'a Name,
++    value: &'a Name,
+     range: TextRange,
+ }
+ 
+-impl VarToVarAssignment {
+-    fn from_stmt(stmt: &Stmt) -> Option<VarToVarAssignment> {
++impl<'a> VarToVarAssignment<'a> {
++    fn from_stmt(stmt: &'a Stmt) -> Option<VarToVarAssignment<'a>> {
+         let (target, value) = match stmt {
+             Stmt::Assign(stmt_assign) => {
+                 // only one variable is expected for matching the pattern
+@@ -167,12 +167,11 @@ impl VarToVarAssignment {
+         };
+ 
+         // assignment value is more complex than just a simple variable, skip such cases.
+-        if let (Some(target_expr), Some(value_expr)) =
+-            (target.clone().name_expr(), value.clone().name_expr())
++        if let (Some(target_expr), Some(value_expr)) = (target.as_name_expr(), value.as_name_expr())
+         {
+             Some(Self {
+-                target: target_expr.id,
+-                value: value_expr.id,
++                target: &target_expr.id,
++                value: &value_expr.id,
+                 range: stmt.range(),
+             })
+         } else {
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/pylint/swap_with_temporary_variable.py`:5 on 2026-01-16 14:47_
+
+Ah that's not good. I think what's happening is that the suite analysis is run before the semantic model is really built, so we can't access the bindings that way here. This usually means that we need to move a rule to a different phase of the analysis. I think this rule might have some helpful code for that:
+
+https://github.com/astral-sh/ruff/blob/10fd3b2415eaf618ecf0fc8f9da729dabcb4e7cb/crates/ruff_linter/src/rules/refurb/rules/repeated_append.rs#L176-L179
+
+and it runs in `analyze::statement` instead of `analyze::suite`:
+
+https://github.com/astral-sh/ruff/blob/10fd3b2415eaf618ecf0fc8f9da729dabcb4e7cb/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L1614-L1616
+
+although I think your rule will need to be in the `Stmt::Assign` (and `AnnAssign`) block instead of `Stmt::Expr`.
+
+---
+
+_@ntBre reviewed on 2026-01-16 14:47_
 
 ---

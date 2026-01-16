@@ -2,17 +2,18 @@
 number: 17249
 title: "Make `uv pip compile` attempt to download a specified `--python-version` if it can."
 type: pull_request
-state: open
+state: merged
 author: EliteTK
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-16T13:52:15Z
+updated_at: 2026-01-16T14:01:57Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-16T13:57:23Z
+synced_at: 2026-01-16T14:58:08Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -480,5 +481,17 @@ I think that sounds like a bug in the warning chain print? Should it be bolding 
 ---
 
 _@zanieb reviewed on 2026-01-15 23:46_
+
+---
+
+_Merged by @EliteTK on 2026-01-16 14:01_
+
+---
+
+_Closed by @EliteTK on 2026-01-16 14:01_
+
+---
+
+_Branch deleted on 2026-01-16 14:01_
 
 ---

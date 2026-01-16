@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-16T08:33:38Z
+updated_at: 2026-01-16T14:30:38Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-16T08:55:17Z
+synced_at: 2026-01-16T14:57:55Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -476,5 +476,15 @@ or even make it a new enum item? the message are similair
 ---
 
 _@Lee-W reviewed on 2026-01-16 08:33_
+
+---
+
+_@sjyangkevin reviewed on 2026-01-16 14:30_
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:184 on 2026-01-16 14:30_
+
+Thanks for the feedback! I attempted to use `format!` to template the message and pass the `rest`, but it returns a `String` type. However, `Message` is static string and has type error. I will play around with it and see if there is a way to use `Message`, if not, we can create a new enum item.
 
 ---

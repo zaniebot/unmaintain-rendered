@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: enum_value_annotation
 created_at: 2025-12-27T19:17:26Z
-updated_at: 2025-12-29T09:18:50Z
+updated_at: 2026-01-16T14:16:32Z
 url: https://github.com/astral-sh/ruff/pull/22228
-synced_at: 2026-01-12T15:57:44Z
+synced_at: 2026-01-16T14:57:55Z
 ```
 
 # [ty] support enum `_value_` annotation
@@ -264,5 +264,164 @@ It's throwing an diagnostic currently on the last MERCURY line, while it shouldn
 _Comment by @MichaReiser on 2025-12-29 09:18_
 
 Thank you for working on this. Almost the entire team is out this week. It may take a few days before someone finds time to answer your question. We're sorry for that. Happy holidays.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/enums.md`:1 on 2026-01-16 13:57_
+
+Can you also add a test that shows that we do not emit false positives in stub files? For example:
+
+````md
+```pyi
+from enum import Enum
+
+class Foo(Enum):
+    _value_ = list[int]
+    X = ...  # no error, because it's a stub file
+    Y = []  # also fine
+    Z = None  # error (only `...` is exempted from the normal rules in stub files)
+```
+````
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1 on 2026-01-16 14:10_
+
+I wonder if it might be more efficient to put this check in `overrides.rs`, where we already iterate over all definitions and declarations in every class?
+
+You could do something like this:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/overrides.rs b/crates/ty_python_semantic/src/types/overrides.rs
+index 15094518e8..5741fd86b6 100644
+--- a/crates/ty_python_semantic/src/types/overrides.rs
++++ b/crates/ty_python_semantic/src/types/overrides.rs
+@@ -10,13 +10,13 @@ use rustc_hash::FxHashSet;
+ use crate::{
+     Db,
+     lint::LintId,
+-    place::{DefinedPlace, Place},
++    place::{DefinedPlace, Place, place_from_declarations},
+     semantic_index::{
+         definition::DefinitionKind, place::ScopedPlaceId, place_table, scope::ScopeId,
+         symbol::ScopedSymbolId, use_def_map,
+     },
+     types::{
+-        ClassBase, ClassType, KnownClass, StaticClassLiteral, Type,
++        ClassBase, ClassLiteral, ClassType, KnownClass, StaticClassLiteral, Type,
+         class::CodeGeneratorKind,
+         context::InferContext,
+         diagnostic::{
+@@ -24,6 +24,7 @@ use crate::{
+             OVERRIDE_OF_FINAL_METHOD, report_invalid_method_override,
+             report_overridden_final_method,
+         },
++        enums::{EnumMetadata, enum_metadata},
+         function::{FunctionDecorators, FunctionType, KnownFunction},
+         list_members::{Member, MemberWithDefinition, all_end_of_scope_members},
+     },
+@@ -45,6 +46,30 @@ const PROHIBITED_NAMEDTUPLE_ATTRS: &[&str] = &[
+     "_source",
+ ];
+ 
++struct EnumClassInfo<'db> {
++    metadata: &'db EnumMetadata<'db>,
++    value_sunder_type: Type<'db>,
++}
++
++impl<'db> EnumClassInfo<'db> {
++    fn from_class(db: &'db dyn Db, class: StaticClassLiteral<'db>) -> Option<EnumClassInfo<'db>> {
++        let metadata = enum_metadata(db, class.into())?;
++
++        let scope = class.body_scope(db);
++        let value_sunder_symbol = place_table(db, scope).symbol_id("_value_")?;
++        let value_sunder_declarations =
++            use_def_map(db, scope).end_of_scope_symbol_declarations(value_sunder_symbol);
++        let value_sunder_type = place_from_declarations(db, value_sunder_declarations)
++            .ignore_conflicting_declarations()
++            .ignore_possibly_undefined()?;
++
++        Some(EnumClassInfo {
++            metadata,
++            value_sunder_type,
++        })
++    }
++}
++
+ // TODO: Support dynamic class literals. If we allow dynamic classes to define attributes in their
+ // namespace dictionary, we should also check whether those attributes are valid overrides of
+ // attributes in their superclasses.
+@@ -58,15 +83,24 @@ pub(super) fn check_class<'db>(context: &InferContext<'db, '_>, class: StaticCla
+     let class_specialized = class.identity_specialization(db);
+     let scope = class.body_scope(db);
+     let own_class_members: FxHashSet<_> = all_end_of_scope_members(db, scope).collect();
++    let enum_info = EnumClassInfo::from_class(db, class);
+ 
+     for member in own_class_members {
+-        check_class_declaration(context, configuration, class_specialized, scope, &member);
++        check_class_declaration(
++            context,
++            configuration,
++            enum_info.as_ref(),
++            class_specialized,
++            scope,
++            &member,
++        );
+     }
+ }
+ 
+ fn check_class_declaration<'db>(
+     context: &InferContext<'db, '_>,
+     configuration: OverrideRulesConfig,
++    enum_info: Option<&EnumClassInfo<'db>>,
+     class: ClassType<'db>,
+     class_scope: ScopeId<'db>,
+     member: &MemberWithDefinition<'db>,
+```
+
+and then you'd have the necessary information to do the member-verification check inside `check_class_declaration` if `enum_info` is `Some()` (in which case you know you're dealing with an enum class that has a `_value_` sunder), and skip the check if `enum_info` is `None`
+
+---
+
+_@AlexWaygood reviewed on 2026-01-16 14:10_
+
+Nice, thank you! Sorry for the delay in reviewing this!!
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 14:16_
+
+> ```python
+> from enum import Enum
+> 
+> class Color(Enum):
+>     _value_: int
+>     RED = 1
+> 
+> reveal_type(Color.RED.value)  # revealed: Literal[1]
+> reveal_type(Color.RED._value_)  # revealed: Literal[1]
+> ```
+>   
+> The _value_ revealed still holds Literal[1] there, while some other type checkers will show up int. What would we do here?
+
+I think inferring `Literal[1]` there is fine, since `Literal[1]` is assignable to `int`. Possibly it's unsound to infer `Literal[1]` if the enum class has a custom constructor method...? But the enum class in your example does not.
+
+> Second, this example came out the comformance testing:
+> 
+> ```python
+> from enum import Enum
+> 
+> class Planet2(Enum):
+>     _value_: str
+> 
+>     def __init__(self, value: int, mass: float, radius: float):
+>         self._value_ = value  # E
+> 
+>     MERCURY = (1, 3.303e23, 2.4397e6)
+> ```
+> 
+> It's throwing an diagnostic currently on the last MERCURY line, while it shouldn't. While it's obviously what's happening here, it's not so obviously to me how to fix it.
+
+The spec explains what to do here at https://typing.python.org/en/latest/spec/enums.html#member-values
 
 ---

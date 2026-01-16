@@ -9,9 +9,9 @@ labels:
   - good first issue
 assignees: []
 created_at: 2024-08-23T20:58:43Z
-updated_at: 2025-03-21T17:12:27Z
+updated_at: 2026-01-16T14:33:56Z
 url: https://github.com/astral-sh/uv/issues/6548
-synced_at: 2026-01-12T15:59:05Z
+synced_at: 2026-01-16T14:57:59Z
 ```
 
 # Clarify that `uv run python` gets you a REPL
@@ -113,5 +113,11 @@ _Comment by @zanieb on 2025-03-21 14:00_
 _Comment by @IliasAarab on 2025-03-21 17:12_
 
 @zanieb thanks for the response, see #12373 
+
+---
+
+_Comment by @chilin0525 on 2026-01-16 14:33_
+
+@zanieb  Hi, do you have time to review [this PR](https://github.com/astral-sh/uv/pull/16649?)? thanks!
 
 ---

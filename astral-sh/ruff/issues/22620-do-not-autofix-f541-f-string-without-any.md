@@ -4,12 +4,13 @@ title: "Do not autofix F541 `f-string without any placeholders` / mark as risky"
 type: issue
 state: open
 author: k0pernikus
-labels: []
+labels:
+  - fixes
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-16T13:14:01Z
+updated_at: 2026-01-16T14:02:58Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-16T13:56:58Z
+synced_at: 2026-01-16T14:57:43Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -190,5 +191,15 @@ No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option
 
 It is also really great that you have also included the `--unsafe-fixes`-flag!
 
+
+---
+
+_Comment by @ntBre on 2026-01-16 14:02_
+
+Thanks for the report! Yeah, I think this should probably be an unsafe fix by default since the intention of the original code isn't clear.
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-16 14:02_
 
 ---

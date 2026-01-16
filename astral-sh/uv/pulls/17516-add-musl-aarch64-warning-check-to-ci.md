@@ -2,7 +2,7 @@
 number: 17516
 title: Add musl aarch64 warning check to CI
 type: pull_request
-state: open
+state: closed
 author: zanieb
 labels:
   - testing
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: zb/musl-clippy
 created_at: 2026-01-16T13:31:54Z
-updated_at: 2026-01-16T13:49:27Z
+updated_at: 2026-01-16T13:59:10Z
 url: https://github.com/astral-sh/uv/pull/17516
-synced_at: 2026-01-16T13:57:23Z
+synced_at: 2026-01-16T14:58:08Z
 ```
 
 # Add musl aarch64 warning check to CI
@@ -47,5 +47,9 @@ _Review comment by @github-advanced-security[bot] on `.github/workflows/check-li
 detects commit SHAs that don't match their version comment tags
 
 [Show more details](https://github.com/astral-sh/uv/security/code-scanning/234)
+
+---
+
+_Closed by @zanieb on 2026-01-16 13:59_
 
 ---

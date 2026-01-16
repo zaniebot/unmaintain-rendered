@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T13:55:43Z
+updated_at: 2026-01-16T14:21:43Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T13:57:15Z
+synced_at: 2026-01-16T14:58:01Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -230,5 +230,11 @@ https://github.com/astral-sh/uv/blob/681e8e060fdc4ca2d0a180159ce63a720d3b93cf/cr
 and I'm supportive of expanding our `XDG_*` coverage
 
 https://github.com/astral-sh/uv/blob/681e8e060fdc4ca2d0a180159ce63a720d3b93cf/crates/uv/tests/it/common/mod.rs#L1020-L1023
+
+---
+
+_Comment by @musicinmybrain on 2026-01-16 14:21_
+
+Aha, I was struggling with this in Fedora as well, although I didn’t have nearly as many failing tests. Thank you for reporting it. It looks like passing through `PATH` (#17515) will be sufficient for the way we build packages in Fedora. I also needed #17520.
 
 ---

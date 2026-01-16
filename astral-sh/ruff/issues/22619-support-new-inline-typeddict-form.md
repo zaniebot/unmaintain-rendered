@@ -4,12 +4,13 @@ title: Support new inline TypedDict form
 type: issue
 state: open
 author: kaste
-labels: []
+labels:
+  - needs-decision
 assignees: []
 created_at: 2026-01-16T12:32:55Z
-updated_at: 2026-01-16T12:32:55Z
+updated_at: 2026-01-16T14:19:00Z
 url: https://github.com/astral-sh/ruff/issues/22619
-synced_at: 2026-01-16T12:56:19Z
+synced_at: 2026-01-16T14:57:43Z
 ```
 
 # Support new inline TypedDict form
@@ -47,5 +48,15 @@ Undefined name `b` (F821) [Ln 7, Col 22]
 ### Version
 
 v0.14.13
+
+---
+
+_Comment by @ntBre on 2026-01-16 14:18_
+
+Thanks for the report! Based on the linked docs, this is an "experimental (non-standard) feature" feature even in mypy, so I think we may want to wait and see if this becomes more widely supported. It looks like [ty](https://play.ty.dev/2c062c5c-8a77-4cce-ac02-7d71adf3e316) doesn't currently support this either.
+
+---
+
+_Label `needs-decision` added by @ntBre on 2026-01-16 14:19_
 
 ---

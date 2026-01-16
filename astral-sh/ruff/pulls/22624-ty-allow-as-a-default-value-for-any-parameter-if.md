@@ -1,0 +1,145 @@
+```yaml
+number: 22624
+title: "[ty] Allow `...` as a default value for any parameter if the function is in an `if TYPE_CHECKING` block"
+type: pull_request
+state: open
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+base: main
+head: alex/invalid-parameter-default-type-checking
+created_at: 2026-01-16T14:50:52Z
+updated_at: 2026-01-16T14:53:50Z
+url: https://github.com/astral-sh/ruff/pull/22624
+synced_at: 2026-01-16T14:57:55Z
+```
+
+# [ty] Allow `...` as a default value for any parameter if the function is in an `if TYPE_CHECKING` block
+
+---
+
+_@AlexWaygood_
+
+Fixes https://github.com/astral-sh/ty/issues/2534
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2026-01-16 14:50_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2026-01-16 14:50_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2026-01-16 14:50_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-16 14:50_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-16 14:52_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+
+No changes detected ✅
+
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-16 14:53_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/mark/structures.py:500:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `str | bool`
+- src/_pytest/mark/structures.py:502:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `str`
+- Found 416 diagnostics
++ Found 414 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- src/pywinctl/_pywinctl_win.py:348:17: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:427:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:430:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:431:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:432:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:433:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:434:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:435:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- src/pywinctl/_pywinctl_win.py:436:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int`
+- Found 30 diagnostics
++ Found 21 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- backend/models/core_models.py:79:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `int | None`
+- backend/models/tournament_scheduler_models.py:42:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `Player`
+- backend/models/tournament_scheduler_models.py:43:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `list[TimeSlot]`
+- backend/models/tournament_scheduler_models.py:143:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `Schedule`
+- backend/models/tournament_scheduler_models.py:145:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `list[Registration]`
+- backend/models/tournament_scheduler_models.py:216:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `TimeSlot`
+- backend/models/tournament_scheduler_models.py:217:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `list[Participant]`
+- backend/models/tournament_scheduler_models.py:245:13: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `Registration`
+- Found 28 diagnostics
++ Found 20 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/codec_options.py:259:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `type[_DocumentType@CodecOptions] | None`
+- bson/codec_options.py:260:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
+- bson/codec_options.py:261:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int | None`
+- bson/codec_options.py:262:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `str | None`
+- bson/codec_options.py:263:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `tzinfo | None`
+- bson/codec_options.py:264:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `TypeRegistry | None`
+- bson/codec_options.py:265:13: error[invalid-parameter-default] Default value of type `ellipsis` is not assignable to annotated parameter type `int | None`
+- Found 448 diagnostics
++ Found 441 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_util.py:317:9: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `Sequence[str]`
+- src/trio/_util.py:318:9: error[invalid-parameter-default] Default value of type `EllipsisType` is not assignable to annotated parameter type `Sequence[str]`
+- Found 489 diagnostics
++ Found 487 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 46 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- Found 1821 diagnostics
++ Found 1822 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---

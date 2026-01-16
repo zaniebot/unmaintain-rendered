@@ -2,15 +2,15 @@
 number: 16709
 title: "`uv pip compile` does not install a python interpreter if a suitable one isn't found"
 type: issue
-state: open
+state: closed
 author: mikaylathompson
 labels:
   - bug
 assignees: []
 created_at: 2025-11-12T17:40:03Z
-updated_at: 2025-12-23T00:34:45Z
+updated_at: 2026-01-16T14:08:45Z
 url: https://github.com/astral-sh/uv/issues/16709
-synced_at: 2026-01-12T16:02:36Z
+synced_at: 2026-01-16T14:58:01Z
 ```
 
 # `uv pip compile` does not install a python interpreter if a suitable one isn't found
@@ -259,5 +259,9 @@ But to explain why it might make sense _not_ to download the `--python-version` 
 But that kind of design change should probably be applied globally (e.g., we could also apply this logic to `uv sync` etc).
 
 (Edited for clarity)
+
+---
+
+_Closed by @EliteTK on 2026-01-16 14:08_
 
 ---

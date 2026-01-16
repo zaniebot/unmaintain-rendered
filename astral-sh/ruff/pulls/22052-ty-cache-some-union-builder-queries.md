@@ -11,9 +11,9 @@ draft: true
 base: main
 head: zb/cache-union-builder
 created_at: 2025-12-18T14:27:06Z
-updated_at: 2025-12-21T04:49:34Z
+updated_at: 2026-01-16T14:43:58Z
 url: https://github.com/astral-sh/ruff/pull/22052
-synced_at: 2026-01-12T15:57:40Z
+synced_at: 2026-01-16T14:57:55Z
 ```
 
 # [ty] Cache some union builder queries
@@ -257,5 +257,11 @@ _Comment by @AlexWaygood on 2025-12-19 14:06_
 > I think the memory use changes seem pretty minor as well?
 
 I feel like it's a bit hard to tell when there are multiple changes bundled together here -- the fact that certain individual commits seem to _reduce_ memory usage a fair bit (https://github.com/astral-sh/ruff/pull/22065#issuecomment-3672531321) presumably means that other commits in this PR increase memory usage enough to offset that.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 14:43_
+
+I'm curious to see what the codspeed results look like if this is rebased on `main` -- I suspect that the `is_subtype_of` cache in particular no longer buys us nearly as much following https://github.com/astral-sh/ruff/pull/22337
 
 ---
