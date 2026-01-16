@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-16T10:27:10Z
-updated_at: 2026-01-16T11:27:37Z
+updated_at: 2026-01-16T21:43:11Z
 url: https://github.com/astral-sh/ty/issues/2531
-synced_at: 2026-01-16T11:55:53Z
+synced_at: 2026-01-16T22:14:35Z
 ```
 
 # Autocompletion for Polars/Pandas Data Frame Column names, similar to how Pycharm & Data Lab IDE's provides
@@ -72,5 +72,15 @@ _Label `wish` added by @MichaReiser on 2026-01-16 11:16_
 _Comment by @PGupta-Git on 2026-01-16 11:27_
 
 I think PyCharm extracts the column names from the in-memory dataframe. Please check this https://github.com/posit-dev/positron/issues/5436
+
+---
+
+_Comment by @dangotbanned on 2026-01-16 21:39_
+
+> That's fancy. So PyCharm goes and reads the CSV file to extract the column names.
+
+@MichaReiser I'm not a PyCharm user, but I would've expected they'd be getting the names from [`_ipython_key_completions_`](https://github.com/pola-rs/polars/blob/b894f05bc0ad454e06a78b369c6b0f72cd832075/py-polars/src/polars/dataframe/frame.py#L1603-L1604)
+
+VSCode makes use of it, IIRC only in notebooks, but the behavior extends to anything class that defines the hook + `dict`
 
 ---

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-18T16:56:03Z
-updated_at: 2026-01-12T18:10:21Z
+updated_at: 2026-01-16T21:42:24Z
 url: https://github.com/astral-sh/uv/issues/16769
-synced_at: 2026-01-12T18:23:48Z
+synced_at: 2026-01-16T22:15:05Z
 ```
 
 # Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux
@@ -159,5 +159,20 @@ _Comment by @dcwatson on 2026-01-12 18:10_
 Agreed that these are best practices. Personally I have a hard time imagining an "attack" that wasn't already possible - I can create world-writable files in /tmp as easy as uv can. That said, it _is_ best practice not to leave world-writable files lying around if not necessary, and we (and probably other orgs) need to appease the scanner gods from time to time.
 
 I'm happy to do whatever validation work you need or submit a PR for this (although I see Claude beat me to it).
+
+---
+
+_Comment by @seanb1974 on 2026-01-16 21:36_
+
+Is this update going through validation at the moment?
+Is it possible this change will make it into the next version?
+
+---
+
+_Comment by @zanieb on 2026-01-16 21:42_
+
+@dcwatson feel free to open a pull request if you'd like, I don't trust the implementation that Claude spun up and can't investigate it further at the moment.
+
+@seanb1974 this is unlikely to land in the next version, there's not a pull request yet and nobody has built a version of uv which can be used to validate the changes.
 
 ---

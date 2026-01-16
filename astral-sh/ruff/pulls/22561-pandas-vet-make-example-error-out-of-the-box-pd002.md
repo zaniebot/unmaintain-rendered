@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: patch-1
 created_at: 2026-01-13T21:16:38Z
-updated_at: 2026-01-14T08:50:07Z
+updated_at: 2026-01-16T21:12:37Z
 url: https://github.com/astral-sh/ruff/pull/22561
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-16T22:15:00Z
 ```
 
 # [`pandas-vet`] Make example error out-of-the-box (`PD002`)
@@ -135,5 +135,11 @@ students_df.ix[0]  # 0th row or row with label 0?
 ---
 
 _Label `documentation` added by @MichaReiser on 2026-01-14 08:50_
+
+---
+
+_@ntBre approved on 2026-01-16 21:12_
+
+Thanks! These names seem okay to me, if it's alright with @amyreese.
 
 ---

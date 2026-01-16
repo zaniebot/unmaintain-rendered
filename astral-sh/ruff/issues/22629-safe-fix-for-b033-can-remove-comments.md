@@ -9,9 +9,9 @@ labels:
   - fixes
 assignees: []
 created_at: 2026-01-16T19:55:23Z
-updated_at: 2026-01-16T19:55:23Z
+updated_at: 2026-01-16T21:57:41Z
 url: https://github.com/astral-sh/ruff/issues/22629
-synced_at: 2026-01-16T20:03:31Z
+synced_at: 2026-01-16T22:14:41Z
 ```
 
 # Safe fix for `B033` can remove comments
@@ -46,5 +46,11 @@ _Label `good first issue` added by @ntBre on 2026-01-16 19:55_
 ---
 
 _Label `fixes` added by @ntBre on 2026-01-16 19:55_
+
+---
+
+_Comment by @leandrobbraga on 2026-01-16 21:54_
+
+Hello, can you assign this to me ? I can work on it as a follow up to https://github.com/astral-sh/ruff/pull/22114
 
 ---

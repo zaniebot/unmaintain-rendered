@@ -8,9 +8,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2026-01-14T21:43:29Z
-updated_at: 2026-01-15T00:57:50Z
+updated_at: 2026-01-16T21:26:23Z
 url: https://github.com/astral-sh/ty/issues/2501
-synced_at: 2026-01-15T01:41:09Z
+synced_at: 2026-01-16T22:14:35Z
 ```
 
 # index-out-of-bounds error after numpy reshape
@@ -137,5 +137,20 @@ _Comment by @ntjohnson1 on 2026-01-15 00:57_
 WEIRD restarting my shell and the standalone example stopped failing.
 
 It still fails running `uv run ty check` from root on my branch off rerun though (if I don't ignore the index-out-of-bounds rule). I'll probably have time to dig into this a bit more tomorrow to figure out what the disconnect is.
+
+---
+
+_Comment by @ntjohnson1 on 2026-01-16 21:26_
+
+Ok I put together a small repo (not much more code from above but couldn't get it to trigger in a single file) that I am able to reproduce the problem in. I confirmed I saw the error on both my laptops.
+https://github.com/ntjohnson1/ty-2501
+clone then
+
+```console
+uv sync
+uv run ty check
+```
+
+My guess is that its related to the circular dependency.
 
 ---

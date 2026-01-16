@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-16T20:57:47Z
+updated_at: 2026-01-16T21:17:30Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-16T21:04:11Z
+synced_at: 2026-01-16T22:15:00Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -166,325 +166,68 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 14:35_
 ## `ruff-ecosystem` results
 
 ### Linter (stable)
-ℹ️ ecosystem check **detected linter changes**. (+20 -21 violations, +0 -0 fixes in 6 projects; 49 projects unchanged)
-
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/devel-common/src/docs/utils/conf_constants.py#L208'>devel-common/src/docs/utils/conf_constants.py:208:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L136'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:136:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py#L740'>providers/amazon/tests/unit/amazon/aws/executors/batch/test_batch_executor.py:740:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L1329'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:1329:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/providers/standard/tests/unit/standard/operators/test_hitl.py#L332'>providers/standard/tests/unit/standard/operators/test_hitl.py:332:17:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/scripts/ci/prek/check_shared_distributions_usage.py#L409'>scripts/ci/prek/check_shared_distributions_usage.py:409:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/tests/integration_tests/reports/api_tests.py#L301'>tests/integration_tests/reports/api_tests.py:301:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
-<p>
-
-<pre>
-- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -2 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
-<p>
-
-<pre>
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L59'>src/latch/functions/operators.py:59:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L68'>src/latch/functions/operators.py:68:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L73'>src/latch/functions/operators.py:73:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+0 -1 violations, +0 -0 fixes)</summary>
-<p>
-
-<pre>
-- <a href='https://github.com/scikit-build/scikit-build-core/blob/302e0fde412a4545adcc81d75d6bb49ee583e81c/src/scikit_build_core/_compat/typing.py#L36'>src/scikit_build_core/_compat/typing.py:36:32:</a> RUF100 [*] Unused `noqa` directive (unused: `ARG001`)
-</pre>
-
-</p>
-</details>
-<details><summary>Changes by rule (2 rules affected)</summary>
-<p>
-
-| code | total | + violation | - violation | + fix | - fix |
-| ---- | ------- | --------- | -------- | ----- | ---- |
-| PLC0206 | 40 | 20 | 20 | 0 | 0 |
-| RUF100 | 1 | 0 | 1 | 0 | 0 |
-
-</p>
-</details>
+✅ ecosystem check detected no linter changes.
 
 ### Linter (preview)
-ℹ️ ecosystem check **detected linter changes**. (+20 -2038 violations, +10 -0 fixes in 25 projects; 30 projects unchanged)
+ℹ️ ecosystem check **detected linter changes**. (+0 -7 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)
 
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+0 -28 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L13'>disnake/__init__.py:13:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L15'>disnake/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L16'>disnake/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__init__.py#L83'>disnake/__init__.py:83:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L11'>disnake/ext/mypy_plugin/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/mypy_plugin/__init__.py#L7'>disnake/ext/mypy_plugin/__init__.py:7:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L38'>disnake/ext/tasks/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L39'>disnake/ext/tasks/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L40'>disnake/ext/tasks/__init__.py:40:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ext/tasks/__init__.py#L41'>disnake/ext/tasks/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 18 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -12 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/__init__.py#L10'>rasa/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/cli/__init__.py#L5'>rasa/cli/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/__init__.py#L5'>rasa/core/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L28'>rasa/core/channels/__init__.py:28:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/channels/__init__.py#L47'>rasa/core/channels/__init__.py:47:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L10'>rasa/core/training/__init__.py:10:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/core/training/__init__.py#L33'>rasa/core/training/__init__.py:33:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/__init__.py#L5'>rasa/nlu/__init__.py:5:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/classifiers/__init__.py#L3'>rasa/nlu/classifiers/__init__.py:3:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/RasaHQ/rasa/blob/c4069568b4fe2adb5d5a1e55d17ce8cb9dda27fc/rasa/nlu/utils/__init__.py#L11'>rasa/nlu/utils/__init__.py:11:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 2 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -397 violations, +6 -0 fixes)</summary>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -1 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L130'>airflow-core/src/airflow/__init__.py:130:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L137'>airflow-core/src/airflow/__init__.py:137:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L38'>airflow-core/src/airflow/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L46'>airflow-core/src/airflow/__init__.py:46:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L80'>airflow-core/src/airflow/__init__.py:80:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/src/airflow/__init__.py#L84'>airflow-core/src/airflow/__init__.py:84:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 384 additional changes omitted for rule RUF067
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py#L1475'>airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_task_instances.py:1475:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/airflow/blob/84110f44b73ac9ee8383d9066001e0ee17c9b5e8/airflow-core/tests/unit/serialization/test_dag_serialization.py#L682'>airflow-core/tests/unit/serialization/test_dag_serialization.py:682:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-... 401 additional changes omitted for project
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L53'>src/bokeh/core/query.py:53:5:</a> RUF068 [*] `__all__` contains duplicate entries: `find` duplicated here
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -73 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/RELEASING/changelog.py#L227'>RELEASING/changelog.py:227:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset-core/src/superset_core/mcp/__init__.py#L100'>superset-core/src/superset_core/mcp/__init__.py:100:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset-core/src/superset_core/mcp/__init__.py#L41'>superset-core/src/superset_core/mcp/__init__.py:41:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset-core/src/superset_core/mcp/__init__.py#L44'>superset-core/src/superset_core/mcp/__init__.py:44:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/__init__.py#L37'>superset/__init__.py:37:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/__init__.py#L38'>superset/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/__init__.py#L39'>superset/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 65 additional changes omitted for rule RUF067
-+ <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/jinja_context.py#L546'>superset/jinja_context.py:546:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/apache/superset/blob/c31224c891d3269893d3724c62777ab6557d598d/superset/jinja_context.py#L546'>superset/jinja_context.py:546:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-... 66 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+0 -2 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/aws/aws-sam-cli/blob/eb1da4888be5b628916d6a02f55ae3babb4dfd4c/tests/integration/pipeline/test_bootstrap_command.py#L229'>tests/integration/pipeline/test_bootstrap_command.py:229:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
+- <a href='https://github.com/langchain-ai/langchain/blob/a84722e2d768a3029a632d0ab3515b897ebba63b/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF068 [*] `__all__` contains duplicate entries: `AcreomLoader` duplicated here
+- <a href='https://github.com/langchain-ai/langchain/blob/a84722e2d768a3029a632d0ab3515b897ebba63b/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF068 [*] `__all__` contains duplicate entries: `AsyncHtmlLoader` duplicated here
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -58 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -3 violations, +0 -0 fixes)</summary>
 <p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L101'>src/bokeh/__init__.py:101:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L102'>src/bokeh/__init__.py:102:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L107'>src/bokeh/__init__.py:107:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L109'>src/bokeh/__init__.py:109:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L110'>src/bokeh/__init__.py:110:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/__init__.py#L111'>src/bokeh/__init__.py:111:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 51 additional changes omitted for rule RUF067
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L201'>src/bokeh/application/handlers/code.py:201:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L470'>src/bokeh/core/property/wrappers.py:470:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-... 50 additional changes omitted for project
+- <a href='https://github.com/python/typeshed/blob/b94c9e8e48f552b2f2b979b69937b0e4848675cf/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF068 [*] `__all__` contains duplicate entries: `mayan` duplicated here
+- <a href='https://github.com/python/typeshed/blob/b94c9e8e48f552b2f2b979b69937b0e4848675cf/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF068 [*] `__all__` contains duplicate entries: `get_rl_tempdir` duplicated here
+- <a href='https://github.com/python/typeshed/blob/b94c9e8e48f552b2f2b979b69937b0e4848675cf/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF068 [*] `__all__` contains duplicate entries: `Switzerland` duplicated here
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -142 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+0 -1 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L31'>ibis/__init__.py:31:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/__init__.py#L42'>ibis/__init__.py:42:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1517'>ibis/backends/__init__.py:1517:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1530'>ibis/backends/__init__.py:1530:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1550'>ibis/backends/__init__.py:1550:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1557'>ibis/backends/__init__.py:1557:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1567'>ibis/backends/__init__.py:1567:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1601'>ibis/backends/__init__.py:1601:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1648'>ibis/backends/__init__.py:1648:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/ibis-project/ibis/blob/a528450ab803a3a70fdcde222f4b7ad26ebc334b/ibis/backends/__init__.py#L1673'>ibis/backends/__init__.py:1673:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 132 additional changes omitted for project
+- <a href='https://github.com/astropy/astropy/blob/b5754a667932b7c39b5f425abb2de77a7962fa9c/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF068 [*] `__all__` contains duplicate entries: `conf` duplicated here
 </pre>
 
 </p>
 </details>
-<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+0 -274 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L14'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:14:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L15'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:15:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py#L6'>libs/cli/tests/unit_tests/migrate/cli_runner/cases/__init__.py:6:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/__init__.py#L19'>libs/core/langchain_core/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/__init__.py#L20'>libs/core/langchain_core/__init__.py:20:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/_api/__init__.py#L45'>libs/core/langchain_core/_api/__init__.py:45:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/callbacks/__init__.py#L86'>libs/core/langchain_core/callbacks/__init__.py:86:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/document_loaders/__init__.py#L21'>libs/core/langchain_core/document_loaders/__init__.py:21:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/documents/__init__.py#L39'>libs/core/langchain_core/documents/__init__.py:39:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/langchain-ai/langchain/blob/a7aad60989581d80283ed2a13e19b41706daaec3/libs/core/langchain_core/embeddings/__init__.py#L16'>libs/core/langchain_core/embeddings/__init__.py:16:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 264 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -58 violations, +0 -0 fixes)</summary>
-<p>
-<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
-</p>
-<p>
-
-<pre>
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:13:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L183'>src/latch/functions/operators.py:183:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L37'>src/latch/functions/operators.py:37:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-+ <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:5:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/functions/operators.py#L48'>src/latch/functions/operators.py:48:9:</a> PLC0206 Extracting value from dictionary without calling `.items()`
-... 7 additional changes omitted for rule PLC0206
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L19'>src/latch_cli/docker_utils/__init__.py:19:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L27'>src/latch_cli/docker_utils/__init__.py:27:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L38'>src/latch_cli/docker_utils/__init__.py:38:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-- <a href='https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch_cli/docker_utils/__init__.py#L401'>src/latch_cli/docker_utils/__init__.py:401:1:</a> RUF067 `__init__` module should only contain docstrings and re-exports
-... 54 additional changes omitted for project
-</pre>
-
-</p>
-</details>
-
-_... Truncated remaining completed project reports due to GitHub comment length restrictions_
-
-<details><summary>Changes by rule (4 rules affected)</summary>
+<details><summary>Changes by rule (1 rules affected)</summary>
 <p>
 
 | code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
-| RUF067 | 2017 | 0 | 2017 | 0 | 0 |
-| PLC0206 | 40 | 20 | 20 | 0 | 0 |
-| FURB192 | 10 | 0 | 0 | 10 | 0 |
-| RUF100 | 1 | 0 | 1 | 0 | 0 |
+| RUF068 | 7 | 0 | 7 | 0 | 0 |
 
 </p>
 </details>
@@ -849,5 +592,36 @@ Oh oops, you took care of this, nice work! I should have looked at the code firs
 ---
 
 _@ntBre reviewed on 2026-01-16 20:57_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:95 on 2026-01-16 20:59_
+
+I think we could narrow this to `keyword.range` instead of the whole `arguments.range()`, but I'm not totally sure:
+
+```suggestion
+    } else if checker.comment_ranges().intersects(keyword.range()) {
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/refurb/FURB180.py`:92 on 2026-01-16 21:02_
+
+Could you add a test case for the unsafe comment deletion? I think something like this example would work well:
+
+```py
+class C(
+    other_kwarg=1,
+    # comment
+    metaclass=abc.ABCMeta,
+):
+    pass
+```
+
+---
+
+_@ntBre reviewed on 2026-01-16 21:04_
+
+Thank you! I had one suggestion about narrowing the comment range check and a test for that. Then we just need to update the `## Fix safety` section of the rule docs.
 
 ---

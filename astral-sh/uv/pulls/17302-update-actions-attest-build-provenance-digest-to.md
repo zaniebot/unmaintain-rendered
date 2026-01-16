@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/actions-attest-build-provenance-digest
 created_at: 2026-01-02T17:35:54Z
-updated_at: 2026-01-16T18:20:41Z
+updated_at: 2026-01-16T21:51:55Z
 url: https://github.com/astral-sh/uv/pull/17302
-synced_at: 2026-01-16T19:02:00Z
+synced_at: 2026-01-16T22:15:15Z
 ```
 
 # Update actions/attest-build-provenance digest to 6865550
@@ -86,5 +86,11 @@ Maybe we should just exclude this workflow entirely? I could look again at makin
 ---
 
 _Renamed from "Update actions/attest-build-provenance digest to 98f3aa9" to "Update actions/attest-build-provenance digest to 6865550" by @renovate[bot] on 2026-01-16 18:20_
+
+---
+
+_Comment by @zanieb on 2026-01-16 21:51_
+
+I think we might as well dirty the file with a tag, since it's already dirty.
 
 ---

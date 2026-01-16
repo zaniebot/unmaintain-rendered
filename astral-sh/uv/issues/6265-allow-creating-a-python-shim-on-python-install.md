@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2024-08-20T18:44:36Z
-updated_at: 2025-12-28T09:11:55Z
+updated_at: 2026-01-16T21:11:15Z
 url: https://github.com/astral-sh/uv/issues/6265
-synced_at: 2026-01-12T15:59:02Z
+synced_at: 2026-01-16T22:15:04Z
 ```
 
 # Allow creating a `python` shim on `python install`
@@ -360,5 +360,17 @@ I think there is a better way to solve this.
 - Use uv for all your python scripts. You can use the "inline syntax" for dependency definitions to avoid creating a separate folder and a separate pyproject.toml file for each script: E.g. with these commands: `uv init --script example.py` and `uv add --script example.py numpy` and `uv run example.py`
 - When you run such a script uv will create a temporary virtual environment that is immediately removed after the script execution ends - uv is so fast that it can do that without slowing down noticably. It uses caching aggressively to make this work, and disk space utilization is minimal.
 - Even when you use the "full blown" approach with a separate folder and a `pyproject.toml` file, the .venv directories use hard linking on Unix operating systems so the used disk storage will also not multiply if you have the same dependencies in multiple places, i think.
+
+---
+
+_Comment by @fduxiao on 2026-01-16 21:11_
+
+@TurtleOrangina Thanks. This could be a solution, but it may not be applicable in some cases. For example, in a non-python project, I have a file `prepare.py` to download and manipulate some metadata, which relies on `requests` and `numpy`. Then, in the `build.sh`, I put `python prepare.py` to run it. As you suggested, I can just turn it to `uv run prepare.py`.
+
+However, someone on my team may prefer `Anaconda`, which he/she thinks is a better tool to manage those data-related dependencies not limited to python (`Anaconda` also ships non-python dependencies) and is thus unwilling to switch to `uv`. Or, this project is some open-source project I downloaded where the dependencies are listed in `requirements.py`, so it may be a bit tricky to correct all `python` commands.
+
+When we are writing a `python` script, the only thing we can assume is `pip` because it is the only official package
+management tool. You can develop a python project with `uv`, but when released, it must be able to be shipped with `pip`.
+It seems that the need is a user-customizable (`pip install`), global, pure (`uv`-free) python. After the 3.11 version of `python`, the official tool `pip install` is somehow unusable. I think the global venv is the most compromised solution, but the configuration is a bit subtle.
 
 ---
