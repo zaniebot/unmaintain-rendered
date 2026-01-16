@@ -288,10 +288,58 @@ Python but not supported by ty for dynamic classes.
         <div class="timeline-entry">
             <div class="event">Marked ready for review by @charliermarsh on 2026-01-16 14:59</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/make_dataclass.md</code>:1 on 2026-01-16 16:23</div>
+            <div class="timeline-body"><p>Not sure you have any tests yet for what happens if <code>*args</code> or <code>**kwargs</code> are passed into a <code>make_dataclass</code> call.</p>
+<p>Also (sorry): you should probably add tests for recursive and stringified types, e.g.</p>
+<pre><code class="language-py">from dataclasses import make_dataclass
+
+X = make_dataclass(&quot;X&quot;, [(&quot;a&quot;, &quot;X | None&quot;)])
+</code></pre>
+<p>Since we'll <em>have</em> to support recursive and stringified types for functional <code>typing.NamedTuple</code>s and functional <code>typing.TypedDict</code>s, we should probably be consistent and support them for functional dataclasses too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:674 on 2026-01-16 16:25</div>
+            <div class="timeline-body"><p>do we have tests for what happens if functional dataclasses with and without <code>order=True</code> are passed to <code>total_ordering()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:710 on 2026-01-16 16:29</div>
+            <div class="timeline-body"><p>I think you could reduce duplication between the branches a little bit in this method, e.g.</p>
+<pre><code class="language-rs">    /// Returns the type definition for this class.
+    ///
+    /// For static classes, returns `TypeDefinition::StaticClass`.
+    /// For dynamic classes, returns `TypeDefinition::DynamicClass` if a definition is available.
+    pub(crate) fn type_definition(self, db: &amp;'db dyn Db) -&gt; Option&lt;TypeDefinition&lt;'db&gt;&gt; {
+        let definition = match self {
+            Self::Dynamic(class) =&gt; class.definition(db),
+            Self::DynamicNamedTuple(namedtuple) =&gt; namedtuple.definition(db),
+            Self::DynamicDataclass(dataclass) =&gt; dataclass.definition(db),
+
+            // This is the only variant that returns `TypeDefinition::StaticClass`
+            // rather than `TypeDefinition::DynamicClass`.
+            Self::Static(class) =&gt; return Some(TypeDefinition::StaticClass(class.definition(db))),
+        };
+
+        definition.map(TypeDefinition::DynamicClass)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:769 on 2026-01-16 16:30</div>
+            <div class="timeline-body"><p>do we have a test that demonstrates that a <code>slots=True</code> functional dataclass is understood as a disjoint base?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-16 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 16:01:13 UTC
+        Synced at 2026-01-16 17:02:44 UTC
     </footer>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>--exclude glob patterns don't match on Windows - astral-sh/ruff #22612</title>
+    <title>--exclude glob patterns don't match on Windows in MSYS2 Terminal - astral-sh/ruff #22612</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>--exclude glob patterns don't match on Windows</h1>
+    <h1>--exclude glob patterns don't match on Windows in MSYS2 Terminal</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -24,13 +24,13 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ahochheiden">@ahochheiden</a></div>
             <div class="timeline-body"><h3>Summary</h3>
-<p>Glob patterns passed to <code>--exclude</code> work correctly on <code>macOS</code> but fail to match on <code>Windows</code>.</p>
+<p>Glob patterns passed to <code>--exclude</code> work correctly on <code>macOS</code> but fail to match on <code>Windows</code> in an <a href="https://www.msys2.org/">MSYS2</a> terminal.</p>
 <p><strong>Context:</strong>
 I discovered this while migrating Firefox from <code>black</code> to <code>ruff format</code>. The <a href="https://searchfox.org/firefox-main/source/pyproject.toml#82">pyproject.toml</a> exclusions use glob patterns that work correctly on <code>macOS</code> but not on <code>Windows</code>.</p>
 <p><strong>Steps to reproduce:</strong></p>
 <p>Given a file that has formatting issues at  <code>build/moz.configure/bindgen.configure</code> :</p>
 <ul>
-<li>Run <code>ruff format --check --force-exclude --exclude &quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure</code></li>
+<li>Run <code>ruff format --check --force-exclude --exclude &quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure</code> in an MSYS2 terminal.</li>
 </ul>
 <p>Result:</p>
 <pre><code>/d/mozilla-source/firefox
@@ -145,10 +145,110 @@ warning: No Python files found under the given path(s)
         <div class="timeline-entry">
             <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2026-01-16 09:53</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahochheiden">@ahochheiden</a> on 2026-01-16 16:17</div>
+            <div class="timeline-body"><blockquote>
+<p>But that's when using powershell. Any chanace you're using WSL or some other unix terminal?</p>
+</blockquote>
+<p>Yes, we use <a href="https://www.msys2.org/">MSYS2</a> for Windows (Bundled via <a href="https://wiki.mozilla.org/MozillaBuild">MozillaBuild</a>). I just tried both <code>cmd</code> and <code>PowerShell</code> and cannot reproduce there. I'll update the title.</p>
+<blockquote>
+<p>Can you try running ruff with <code>-v</code>, it should then print why it includes/excludes certain files</p>
+</blockquote>
+<p>From <code>MozillaBuild</code>'s <code>MSYS2</code> within Windows Terminal:</p>
+<pre><code>/d/mozilla-source/firefox
+$ ruff format --check --force-exclude --exclude &quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure -v
+[2026-01-16][08:06:14][ruff::resolve][DEBUG] Using configuration file (via parent) at: D:\mozilla-source\firefox\pyproject.toml
+[2026-01-16][08:06:14][ignore::gitignore][DEBUG] opened gitignore file: C:/Users/ahochheiden/.gitignore_global
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\android-sdk.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\toolchain.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\pkg.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\lto-pgo.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\update-programs.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\libraries.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\bindgen.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\checks.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\arm.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\finalize-flags.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\default-flags.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\clang_plugin.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\bootstrap.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\java.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\memory.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\keyfiles.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\nss.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\nspr.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\flags.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\warnings.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\headers.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\windows.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\zucchini.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\compile-checks.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\util.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\init.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\compilers-util.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\node.configure
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] format_path; path=D:\mozilla-source\firefox\build\moz.configure\rust.configure
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][tracing::span][DEBUG] Printer::print;
+[2026-01-16][08:06:14][ruff::commands::format][DEBUG] Formatted 29 files in 54.00ms
+unformatted: File would be reformatted
+   --&gt; build\moz.configure\bindgen.configure:1:1
+30  |     Please update using 'cargo install cbindgen --force' or running
+31  |     './mach bootstrap', after removing the existing executable located at
+32  |     {}.
+    -     &quot;&quot;&quot;.format(
+    -                 version, cbindgen_min_version, cbindgen
+    -             )
+33  +     &quot;&quot;&quot;.format(version, cbindgen_min_version, cbindgen)
+34  |         )
+35  |     )
+36  |
+</code></pre>
+<p>And with the <code>--exclude=</code>:</p>
+<pre><code>ruff format --check --force-exclude --exclude=&quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure -v
+[2026-01-16][08:09:22][ruff::resolve][DEBUG] Using configuration file (via parent) at: D:\mozilla-source\firefox\pyproject.toml
+[2026-01-16][08:09:22][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;D:\\mozilla-source\\firefox\\build\\moz.configure\\bindgen.configure&quot;
+warning: No Python files found under the given path(s)
+</code></pre>
+<p>I also verified it reproduces on <code>MSYS2</code> directly (to rule out it being related to <code>MozillaBuild</code>):</p>
+<pre><code>MSYS /d/mozilla-source/firefox
+$ /d/mozilla-build/python3/Scripts/ruff format --check --force-exclude --exclude &quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure
+unformatted: File would be reformatted
+   --&gt; build\moz.configure\bindgen.configure:1:1
+30  |     Please update using 'cargo install cbindgen --force' or running
+31  |     './mach bootstrap', after removing the existing executable located at
+32  |     {}.
+    -     &quot;&quot;&quot;.format(
+    -                 version, cbindgen_min_version, cbindgen
+    -             )
+33  +     &quot;&quot;&quot;.format(version, cbindgen_min_version, cbindgen)
+34  |         )
+35  |     )
+36  |
+
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--exclude glob patterns don't match on Windows" to "--exclude glob patterns don't match on Windows in MSYS2 Terminal" by @ahochheiden on 2026-01-16 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-16 16:33</div>
+            <div class="timeline-body"><p>I've to add some more debug logging to understand what's happening. I'll try to find sometime soon</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 09:57:09 UTC
+        Synced at 2026-01-16 17:01:38 UTC
     </footer>
 </body>
 </html>

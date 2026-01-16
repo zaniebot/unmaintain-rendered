@@ -85,10 +85,108 @@ with one or more invalid lint codes.</li>
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-16 08:36</div>
             <div class="timeline-body"></div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2026-01-16 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/suppression.rs</code>:235 on 2026-01-16 16:08</div>
+            <div class="timeline-body"><p>I don't think they're actually sorted at the moment, because outer scopes get matched after inner scopes, but suppression objects from the same range should always end up in the list next to each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-16 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap</code>:416 on 2026-01-16 16:10</div>
+            <div class="timeline-body"><p>Don't bother with this if this matches what we do for noqa today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:246 on 2026-01-16 16:30</div>
+            <div class="timeline-body"><p>small nit: I think this is the same as the variable above:</p>
+<pre><code class="language-suggestion">                entry.invalid_codes.push(code_str);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:266 on 2026-01-16 16:33</div>
+            <div class="timeline-body"><p>nit: could we use <a href="https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html#method.count"><code>count</code></a> here?</p>
+<pre><code class="language-suggestion">                        .filter(|code| *code == code_str)
+                        .count()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:299 on 2026-01-16 16:35</div>
+            <div class="timeline-body"><p>I think <code>join</code> will handle this automatically:</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:287 on 2026-01-16 16:41</div>
+            <div class="timeline-body"><p>It looks like this doesn't actually help here because of how <code>group</code> is used, but in principle you can use <code>into_values</code> to avoid cloning sometimes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2026-01-16 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap</code>:416 on 2026-01-16 16:42</div>
+            <div class="timeline-body"><p>It looks like noqa highlights the entire noqa comment:</p>
+<pre><code>RUF100 [*] Unused `noqa` directive (unused: `F401`, `E741`)
+ --&gt; foo.py:2:12
+  |
+1 | def f():
+2 |     x = 1  # noqa: F401, F841, E741
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unused `noqa` directive
+1 | def f():
+  -     x = 1  # noqa: F401, F841, E741
+2 +     x = 1  # noqa: F841
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-16 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap</code>:416 on 2026-01-16 16:43</div>
+            <div class="timeline-body"><p>I would then suggest aligning with noqa (which I think should be relatively easy?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:321 on 2026-01-16 16:47</div>
+            <div class="timeline-body"><p>This is probably better suited for a follow-up, and I thought I saw some previous discussion of this, but do these need to be <code>String</code>s? I tried making <code>UnusedCodes::disabled</code> a <code>Vec&lt;&amp;'a str&gt;</code> and it seems to be working locally. Combining that with <code>into_values</code> makes this a little nicer:</p>
+<pre><code class="language-suggestion">                            disabled: group.disabled_codes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/suppression.rs</code>:427 on 2026-01-16 16:51</div>
+            <div class="timeline-body"><p>This might be getting too clever, but I think we could go ahead and do the <code>join</code> here. The empty string will also work for the <code>is_empty</code> check, and then we can avoid allocating a separate <code>Vec</code> first.</p>
+<pre><code class="language-suggestion">                .join(&quot;, &quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__range_suppressions.snap</code>:416 on 2026-01-16 16:53</div>
+            <div class="timeline-body"><p>Yeah I liked the idea in https://github.com/astral-sh/ruff/issues/21873#issuecomment-3634167989 of extending the range to only the adjacent codes (if I understood correctly), but aligning with noqa makes sense too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2026-01-16 16:54</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 08:58:03 UTC
+        Synced at 2026-01-16 17:02:44 UTC
     </footer>
 </body>
 </html>
