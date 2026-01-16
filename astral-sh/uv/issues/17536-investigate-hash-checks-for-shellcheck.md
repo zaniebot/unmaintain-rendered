@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2026-01-16T18:49:43Z
-updated_at: 2026-01-16T21:49:56Z
+updated_at: 2026-01-16T22:12:19Z
 url: https://github.com/astral-sh/uv/issues/17536
-synced_at: 2026-01-16T22:15:06Z
+synced_at: 2026-01-16T23:06:00Z
 ```
 
 # Investigate hash checks for shellcheck installation in CI
@@ -69,5 +69,27 @@ _Comment by @zanieb on 2026-01-16 21:49_
 The runner images change though?
 
 I don't care about risk profile with the version pin, I care about new violations showing up without an upgrade
+
+---
+
+_Comment by @woodruffw on 2026-01-16 22:01_
+
+> The runner images change though?
+
+Oh, true. To my understanding this shellcheck version won't change until the Ubuntu version itself rolls over, but it'll still happen then.
+
+We could probably do `apt install -y shellcheck=0.9.0-1` to explicitly prevent a new version from showing up.
+
+---
+
+_Comment by @zanieb on 2026-01-16 22:12_
+
+> To my understanding this shellcheck version won't change until the Ubuntu version itself rolls over, but it'll still happen then.
+
+I could probably live with that.
+
+I don't have strong feelings tbh. Lots of viable solutions here.
+
+(Claude attempted to invent a cool Renovate hash update syntax, but alas)
 
 ---

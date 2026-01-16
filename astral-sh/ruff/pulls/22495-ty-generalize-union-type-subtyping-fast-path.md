@@ -2,19 +2,20 @@
 number: 22495
 title: "[ty] Generalize union-type subtyping fast path"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - performance
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: alex/union-fast-path-still-vec
 created_at: 2026-01-10T15:30:40Z
-updated_at: 2026-01-16T20:37:18Z
+updated_at: 2026-01-16T22:09:09Z
 url: https://github.com/astral-sh/ruff/pull/22495
-synced_at: 2026-01-16T21:04:11Z
+synced_at: 2026-01-16T23:05:54Z
 ```
 
 # [ty] Generalize union-type subtyping fast path
@@ -384,5 +385,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:09_
 _@carljm approved on 2026-01-16 20:37_
 
 This looks good to me, nice work! I think the behavior change is an improvement, and I don't think we necessarily need to fully explain it. It's intuitive to me that it arises from doing fewer unnecessary `has_relation_to` comparisons in union cases, though I haven't fully traced out the details.
+
+---
+
+_Merged by @AlexWaygood on 2026-01-16 22:09_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 22:09_
+
+---
+
+_Branch deleted on 2026-01-16 22:09_
 
 ---
