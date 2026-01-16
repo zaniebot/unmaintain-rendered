@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-13T20:34:47Z
+updated_at: 2026-01-16T19:59:47Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-13T21:36:29Z
+synced_at: 2026-01-16T20:03:42Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -713,7 +713,7 @@ _Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclas
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:154 on 2026-01-13 20:25_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:153 on 2026-01-13 20:25_
 
 What do you think about something like this:
 
@@ -787,5 +787,15 @@ We'd also need to update the docs.
 _@ntBre reviewed on 2026-01-13 20:34_
 
 Thank you! This looks great, I just had a couple of minor suggestions. I also noticed a potential issue with the fix safety, but I can turn that into a separate issue if you'd rather not update it here.
+
+---
+
+_Review comment by @akawd on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:153 on 2026-01-16 19:59_
+
+In my humble opinion, avoiding the heap is worth a few extra lines of code.
+
+---
+
+_@akawd reviewed on 2026-01-16 19:59_
 
 ---

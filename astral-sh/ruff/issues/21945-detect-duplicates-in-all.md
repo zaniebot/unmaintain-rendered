@@ -2,15 +2,15 @@
 number: 21945
 title: "Detect duplicates in `__all__`"
 type: issue
-state: open
+state: closed
 author: chirizxc
 labels:
   - rule
 assignees: []
 created_at: 2025-12-12T13:05:57Z
-updated_at: 2025-12-16T16:24:20Z
+updated_at: 2026-01-16T19:58:08Z
 url: https://github.com/astral-sh/ruff/issues/21945
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-16T20:03:31Z
 ```
 
 # Detect duplicates in `__all__`
@@ -94,5 +94,9 @@ _Comment by @leandrobbraga on 2025-12-16 16:14_
 Thank you for your input, @ntBre, it was really helpful.
 
 I wasn't aware of [fix safety docs](https://docs.astral.sh/ruff/linter/#fix-safety) nor the comment in the range pattern.
+
+---
+
+_Closed by @ntBre on 2026-01-16 19:58_
 
 ---

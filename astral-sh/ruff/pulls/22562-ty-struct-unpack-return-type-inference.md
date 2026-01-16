@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-16T11:04:33Z
+updated_at: 2026-01-16T19:02:49Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-16T11:56:11Z
+synced_at: 2026-01-16T20:03:42Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -229,5 +229,22 @@ _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-15 15:03_
 ---
 
 _Renamed from "`struct.unpack` return type inference" to "[ty] `struct.unpack` return type inference" by @AlexWaygood on 2026-01-16 11:04_
+
+---
+
+_@oconnor663 reviewed on 2026-01-16 19:02_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/call/bind.rs`:1261 on 2026-01-16 19:02_
+
+This loop should probably be bounded to some reasonable limit, and beyond that we should fall back to some other type? Currently I can exhaust all the memory on my machine and get `ty` OOM killed by checking this :)
+
+```py
+def _(buf: bytes):
+    reveal_type(struct.unpack("18446744073709551616c", buf))
+```
+
+Whatever we choose to do about this, it would make a good extra test case.
 
 ---

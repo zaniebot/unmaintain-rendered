@@ -2,18 +2,19 @@
 number: 22613
 title: Combine suppression code diagnostics
 type: pull_request
-state: open
+state: merged
 author: amyreese
 labels:
   - rule
   - suppression
 assignees: []
+merged: true
 base: main
 head: amy/suppression-grouping
 created_at: 2026-01-16T00:34:42Z
-updated_at: 2026-01-16T18:50:53Z
+updated_at: 2026-01-16T19:16:27Z
 url: https://github.com/astral-sh/ruff/pull/22613
-synced_at: 2026-01-16T19:01:47Z
+synced_at: 2026-01-16T20:03:42Z
 ```
 
 # Combine suppression code diagnostics
@@ -251,5 +252,23 @@ _@amyreese reviewed on 2026-01-16 18:50_
 _Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:321 on 2026-01-16 18:50_
 
 I didn't like this either, but since it would also affect the noqa system I'd prefer to put that change in a different PR
+
+---
+
+_Merged by @amyreese on 2026-01-16 19:08_
+
+---
+
+_Closed by @amyreese on 2026-01-16 19:08_
+
+---
+
+_Branch deleted on 2026-01-16 19:08_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 19:16_
+
+Congrats! I think we can now close the block level suppression tracking issue
 
 ---

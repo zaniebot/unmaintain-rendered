@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T17:59:52Z
+updated_at: 2026-01-16T19:54:24Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T19:01:52Z
+synced_at: 2026-01-16T20:03:48Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -333,5 +333,36 @@ failures:
     publish::read_index_credential_env_vars_for_check_url
 
 ```
+
+---
+
+_Comment by @mgorny on 2026-01-16 19:54_
+
+> Is the test harness you're using locally runnable (e.g. a docker container)? That way I could reproduce the failures you are seeing.
+
+Okay, I've pushed an image, though it's not really optimal (as in quite big): https://hub.docker.com/repository/docker/mgorny/gentoo-uv-test/general
+
+The Dockerfile's:
+
+```
+FROM gentoo/stage3:latest
+
+RUN emerge-webrsync
+RUN getuto
+# use the git version
+RUN echo 'dev-python/uv **' > /etc/portage/package.accept_keywords/uv
+RUN emerge -1vg --jobs --onlydeps --with-test-deps=y dev-python/uv
+#CMD FEATURES=test ALLOW_TEST=network emerge -1v dev-python/uv
+```
+
+I built it without `CMD`, so you can `docker run -it` and play with the shell. It's got full package repository ready to use.
+
+To test and install latest uv git:
+
+```
+FEATURES=test ALLOW_TEST=network emerge -1v dev-python/uv
+```
+
+Note that some failures will only happen when `uv` is installed already (i.e. those caused by global config).
 
 ---

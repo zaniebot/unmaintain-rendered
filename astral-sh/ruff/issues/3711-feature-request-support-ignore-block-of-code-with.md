@@ -2,15 +2,15 @@
 number: 3711
 title: "[feature request] Support ignore block of code with noqa"
 type: issue
-state: open
+state: closed
 author: woile
 labels:
   - suppression
 assignees: []
 created_at: 2023-03-24T07:25:40Z
-updated_at: 2025-12-17T21:59:14Z
+updated_at: 2026-01-16T19:35:08Z
 url: https://github.com/astral-sh/ruff/issues/3711
-synced_at: 2026-01-12T15:54:44Z
+synced_at: 2026-01-16T20:03:29Z
 ```
 
 # [feature request] Support ignore block of code with noqa

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-16T17:40:54Z
-updated_at: 2026-01-16T18:54:11Z
+updated_at: 2026-01-16T19:26:50Z
 url: https://github.com/astral-sh/uv/pull/17533
-synced_at: 2026-01-16T19:02:00Z
+synced_at: 2026-01-16T20:03:55Z
 ```
 
 # Set `UV_TEST_PYTHON_PATH` for the chocolatey system test to ensure uv uses the right python
@@ -87,5 +87,35 @@ But at least I feel that setting `$env:PATH` prior to running the verification s
 Lastly, I could try to investigate why chocolatey's path changes aren't being picked up although I have a feeling that the answer is going to be either: "the registry changes can't be propagated to the runner without restarting the runner" or "github runners explicitly sanitize that somehow so the environment change doesn't persist".
 
 [^gh-path]: GITHUB_PATH seems to be for appending only, which isn't helpful here.
+
+---
+
+_Comment by @zanieb on 2026-01-16 19:04_
+
+> I think the real weird thing here is that there's no actual guarantee that py -3.9 would pick the chocolatey version if some other 3.9 was installed, but I couldn't find any good way to verify this invariant.
+
+Can't we just use the path that chocolatey is at instead of `py -3.9`? Maybe I'm missing something?
+
+---
+
+_Comment by @zanieb on 2026-01-16 19:05_
+
+But yeah I think a point of these tests is uv's discovery of system Python versions, so overriding that with our custom test path seems janky. That variable shouldn't really be used in more places, it's quite the blemish already imo (I added it, alas)
+
+---
+
+_Comment by @EliteTK on 2026-01-16 19:26_
+
+> Can't we just use the path that chocolatey is at instead of `py -3.9`? Maybe I'm missing something?
+
+Yeah, sorry, I just realised there was a key bit of context I forgot:
+
+It seems you can tell chocolatey where you'd like to put the installation, but it won't listen if that version is already installed (it will overwrite at the existing location). There also doesn't seem to be any good way of asking chocolatey where it did install it either.
+
+This means using `C:\Python39\` (the default path) could break if we revert the runner image or a future image starts shipping python 3.9 again.
+
+But, having thought about it, prepending `C:\Python39\` and then using `C:\Python39\python.exe .\script` is probably the safest option: it will fail if anything weird happens to the image which could cause us to e.g. start testing a non-chocolatey python version.
+
+What might also work: We could try to set `$env:PATH` from the registry and invoke `python` instead of `py -3.9`. But we'd have to verify the version matches what we expect.
 
 ---

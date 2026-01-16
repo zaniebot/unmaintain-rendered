@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-16T14:20:39Z
-updated_at: 2026-01-16T14:20:39Z
+updated_at: 2026-01-16T19:51:44Z
 url: https://github.com/astral-sh/uv/issues/17521
-synced_at: 2026-01-16T14:58:01Z
+synced_at: 2026-01-16T20:03:48Z
 ```
 
 # Is writable FS required for `uv run`?
@@ -80,5 +80,11 @@ _No response_
 ---
 
 _Label `question` added by @Dandi91 on 2026-01-16 14:20_
+
+---
+
+_Comment by @zanieb on 2026-01-16 19:51_
+
+Have you tried `--no-sync` / `UV_NO_SYNC`?
 
 ---

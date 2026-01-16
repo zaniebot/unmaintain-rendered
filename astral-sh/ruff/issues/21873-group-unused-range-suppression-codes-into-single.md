@@ -2,7 +2,7 @@
 number: 21873
 title: Group unused range suppression codes into single diagnostic
 type: issue
-state: open
+state: closed
 author: amyreese
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - suppression
 assignees: []
 created_at: 2025-12-09T20:22:03Z
-updated_at: 2026-01-10T10:03:13Z
+updated_at: 2026-01-16T19:08:50Z
 url: https://github.com/astral-sh/ruff/issues/21873
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-16T20:03:31Z
 ```
 
 # Group unused range suppression codes into single diagnostic
@@ -108,5 +108,9 @@ Consider how ty does this: https://github.com/astral-sh/ruff/blob/adf468beb53bfc
 _Comment by @MichaReiser on 2026-01-10 10:03_
 
 @amyreese are you planning to come back to this?
+
+---
+
+_Closed by @amyreese on 2026-01-16 19:08_
 
 ---

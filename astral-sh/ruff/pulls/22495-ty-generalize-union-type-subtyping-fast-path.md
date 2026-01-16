@@ -8,13 +8,12 @@ labels:
   - performance
   - ty
 assignees: []
-draft: true
 base: main
 head: alex/union-fast-path-still-vec
 created_at: 2026-01-10T15:30:40Z
-updated_at: 2026-01-16T17:55:30Z
+updated_at: 2026-01-16T19:57:14Z
 url: https://github.com/astral-sh/ruff/pull/22495
-synced_at: 2026-01-16T18:01:01Z
+synced_at: 2026-01-16T20:03:42Z
 ```
 
 # [ty] Generalize union-type subtyping fast path
@@ -23,22 +22,89 @@ synced_at: 2026-01-16T18:01:01Z
 
 _@AlexWaygood_
 
-<!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
-
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
-
 ## Summary
 
-<!-- What's the purpose of the change? What does it do, and why? -->
+Currently we have a branch near the top of `Type::has_relation_to_impl` that returns `ConstraintSet::from(true)` if the l.h.s. is a typevar `T` and the right-hand side is a union `U` where `T` is one of the elements of `U`:
+
+https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L463-L475
+
+But this branch isn't only correct for type variables! In general, it is true for _any_ type `T` that it will be assignable to, redundant with, and -- in some cases -- a subtype of a union `U` if `T` is contained within the elements of `U`. The branch is only _necessary_ for type variables, because for non-type-variables we apply a more generalized handling lower down here:
+
+https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L730-L739
+
+But the generalized handling for `T <: U` can be very slow in certain pathological cases (*cough* pydantic) where a union type contains very complicated types early on in its list of elements. For example, consider the following scenario: we want to check whether `C` is a subtype of `U`, and `U` is a union with the following elements list:
+
+```
+-----------
+A | B | C |
+-----------
+```
+
+Unfortunately, `A` and `B` are both complex recursive structural types (*cough* pydantic's huge `TypedDict`s), and checking whether `C` is a subtype of `A` or `B` is a question that takes us a long time to answer. But with our current generalized handling for determining whether `C <: U` for a union type `U`, we _must_ answer these questions before we even ask the question "Is `C` a subtype of `C`?", for which the answer is trivial.
+
+By extending the trivial `if union.elements(db).contains(self)` check early on in `Type::has_relation_to()` to _all_ types (not just type variables), we can achieve a significant speedup over what we have on the `main` branch. Now, in the above example, we quickly iterate over the elements of `U` once, discover that `C` is trivially contained in `U`'s elements, and return `true` for the overall subtyping check without ever having to ask whether `C` is a subtype of `A` and `B`.
+
+Essentially this means that for _any_ type `T`, if we want to check whether `T` is a subtype of a union `U` we _may_ iterate over the elements of the union twice: once for this fast path to check whether the union trivially contains `T` in its elements, and (if it is not trivially contained) once again to do the full (slow) `has_relation_to_impl` check for each element in the union.
+
+It's perhaps surprising that iterating over the union elements twice would be consistently faster than iterating over the union elements once. However, the Codspeed results on this PR have very consistently shown some impressive speedups and no performance regressions.
+
+## Behaviour change
+
+As well as achieving a big speedup, this PR also (to my surprise) improves our type-variable solving for `Callable` types. I've added a regression test for this to the PR:
+
+```py
+from typing import Callable
+
+class Box[T]:
+    def get(self) -> T:
+        raise NotImplementedError
+
+def my_iter[T](f: Callable[[], T | None]) -> Box[T]:
+    return Box()
+
+def get_int() -> int | None: ...
+
+reveal_type(my_iter(get_int))  # `main`: Box[int | None]`; PR: Box[int]
+```
+
+I've stared at it for a while, but I don't _fully_ understand why this PR fixes the bug. It makes me a bit nervous, because I worry that the bug is still there _somewhere_ else in our code, and that this PR merely papers over the bug somehow. But @carljm encouraged me to open this up for review, so that's what I'm doing! I'm curious if the reason for the behaviour change is obvious to somebody else.
+
+This behaviour change has a significant, positive impact on the ecosystem, because of typeshed's third overload for `builtins.iter()`:
+
+https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L3746-L3761
+
+## Reduction in nondeterminism??
+
+I _may_ be imagining it -- and it's very hard to tell -- but I think this PR _may_ reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I _think_ the level of flakes on this PR has been consistently lower than I've seen on other PRs. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in `Callable` types, I wonder if this _might_ also accidentally be improving the situation there somewhat?
+
+It's again a bit of a mystery to me why this would be the case, however. It's also hard to confirm, since there is definitely still some flakiness in the ecosystem report (and there was _some_ flakiness in the report prior to #21551, too!).
+
+## Reflexivity of subtyping for type variables
+
+An implementation detail of this PR is that we currently return `false` from the `Type::subtyping_is_always_reflexive()` method on `main` if a type is a `Type::TypeVar` variant, but this PR changes that so we return `true` for `Type::TypeVar` variants.
+
+The rationale for the current return-type of `false` is stated in this comment here:
+
+https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L491-L501
+
+But the `subtyping_is_always_reflexive` method only has a single callsite on `main`, and that is here:
+
+https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L327-L334
+
+and we also implement on `main` that `T` is always a subtype of `T | None` if `T` is a type variable, which I think is also only safe if we are able to assume that subtyping is always reflexive for `Type::TypeVar` variants. It therefore seems like we _de-facto_ treat `Type::TypeVar` variants in exactly the same way as all `Type` variants for which we return `true` from `Type::subtyping_is_always_reflexive()`, and that therefore life becomes much simpler if we simply return `true` from that method for `Type::TypeVar()` types.
+
+I'm curious if I'm missing something here?
+
+## Open questions
+
+It's _possible_ that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower. Should we skip the fast path for non-type-variable types if the length of the union is above a certain arbitrary threshhold? Or is that something we should just leave for now, until we have hard evidence that this is a real problem?
+
+I initially played around with using an `FxOrderSet` for `UnionType::elements()`, in https://github.com/astral-sh/ruff/pull/22458. That would make the `.contains()` fast path `O(1)` rather than `O(n)`, which would alleviate the concern about pathologically large unions. But (to my surprise) the Codspeed reports appear to show that this PR is ~as fast as #22458, and #22458 has a memory-usage regression which this PR does not. So for now, I am proposing adding the fast path while still keeping `UnionType::elements` as a boxed slice.
 
 ## Test Plan
 
-<!-- How was it tested? -->
+- Existing tests
+- One new mdtest for the improvement to typevar solving for `Callable` types
 
 
 ---
@@ -229,7 +295,7 @@ No memory usage changes detected ✅
 _Comment by @codspeed-hq[bot] on 2026-01-10 15:42_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **improve performance by 28.09%**
+## Merging this PR will **improve performance by 27.64%**
 
 
 
@@ -244,10 +310,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-10 15:42_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 10.2 s | 7.9 s | +28.09% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 10.4 s | 8.1 s | +27.64% |
 ---
 
-<sub>Comparing <code>alex/union-fast-path-still-vec</code> (6bc3c86) with <code>main</code> (8e29be9)</sub>
+<sub>Comparing <code>alex/union-fast-path-still-vec</code> (31d7e8c) with <code>main</code> (ed355b6)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -260,5 +326,21 @@ _Comment by @codspeed-hq[bot] on 2026-01-10 15:42_
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
+
+---
+
+_Marked ready for review by @AlexWaygood on 2026-01-16 19:57_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2026-01-16 19:57_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2026-01-16 19:57_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2026-01-16 19:57_
 
 ---
