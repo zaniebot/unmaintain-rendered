@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Type Variable resolution with outer context (`dict.get`) - astral-sh/ty #2537</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bad Type Variable resolution with outer context (<code>dict.get</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2537">#2537</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2026-01-16 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/randolf-scholz">@randolf-scholz</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider a <code>dict[K, V]</code> like class with a get method:</p>
+<pre><code class="language-python">from typing import Any, reveal_type
+
+class Map[K, V]:
+    def set(self, key: K, value: V) -&gt; None: ...
+    def get[T=None](self, key: Any, default: T = None, /) -&gt; V | T: ...
+
+d: Map[str, int] = Map[str, int]()
+
+# as expected, these are both `Any | None`
+reveal_type(d.get(&quot;key&quot;))  # int | None  ✅️
+reveal_type(d.get(&quot;key&quot;, None))  # int | None  ✅️
+# outer context should not overrule the argument type!
+result: str = reveal_type(d.get(&quot;key&quot;, None))  # int | None | str ❌️
+</code></pre>
+<p><code>d.get(&quot;key&quot;, None)</code> alone produces <code>int | None</code> as expected, but in the last case we have <code>str</code> as outer context. This gives an unsolvable situation for the type variable <code>T</code> as we would need both <code>T &lt;: str</code> and <code>T :&gt; None</code>. It seems <code>ty</code> gives priority to the outer constraint <code>T &lt;: str</code> here, which seems misguided, as it produces an illogical <code>reveal_type</code> result: <code>int | None | str</code>.</p>
+<p>But <code>d.get(&quot;key&quot;, None)</code> cannot produce a <code>str</code>!</p>
+<p>Instead, the inner constraint <code>T :&gt; None</code> should probably be prioritized in this situation.</p>
+<p>See also mirror issues in <code>mypy</code> and <code>pyrefly</code> tracker: https://github.com/python/mypy/issues/20576, https://github.com/facebook/pyrefly/issues/2136</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-16 21:10:24 UTC
+    </footer>
+</body>
+</html>

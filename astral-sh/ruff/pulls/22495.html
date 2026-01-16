@@ -34,7 +34,7 @@ A | B | C |
 -----------
 </code></pre>
 <p>Unfortunately, <code>A</code> and <code>B</code> are both complex recursive structural types (<em>cough</em> pydantic's huge <code>TypedDict</code>s), and checking whether <code>C</code> is a subtype of <code>A</code> or <code>B</code> is a question that takes us a long time to answer. But with our current generalized handling for determining whether <code>C &lt;: U</code> for a union type <code>U</code>, we <em>must</em> answer these questions before we even ask the question &quot;Is <code>C</code> a subtype of <code>C</code>?&quot;, for which the answer is trivial.</p>
-<p>By extending the trivial <code>if union.elements(db).contains(self)</code> check early on in <code>Type::has_relation_to()</code> to <em>all</em> types (not just type variables), we can achieve a significant speedup over what we have on the <code>main</code> branch. Now, in the above example, we quickly iterate over the elements of <code>U</code> once, discover that <code>C</code> is trivially contained in <code>U</code>'s elements, and return <code>true</code> for the overall subtyping check without ever having to ask whether <code>C</code> is a subtype of <code>A</code> and <code>B</code>.</p>
+<p>By extending the trivial <code>if union.elements(db).contains(self)</code> check early on in <code>Type::has_relation_to()</code> to <em>all</em> types (not just type variables), we can achieve a significant speedup over what we have on the <code>main</code> branch. Now, in the above example, we quickly iterate over the elements of <code>U</code> once, discover that <code>C</code> is trivially contained in <code>U</code>'s elements, and return <code>true</code> for the overall subtyping check without ever having to ask whether <code>C</code> is a subtype of <code>A</code> or <code>B</code>.</p>
 <p>Essentially this means that for <em>any</em> type <code>T</code>, if we want to check whether <code>T</code> is a subtype of a union <code>U</code> we <em>may</em> iterate over the elements of the union twice: once for this fast path to check whether the union trivially contains <code>T</code> in its elements, and (if it is not trivially contained) once again to do the full (slow) <code>has_relation_to_impl</code> check for each element in the union.</p>
 <p>It's perhaps surprising that iterating over the union elements twice would be consistently faster than iterating over the union elements once. However, the Codspeed results on this PR have very consistently shown some impressive speedups and no performance regressions.</p>
 <h2>Behaviour change</h2>
@@ -56,7 +56,7 @@ reveal_type(my_iter(get_int))  # `main`: Box[int | None]`; PR: Box[int]
 <p>This behaviour change has a significant, positive impact on the ecosystem, because of typeshed's third overload for <code>builtins.iter()</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L3746-L3761</p>
 <h2>Reduction in nondeterminism??</h2>
-<p>I <em>may</em> be imagining it -- and it's very hard to tell -- but I think this PR <em>may</em> reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I <em>think</em> the level of flakes on this PR has been consistently lower than I've seen on other PRs. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in <code>Callable</code> types, I wonder if this <em>might</em> also accidentally be improving the situation there somewhat?</p>
+<p>I <em>may</em> be imagining it -- and it's very hard to tell -- but I think this PR <em>may</em> reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I <em>think</em> the level of flakes on this PR has been consistently lower than I've seen on other ty PRs recently. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in <code>Callable</code> types, I wonder if this <em>might</em> also accidentally be improving the situation there somewhat?</p>
 <p>It's again a bit of a mystery to me why this would be the case, however. It's also hard to confirm, since there is definitely still some flakiness in the ecosystem report (and there was <em>some</em> flakiness in the report prior to #21551, too!).</p>
 <h2>Reflexivity of subtyping for type variables</h2>
 <p>An implementation detail of this PR is that we currently return <code>false</code> from the <code>Type::subtyping_is_always_reflexive()</code> method on <code>main</code> if a type is a <code>Type::TypeVar</code> variant, but this PR changes that so we return <code>true</code> for <code>Type::TypeVar</code> variants.</p>
@@ -273,10 +273,40 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="event">Review requested from @dcreager by @AlexWaygood on 2026-01-16 19:57</div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2026-01-16 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-16 20:09</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 8 | 79 | 2 |
+| <code>possibly-missing-attribute</code> | 0 | 10 | 3 |
+| <code>unresolved-attribute</code> | 0 | 10 | 3 |
+| <code>invalid-assignment</code> | 0 | 6 | 4 |
+| <code>invalid-await</code> | 0 | 9 | 0 |
+| <code>invalid-return-type</code> | 0 | 3 | 4 |
+| <code>not-subscriptable</code> | 0 | 4 | 0 |
+| <code>no-matching-overload</code> | 0 | 2 | 0 |
+| <code>unused-ignore-comment</code> | 1 | 1 | 0 |
+| <code>not-iterable</code> | 0 | 1 | 0 |
+| <code>redundant-cast</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>9</strong> | <strong>126</strong> | <strong>16</strong> |</p>
+<p><strong><a href="https://5622a012.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://5622a012.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2026-01-16 20:37</div>
+            <div class="timeline-body"><p>This looks good to me, nice work! I think the behavior change is an improvement, and I don't think we necessarily need to fully explain it. It's intuitive to me that it arises from doing fewer unnecessary <code>has_relation_to</code> comparisons in union cases, though I haven't fully traced out the details.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 20:06:31 UTC
+        Synced at 2026-01-16 21:09:42 UTC
     </footer>
 </body>
 </html>
