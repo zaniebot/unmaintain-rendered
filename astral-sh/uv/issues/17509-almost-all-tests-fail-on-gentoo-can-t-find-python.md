@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-16T04:46:41Z
-updated_at: 2026-01-16T12:44:12Z
+updated_at: 2026-01-16T13:55:43Z
 url: https://github.com/astral-sh/uv/issues/17509
-synced_at: 2026-01-16T12:56:37Z
+synced_at: 2026-01-16T13:57:15Z
 ```
 
 # Almost all tests fail on Gentoo (can't find Python) in 0.9.26
@@ -111,5 +111,124 @@ _Comment by @mgorny on 2026-01-16 12:41_
 _Comment by @konstin on 2026-01-16 12:44_
 
 https://github.com/astral-sh/uv/pull/17515 - If you have more env vars to share, I'll try to batch them in that PR.
+
+---
+
+_Comment by @mgorny on 2026-01-16 13:24_
+
+Well, "most" of them are gone but still a lot remain.
+
+So:
+
+1. We override `HOME` with a temporary directory, but the test suite scrubs that and grabs it from passwd.
+2. We override `XDG_CONFIG_DIRS` to hide the system-wide configuration file, but the test suite scrubs that and therefore gets affected by the system-wide config.
+
+In both cases, passing the variable through would be sufficient for the test suite to pass for us *but* I think it would be better if the test suite weren't affected by system environment in the first place — possibly by overriding both envvars with a temporary directory internally, or otherwise mocking the relevant logic to use temporary directories.
+
+<details>
+<summary>Example failures</summary>
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: lock_requires_python-9
+Source: crates/uv/tests/it/lock.rs:5867
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    2     2 │ exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6       │-error: No interpreter found for Python >=3.12 in [PYTHON SOURCES]
+          6 │+error: No interpreter found for Python >=3.12 in [PYTHON SOURCES] or managed installations
+    7     7 │ 
+    8     8 │ hint: A managed Python download is available for Python >=3.12, but Python downloads are set to 'never'
+────────────┴───────────────────────────────────────────────────────────────────
+```
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: compile_fallback_interpreter-5
+Source: crates/uv/tests/it/pip_compile.rs:1554
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    2     2 │ exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6       │-error: No interpreter found for PyPy in [PYTHON SOURCES]
+          6 │+error: No interpreter found for PyPy in virtual environments, [PYTHON SOURCES], or managed installations
+    7     7 │ 
+    8     8 │ hint: A managed Python download is available for PyPy, but Python downloads are set to 'never'
+────────────┴───────────────────────────────────────────────────────────────────
+```
+
+But also:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: read_index_credential_env_vars_for_check_url-2
+Source: crates/uv/tests/it/publish.rs:481
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1       │-success: true
+    2       │-exit_code: 0
+          1 │+success: false
+          2 │+exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6     6 │ Publishing 1 file to http://[LOCALHOST]/upload
+    7       │-File astral_test_private-0.1.0-py3-none-any.whl already exists, skipping
+          7 │+error: Failed to query check URL
+          8 │+  Caused by: Failed to write to the client cache
+          9 │+  Caused by: failed to create directory `/var/lib/portage/home/.cache/uv/simple-v18/index/1481bc36ab95888e`: Permission denied (os error 13)
+────────────┴───────────────────────────────────────────────────────────────────
+```
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: python_list_downloads
+Source: crates/uv/tests/it/python_list.rs:369
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1     1 │ success: true
+    2     2 │ exit_code: 0
+    3     3 │ ----- stdout -----
+    4       │-cpython-3.10.19-[PLATFORM]    <download available>
+    5       │-pypy-3.10.16-[PLATFORM]       <download available>
+    6       │-graalpy-3.10.0-[PLATFORM]     <download available>
+    7     4 │ 
+    8     5 │ ----- stderr -----
+────────────┴───────────────────────────────────────────────────────────────────
+```
+</details>
+
+---
+
+_Comment by @zanieb on 2026-01-16 13:55_
+
+Hm we do set `HOME`
+
+https://github.com/astral-sh/uv/blob/681e8e060fdc4ca2d0a180159ce63a720d3b93cf/crates/uv/tests/it/common/mod.rs#L1017
+
+and I'm supportive of expanding our `XDG_*` coverage
+
+https://github.com/astral-sh/uv/blob/681e8e060fdc4ca2d0a180159ce63a720d3b93cf/crates/uv/tests/it/common/mod.rs#L1020-L1023
 
 ---

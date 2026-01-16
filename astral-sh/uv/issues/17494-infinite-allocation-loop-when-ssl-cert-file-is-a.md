@@ -2,15 +2,15 @@
 number: 17494
 title: Infinite allocation loop when SSL_CERT_FILE is a directory
 type: issue
-state: open
+state: closed
 author: pieterdavid
 labels:
   - bug
 assignees: []
 created_at: 2026-01-15T18:59:50Z
-updated_at: 2026-01-15T22:13:49Z
+updated_at: 2026-01-16T13:12:56Z
 url: https://github.com/astral-sh/uv/issues/17494
-synced_at: 2026-01-15T23:03:06Z
+synced_at: 2026-01-16T13:57:15Z
 ```
 
 # Infinite allocation loop when SSL_CERT_FILE is a directory
@@ -63,5 +63,9 @@ Thank you!
 _Comment by @zanieb on 2026-01-15 22:13_
 
 It looks like the root cause is at https://github.com/rustls/pki-types/blob/85522565adf28a76909ea17dd2759b6046eb2bed/src/pem.rs#L50-L56
+
+---
+
+_Closed by @zanieb on 2026-01-16 13:12_
 
 ---

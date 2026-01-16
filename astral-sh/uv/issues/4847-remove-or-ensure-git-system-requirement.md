@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2024-07-06T17:07:17Z
-updated_at: 2024-10-10T17:45:46Z
+updated_at: 2026-01-16T13:47:44Z
 url: https://github.com/astral-sh/uv/issues/4847
-synced_at: 2026-01-12T15:58:52Z
+synced_at: 2026-01-16T13:57:13Z
 ```
 
 # Remove (or ensure) git system requirement
@@ -119,5 +119,11 @@ Thus I expected there would be no need to have git installed
 _Comment by @zanieb on 2024-10-10 17:45_
 
 We don't use libgit2 anymore, it doesn't support enough functionality. Originally, we copied much of Cargo's implementation though — Cargo can fallback to git if you ask it to.
+
+---
+
+_Comment by @andreasgriffin on 2026-01-16 13:47_
+
+Just as @wyattscarpenter   I also would like to see (basic) git included in `uv`, especially because `poetry` does include git, and I ran into this problem in my [attempt](https://github.com/andreasgriffin/bitcoin-safe/pull/403) to switch to `uv`.
 
 ---

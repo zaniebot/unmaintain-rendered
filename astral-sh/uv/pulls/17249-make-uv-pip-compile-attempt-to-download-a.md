@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T23:46:58Z
+updated_at: 2026-01-16T13:52:15Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-16T00:03:20Z
+synced_at: 2026-01-16T13:57:23Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -23,9 +23,9 @@ _@EliteTK_
 
 ## Summary
 
-I believe this mostly addresses #16709. Now specifying a simple version with `--python` or specifying a version using `--python-version` will result in the specified version getting downloaded with a fallback to the previous behaviour if the download fails for some transient reason or if downloads are disabled.
+Addresses #16709. Now specifying a simple version with `--python` or specifying a version using `--python-version` will result in the specified version getting downloaded with a fallback to the previous behaviour if the download fails for some transient reason or if downloads are disabled.
 
-The behaviour of how `--python` gets treated as `--python-version` if a "simple version" is specified is kept. This means that `--python 3.7` turns into a soft requirement. This seems at odds with how other similar parts of UV work, but there seem to be quite a few tests which test for this specific behaviour and I think this is best saved for a separate issue.
+The behaviour of how `--python` gets treated as `--python-version`, if a "simple version" is specified, is kept. This means that `--python 3.7` turns into a soft requirement. This seems at odds with how other similar parts of UV work, but there seem to be quite a few tests which test for this specific behaviour and I think this is best saved for a separate issue.
 
 ## Test Plan
 

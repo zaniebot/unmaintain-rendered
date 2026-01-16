@@ -2,17 +2,18 @@
 number: 17501
 title: "Add `-t` shortform for `--target` to `uv pip` subcommands"
 type: pull_request
-state: open
+state: merged
 author: fifty-six
 labels:
   - compatibility
 assignees: []
+merged: true
 base: main
 head: shortform-t
 created_at: 2026-01-15T21:36:12Z
-updated_at: 2026-01-15T23:11:19Z
+updated_at: 2026-01-16T13:50:43Z
 url: https://github.com/astral-sh/uv/pull/17501
-synced_at: 2026-01-16T00:03:20Z
+synced_at: 2026-01-16T13:57:23Z
 ```
 
 # Add `-t` shortform for `--target` to `uv pip` subcommands
@@ -55,5 +56,13 @@ cc @charliermarsh
 ---
 
 _Label `compatibility` added by @zanieb on 2026-01-15 23:11_
+
+---
+
+_Merged by @zanieb on 2026-01-16 13:50_
+
+---
+
+_Closed by @zanieb on 2026-01-16 13:50_
 
 ---

@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T12:03:06Z
+updated_at: 2026-01-16T13:40:51Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T12:56:31Z
+synced_at: 2026-01-16T13:57:10Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -419,5 +420,9 @@ Python but not supported by ty for dynamic classes.
 _@AlexWaygood reviewed on 2026-01-16 12:02_
 
 A tests-only review for now
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-16 13:40_
 
 ---

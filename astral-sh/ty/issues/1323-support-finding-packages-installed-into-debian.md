@@ -8,9 +8,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-10-08T08:29:59Z
-updated_at: 2026-01-08T23:28:41Z
+updated_at: 2026-01-16T13:49:34Z
 url: https://github.com/astral-sh/ty/issues/1323
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-16T13:56:52Z
 ```
 
 # support finding packages installed into Debian `dist-packages` directories
@@ -143,5 +143,11 @@ You could use `PYTHONPATH` or the `extra-paths` config and point it at the dist-
 I think this issue is actually pretty easy to fix -- in fact I just had Claude put up a PR that should fix it: https://github.com/astral-sh/ruff/pull/22466
 
 But this PR still requires validation on a real Debian/Ubuntu system, and I don't have time to do that at the moment -- so if anyone is motivated to see this issue fixed faster, your help validating and reviewing the PR would be welcome!
+
+---
+
+_Comment by @rivershah on 2026-01-16 13:49_
+
+@carljm Your suggested fixes are working. Tested this inside a devcontainer and issue is resolved
 
 ---

@@ -7,9 +7,9 @@ author: k0pernikus
 labels: []
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-16T12:45:40Z
+updated_at: 2026-01-16T13:14:01Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-16T12:56:19Z
+synced_at: 2026-01-16T13:56:58Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -30,7 +30,7 @@ class Greeter:
 
 ruff will correctly report:
 
-```
+```shell
 F541 [*] f-string without any placeholders
  --> utils\src\utils\greeting.py:3:16
   |
@@ -52,14 +52,14 @@ Found 1 error.
 
 It doesn't really help that it does not produce an output:
 
-```
+```shell
 ruff check --fix
 Found 1 error (1 fixed, 0 remaining).
 ```
 
 File will now contain:
 
-```
+```python
 class Greeter:
     def hello(self, name: str) -> str:
         return "Hello name!"
@@ -69,7 +69,7 @@ class Greeter:
 
 This is my `ruff.toml`:
 
-```
+```toml
 target-version = "py314"
 line-length = 88
 indent-width = 4
@@ -123,7 +123,7 @@ This might also relate to how [ARG001](https://docs.astral.sh/ruff/rules/unused-
 
 > For example, a configuration that enables some of the most popular rules (without being too pedantic) might look like the following:
 > 
-> ```
+> ```toml
 > [lint]
 > select = [
 >     # pycodestyle

@@ -6,11 +6,12 @@ state: open
 author: osma
 labels:
   - enhancement
+  - compatibility
 assignees: []
 created_at: 2026-01-16T08:56:26Z
-updated_at: 2026-01-16T08:57:49Z
+updated_at: 2026-01-16T13:04:06Z
 url: https://github.com/astral-sh/uv/issues/17511
-synced_at: 2026-01-16T09:55:15Z
+synced_at: 2026-01-16T13:57:15Z
 ```
 
 # Feature: short form for --extra option
@@ -64,5 +65,9 @@ I would like this command to work (when extras `foo` and `bar` are defined):
 ---
 
 _Label `enhancement` added by @osma on 2026-01-16 08:56_
+
+---
+
+_Label `compatibility` added by @EliteTK on 2026-01-16 13:04_
 
 ---

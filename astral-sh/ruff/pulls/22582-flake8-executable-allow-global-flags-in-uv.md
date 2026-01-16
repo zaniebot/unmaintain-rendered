@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/exe003-uv-global-args-21753
 created_at: 2026-01-14T19:36:02Z
-updated_at: 2026-01-16T08:50:30Z
+updated_at: 2026-01-16T13:38:06Z
 url: https://github.com/astral-sh/ruff/pull/22582
-synced_at: 2026-01-16T08:55:18Z
+synced_at: 2026-01-16T13:57:10Z
 ```
 
 # flake8-executable: allow global flags in uv shebangs (EXE003)
@@ -81,5 +81,27 @@ For uv and `uv tool`, would a regex like this work `uv\s+(?:--?[a-zA-Z][\w-]*(?:
 ---
 
 _@MichaReiser reviewed on 2026-01-16 08:50_
+
+---
+
+_@Jkhall81 reviewed on 2026-01-16 13:32_
+
+---
+
+_Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_python.rs`:12 on 2026-01-16 13:32_
+
+My bad on the uvx run thing.  I took the run out of the test cases with uvx.  I tried your suggested regex.  When using uv tool, the regex didn't recognize tool, and run is still mandatory.
+
+So, I updated the regex to use your flag logic the uv cases (requiring run) and uvx can stand alone.  I thought about just making run optional, but that would cause problems.
+
+---
+
+_Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_python.rs`:12 on 2026-01-16 13:33_
+
+Oh, and I left comments in the regex, as you can see.  I can take those out, if you think it looks cleaner without them.
+
+---
+
+_@Jkhall81 reviewed on 2026-01-16 13:33_
 
 ---

@@ -2,16 +2,16 @@
 number: 17495
 title: "Short form `-t` for `--target` wit `uv pip`"
 type: issue
-state: open
+state: closed
 author: fifty-six
 labels:
   - enhancement
   - compatibility
 assignees: []
 created_at: 2026-01-15T20:07:58Z
-updated_at: 2026-01-15T20:46:19Z
+updated_at: 2026-01-16T13:50:44Z
 url: https://github.com/astral-sh/uv/issues/17495
-synced_at: 2026-01-15T21:13:03Z
+synced_at: 2026-01-16T13:57:15Z
 ```
 
 # Short form `-t` for `--target` wit `uv pip`
@@ -43,5 +43,9 @@ Generally we're trying to reserve short flag names until it's clear what the bes
 ---
 
 _Label `compatibility` added by @zanieb on 2026-01-15 20:46_
+
+---
+
+_Closed by @zanieb on 2026-01-16 13:50_
 
 ---

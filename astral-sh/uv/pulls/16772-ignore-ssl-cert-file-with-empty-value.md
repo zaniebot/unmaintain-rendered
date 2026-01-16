@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: 16712/ssl-cert-file-ignores-empty-value
 created_at: 2025-11-18T18:19:49Z
-updated_at: 2025-12-02T02:56:17Z
+updated_at: 2026-01-16T13:51:47Z
 url: https://github.com/astral-sh/uv/pull/16772
-synced_at: 2026-01-12T16:12:26Z
+synced_at: 2026-01-16T13:57:23Z
 ```
 
 # Ignore `SSL_CERT_FILE` with empty value
@@ -177,5 +177,17 @@ looks good to me
 _Comment by @samypr100 on 2025-12-02 02:56_
 
 @zanieb I believe this one is good to go
+
+---
+
+_Comment by @taearls on 2026-01-16 13:48_
+
+@samypr100 hey! I just wanted to check in. Is there anything I can do to help move this forward?
+
+---
+
+_Comment by @zanieb on 2026-01-16 13:51_
+
+Sorry! I lost track of this over the holidays. Can you rebase since this will conflict with https://github.com/astral-sh/uv/pull/17503 ?
 
 ---
