@@ -10,9 +10,9 @@ draft: true
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-15T22:47:48Z
+updated_at: 2026-01-16T02:20:25Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-15T23:03:14Z
+synced_at: 2026-01-16T03:05:02Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -27,8 +27,7 @@ WIP. This follows #17418 and adds a `PyxPublishingService` that speaks the pyx-s
 
 TODOs:
 
-- [ ] Needs publishing integration tests (see below).
-- [ ] Needs documentation.
+- [x] Needs publishing integration tests (see below).
 - [x] Needs changes to `OidcTokenClaims` (these are currently GitHub-specific, they need to become an enum over various supported platforms).
 
 ## Test Plan
@@ -37,7 +36,7 @@ I'll add new publishing integration tests for the following scenarios:
 
 - [x] Trusted Publishing between GitLab CI/CD <-> PyPI: #17443 
 - [x] Trusted Publishing between GitHub Actions <-> pyx
-- [ ] Trusted Publishing between GitLab CI/CD <-> pyx
+- [x] Trusted Publishing between GitLab CI/CD <-> pyx
 
 ---
 
@@ -64,7 +63,7 @@ _@woodruffw reviewed on 2026-01-15 22:38_
 
 ---
 
-_Review comment by @woodruffw on `scripts/publish/test_publish.py`:430 on 2026-01-15 22:38_
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:436 on 2026-01-15 22:38_
 
 NOTE: I've removed the previous strategy of polling the index for a "fresh" version to test publishing with, in favor of this "timestamp" strategy where we pick a monotonically increasing (but not contiguous) version.
 
@@ -78,7 +77,7 @@ _@woodruffw reviewed on 2026-01-15 22:38_
 
 ---
 
-_Review comment by @woodruffw on `scripts/publish/test_publish.py`:774 on 2026-01-15 22:38_
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:794 on 2026-01-15 22:38_
 
 The log volume was a bit extreme (and not helpful), so I've dropped it back down to `INFO`.
 

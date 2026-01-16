@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-12T13:43:52Z
-updated_at: 2026-01-12T16:50:13Z
+updated_at: 2026-01-16T02:16:27Z
 url: https://github.com/astral-sh/uv/issues/17416
-synced_at: 2026-01-12T18:23:49Z
+synced_at: 2026-01-16T03:04:55Z
 ```
 
 # Exclude the project from `no-build` by default
@@ -110,5 +110,31 @@ I now tried steps from the original post on all supported build backends.
 * `uv build` with `-no-build = true` only works for `--build-backend uv` and fails for all other backends (hatch, flit, pdm, poetry, scikit, setuptools; I skipped maturin because I don't have Rust installed). The error message is always the same: "Building source distributions is disabled".
 
 (Updated the original post: setuptools -> all backends besides uv_build)
+
+---
+
+_Comment by @CHC383 on 2026-01-16 02:16_
+
+I have a similar case
+
+```toml
+# pyproject.toml
+[build-system]
+requires = [ "uv_build>=0.9.26" ]
+build-backend = "uv_build"
+
+[tool.uv]
+no-build = true
+no-binary-package = [ "my-project" ]
+```
+
+`uv build --sdist` failed because `Building source distributions is disabled`.
+
+Basically I want to disable building external dependencies but not my own project, and the workaround `no-binary-package` doesn't work in this case. I think this behavior was raised in https://github.com/astral-sh/uv/issues/12607 but that issue was buried :disappointed:
+
+@NMertsch I wonder how 
+> `uv build` with `-no-build = true` only works for `--build-backend uv`
+
+as it doesn't work with the config above.
 
 ---

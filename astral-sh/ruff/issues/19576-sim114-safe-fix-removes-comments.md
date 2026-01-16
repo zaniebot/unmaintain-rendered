@@ -10,9 +10,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2025-07-27T16:39:52Z
-updated_at: 2026-01-15T23:24:30Z
+updated_at: 2026-01-16T02:27:09Z
 url: https://github.com/astral-sh/ruff/issues/19576
-synced_at: 2026-01-16T00:02:55Z
+synced_at: 2026-01-16T03:04:37Z
 ```
 
 # SIM114: Safe fix removes comments
@@ -109,5 +109,13 @@ _Label `bug` added by @MichaReiser on 2025-12-26 08:33_
 _Comment by @leonace924 on 2026-01-15 23:24_
 
 @MichaReiser is it good to ake this issue as well?
+
+---
+
+_Comment by @amyreese on 2026-01-16 02:27_
+
+@leonace924 Phong has a draft PR #22079 for this already.
+
+@phongddo are you still working on your PR?  
 
 ---

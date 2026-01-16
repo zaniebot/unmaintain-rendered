@@ -4,12 +4,13 @@ title: "Literal[True] overload resolution fails in argument position"
 type: issue
 state: open
 author: PeterKhoudary
-labels: []
+labels:
+  - bidirectional inference
 assignees: []
 created_at: 2026-01-16T01:02:02Z
-updated_at: 2026-01-16T01:18:46Z
+updated_at: 2026-01-16T01:55:59Z
 url: https://github.com/astral-sh/ty/issues/2526
-synced_at: 2026-01-16T02:03:52Z
+synced_at: 2026-01-16T03:04:31Z
 ```
 
 # Literal[True] overload resolution fails in argument position
@@ -28,5 +29,19 @@ I have zero custom configurations on ty, SQLAlchemy version is 2.0.45. Can confi
 ### Version
 
 ty 0.0.12 (4b74e4ded 2026-01-14)
+
+---
+
+_Comment by @carljm on 2026-01-16 01:55_
+
+Thanks for the report! That's an interesting one; definitely looks like an issue with bidirectional typing.
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-16 01:55_
+
+---
+
+_Label `bidirectional inference` added by @carljm on 2026-01-16 01:55_
 
 ---
