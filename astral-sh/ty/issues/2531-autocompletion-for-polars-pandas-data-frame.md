@@ -5,14 +5,14 @@ type: issue
 state: open
 author: PGupta-Git
 labels:
-  - question
   - server
+  - wish
   - completions
 assignees: []
 created_at: 2026-01-16T10:27:10Z
-updated_at: 2026-01-16T10:32:53Z
+updated_at: 2026-01-16T11:27:37Z
 url: https://github.com/astral-sh/ty/issues/2531
-synced_at: 2026-01-16T11:07:16Z
+synced_at: 2026-01-16T11:55:53Z
 ```
 
 # Autocompletion for Polars/Pandas Data Frame Column names, similar to how Pycharm & Data Lab IDE's provides
@@ -52,5 +52,25 @@ _Label `server` added by @AlexWaygood on 2026-01-16 10:32_
 ---
 
 _Label `completions` added by @AlexWaygood on 2026-01-16 10:32_
+
+---
+
+_Comment by @MichaReiser on 2026-01-16 11:16_
+
+That's fancy. So PyCharm goes and reads the CSV file to extract the column names. 
+
+---
+
+_Label `question` removed by @MichaReiser on 2026-01-16 11:16_
+
+---
+
+_Label `wish` added by @MichaReiser on 2026-01-16 11:16_
+
+---
+
+_Comment by @PGupta-Git on 2026-01-16 11:27_
+
+I think PyCharm extracts the column names from the in-memory dataframe. Please check this https://github.com/posit-dev/positron/issues/5436
 
 ---

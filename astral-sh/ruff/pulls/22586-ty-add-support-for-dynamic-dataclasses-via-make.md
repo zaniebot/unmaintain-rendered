@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T00:58:20Z
+updated_at: 2026-01-16T11:49:59Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T02:04:10Z
+synced_at: 2026-01-16T11:56:11Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -289,5 +289,11 @@ _Comment by @carljm on 2026-01-16 00:53_
 I think it's pretty natural to support this (along with similar forms for namedtuple and TypedDict) and it seems pretty easy to do. I'm not really concerned by the argument parsing. It's a chunk of code, sure, but it's not a chunk of code that interacts with other things in a way that multiplies complexity; it's pretty much standalone, we'll only ever touch it if literally `make_dataclass` support is broken, and then we'll know right where to look.
 
 The fact that other type checkers don't support it means I wouldn't have considered it a priority for stable -- but if it's done and working, I don't see any significant downside to merging it.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 11:49_
+
+Okiedokie
 
 ---
