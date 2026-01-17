@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ty] Remove TODO type for subscripting an intersection - astral-sh/ruff #22654</title>
+    <title>[ty] Add support for subscripts on intersections - astral-sh/ruff #22654</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[ty] Remove TODO type for subscripting an intersection</h1>
+    <h1>[ty] Add support for subscripts on intersections</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -24,7 +24,6 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
             <div class="timeline-body"><h2>Summary</h2>
-<p>AFAICT, the call infrastructure already supports this?</p>
 <p>Closes https://github.com/astral-sh/ty/issues/2072.</p>
 </div>
         </div>
@@ -53,13 +52,7 @@
 <details>
 <summary>Changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
-+ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Maplike[KT@iteritems, VT@iteritems].__getitem__(__key: KT@iteritems, /) -&gt; VT@iteritems` cannot be called with key of type `object` on object of type `Maplike[KT@iteritems, VT@iteritems] &amp; ~Top[Mapping[Unknown, object]]`
-+ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Maplike[Unknown, object]].__getitem__(__key: Never, /) -&gt; object` cannot be called with key of type `object` on object of type `Iterable[tuple[KT@iteritems, VT@iteritems]] &amp; Top[Maplike[Unknown, object]] &amp; ~Top[Mapping[Unknown, object]]`
-- Found 16 diagnostics
-+ Found 18 diagnostics
-
-pyp (https://github.com/hauntsaninja/pyp)
+<pre><code class="language-diff">pyp (https://github.com/hauntsaninja/pyp)
 + pyp.py:429:34: error[unresolved-attribute] Object of type `stmt` has no attribute `body`
 + pyp.py:432:27: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
 + pyp.py:433:26: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
@@ -67,9 +60,11 @@ pyp (https://github.com/hauntsaninja/pyp)
 - Found 5 diagnostics
 + Found 9 diagnostics
 
-aioredis (https://github.com/aio-libs/aioredis)
-- aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo &amp; ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
-+ aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | bytes | ... omitted 3 union elements`
+bidict (https://github.com/jab/bidict)
++ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Maplike[KT@iteritems, VT@iteritems].__getitem__(__key: KT@iteritems, /) -&gt; VT@iteritems` cannot be called with key of type `object` on object of type `Maplike[KT@iteritems, VT@iteritems] &amp; ~Top[Mapping[Unknown, object]]`
++ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Maplike[Unknown, object]].__getitem__(__key: Never, /) -&gt; object` cannot be called with key of type `object` on object of type `Iterable[tuple[KT@iteritems, VT@iteritems]] &amp; Top[Maplike[Unknown, object]] &amp; ~Top[Mapping[Unknown, object]]`
+- Found 16 diagnostics
++ Found 18 diagnostics
 
 parso (https://github.com/davidhalter/parso)
 - parso/python/parser.py:120:50: warning[possibly-missing-attribute] Attribute `value` may be missing on object of type `@Todo | None`
@@ -80,6 +75,10 @@ parso (https://github.com/davidhalter/parso)
 + parso/python/tokenize.py:633:17: error[invalid-argument-type] Argument is incorrect: Expected `tuple[int, int]`, found `Unknown | None`
 - Found 201 diagnostics
 + Found 203 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo &amp; ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
++ aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | bytes | ... omitted 3 union elements`
 
 spack (https://github.com/spack/spack)
 - lib/spack/spack/mirrors/mirror.py:301:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `@Todo | str`
@@ -103,19 +102,18 @@ pip (https://github.com/pypa/pip)
 - Found 594 diagnostics
 + Found 601 diagnostics
 
-beartype (https://github.com/beartype/beartype)
-+ beartype/_check/code/codescope.py:448:13: error[invalid-argument-type] Argument to function `add_func_scope_type` is incorrect: Expected `type`, found `object`
-- beartype/_util/text/utiltextjoin.py:123:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ beartype/_util/text/utiltextjoin.py:130:20: error[no-matching-overload] No overload of bound method `join` matches arguments
-- beartype/bite/collection/infercollectionitems.py:321:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- beartype/bite/collection/infercollectionitems.py:504:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 495 diagnostics
-+ Found 494 diagnostics
-
 jinja (https://github.com/pallets/jinja)
 + src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
 - Found 180 diagnostics
 + Found 181 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_check/code/codescope.py:448:13: error[invalid-argument-type] Argument to function `add_func_scope_type` is incorrect: Expected `type`, found `object`
++ beartype/_util/kind/sequence/utilseqmake.py:44:17: error[invalid-assignment] Object of type `Sequence[Unknown]` is not assignable to `list[Unknown]`
+- beartype/_util/text/utiltextjoin.py:123:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/text/utiltextjoin.py:130:20: error[no-matching-overload] No overload of bound method `join` matches arguments
+- beartype/bite/collection/infercollectionitems.py:321:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/bite/collection/infercollectionitems.py:504:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 
 black (https://github.com/psf/black)
 + src/black/ranges.py:404:28: error[invalid-argument-type] Argument to function `first_leaf` is incorrect: Expected `Leaf | Node`, found `object`
@@ -123,18 +121,6 @@ black (https://github.com/psf/black)
 + src/blib2to3/pgen2/parse.py:392:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Node | Leaf] | None`
 - Found 53 diagnostics
 + Found 56 diagnostics
-
-graphql-core (https://github.com/graphql-python/graphql-core)
-- tests/pyutils/test_ref_map.py:35:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pyutils/test_ref_map.py:52:19: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pyutils/test_ref_map.py:72:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 641 diagnostics
-+ Found 638 diagnostics
-
-boostedblob (https://github.com/hauntsaninja/boostedblob)
-+ boostedblob/boost.py:366:35: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]] &amp; ~AlwaysFalsy` with no `__getitem__` method
-- Found 21 diagnostics
-+ Found 22 diagnostics
 
 paasta (https://github.com/yelp/paasta)
 - paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | @Todo`
@@ -145,10 +131,28 @@ paasta (https://github.com/yelp/paasta)
 - Found 1103 diagnostics
 + Found 1106 diagnostics
 
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/sansio/response.py:608:50: error[unresolved-attribute] Object of type `object` has no attribute `to_header`
++ src/werkzeug/test.py:361:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | None] | None`, found `dict[str, object]`
+- Found 407 diagnostics
++ Found 409 diagnostics
+
 pytest (https://github.com/pytest-dev/pytest)
 + src/_pytest/runner.py:551:43: error[not-subscriptable] Cannot subscript object of type `Item &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy` with no `__getitem__` method
 - Found 413 diagnostics
 + Found 414 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/boost.py:366:35: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]] &amp; ~AlwaysFalsy` with no `__getitem__` method
+- Found 21 diagnostics
++ Found 22 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/pyutils/test_ref_map.py:35:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pyutils/test_ref_map.py:52:19: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pyutils/test_ref_map.py:72:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 641 diagnostics
++ Found 638 diagnostics
 
 kopf (https://github.com/nolar/kopf)
 + kopf/_cogs/structs/dicts.py:65:30: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Mapping[Unknown, object]].__getitem__(key: Never, /) -&gt; object` cannot be called with key of type `str` on object of type `KubernetesModel &amp; Top[Mapping[Unknown, object]]`
@@ -171,16 +175,16 @@ kopf (https://github.com/nolar/kopf)
 - Found 268 diagnostics
 + Found 283 diagnostics
 
-porcupine (https://github.com/Akuli/porcupine)
-- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
-+ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
-
 ignite (https://github.com/pytorch/ignite)
 + tests/ignite/distributed/utils/__init__.py:484:24: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
 + tests/ignite/distributed/utils/__init__.py:484:24: error[not-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
 + tests/ignite/distributed/utils/__init__.py:484:24: warning[possibly-missing-attribute] Attribute `item` may be missing on object of type `Unknown | int | float | str`
 - Found 2033 diagnostics
 + Found 2036 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
++ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
 
 dulwich (https://github.com/dulwich/dulwich)
 + dulwich/contrib/swift.py:842:56: error[not-subscriptable] Cannot subscript object of type `~None` with no `__getitem__` method
@@ -243,34 +247,9 @@ mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - Found 2143 diagnostics
 + Found 2141 diagnostics
 
-pandera (https://github.com/pandera-dev/pandera)
-- pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -&gt; Any`, found `@Todo | (tuple[Any, ...] &amp; ~AlwaysFalsy &amp; ~AlwaysTruthy) | None`
-+ pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -&gt; Any`, found `Any | (tuple[Any, ...] &amp; ~AlwaysFalsy &amp; ~AlwaysTruthy) | None`
-
-mypy (https://github.com/python/mypy)
-- mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (@Todo &amp; ~AlwaysFalsy) | bool`
-+ mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | bool`
-+ mypyc/ir/ops.py:118:16: error[invalid-return-type] Return type does not match returned value: expected `ControlOp`, found `Op`
-- Found 1740 diagnostics
-+ Found 1741 diagnostics
-
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `@Todo` on object of type `_iLocIndexerFrame[DataFrame]`
++ freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
 
 schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/avro/schema.py:801:34: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -&gt; object` cannot be called with key of type `Literal[&quot;names&quot;]` on object of type `Schema &amp; Top[dict[Unknown, Unknown]]`
@@ -328,19 +307,22 @@ schema_salad (https://github.com/common-workflow-language/schema_salad)
 - Found 243 diagnostics
 + Found 295 diagnostics
 
-freqtrade (https://github.com/freqtrade/freqtrade)
-- freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `@Todo` on object of type `_iLocIndexerFrame[DataFrame]`
-+ freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
-
-mkdocs (https://github.com/mkdocs/mkdocs)
-- mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `@Todo | int | None`
-+ mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `Unknown | int | None`
+mypy (https://github.com/python/mypy)
+- mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (@Todo &amp; ~AlwaysFalsy) | bool`
++ mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | bool`
++ mypyc/ir/ops.py:118:16: error[invalid-return-type] Return type does not match returned value: expected `ControlOp`, found `Op`
+- Found 1741 diagnostics
++ Found 1742 diagnostics
 
 sphinx (https://github.com/sphinx-doc/sphinx)
 + sphinx/builders/latex/transforms.py:118:22: error[not-subscriptable] Cannot subscript object of type `Node &amp; ~AlwaysTruthy` with no `__getitem__` method
 + sphinx/environment/collectors/toctree.py:170:41: error[unresolved-attribute] Object of type `Node` has no attribute `append`
 - Found 344 diagnostics
 + Found 346 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `@Todo | int | None`
++ mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `Unknown | int | None`
 
 Tanjun (https://github.com/FasterSpeeding/Tanjun)
 + tanjun/annotations.py:2520:30: error[invalid-argument-type] Argument is incorrect: Expected `&lt;special-form 'typing.Self'&gt;`, found `Self@add_to_slash_cmds`
@@ -356,6 +338,50 @@ Tanjun (https://github.com/FasterSpeeding/Tanjun)
 - Found 131 diagnostics
 + Found 141 diagnostics
 
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/abc.py:1808:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal[&quot;items&quot;], /) -&gt; list[MessagePin], (key: Literal[&quot;has_more&quot;], /) -&gt; bool]` cannot be called with key of type `Literal[-1]` on object of type `ChannelPins &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy`
++ discord/channel.py:632:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
++ discord/channel.py:1276:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
+- discord/poll.py:406:94: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/threads.py:491:26: error[unresolved-attribute] Object of type `object` has no attribute `id`
+- Found 542 diagnostics
++ Found 545 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ torchvision/transforms/functional.py:152:19: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: ndarray[tuple[Any, ...], dtype[integer[Any] | numpy.bool[builtins.bool]]] | tuple[ndarray[tuple[Any, ...], dtype[integer[Any] | numpy.bool[builtins.bool]]], ...], /) -&gt; ndarray[tuple[Any, ...], dtype[object]], (key: SupportsIndex | tuple[SupportsIndex, ...], /) -&gt; Any, (key: SupportsIndex | slice[Any, Any, Any] | EllipsisType | ... omitted 5 union elements, /) -&gt; ndarray[tuple[Any, ...], dtype[object]], (key: str, /) -&gt; ndarray[tuple[object, ...], dtype[Any]], (key: list[str], /) -&gt; ndarray[tuple[object, ...], Unknown]]` cannot be called with key of type `tuple[slice[None, None, None], slice[None, None, None], None]` on object of type `Image &amp; ndarray[tuple[object, ...], dtype[object]]`
+- torchvision/transforms/functional.py:575:23: error[invalid-assignment] Object of type `tuple[@Todo, @Todo]` is not assignable to `list[int]`
++ torchvision/transforms/functional.py:575:23: error[invalid-assignment] Object of type `tuple[int, int]` is not assignable to `list[int]`
+- torchvision/transforms/functional.py:801:16: error[invalid-assignment] Object of type `tuple[@Todo, @Todo]` is not assignable to `list[int]`
++ torchvision/transforms/functional.py:801:16: error[invalid-assignment] Object of type `tuple[int, int]` is not assignable to `list[int]`
+- torchvision/transforms/functional.py:852:16: error[invalid-assignment] Object of type `tuple[@Todo, @Todo]` is not assignable to `list[int]`
++ torchvision/transforms/functional.py:852:16: error[invalid-assignment] Object of type `tuple[int, int]` is not assignable to `list[int]`
+- Found 1403 diagnostics
++ Found 1404 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ apprise/config/http.py:273:9: error[unresolved-attribute] Object of type `object` has no attribute `update`
++ apprise/plugins/base.py:560:41: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | list[str | AttachBase | AppriseAttachment] | None`, found `AttachBase`
+- apprise/plugins/email/base.py:526:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `tuple[(@Todo &amp; ~AlwaysFalsy) | Literal[False], @Todo]`
++ apprise/plugins/email/base.py:526:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `tuple[(Unknown &amp; ~AlwaysFalsy) | Literal[False], Unknown]`
+- apprise/plugins/mailgun.py:432:31: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `Unknown | list[Unknown | str] | tuple[(@Todo &amp; ~AlwaysFalsy) | Literal[False], @Todo]`
++ apprise/plugins/mailgun.py:432:31: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `Unknown | list[Unknown | str] | tuple[(Unknown &amp; ~AlwaysFalsy) | Literal[False], Unknown]`
+- apprise/plugins/resend.py:374:32: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `Unknown | tuple[(@Todo &amp; ~None) | Literal[False], @Todo]`
++ apprise/plugins/resend.py:374:32: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `Unknown | tuple[(Unknown &amp; ~None) | Literal[False], Unknown]`
++ apprise/plugins/vapid/__init__.py:406:17: error[invalid-argument-type] Argument to bound method `encrypt_webpush` is incorrect: Expected `EllipticCurvePublicKey`, found `Unknown | EllipticCurvePublicKey | None`
++ apprise/plugins/vapid/__init__.py:407:17: error[invalid-argument-type] Argument to bound method `encrypt_webpush` is incorrect: Expected `bytes`, found `Unknown | bytes | None`
+- Found 2648 diagnostics
++ Found 2652 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/json_util.py:1002:9: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `@Todo` on object of type `dict[int, (Any, JSONOptions, /) -&gt; Any]`
++ bson/json_util.py:1002:9: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `(Any, JSONOptions, /) -&gt; Any` on object of type `dict[int, (Any, JSONOptions, /) -&gt; Any]`
+- pymongo/helpers_shared.py:193:13: error[invalid-assignment] Invalid subscript assignment with key of type `str | tuple[str, int | str | Mapping[str, Any]]` and value of type `@Todo` on object of type `dict[str, Any]`
++ pymongo/helpers_shared.py:193:13: error[invalid-assignment] Invalid subscript assignment with key of type `str | tuple[str, int | str | Mapping[str, Any]]` and value of type `Any` on object of type `dict[str, Any]`
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -&gt; Any`, found `@Todo | (tuple[Any, ...] &amp; ~AlwaysFalsy &amp; ~AlwaysTruthy) | None`
++ pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -&gt; Any`, found `Any | (tuple[Any, ...] &amp; ~AlwaysFalsy &amp; ~AlwaysTruthy) | None`
+
 meson (https://github.com/mesonbuild/meson)
 - mesonbuild/backend/ninjabackend.py:858:9: warning[possibly-missing-attribute] Attribute `extend` may be missing on object of type `@Todo | str | list[str] | list[Unknown]`
 + mesonbuild/backend/ninjabackend.py:858:9: warning[possibly-missing-attribute] Attribute `extend` may be missing on object of type `Unknown | str | list[str] | list[Unknown]`
@@ -370,17 +396,9 @@ meson (https://github.com/mesonbuild/meson)
 + mesonbuild/dependencies/cuda.py:131:164: error[no-matching-overload] No overload of function `realpath` matches arguments
 + mesonbuild/interpreter/interpreter.py:1946:50: error[invalid-argument-type] Argument to bound method `find_program_impl` is incorrect: Expected `list[File | str]`, found `str | File`
 + mesonbuild/interpreter/interpreter.py:3611:20: error[invalid-return-type] Return type does not match returned value: expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `InterpreterObject`
-+ mesonbuild/interpreterbase/interpreterbase.py:469:79: error[invalid-argument-type] Argument to bound method `_holderify` is incorrect: Expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `object`
-+ mesonbuild/mconf.py:304:36: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]].__getitem__(key: str, /) -&gt; dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]` cannot be called with key of type `None` on object of type `dict[str, dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]] &amp; ~AlwaysFalsy`
-- mesonbuild/modules/pkgconfig.py:582:43: error[invalid-assignment] Object of type `@Todo | None` is not assignable to `str | bool`
-+ mesonbuild/modules/pkgconfig.py:582:43: error[invalid-assignment] Object of type `str | Literal[False] | None` is not assignable to `str | bool`
-- mesonbuild/modules/pkgconfig.py:754:103: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None | Unknown`
-+ mesonbuild/modules/pkgconfig.py:754:103: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
-- mesonbuild/modules/python.py:536:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `str`, found `@Todo | None`
-+ mesonbuild/modules/python.py:536:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `str`, found `Unknown | str | None`
-- mesonbuild/modules/python.py:538:72: error[invalid-ar
++ mes
 
-... (truncated 532 lines) ...
+... (truncated 549 lines) ...
 </code></pre>
 </details>
 
@@ -455,10 +473,13 @@ elif 0xCA &lt;= b &lt;= 0xCB:
         <div class="timeline-entry">
             <div class="event">Review requested from @dcreager by @charliermarsh on 2026-01-17 20:06</div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Remove TODO type for subscripting an intersection" to "[ty] Add support for subscripts on intersections" by @charliermarsh on 2026-01-17 20:33</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-17 20:13:57 UTC
+        Synced at 2026-01-17 21:18:04 UTC
     </footer>
 </body>
 </html>
