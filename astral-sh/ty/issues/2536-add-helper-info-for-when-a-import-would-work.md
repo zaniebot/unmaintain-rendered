@@ -4,12 +4,13 @@ title: Add helper info for when a import would work except for missing extension
 type: issue
 state: open
 author: MeGaGiGaGon
-labels: []
+labels:
+  - diagnostics
 assignees: []
 created_at: 2026-01-16T20:29:51Z
-updated_at: 2026-01-16T20:29:51Z
+updated_at: 2026-01-17T01:47:20Z
 url: https://github.com/astral-sh/ty/issues/2536
-synced_at: 2026-01-16T21:03:54Z
+synced_at: 2026-01-17T02:11:18Z
 ```
 
 # Add helper info for when a import would work except for missing extension
@@ -49,5 +50,9 @@ help: Found matching file named `module`, but it is not importable due to missin
 info: Searched in the following paths during module resolution:
 ```
 It would also be extra-extra nice if that help also showed up in the on-hover-error-display in VSC.
+
+---
+
+_Label `diagnostics` added by @carljm on 2026-01-17 01:47_
 
 ---

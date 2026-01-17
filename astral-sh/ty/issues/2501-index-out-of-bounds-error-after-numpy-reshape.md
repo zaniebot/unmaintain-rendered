@@ -2,15 +2,15 @@
 number: 2501
 title: index-out-of-bounds error after numpy reshape
 type: issue
-state: open
+state: closed
 author: ntjohnson1
 labels:
   - needs-info
 assignees: []
 created_at: 2026-01-14T21:43:29Z
-updated_at: 2026-01-16T21:26:23Z
+updated_at: 2026-01-17T01:39:50Z
 url: https://github.com/astral-sh/ty/issues/2501
-synced_at: 2026-01-16T22:14:35Z
+synced_at: 2026-01-17T02:11:18Z
 ```
 
 # index-out-of-bounds error after numpy reshape
@@ -152,5 +152,42 @@ uv run ty check
 ```
 
 My guess is that its related to the circular dependency.
+
+---
+
+_Comment by @carljm on 2026-01-17 01:39_
+
+Thanks for the reproducer!
+
+It's not related to the circular dependency. It is in fact the Python version -- now that I see the `pyproject.toml` in your reproducer, I see that ty will actually choose Python 3.10 (the lowest supported Python version). And in fact the issue repros consistently under Python 3.10, but not on 3.11+, with this simple reproducer:
+
+```py
+import numpy as np
+
+def reshape_test(data: np.ndarray[tuple[int, int], np.dtype[np.uint8]]):
+    out = data.reshape((1, -1))
+    reveal_type(out)
+
+```
+
+Both mypy and pyright reveal the type of `out` correctly here as `np.ndarray[tuple[int, int], np.dtype[np.uint8]]`, but ty reveals it wrongly as `np.ndarray[tuple[()], np.dtype[np.uint8]]`. (Same is true no matter the shape of the input array, and all type checkers correctly match the output dtype to the input dtype.)
+
+So the problem is that under Python 3.10, ty is picking this first overload here: https://github.com/numpy/numpy/blob/maintenance/2.3.x/numpy/__init__.pyi#L2429
+
+And the root cause is both simple and silly: numpy does [`from typing import Never`](https://github.com/numpy/numpy/blob/maintenance/2.3.x/numpy/__init__.pyi#L174), and we correctly model that `typing.Never` does not exist on Python 3.10. So that overload becomes an overload on `Sequence[Unknown]` (which matches) instead of `Sequence[Never]`.
+
+And in fact mypy does exactly the same thing as ty, if you give it `--python-version 3.10`!
+
+So the only difference between mypy and ty here is the Python version they use to check by default: ty chooses the lowest version supported in your `pyproject.toml`.
+
+It seems like numpy 2.3.5 doesn't really support Python 3.10 (or if it intends to, its stubs are subtly broken on 3.10). So if you can, it seems like the best fix would be for you to bump your minimum supported Python version to 3.11 in your `pyproject.toml`. Or failing that, explicitly configure ty to check against Python 3.11.
+
+Closing, since it doesn't look like there's a bug in ty here.
+
+
+
+---
+
+_Closed by @carljm on 2026-01-17 01:39_
 
 ---

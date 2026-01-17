@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-17T00:17:59Z
+updated_at: 2026-01-17T01:51:09Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-17T01:09:41Z
+synced_at: 2026-01-17T02:11:36Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -275,5 +275,15 @@ _@dscorbett reviewed on 2026-01-17 00:17_
 _Review comment by @dscorbett on `crates/ty_python_semantic/src/types/call/bind.rs`:1261 on 2026-01-17 00:17_
 
 It could also be a `tuple[bytes, ...]`, ignoring the count but keeping the type. Similarly, `struct.unpack("18446744073709551616c?", buf)` could be a `tuple[bytes | bool, ...]`.
+
+---
+
+_@carljm reviewed on 2026-01-17 01:51_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:1261 on 2026-01-17 01:51_
+
+I think it is not super important how precise the fallback type is in this edge case. Feel free to use the most precise fallback type that is definitely correct and doesn't require a lot of additional work to implement.
 
 ---

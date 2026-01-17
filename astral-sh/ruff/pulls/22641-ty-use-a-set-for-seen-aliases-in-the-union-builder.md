@@ -2,7 +2,7 @@
 number: 22641
 title: "[ty] Use a set for `seen_aliases` in the union builder"
 type: pull_request
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - internal
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/seen-aliases-set
 created_at: 2026-01-16T23:42:10Z
-updated_at: 2026-01-17T00:11:55Z
+updated_at: 2026-01-17T01:58:04Z
 url: https://github.com/astral-sh/ruff/pull/22641
-synced_at: 2026-01-17T01:09:41Z
+synced_at: 2026-01-17T02:11:36Z
 ```
 
 # [ty] Use a set for `seen_aliases` in the union builder
@@ -175,5 +175,21 @@ _Review requested from @dcreager by @AlexWaygood on 2026-01-16 23:56_
 _Comment by @AlexWaygood on 2026-01-17 00:11_
 
 Hmm, maybe this isn't actually a good idea if we expect `seen_aliases` to almost always be very small? I guess hashing types isn't free; an `O(n)` check can be quicker than an `O(1)` check if `n` is almost always very small.
+
+---
+
+_Comment by @carljm on 2026-01-17 01:54_
+
+> Hmm, maybe this isn't actually a good idea if we expect `seen_aliases` to almost always be very small? I guess hashing types isn't free; an `O(n)` check can be quicker than an `O(1)` check if `n` is almost always very small.
+
+Yes, this is why the current code just uses a Vec. Given no detectable improvement here (it looks like 3 benchmarks regress 1% and one improves 1%, but all four of those might be just noise) I'd be inclined not to bother with this. If anything we could just add a comment explaining why a Vec is fine.
+
+---
+
+_Closed by @AlexWaygood on 2026-01-17 01:58_
+
+---
+
+_Branch deleted on 2026-01-17 01:58_
 
 ---

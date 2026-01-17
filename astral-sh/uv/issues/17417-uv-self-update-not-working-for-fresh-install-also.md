@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-12T15:21:50Z
-updated_at: 2026-01-13T08:43:44Z
+updated_at: 2026-01-17T01:18:39Z
 url: https://github.com/astral-sh/uv/issues/17417
-synced_at: 2026-01-13T09:21:21Z
+synced_at: 2026-01-17T02:11:42Z
 ```
 
 # uv self update not working for fresh install (also uvw.exe quarantined by Windows Defender)
@@ -114,5 +114,18 @@ The issue with Windows Defender is no longer happening today, so this more or le
 I suppose the issue could be closed now and/or lumped into #17403 for future consideration.
 
 
+
+---
+
+_Comment by @Rashify on 2026-01-17 01:18_
+
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/fd52f836-ebed-4c85-a162-0d1a1142a363" />
+
+When I attempted to update through winget(specifically "winget upgrade --all --include-unknown") from 0.9.24->0.9.26 I receive an error:
+"An unexpected error occurred while executing the command:
+0x8a150040 : Error reading from the stream
+Installer failed with exit code: 0x8a150040 : Error reading from the stream"
+
+Also Windows Defender detects the same threat as op, I'm sure it's a false positive but I've provided a screenshot.
 
 ---
