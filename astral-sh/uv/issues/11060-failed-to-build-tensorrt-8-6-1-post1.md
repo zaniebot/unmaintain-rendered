@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-01-29T12:59:25Z
-updated_at: 2025-02-04T16:23:32Z
+updated_at: 2026-01-17T21:38:06Z
 url: https://github.com/astral-sh/uv/issues/11060
-synced_at: 2026-01-12T16:00:27Z
+synced_at: 2026-01-17T22:26:51Z
 ```
 
 # Failed to build `tensorrt==8.6.1.post1
@@ -189,5 +189,11 @@ uv pip install tensorrt==8.6.1 --no-build-isolation-package tensorrt
 ---
 
 _Closed by @charliermarsh on 2025-02-04 16:23_
+
+---
+
+_Comment by @khoover on 2026-01-17 21:38_
+
+Small necro, I ran into the same thing and tried adding `extra-build-dependencies` and disabling build isolation without that working; it is a bit surprising the combo didn't cause `uv` to ensure those packages are pulled into the project environment, run the build, then drop them.
 
 ---

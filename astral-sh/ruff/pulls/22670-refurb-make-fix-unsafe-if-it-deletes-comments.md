@@ -1,20 +1,20 @@
 ```yaml
-number: 22664
-title: "[`ruff`] Make fix unsafe if it deletes comments (`RUF020`)"
+number: 22670
+title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB145`)"
 type: pull_request
 state: open
 author: chirizxc
 labels: []
 assignees: []
 base: main
-head: RUF020
-created_at: 2026-01-17T20:59:42Z
-updated_at: 2026-01-17T21:09:40Z
-url: https://github.com/astral-sh/ruff/pull/22664
+head: FURB145
+created_at: 2026-01-17T21:56:31Z
+updated_at: 2026-01-17T21:56:31Z
+url: https://github.com/astral-sh/ruff/pull/22670
 synced_at: 2026-01-17T22:25:51Z
 ```
 
-# [`ruff`] Make fix unsafe if it deletes comments (`RUF020`)
+# [`refurb`] Make fix unsafe if it deletes comments (`FURB145`)
 
 ---
 
@@ -36,26 +36,6 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 ## Test Plan
 
 <!-- How was it tested? -->
-
-
----
-
-_Comment by @astral-sh-bot[bot] on 2026-01-17 21:09_
-
-
-<!-- generated-comment ecosystem -->
-
-
-## `ruff-ecosystem` results
-
-### Linter (stable)
-✅ ecosystem check detected no linter changes.
-
-### Linter (preview)
-✅ ecosystem check detected no linter changes.
-
-
-
 
 
 ---

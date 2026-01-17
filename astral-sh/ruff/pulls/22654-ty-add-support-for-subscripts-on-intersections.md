@@ -4,14 +4,16 @@ title: "[ty] Add support for subscripts on intersections"
 type: pull_request
 state: open
 author: charliermarsh
-labels: []
+labels:
+  - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-17T20:37:01Z
+updated_at: 2026-01-17T21:26:32Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-17T21:12:36Z
+synced_at: 2026-01-17T22:25:51Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -505,5 +507,46 @@ _Review requested from @dcreager by @charliermarsh on 2026-01-17 20:06_
 ---
 
 _Renamed from "[ty] Remove TODO type for subscripting an intersection" to "[ty] Add support for subscripts on intersections" by @charliermarsh on 2026-01-17 20:33_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-17 21:20_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2026-01-17 21:20_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 299 | 0 | 36 |
+| `not-subscriptable` | 72 | 0 | 0 |
+| `invalid-assignment` | 29 | 0 | 10 |
+| `possibly-missing-attribute` | 20 | 0 | 12 |
+| `unused-ignore-comment` | 0 | 28 | 0 |
+| `invalid-return-type` | 7 | 1 | 11 |
+| `unresolved-attribute` | 15 | 0 | 0 |
+| `unsupported-operator` | 3 | 3 | 9 |
+| `call-non-callable` | 9 | 0 | 0 |
+| `no-matching-overload` | 5 | 0 | 0 |
+| `not-iterable` | 4 | 0 | 0 |
+| `index-out-of-bounds` | 0 | 2 | 0 |
+| `type-assertion-failure` | 0 | 1 | 1 |
+| **Total** | **463** | **35** | **79** |
+
+
+**[Full report with detailed diff](https://cce1ccd6.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://cce1ccd6.ty-ecosystem-ext.pages.dev/timing))
+
+
 
 ---
