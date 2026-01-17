@@ -13,9 +13,9 @@ merged: true
 base: main
 head: alex/union-fast-path-still-vec
 created_at: 2026-01-10T15:30:40Z
-updated_at: 2026-01-16T22:09:09Z
+updated_at: 2026-01-17T07:18:20Z
 url: https://github.com/astral-sh/ruff/pull/22495
-synced_at: 2026-01-16T23:05:54Z
+synced_at: 2026-01-17T08:06:30Z
 ```
 
 # [ty] Generalize union-type subtyping fast path
@@ -397,5 +397,13 @@ _Closed by @AlexWaygood on 2026-01-16 22:09_
 ---
 
 _Branch deleted on 2026-01-16 22:09_
+
+---
+
+_Comment by @dcreager on 2026-01-17 07:18_
+
+> It's _possible_ that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower.
+
+Iterating through a contiguous slice like this is really fast! I would only anticipate this would cause a performance problem if it makes us do something "expensive enough" to each union element in the first traversal, where something in our previous single traversal would let us short-circuit and return early without processing every element. `when_any` _does_ short-circuit if any of the union elements returns `AlwaysTrue`. But in this branch, the first traversal is just doing a simple equality check. Any code that with large enough unions to make this first traversal expensive will have many deeper performance issues.
 
 ---
