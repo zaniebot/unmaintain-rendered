@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat/typevartuple-support
 created_at: 2026-01-17T09:17:10Z
-updated_at: 2026-01-17T11:42:54Z
+updated_at: 2026-01-17T14:35:20Z
 url: https://github.com/astral-sh/ruff/pull/22644
-synced_at: 2026-01-17T12:09:43Z
+synced_at: 2026-01-17T15:13:10Z
 ```
 
 # [ty] Implement TypeVarTuple support for PEP 695 and legacy syntax
@@ -152,7 +152,19 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 09:19_
 
 ## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
 
-No changes detected ✅
+The percentage of diagnostics emitted that were expected errors held steady at 70.24%. The percentage of expected errors that received a diagnostic held steady at 60.04%.
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 649 | 649 | +0 |  |
+| False Positives | 275 | 275 | +0 |  |
+| False Negatives | 432 | 432 | +0 |  |
+| Total Diagnostics | 924 | 924 | +0 |  |
+| Precision | 70.24% | 70.24% | +0.00% |  |
+| Recall | 60.04% | 60.04% | +0.00% |  |
+
 
 
 ### False positives removed
@@ -161,8 +173,8 @@ No changes detected ✅
 
 | Location | Name | Message |
 |----------|------|---------|
-| [aliases_type_statement.py:10:52](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/aliases_type_statement.py#L10) | invalid-type-arguments | invalid-type-arguments: Too many type arguments: expected 2, got 3 |
-| [aliases_typealiastype.py:23:5](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/aliases_typealiastype.py#L23) | invalid-argument-type | invalid-argument-type: Argument to class `TypeAliasType` is incorrect: Expected `tuple[TypeVar \| ParamSpec \| typing_extensions.TypeVarTuple, ...]`, found `tuple[TypeVar, TypeVar, ParamSpec, typing.TypeVarTuple]` |
+| [aliases_type_statement.py:10:52](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/aliases_type_statement.py#L10) | invalid-type-arguments | Too many type arguments: expected 2, got 3 |
+| [aliases_typealiastype.py:23:5](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/aliases_typealiastype.py#L23) | invalid-argument-type | Argument to class `TypeAliasType` is incorrect: Expected `tuple[TypeVar \| ParamSpec \| typing_extensions.TypeVarTuple, ...]`, found `tuple[TypeVar, TypeVar, ParamSpec, typing.TypeVarTuple]` |
 
 
 </details>
@@ -173,8 +185,8 @@ No changes detected ✅
 
 | Location | Name | Message |
 |----------|------|---------|
-| [generics_defaults.py:88:39](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/generics_defaults.py#L88) | invalid-legacy-type-variable | invalid-legacy-type-variable: The `default` parameter of `typing.TypeVarTuple` was added in Python 3.13 |
-| [generics_defaults.py:99:53](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance//tests/generics_defaults.py#L99) | invalid-legacy-type-variable | invalid-legacy-type-variable: The `default` parameter of `typing.TypeVarTuple` was added in Python 3.13 |
+| [generics_defaults.py:88:39](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/generics_defaults.py#L88) | invalid-legacy-type-variable | The `default` parameter of `typing.TypeVarTuple` was added in Python 3.13 |
+| [generics_defaults.py:99:53](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/generics_defaults.py#L99) | invalid-legacy-type-variable | The `default` parameter of `typing.TypeVarTuple` was added in Python 3.13 |
 
 
 </details>
@@ -196,49 +208,32 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 09:20_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-- Found 5406 diagnostics
-+ Found 5411 diagnostics
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 46 diagnostics
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
 
 egglog-python (https://github.com/egraphs-good/egglog-python)
 + python/egglog/deconstruct.py:24:25: error[invalid-legacy-type-variable] The `default` parameter of `typing.TypeVarTuple` was added in Python 3.13
@@ -252,6 +247,9 @@ static-frame (https://github.com/static-frame/static-frame)
 - static_frame/core/batch.py:774:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocCompound[Batch]`, found `InterGetItemLocCompound[Batch | Bottom[Series[Any, Any]]]`
 - static_frame/core/batch.py:778:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocCompound[Batch]`, found `InterGetItemILocCompound[Batch | Bottom[Series[Any, Any]]]`
 - static_frame/core/batch.py:782:16: error[invalid-return-type] Return type does not match returned value: expected `InterfaceGetItemBLoc[Batch]`, found `InterfaceGetItemBLoc[Batch | Bottom[Series[Any, Any]]]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Frame[Any, Any, object]] | ... omitted 8 union elements, object_]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Frame[Any, Any, object]] | ... omitted 8 union elements, object_ | Self@iloc]`
 - static_frame/core/container_util.py:750:23: warning[possibly-missing-attribute] Attribute `_index` may be missing on object of type `(Any & ndarray[tuple[object, ...], dtype[object]]) | (Any & Top[Series[Any, Any]]) | (Any & Frame) | ndarray[tuple[Any, ...], dtype[Unknown]]`
 + static_frame/core/container_util.py:750:23: warning[possibly-missing-attribute] Attribute `_index` may be missing on object of type `(Any & ndarray[tuple[object, ...], dtype[object]]) | (Any & Top[Series[Any, Any]]) | (Any & Top[Frame[Any, Any, object]]) | ndarray[tuple[Any, ...], dtype[Unknown]]`
 - static_frame/core/container_util.py:750:40: warning[possibly-missing-attribute] Attribute `_index` may be missing on object of type `(Any & ndarray[tuple[object, ...], dtype[object]]) | (Any & Top[Series[Any, Any]]) | (Any & Frame) | ndarray[tuple[Any, ...], dtype[Unknown]]`
@@ -350,7 +348,7 @@ static-frame (https://github.com/static-frame/static-frame)
 + static_frame/core/frame.py:10635:39: error[invalid-type-arguments] Too many type arguments to class `FrameHE`: expected between 0 and 2, got 3
 + static_frame/core/generic_aliases.py:21:53: error[invalid-type-arguments] Too many type arguments to class `FrameHE`: expected between 0 and 2, got 3
 - static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 9 union elements, Any]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Index[Any]] | Any | Bottom[Series[Any, Any]] | ... omitted 9 union elements, Any]`
 + static_frame/core/index.py:601:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Self@iter_label` does not satisfy constraints (`Frame[Any, Any, @Todo]`, `Series[Any, Any]`, `Bus[Any]`, `Quilt`, `Yarn[Any]`) of type variable `TContainerAny`
 + static_frame/core/index.py:601:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Frame[Any, Any, @Todo]`, found `Self@iter_label`
 - static_frame/core/index.py:763:16: error[invalid-return-type] Return type does not match returned value: expected `InterfaceString[ndarray[Any, Any]]`, found `InterfaceString[ndarray[Any, Any] | Bottom[Series[Any, Any]]]`
@@ -405,9 +403,12 @@ static-frame (https://github.com/static-frame/static-frame)
 + static_frame/core/node_fill_value.py:422:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Frame[TVIndex@Frame, TVColumns@Frame, TVDtypes@Frame]` of type variable `Self`
 + static_frame/core/node_fill_value.py:422:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Series[TVIndex@Series, TVDtype@Series]` of type variable `Self`
 + static_frame/core/node_fill_value.py:430:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Frame[TVIndex@Frame, TVColumns@Frame, TVDtypes@Frame]` of type variable `Self`
-+ static_frame/core
++ static_frame/core/node_fill_value.py:430:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Series[TVIndex@Series, TVDtype@Series]` of type variable `Self`
++ static_frame/core/node_fill_value.py:438:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Frame[TVIndex@Frame, TVColumns@Frame, TVDtypes@Frame]` of type variable `Self`
++ static_frame/core/node_fill_value.py:438:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@InterfaceFillValue` does not satisfy upper bound `Series[TVIndex@Series, TVDtype@Series]` of type variable `Self`
++ static_frame/core/node_fill_value.py:454:16: error[invalid-argument-type] Argument to bound method `_ufunc_binary_operator` is incorrect: Argument type `TVContainer_co@Interfac
 
-... (truncated 356 lines) ...
+... (truncated 360 lines) ...
 ```
 
 </details>
@@ -446,24 +447,53 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 11:42_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 116 | 0 | 54 |
+| `invalid-argument-type` | 118 | 2 | 54 |
 | `invalid-type-arguments` | 63 | 0 | 0 |
 | `not-subscriptable` | 0 | 52 | 0 |
-| `unused-ignore-comment` | 0 | 46 | 0 |
-| `possibly-missing-attribute` | 6 | 2 | 34 |
-| `invalid-return-type` | 11 | 10 | 10 |
+| `unused-ignore-comment` | 2 | 47 | 0 |
+| `possibly-missing-attribute` | 9 | 2 | 35 |
+| `invalid-return-type` | 12 | 7 | 13 |
 | `invalid-assignment` | 0 | 2 | 6 |
 | `invalid-parameter-default` | 0 | 0 | 7 |
 | `unsupported-operator` | 6 | 0 | 1 |
-| `unresolved-attribute` | 3 | 1 | 0 |
+| `unresolved-attribute` | 3 | 1 | 2 |
 | `call-non-callable` | 3 | 0 | 0 |
 | `invalid-legacy-type-variable` | 3 | 0 | 0 |
+| `invalid-await` | 2 | 0 | 0 |
 | `type-assertion-failure` | 0 | 2 | 0 |
-| **Total** | **211** | **115** | **112** |
+| **Total** | **221** | **115** | **118** |
 
 
-**[Full report with detailed diff](https://16d59626.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://16d59626.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://2196a745.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://2196a745.ty-ecosystem-ext.pages.dev/timing))
 
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2026-01-17 14:35_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/bxff%3Afeat%2Ftypevartuple-support?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging this PR will **degrade performance by 4.37%**
+
+<sub>Comparing <code>bxff:feat/typevartuple-support</code> (08cc8fe) with <code>main</code> (ca57b25)</sub>
+
+
+
+### Summary
+
+`❌ 1` regressed benchmark  
+`✅ 52` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/bxff%3Afeat%2Ftypevartuple-support?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ❌ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/bxff%3Afeat%2Ftypevartuple-support?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 22 s | 23 s | -4.37% |
 
 
 ---

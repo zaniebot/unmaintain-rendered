@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/typevar-definition
 created_at: 2026-01-17T12:50:14Z
-updated_at: 2026-01-17T14:04:44Z
+updated_at: 2026-01-17T14:13:09Z
 url: https://github.com/astral-sh/ruff/pull/22648
-synced_at: 2026-01-17T14:11:29Z
+synced_at: 2026-01-17T15:13:10Z
 ```
 
 # [ty] Set `None` as the `definition` of `Self` type variables
@@ -236,5 +236,19 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics
 As in, the definition of the `Self` special form in typeshed's `typing.pyi` stub? We could do that. It has some useful documentation about what `typing.Self` is and represents.
 
 It'll retain the bug magnet for subdiagnostics, though. We still wouldn't ever want a subdiagnostic to point to the `Self: _SpecialForm` definition in `typing.pyi` when we're trying to tell a user where their type variable was defined. It doesn't give any helpful information about the upper bound or default of the type variable (because the upper bound of `Self` depends on the context of the class it's being used in, unlike any other type variable).
+
+---
+
+_@MichaReiser reviewed on 2026-01-17 14:13_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 14:13_
+
+I've found it useful in the past that `r-a` allows me to jump to the class definition when clicking on `Self`. It also shows you the docs of the class when hovering `Self` which, to me, also makes sense, because that's what `Self` resolves to. 
+
+`Self` is inherently awkward in the LSP case because its a bound type var and using it in a method binds it. 
+
+I'm leaning towards not changing this, as the new behavior isn't clearly an improvement. If we decide that jumping nowhere is the desired behavior, then we should add LSP tests for all features that demonstrate that (e.g. does this break semantic tokens?)
 
 ---
