@@ -10,9 +10,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2026-01-16T20:33:40Z
-updated_at: 2026-01-17T01:46:48Z
+updated_at: 2026-01-17T02:23:55Z
 url: https://github.com/astral-sh/ty/issues/2537
-synced_at: 2026-01-17T02:11:18Z
+synced_at: 2026-01-17T03:12:55Z
 ```
 
 # Type context can be wrongly included in diagnostic type when there is no solution
@@ -87,5 +87,18 @@ _Comment by @carljm on 2026-01-17 01:46_
 ---
 
 _Label `diagnostics` added by @carljm on 2026-01-17 01:46_
+
+---
+
+_Comment by @electronick1 on 2026-01-17 02:20_
+
+It looks like this PR https://github.com/astral-sh/ruff/pull/21267 is related, it adds context for cases when type can not be assigned.
+[For example](https://github.com/astral-sh/ruff/pull/21267/files#diff-8c9ae4384d5808e43fce19d9835dd6e49048297bd4989c5379ebe0f476d34e4fR425) in annotations.md:
+```
+# error: [invalid-assignment] "Object of type `list[int | str]` is not assignable to `list[int]`"
+g: list[int] = f("a")
+```
+
+`f("a")` - can not return `list[int | str]`
 
 ---

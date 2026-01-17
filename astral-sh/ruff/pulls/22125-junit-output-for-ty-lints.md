@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: cetanu/junit_for_ty
 created_at: 2025-12-21T04:49:52Z
-updated_at: 2026-01-15T12:47:35Z
+updated_at: 2026-01-17T02:26:00Z
 url: https://github.com/astral-sh/ruff/pull/22125
-synced_at: 2026-01-15T13:52:05Z
+synced_at: 2026-01-17T03:13:13Z
 ```
 
 # JUnit output for `ty` lints
@@ -272,5 +272,9 @@ _@MichaReiser requested changes on 2026-01-15 12:47_
 Thank you. 
 
 This requires some more work to remove the remaining mentions of ruff and we should add a CLI test demonstrating that the output format works in ty (which I'd expect to panic right now). See https://github.com/astral-sh/ruff/blob/433b5a0d5894cc2b009e58df6f227193d4d87c91/crates/ty/tests/cli/main.rs#L656-L740
+
+---
+
+_Review request for @carljm removed by @carljm on 2026-01-17 02:26_
 
 ---

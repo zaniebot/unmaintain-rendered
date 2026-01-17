@@ -8,9 +8,9 @@ labels:
   - typeddict
 assignees: []
 created_at: 2026-01-17T01:08:04Z
-updated_at: 2026-01-17T01:20:56Z
+updated_at: 2026-01-17T02:23:46Z
 url: https://github.com/astral-sh/ty/issues/2540
-synced_at: 2026-01-17T02:11:18Z
+synced_at: 2026-01-17T03:12:55Z
 ```
 
 # Typed dictionary narrowing not working
@@ -130,5 +130,11 @@ Sorry, I see you said that you're using 0.0.11. I can reproduce it with that ver
 ---
 
 _Closed by @AlexWaygood on 2026-01-17 01:20_
+
+---
+
+_Comment by @gaborbernat on 2026-01-17 02:23_
+
+Indeed I've been using 0.0.11 oh well I guess I'll try again next week thank you. 
 
 ---

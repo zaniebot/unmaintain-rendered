@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-16T10:27:10Z
-updated_at: 2026-01-16T21:43:11Z
+updated_at: 2026-01-17T02:31:19Z
 url: https://github.com/astral-sh/ty/issues/2531
-synced_at: 2026-01-16T22:14:35Z
+synced_at: 2026-01-17T03:12:55Z
 ```
 
 # Autocompletion for Polars/Pandas Data Frame Column names, similar to how Pycharm & Data Lab IDE's provides
@@ -82,5 +82,19 @@ _Comment by @dangotbanned on 2026-01-16 21:39_
 @MichaReiser I'm not a PyCharm user, but I would've expected they'd be getting the names from [`_ipython_key_completions_`](https://github.com/pola-rs/polars/blob/b894f05bc0ad454e06a78b369c6b0f72cd832075/py-polars/src/polars/dataframe/frame.py#L1603-L1604)
 
 VSCode makes use of it, IIRC only in notebooks, but the behavior extends to anything class that defines the hook + `dict`
+
+---
+
+_Comment by @PGupta-Git on 2026-01-17 02:23_
+
+It would be great if we could implement the same with ty. Currently, it becomes very confusing to see so many autocomplete options within the dataframe's methods/functions, and none of them are relevant once. If we get column name suggestions, it will massively improve the data science workflow and lower the error rate.
+
+---
+
+_Comment by @PGupta-Git on 2026-01-17 02:31_
+
+Pycharm/Dataspell example:
+
+<img width="1450" height="617" alt="Image" src="https://github.com/user-attachments/assets/5c1c0fdc-069a-4f12-8431-af56c42c7c48" />
 
 ---
