@@ -7,9 +7,9 @@ author: gaborbernat
 labels: []
 assignees: []
 created_at: 2026-01-17T05:40:59Z
-updated_at: 2026-01-17T05:41:25Z
+updated_at: 2026-01-17T11:38:32Z
 url: https://github.com/astral-sh/ty/issues/2542
-synced_at: 2026-01-17T06:04:04Z
+synced_at: 2026-01-17T12:09:25Z
 ```
 
 # Function not recognized as satisfying ParamSpec Protocol
@@ -65,5 +65,11 @@ error[invalid-argument-type]: Argument to function `add_middleware` is incorrect
 ### Version
 
 0.0.12
+
+---
+
+_Comment by @AlexWaygood on 2026-01-17 11:38_
+
+Thanks! Is this the same as #1635?
 
 ---

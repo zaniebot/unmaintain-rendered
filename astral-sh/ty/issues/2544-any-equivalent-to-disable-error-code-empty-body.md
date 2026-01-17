@@ -2,15 +2,15 @@
 number: 2544
 title: "Any equivalent to `disable_error_code = [\"empty-body\"]`"
 type: issue
-state: open
+state: closed
 author: maifeeulasad
 labels:
   - question
 assignees: []
 created_at: 2026-01-17T08:54:23Z
-updated_at: 2026-01-17T08:54:23Z
+updated_at: 2026-01-17T11:29:57Z
 url: https://github.com/astral-sh/ty/issues/2544
-synced_at: 2026-01-17T09:06:46Z
+synced_at: 2026-01-17T12:09:25Z
 ```
 
 # Any equivalent to `disable_error_code = ["empty-body"]`
@@ -30,5 +30,21 @@ In `mypy` we can do this ``disable_error_code = ["empty-body"]``. Do we have any
 ---
 
 _Label `question` added by @maifeeulasad on 2026-01-17 08:54_
+
+---
+
+_Comment by @MichaReiser on 2026-01-17 11:19_
+
+Like [rules](https://docs.astral.sh/ty/reference/configuration/)?
+
+---
+
+_Comment by @AlexWaygood on 2026-01-17 11:29_
+
+I believe this is a duplicate of #1922 
+
+---
+
+_Closed by @AlexWaygood on 2026-01-17 11:29_
 
 ---

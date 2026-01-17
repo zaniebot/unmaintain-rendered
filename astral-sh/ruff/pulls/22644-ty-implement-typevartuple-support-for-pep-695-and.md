@@ -4,14 +4,16 @@ title: "[ty] Implement TypeVarTuple support for PEP 695 and legacy syntax"
 type: pull_request
 state: open
 author: bxff
-labels: []
+labels:
+  - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: feat/typevartuple-support
 created_at: 2026-01-17T09:17:10Z
-updated_at: 2026-01-17T09:43:31Z
+updated_at: 2026-01-17T11:42:54Z
 url: https://github.com/astral-sh/ruff/pull/22644
-synced_at: 2026-01-17T10:07:59Z
+synced_at: 2026-01-17T12:09:43Z
 ```
 
 # [ty] Implement TypeVarTuple support for PEP 695 and legacy syntax
@@ -422,5 +424,46 @@ _Review requested from @MichaReiser by @bxff on 2026-01-17 09:40_
 ---
 
 _Review requested from @Gankra by @bxff on 2026-01-17 09:40_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-17 11:35_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2026-01-17 11:37_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-17 11:42_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 116 | 0 | 54 |
+| `invalid-type-arguments` | 63 | 0 | 0 |
+| `not-subscriptable` | 0 | 52 | 0 |
+| `unused-ignore-comment` | 0 | 46 | 0 |
+| `possibly-missing-attribute` | 6 | 2 | 34 |
+| `invalid-return-type` | 11 | 10 | 10 |
+| `invalid-assignment` | 0 | 2 | 6 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `unsupported-operator` | 6 | 0 | 1 |
+| `unresolved-attribute` | 3 | 1 | 0 |
+| `call-non-callable` | 3 | 0 | 0 |
+| `invalid-legacy-type-variable` | 3 | 0 | 0 |
+| `type-assertion-failure` | 0 | 2 | 0 |
+| **Total** | **211** | **115** | **112** |
+
+
+**[Full report with detailed diff](https://16d59626.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://16d59626.ty-ecosystem-ext.pages.dev/timing))
+
+
 
 ---

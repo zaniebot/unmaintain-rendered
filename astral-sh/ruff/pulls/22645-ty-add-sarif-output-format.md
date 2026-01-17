@@ -4,14 +4,16 @@ title: "[ty]: Add Sarif Output Format"
 type: pull_request
 state: open
 author: 11happy
-labels: []
+labels:
+  - cli
+  - ty
 assignees: []
 base: main
 head: sarif_output
 created_at: 2026-01-17T10:23:58Z
-updated_at: 2026-01-17T10:48:14Z
+updated_at: 2026-01-17T11:42:26Z
 url: https://github.com/astral-sh/ruff/pull/22645
-synced_at: 2026-01-17T11:08:48Z
+synced_at: 2026-01-17T12:09:43Z
 ```
 
 # [ty]: Add Sarif Output Format
@@ -74,5 +76,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 10:34_
 
 
 
+
+---
+
+_Label `cli` added by @AlexWaygood on 2026-01-17 11:42_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-17 11:42_
 
 ---
