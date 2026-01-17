@@ -399,7 +399,7 @@ class Foo4(ABCAnotherName):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:153 on 2026-01-13 20:25</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:155 on 2026-01-13 20:25</div>
             <div class="timeline-body"><p>What do you think about something like this:</p>
 <pre><code class="language-rust">        let delete_keyword = remove_argument(
             keyword,
@@ -464,7 +464,7 @@ class C(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/akawd">@akawd</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:153 on 2026-01-16 19:59</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/akawd">@akawd</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:155 on 2026-01-16 19:59</div>
             <div class="timeline-body"><p>In my humble opinion, avoiding the heap is worth a few extra lines of code.</p>
 </div>
         </div>
@@ -518,7 +518,7 @@ Thank you for your suggestions, I added them.</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:95 on 2026-01-16 20:59</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:97 on 2026-01-16 20:59</div>
             <div class="timeline-body"><p>I think we could narrow this to <code>keyword.range</code> instead of the whole <code>arguments.range()</code>, but I'm not totally sure:</p>
 <pre><code class="language-suggestion">    } else if checker.comment_ranges().intersects(keyword.range()) {
 </code></pre>
@@ -541,10 +541,80 @@ Thank you for your suggestions, I added them.</p>
             <div class="timeline-body"><p>Thank you! I had one suggestion about narrowing the comment range check and a test for that. Then we just need to update the <code>## Fix safety</code> section of the rule docs.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akawd">@akawd</a> reviewed on 2026-01-17 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akawd">@akawd</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:97 on 2026-01-17 05:00</div>
+            <div class="timeline-body"><p>Thank you, but I have some comments about this...</p>
+<p>At first, I implemented it like you said:</p>
+<pre><code class="language-rust">} else if checker.comment_ranges().intersects(keyword.range()) {
+</code></pre>
+<p>and I used the following test to check this particular change:</p>
+<h5>main.py</h5>
+<pre><code class="language-python">import abc
+
+class Foo(
+    other_kwarg=1,
+    # comment
+    metaclass=abc.ABCMeta,
+):
+    ...
+</code></pre>
+<p>I also added some debug messages in advance:</p>
+<pre><code class="language-rust">    println!(&quot;Keyword range: {:?}&quot;, keyword.range());
+    println!(&quot;Arguments range: {:?}&quot;, arguments.range());
+    let applicability = if !class_def.bases().is_empty() {
+</code></pre>
+<p>When I run the <code>ruff</code>, it fixes the file:</p>
+<pre><code class="language-python">import abc
+
+class Foo(
+    abc.ABC, other_kwarg=1,
+):
+    ...
+</code></pre>
+<p>but <strong>without</strong> the notion about the unsafe-fix. The output:</p>
+<pre><code class="language-bash">$ cargo run -p ruff -- check ../py --no-cache --fix
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target\debug\ruff.exe check ../py --no-cache --fix`
+Keyword range: 65..86
+Arguments range: 23..90
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>In other words, the comment was removed but the fix was not considered as unsafe.</p>
+<p>When I use the</p>
+<pre><code class="language-rust">} else if checker.comment_ranges().intersects(arguments.range()) {
+</code></pre>
+<p>I have a proper message as I can see:</p>
+<pre><code class="language-bash">$ cargo run -p ruff -- check ../py --no-cache --fix
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running `target\debug\ruff.exe check ../py --no-cache --fix`
+Keyword range: 65..86
+Arguments range: 23..90
+FURB180 Use of `metaclass=abc.ABCMeta` to define abstract base class
+ --&gt; C:\AK\Rust\py\main.py:6:5
+  |
+4 |     other_kwarg=1,
+5 |     # comment
+6 |     metaclass=abc.ABCMeta,
+  |     ^^^^^^^^^^^^^^^^^^^^^
+7 | ):
+8 |     ...
+  |
+help: Replace with `abc.ABC`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Please let me know if I'm missing something. Thanks!</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 22:04:56 UTC
+        Synced at 2026-01-17 05:06:20 UTC
     </footer>
 </body>
 </html>
