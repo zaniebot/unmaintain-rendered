@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>conformance.py: Only use the &quot;No changes detected ✅&quot; summary if no diagnostics were added or removed - astral-sh/ruff #22649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>conformance.py: Only use the &quot;No changes detected ✅&quot; summary if no diagnostics were added or removed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22649">#22649</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-17 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently if there are no top-line changes to the statistics, we display a &quot;No changes detected ✅&quot; top-line summary. But that's a bit weird in situations like https://github.com/astral-sh/ruff/pull/22644#issuecomment-3762939568, where there clearly <em>were</em> changes detected, they just didn't impact the top-line statistics at all (because exactly the same number of false positives were added as there were false positives removed):</p>
+<p><img src="" alt="Uploading image.png…" /></p>
+<p>This PR changes the logic in <code>conformance.py</code> so that we only use the &quot;No changes detected ✅&quot; summary if there really were no changes detected!</p>
+<h2>Test Plan</h2>
+<p>I:</p>
+<ul>
+<li>Checked out the <code>main</code> branch and ran <code>cargo build -p ty &amp;&amp; mv ./target/debug/ty ./target/debug/ty-old</code></li>
+<li>Checked out the branch for #22644 and ran <code>cargo build -p ty &amp;&amp; mv ./target/debug/ty ./target/debug/ty-new</code></li>
+<li>Checked out this branch again and ran <code>uv run --no-project scripts/conformance.py --old-ty=./target/debug/ty-old --new-ty=./target/debug/ty-new --tests-path=../typing/conformance/tests --output=results.md</code></li>
+<li>Observed that the following MarkDown was generated:</li>
+</ul>
+<hr />
+<h2><a href="https://github.com/python/typing/blob/main/conformance/">Typing conformance results</a></h2>
+<p>The percentage of diagnostics emitted that were expected errors held steady at 75.50%. The percentage of expected errors that received a diagnostic held steady at 59.30%.</p>
+<h3>Summary</h3>
+<p>| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 641 | 641 | +0 |  |
+| False Positives | 208 | 208 | +0 |  |
+| False Negatives | 440 | 440 | +0 |  |
+| Total Diagnostics | 849 | 849 | +0 |  |
+| Precision | 75.50% | 75.50% | +0.00% |  |
+| Recall | 59.30% | 59.30% | +0.00% |  |</p>
+<h3>False positives removed</h3>
+<details>
+
+<p>| Location | Name | Message |
+|----------|------|---------|
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/aliases_type_statement.py#L10">aliases_type_statement.py:10:52</a> | invalid-type-arguments | Too many type arguments: expected 2, got 3 |
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/aliases_typealiastype.py#L23">aliases_typealiastype.py:23:5</a> | invalid-argument-type | Argument to class <code>TypeAliasType</code> is incorrect: Expected <code>tuple[TypeVar \| ParamSpec \| typing_extensions.TypeVarTuple, ...]</code>, found <code>tuple[TypeVar, TypeVar, ParamSpec, typing.TypeVarTuple]</code> |</p>
+</details>
+
+<h3>False positives added</h3>
+<details>
+
+<p>| Location | Name | Message |
+|----------|------|---------|
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/generics_defaults.py#L88">generics_defaults.py:88:39</a> | invalid-legacy-type-variable | The <code>default</code> parameter of <code>typing.TypeVarTuple</code> was added in Python 3.13 |
+| <a href="https://github.com/python/typing/blob/main/conformance/tests/generics_defaults.py#L99">generics_defaults.py:99:53</a> | invalid-legacy-type-variable | The <code>default</code> parameter of <code>typing.TypeVarTuple</code> was added in Python 3.13 |</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2026-01-17 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-17 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-17 13:04</div>
+            <div class="timeline-body"><p>@WillDuke, I don't think I can request your review here, but I'd love your feedback if you have time!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-17 13:13:40 UTC
+    </footer>
+</body>
+</html>

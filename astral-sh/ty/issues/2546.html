@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-argument-type` when passing overloaded function to `map` - astral-sh/ty #2546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>invalid-argument-type</code> when passing overloaded function to <code>map</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2546">#2546</a>
+        opened by <a href="https://github.com/auscompgeek">@auscompgeek</a>
+        on 2026-01-17 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/auscompgeek">@auscompgeek</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On the following file foo.py:</p>
+<pre><code class="language-python">from typing import overload
+
+
+@overload
+def foo(x: int) -&gt; str: ...
+
+@overload
+def foo(x: str) -&gt; str: ...
+
+def foo(x: int | str) -&gt; str:
+    return str(x)
+
+
+def errors() -&gt; None:
+    for x in map(foo, range(1, 10)):
+        print(x)
+</code></pre>
+<p>ty returns an error (<a href="https://play.ty.dev/0d4b5ef1-33b2-455b-892d-17a6f09175e6">playground link</a>):</p>
+<pre><code class="language-console">&gt; ty check foo.py
+error[invalid-argument-type]: Argument to function `__new__` is incorrect
+  --&gt; foo.py:15:18
+   |
+14 | def errors() -&gt; None:
+15 |     for x in map(foo, range(1, 10)):
+   |                  ^^^ Expected `(int | str, /) -&gt; str | int`, found `Overload[(x: int) -&gt; str, (x: str) -&gt; str]`
+16 |         print(x)
+   |
+info: Matching overload defined here
+    --&gt; stdlib/builtins.pyi:3866:13
+     |
+3864 |     else:
+3865 |         @overload
+3866 |         def __new__(cls, func: Callable[[_T1], _S], iterable: Iterable[_T1], /) -&gt; Self: ...
+     |             ^^^^^^^      ------------------------- Parameter declared here
+3867 |         @overload
+3868 |         def __new__(cls, func: Callable[[_T1, _T2], _S], iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self: ...
+     |
+info: Non-matching overloads for function `__new__`:
+info:   [_T1, _T2, Self](cls, func: (_T1, _T2, /) -&gt; _S@map, iterable: Iterable[_T1], iter2: Iterable[_T2], /) -&gt; Self
+info:   [_T1, _T2, _T3, Self](cls, func: (_T1, _T2, _T3, /) -&gt; _S@map, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], /) -&gt; Self
+info:   [_T1, _T2, _T3, _T4, Self](cls, func: (_T1, _T2, _T3, _T4, /) -&gt; _S@map, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], /) -&gt; Self
+info:   [_T1, _T2, _T3, _T4, _T5, Self](cls, func: (_T1, _T2, _T3, _T4, _T5, /) -&gt; _S@map, iterable: Iterable[_T1], iter2: Iterable[_T2], iter3: Iterable[_T3], iter4: Iterable[_T4], iter5: Iterable[_T5], /) -&gt; Self
+info:   [Self](cls, func: (...) -&gt; _S@map, iterable: Iterable[Any], iter2: Iterable[Any], iter3: Iterable[Any], iter4: Iterable[Any], iter5: Iterable[Any], iter6: Iterable[Any], /, *iterables: Iterable[Any]) -&gt; Self
+</code></pre>
+<p>This results in an even more obscure error message when a class constructor is overloaded (<a href="https://play.ty.dev/eebccddd-e66d-4f07-958a-cbc40b438037">playground link</a>), like:</p>
+<pre><code class="language-python">class Foo:
+    @overload
+    def __init__(self, x: int): ...
+    @overload
+    def __init__(self, x: str): ...
+    def __init__(self, x) -&gt; None:
+        self.x = x
+</code></pre>
+<pre><code class="language-console">&gt; ty check foo.py
+error[invalid-argument-type]: Argument to function `__new__` is incorrect
+  --&gt; foo.py:14:18
+   |
+13 | def errors() -&gt; None:
+14 |     for y in map(Foo, range(1, 10)):
+   |                  ^^^ Expected `(int | str, /) -&gt; Foo`, found `&lt;class 'Foo'&gt;`
+15 |         print(y.x)
+   |
+info: Matching overload defined here
+    --&gt; stdlib/builtins.pyi:3866:13
+[snip]
+</code></pre>
+<p>Possibly related issues, albeit closed:</p>
+<ul>
+<li>#822</li>
+<li>#771</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.12</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-17 13:14:06 UTC
+    </footer>
+</body>
+</html>
