@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ag/auto-import-perf1
 created_at: 2026-01-16T20:09:06Z
-updated_at: 2026-01-16T20:25:09Z
+updated_at: 2026-01-17T13:59:27Z
 url: https://github.com/astral-sh/ruff/pull/22630
-synced_at: 2026-01-16T21:04:12Z
+synced_at: 2026-01-17T14:11:29Z
 ```
 
 # [ty] Pluck some low hanging performance fruit for completions
@@ -231,5 +231,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:15_
 
 
 
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_completion_bench/Cargo.toml`:1 on 2026-01-17 13:57_
+
+Can you say more about why you chose to create an entirely separate crate over integrating the benchmarks into `ty_walltime` or the Python benchmarks in `scripts/ty_benchmark` (which even includes code to benchmark an LSP server). Integrating into `ty_walltime` has the advantage that we could decide to run the benchmarks as part of our CI pipeline. Integrating it into `ty_benchmark` has the advantage that they're easier to discover. Both benchmark also already provide the necessary infrastructure to install dependency and definitions for common ecosystem projects.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_ide/src/completion.rs`:91 on 2026-01-17 13:57_
+
+Nice! That's a much better approach than my brute force `truncate` call
+
+---
+
+_@MichaReiser reviewed on 2026-01-17 13:59_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/typevar-definition
 created_at: 2026-01-17T12:50:14Z
-updated_at: 2026-01-17T12:53:07Z
+updated_at: 2026-01-17T14:04:44Z
 url: https://github.com/astral-sh/ruff/pull/22648
-synced_at: 2026-01-17T13:10:56Z
+synced_at: 2026-01-17T14:11:29Z
 ```
 
 # [ty] Set `None` as the `definition` of `Self` type variables
@@ -167,5 +167,74 @@ trio (https://github.com/python-trio/trio)
 
 
 
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 13:52_
+
+How does this affect the LSP? Specifically, go to type definition, hover, and rename?
+
+Could #22646 instead have used `focus_range` instead of `full_range`?
+
+---
+
+_@MichaReiser reviewed on 2026-01-17 13:54_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-17 13:56_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 13:56_
+
+Currently, goto-definition on a `Self` type variable will take you to the definition of the enclosing class, which I don't think is what the user would want because `Self` is not defined there. I think this improves the experience for LSP users.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-17 13:57_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 13:57_
+
+For example:
+
+```py
+from typing import Self
+
+class Foo:
+
+    # <-- 500 lines or so of code here... -->
+
+    def f(self, other: Self) -> None: ...
+                     # ^^^^
+```
+
+I don't think anybody would expect goto-definition on the `Self` type variable there to take them to the definition of `Foo`
+
+---
+
+_@MichaReiser reviewed on 2026-01-17 14:00_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 14:00_
+
+I would expect go-to-type definition to go to `Self`. I'm not sure what to expect from `Hover` or go to definition. What does find-references return? Does it return all references to `Self` in the file?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-17 14:04_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-17 14:04_
+
+> I would expect go-to-type definition to go to `Self`.
+
+As in, the definition of the `Self` special form in typeshed's `typing.pyi` stub? We could do that. It has some useful documentation about what `typing.Self` is and represents.
+
+It'll retain the bug magnet for subdiagnostics, though. We still wouldn't ever want a subdiagnostic to point to the `Self: _SpecialForm` definition in `typing.pyi` when we're trying to tell a user where their type variable was defined. It doesn't give any helpful information about the upper bound or default of the type variable (because the upper bound of `Self` depends on the context of the class it's being used in, unlike any other type variable).
 
 ---

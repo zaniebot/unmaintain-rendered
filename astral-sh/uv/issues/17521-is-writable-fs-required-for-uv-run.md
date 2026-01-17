@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-16T14:20:39Z
-updated_at: 2026-01-16T19:51:44Z
+updated_at: 2026-01-17T14:04:54Z
 url: https://github.com/astral-sh/uv/issues/17521
-synced_at: 2026-01-16T20:03:48Z
+synced_at: 2026-01-17T14:11:35Z
 ```
 
 # Is writable FS required for `uv run`?
@@ -86,5 +86,17 @@ _Label `question` added by @Dandi91 on 2026-01-16 14:20_
 _Comment by @zanieb on 2026-01-16 19:51_
 
 Have you tried `--no-sync` / `UV_NO_SYNC`?
+
+---
+
+_Comment by @Dandi91 on 2026-01-17 14:04_
+
+Yes, with `readonly: true` and `--no-sync` the output is the same. Without readonly, there's a note in the log:
+
+```
+warning: `--no-sync` has no effect when used outside of a project
+```
+
+I've also tried to mount a separate volume for `/tmp` and toggled access modes on it. This verified that `/tmp` is the only place that needs to be writable for `uv run` to work, the rest of the FS can be read-only.
 
 ---

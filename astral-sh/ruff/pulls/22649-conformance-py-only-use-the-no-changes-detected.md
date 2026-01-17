@@ -2,18 +2,19 @@
 number: 22649
 title: "conformance.py: Only use the \"No changes detected ✅\" summary if no diagnostics were added or removed"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/conformance-summary
 created_at: 2026-01-17T13:03:38Z
-updated_at: 2026-01-17T13:04:08Z
+updated_at: 2026-01-17T13:30:46Z
 url: https://github.com/astral-sh/ruff/pull/22649
-synced_at: 2026-01-17T13:10:56Z
+synced_at: 2026-01-17T14:11:29Z
 ```
 
 # conformance.py: Only use the "No changes detected ✅" summary if no diagnostics were added or removed
@@ -26,7 +27,7 @@ _@AlexWaygood_
 
 Currently if there are no top-line changes to the statistics, we display a "No changes detected ✅" top-line summary. But that's a bit weird in situations like https://github.com/astral-sh/ruff/pull/22644#issuecomment-3762939568, where there clearly _were_ changes detected, they just didn't impact the top-line statistics at all (because exactly the same number of false positives were added as there were false positives removed):
 
-![Uploading image.png…]()
+<img width="1894" height="772" alt="image" src="https://github.com/user-attachments/assets/ec147aca-e0e5-43f5-9ce5-2e71a6780312" />
 
 This PR changes the logic in `conformance.py` so that we only use the "No changes detected ✅" summary if there really were no changes detected!
 
@@ -95,5 +96,67 @@ _Label `ty` added by @AlexWaygood on 2026-01-17 13:03_
 _Comment by @AlexWaygood on 2026-01-17 13:04_
 
 @WillDuke, I don't think I can request your review here, but I'd love your feedback if you have time!
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-17 13:05_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+
+No changes detected ✅
+
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-17 13:12_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Comment by @WillDuke on 2026-01-17 13:26_
+
+> @WillDuke, I don't think I can request your review here, but I'd love your feedback if you have time!
+
+This looks good to me!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-17 13:30_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-17 13:30_
+
+---
+
+_Branch deleted on 2026-01-17 13:30_
 
 ---
