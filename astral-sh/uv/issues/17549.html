@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` does not update `uv.lock` `package.metadata.requires-dist[*].specifier` when useless trailing `.0` is added/removed from specifier in `pyproject.toml` - astral-sh/uv #17549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>uv lock</code> does not update <code>uv.lock</code> <code>package.metadata.requires-dist[*].specifier</code> when useless trailing <code>.0</code> is added/removed from specifier in <code>pyproject.toml</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17549">#17549</a>
+        opened by <a href="https://github.com/GideonBear">@GideonBear</a>
+        on 2026-01-17 14:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/GideonBear">@GideonBear</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When adding or removing a trailing <code>.0</code> from a specifier in <code>pyproject.toml</code>, <code>uv lock</code> does not update the specifier in the lockfile, while some other operations will update the specifier in the lockfile. This causes:</p>
+<ol>
+<li>Unnecessary merge conflicts</li>
+<li>The change to be spread to unrelated commits</li>
+</ol>
+<p>I expect <code>uv lock</code> to have a consistent output.</p>
+<h3>Reproduction</h3>
+<p>I will be using <code>git</code> to make it clearer what's happening, but this is not necessary to see the bug.</p>
+<pre><code class="language-console">$ mkdir delme &amp;&amp; cd delme
+$ uv init
+$ uv sync
+$ git add .
+$ git commit -m &quot;Initial commit&quot;
+
+$ uv add termcolor
+$ git diff
+</code></pre>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 92a83e5..d95598e 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,4 +4,6 @@ version = &quot;0.1.0&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.14&quot;
+-dependencies = []
++dependencies = [
++    &quot;termcolor&gt;=3.3.0&quot;,
++]
+diff --git a/uv.lock b/uv.lock
+index b1b7a41..5a32051 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -6,3 +6,18 @@ requires-python = &quot;&gt;=3.14&quot;
+ name = &quot;delme&quot;
+ version = &quot;0.1.0&quot;
+ source = { virtual = &quot;.&quot; }
++dependencies = [
++    { name = &quot;termcolor&quot; },
++]
++
++[package.metadata]
++requires-dist = [{ name = &quot;termcolor&quot;, specifier = &quot;&gt;=3.3.0&quot; }]
++
++[[package]]
++name = &quot;termcolor&quot;
++version = &quot;3.3.0&quot;
++source = { registry = &quot;https://pypi.org/simple&quot; }
++sdist = { url = &quot;https://files.pythonhosted.org/packages/46/79/cf31d7a93a8fdc6aa0fbb665be84426a8c5a557d9240b6239e9e11e35fc5/termcolor-3.3.0.tar.gz&quot;, hash = &quot;sha256:348871ca648ec6a9a983a13ab626c0acce02f515b9e1983332b17af7979521c5&quot;, size = 14434, upload-time = &quot;2025-12-29T12:55:21.882Z&quot; }
++wheels = [
++    { url = &quot;https://files.pythonhosted.org/packages/33/d1/8bb87d21e9aeb323cc03034f5eaf2c8f69841e40e4853c2627edf8111ed3/termcolor-3.3.0-py3-none-any.whl&quot;, hash = &quot;sha256:cf642efadaf0a8ebbbf4bc7a31cec2f9b5f21a9f726f4ccbb08192c9c26f43a5&quot;, size = 7734, upload-time = &quot;2025-12-29T12:55:20.718Z&quot; },
++]
+</code></pre>
+<pre><code class="language-console">$ git commit -am &quot;Add termcolor&quot;
+
+$ sed -i 's/3.3.0/3.3/' pyproject.toml
+# Or:
+$ uvx pyproject-fmt pyproject.toml
+
+$ git diff
+</code></pre>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index d95598e..c2b1a39 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -5,5 +5,5 @@ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.14&quot;
+ dependencies = [
+-    &quot;termcolor&gt;=3.3.0&quot;,
++    &quot;termcolor&gt;=3.3&quot;,
+ ]
+</code></pre>
+<pre><code class="language-console">$ uv lock
+# No change in lockfile!
+$ git commit -am &quot;Format pyproject.toml&quot;
+
+# Do any operation on pyproject.fmt, like:
+$ uv version --bump patch
+$ git diff
+</code></pre>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index c2b1a39..a447926 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,6 +1,6 @@
+ [project]
+ name = &quot;delme&quot;
+-version = &quot;0.1.0&quot;
++version = &quot;0.1.1&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.14&quot;
+diff --git a/uv.lock b/uv.lock
+index 5a32051..72af669 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -4,14 +4,14 @@ requires-python = &quot;&gt;=3.14&quot;
+ 
+ [[package]]
+ name = &quot;delme&quot;
+-version = &quot;0.1.0&quot;
++version = &quot;0.1.1&quot;
+ source = { virtual = &quot;.&quot; }
+ dependencies = [
+     { name = &quot;termcolor&quot; },
+ ]
+ 
+ [package.metadata]
+-requires-dist = [{ name = &quot;termcolor&quot;, specifier = &quot;&gt;=3.3.0&quot; }]
++requires-dist = [{ name = &quot;termcolor&quot;, specifier = &quot;&gt;=3.3&quot; }]
+ 
+ [[package]]
+ name = &quot;termcolor&quot;
+</code></pre>
+<h3>Platform</h3>
+<p>Linux Mint 22.3 - Cinnamon 64-bit - Linux 6.8.0-90-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.26</p>
+<h3>Python version</h3>
+<p>Python 3.14.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @GideonBear on 2026-01-17 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-17 14:58</div>
+            <div class="timeline-body"><p>Per the specification trailing zeros have no semantic meaning so we're probably just considering these versions equal. It's not clear to me that we should actually invalidate the lockfile in this case. It seems pretty rare to be adding <code>.0</code> to your dependencies, no?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-17 15:17:17 UTC
+    </footer>
+</body>
+</html>
