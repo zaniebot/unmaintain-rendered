@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-17T17:06:10Z
+updated_at: 2026-01-17T17:08:27Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-17T17:17:37Z
+synced_at: 2026-01-17T18:19:14Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -646,27 +646,26 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `unresolved-attribute` | 3,548 | 60 | 18 |
-| `invalid-argument-type` | 1,168 | 153 | 36 |
-| `possibly-missing-attribute` | 156 | 159 | 92 |
-| `invalid-return-type` | 164 | 43 | 38 |
+| `unresolved-attribute` | 3,548 | 60 | 16 |
+| `invalid-argument-type` | 1,167 | 153 | 36 |
+| `possibly-missing-attribute` | 153 | 159 | 91 |
+| `invalid-return-type` | 165 | 41 | 35 |
 | `invalid-assignment` | 49 | 51 | 29 |
 | `unsupported-operator` | 3 | 39 | 6 |
 | `call-non-callable` | 0 | 44 | 0 |
 | `not-subscriptable` | 0 | 19 | 0 |
 | `invalid-type-arguments` | 0 | 18 | 0 |
-| `unused-ignore-comment` | 9 | 5 | 0 |
+| `unused-ignore-comment` | 9 | 4 | 0 |
 | `not-iterable` | 2 | 8 | 0 |
 | `invalid-parameter-default` | 0 | 0 | 7 |
 | `type-assertion-failure` | 0 | 6 | 0 |
 | `no-matching-overload` | 0 | 5 | 0 |
 | `invalid-raise` | 0 | 4 | 0 |
-| `invalid-await` | 2 | 0 | 0 |
 | `parameter-already-assigned` | 0 | 1 | 0 |
-| **Total** | **5,101** | **615** | **226** |
+| **Total** | **5,096** | **612** | **220** |
 
 
-**[Full report with detailed diff](https://0955eba3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://0955eba3.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://62e29ef4.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://62e29ef4.ty-ecosystem-ext.pages.dev/timing))
 
 
 

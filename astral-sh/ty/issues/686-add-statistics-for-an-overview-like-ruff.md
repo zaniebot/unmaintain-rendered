@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-06-20T10:04:18Z
-updated_at: 2025-12-18T10:50:23Z
+updated_at: 2026-01-17T17:57:59Z
 url: https://github.com/astral-sh/ty/issues/686
-synced_at: 2026-01-12T15:54:23Z
+synced_at: 2026-01-17T18:18:56Z
 ```
 
 # Add `--statistics` for an overview (like ruff)
@@ -65,5 +65,11 @@ _Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
 _Comment by @spaceone on 2025-12-18 10:50_
 
 I would also love to see it.
+
+---
+
+_Comment by @Sai-Suraj-27 on 2026-01-17 17:57_
+
+Yes, this would be very helpful. Really like the  ruff's `--statistics` flag. Right now using Pyrefly's [`--summarize-errors`](https://pyrefly.org/en/docs/installation/#install) flag.
 
 ---

@@ -4,12 +4,13 @@ title: Tool update versioning
 type: issue
 state: open
 author: klonuo
-labels: []
+labels:
+  - bug
 assignees: []
 created_at: 2026-01-17T13:41:52Z
-updated_at: 2026-01-17T13:41:52Z
+updated_at: 2026-01-17T17:27:23Z
 url: https://github.com/astral-sh/uv/issues/17548
-synced_at: 2026-01-17T14:11:35Z
+synced_at: 2026-01-17T18:19:20Z
 ```
 
 # Tool update versioning
@@ -48,5 +49,15 @@ ruff 0.14.11
 What happens that `uv` can't see that there is update in this case?
 
 
+
+---
+
+_Comment by @zanieb on 2026-01-17 17:27_
+
+I think this is a bug, I'll look into it.
+
+---
+
+_Label `bug` added by @zanieb on 2026-01-17 17:27_
 
 ---
