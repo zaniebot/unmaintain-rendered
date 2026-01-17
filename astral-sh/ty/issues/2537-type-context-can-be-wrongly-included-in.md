@@ -10,9 +10,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2026-01-16T20:33:40Z
-updated_at: 2026-01-17T02:23:55Z
+updated_at: 2026-01-17T03:13:50Z
 url: https://github.com/astral-sh/ty/issues/2537
-synced_at: 2026-01-17T03:12:55Z
+synced_at: 2026-01-17T04:14:15Z
 ```
 
 # Type context can be wrongly included in diagnostic type when there is no solution
@@ -100,5 +100,39 @@ g: list[int] = f("a")
 ```
 
 `f("a")` - can not return `list[int | str]`
+
+---
+
+_Comment by @ibraheemdev on 2026-01-17 03:13_
+
+> `f("a")` - can not return `list[int | str]`
+
+I'm not sure what you mean by that. `f("a")` can and should produce a `list[int | str]` given a type context of `list[int | str]`. In this case, the constraints are unsolvable, and our attempt to solve them produces a `list[int | str]`. I do agree that it is slightly confusing, but it is not incorrect.
+
+Ignoring the type context completely can lead to confusing diagnostics, which is why we removed that behavior in https://github.com/astral-sh/ruff/pull/21267. For example, we use the type context to avoid literal promotion
+```py
+from typing import Literal
+
+def f[T](x: T) -> list[T]:
+    return [x]
+
+# Option A: Object of type `list[Literal["hello"] | int]` is not assignable to `list[Literal["hello"] | bool]`
+# Option B: Object of type `list[Literal["hello"] | int]` is not assignable to `list[str | bool]`
+x: list[Literal["hello"] | bool] = ["hello", 1]
+```
+
+Or to infer `TypedDict` types:
+```py
+class A(TypedDict):
+    bar: int
+
+# Option A: Object of type `list[A | int]` is not assignable to `list[A | bool]`
+# Option B: Object of type `list[A | int | dict[Unknown | str, Unknown | int]]` is not assignable to `list[A | bool]`
+y: list[A | bool] = [{"bar": 1}, 1]
+```
+
+The second diagnostic is a lot more confusing in both cases, and suggests that there is a problem with literal promotion or typed dict inference.
+
+I do think we can be better in the generics case though, and should not resolve without the type context if we fail to arrive at a valid specialization.
 
 ---
