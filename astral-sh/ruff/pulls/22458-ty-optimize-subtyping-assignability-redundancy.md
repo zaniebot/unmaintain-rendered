@@ -2,7 +2,7 @@
 number: 22458
 title: "[ty] Optimize subtyping/assignability/redundancy checks against union types"
 type: pull_request
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - performance
@@ -13,9 +13,9 @@ draft: true
 base: main
 head: alex/union-set
 created_at: 2026-01-08T14:12:30Z
-updated_at: 2026-01-16T22:35:05Z
+updated_at: 2026-01-16T23:48:59Z
 url: https://github.com/astral-sh/ruff/pull/22458
-synced_at: 2026-01-16T23:05:54Z
+synced_at: 2026-01-17T00:08:11Z
 ```
 
 # [ty] Optimize subtyping/assignability/redundancy checks against union types
@@ -358,5 +358,13 @@ reveal_type(my_iter(get_int))
 _Comment by @AlexWaygood on 2026-01-16 17:54_
 
 Planning on opening https://github.com/astral-sh/ruff/pull/22495 for review first. If that lands, I'll rebase this on top of `main` to see if switching to a set instead of a vec still provides any meaningful speedup (and then we can debate whether it's worth the memory-usage regression, if so).
+
+---
+
+_Closed by @AlexWaygood on 2026-01-16 23:48_
+
+---
+
+_Branch deleted on 2026-01-16 23:48_
 
 ---

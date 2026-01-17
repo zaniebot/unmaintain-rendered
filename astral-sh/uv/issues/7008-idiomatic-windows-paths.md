@@ -10,9 +10,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2024-09-04T12:06:16Z
-updated_at: 2026-01-16T08:40:49Z
+updated_at: 2026-01-16T23:52:34Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-16T08:55:21Z
+synced_at: 2026-01-17T00:08:15Z
 ```
 
 # Idiomatic Windows paths
@@ -272,5 +272,11 @@ For me, it's the lack of XDG support on Windows to make this easy. After that is
 _Comment by @konstin on 2026-01-16 08:40_
 
 Yep I'd open a separate issue for dev drives, it's an issue separate from the original issue.
+
+---
+
+_Comment by @brettcannon on 2026-01-16 23:52_
+
+https://github.com/astral-sh/uv/issues/17544 for Dev Drive guidance.
 
 ---

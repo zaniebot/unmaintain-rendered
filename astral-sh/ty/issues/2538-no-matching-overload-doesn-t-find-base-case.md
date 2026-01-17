@@ -2,14 +2,14 @@
 number: 2538
 title: "No matching overload doesn't find base case"
 type: issue
-state: open
+state: closed
 author: ntjohnson1
 labels: []
 assignees: []
 created_at: 2026-01-16T21:52:42Z
-updated_at: 2026-01-16T22:40:19Z
+updated_at: 2026-01-16T23:44:57Z
 url: https://github.com/astral-sh/ty/issues/2538
-synced_at: 2026-01-16T23:05:37Z
+synced_at: 2026-01-17T00:07:53Z
 ```
 
 # No matching overload doesn't find base case
@@ -37,5 +37,19 @@ _Comment by @MeGaGiGaGon on 2026-01-16 22:40_
 This is the expected behavior of how overloads work, the implementation is not considered when doing overload matching:
 https://typing.python.org/en/latest/spec/overload.html#overload-call-evaluation
 > Only the `overloads` (the `@overload`-decorated signatures) should be considered for matching purposes. The implementation, if provided, should be ignored for purposes of overload matching.
+
+---
+
+_Comment by @carljm on 2026-01-16 23:34_
+
+Yes, this is expected/correct behavior, and all type-checkers agree on it. For an overloaded function, only the overload signatures are available to call.
+
+The call to `get_dataset` inside `wrapper` can only work if every possible combination of the `name` and `id` argument types is accounted for in some overload of `get_dataset`, and with the overloads shown that is not the case.
+
+(If your intention is that calls which don't match either given overload should fall back to the implementation signature, the way to express that is to duplicate the implementation signature as a third overload signature.)
+
+---
+
+_Closed by @carljm on 2026-01-16 23:34_
 
 ---

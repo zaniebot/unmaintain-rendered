@@ -4,14 +4,15 @@ title: "[`ruff`] Fix B033 removing comments in safe fix"
 type: pull_request
 state: open
 author: leandrobbraga
-labels: []
+labels:
+  - fixes
 assignees: []
 base: main
 head: bugfix/b033-unsafe-fix
 created_at: 2026-01-16T22:36:30Z
-updated_at: 2026-01-16T22:58:13Z
+updated_at: 2026-01-16T23:44:01Z
 url: https://github.com/astral-sh/ruff/pull/22632
-synced_at: 2026-01-16T23:05:55Z
+synced_at: 2026-01-17T00:08:11Z
 ```
 
 # [`ruff`] Fix B033 removing comments in safe fix
@@ -91,5 +92,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 22:48_
 
 
 
+
+---
+
+_Review requested from @ntBre by @amyreese on 2026-01-16 23:43_
+
+---
+
+_Label `fixes` added by @amyreese on 2026-01-16 23:43_
+
+---
+
+_@amyreese approved on 2026-01-16 23:44_
 
 ---

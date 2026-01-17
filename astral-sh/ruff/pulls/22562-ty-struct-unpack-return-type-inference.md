@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-16T19:02:49Z
+updated_at: 2026-01-16T23:18:56Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-16T20:03:42Z
+synced_at: 2026-01-17T00:08:11Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -246,5 +246,24 @@ def _(buf: bytes):
 ```
 
 Whatever we choose to do about this, it would make a good extra test case.
+
+---
+
+_@sakgoyal reviewed on 2026-01-16 23:18_
+
+---
+
+_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1261 on 2026-01-16 23:18_
+
+thats a good point. maybe we put a limit at say 2^16? if it exceeds that, set the type to `Unknown`? 
+
+eg:
+```
+reveal_type(struct.unpack("18446744073709551616c", buf))
+reveal_type(struct.unpack("@i18446744073709551616c", buf))
+```
+should return `tuple[Unknown]`, `Unknown`, or `Any`?
+
+i'm ok with either option, though i'd prefer `tuple[Unknown]`
 
 ---

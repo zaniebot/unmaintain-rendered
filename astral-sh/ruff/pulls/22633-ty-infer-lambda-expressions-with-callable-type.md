@@ -11,9 +11,9 @@ assignees: []
 base: ibraheem/comprehension-tcx
 head: ibraheem/lambda-tcx
 created_at: 2026-01-16T22:48:02Z
-updated_at: 2026-01-16T23:00:25Z
+updated_at: 2026-01-16T23:26:39Z
 url: https://github.com/astral-sh/ruff/pull/22633
-synced_at: 2026-01-16T23:05:55Z
+synced_at: 2026-01-17T00:08:11Z
 ```
 
 # [ty] Infer lambda expressions with `Callable` type context
@@ -126,30 +126,35 @@ werkzeug (https://github.com/pallets/werkzeug)
 - Found 386 diagnostics
 + Found 387 diagnostics
 
-aiortc (https://github.com/aiortc/aiortc)
-+ src/aiortc/rtcdtlstransport.py:199:64: error[invalid-argument-type] Argument to bound method `set_verify` is incorrect: Expected `((Connection, X509, int, int, int, /) -> bool) | None`, found `(*args: Connection) -> Literal[True]`
-- Found 194 diagnostics
-+ Found 195 diagnostics
-
 graphql-core (https://github.com/graphql-python/graphql-core)
 + tests/validation/test_validation.py:49:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((GraphQLSchema, GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType, FieldNode, /) -> GraphQLField | None) | None`, found `(*_args: GraphQLSchema) -> None`
 - Found 640 diagnostics
 + Found 641 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ src/aiortc/rtcdtlstransport.py:199:64: error[invalid-argument-type] Argument to bound method `set_verify` is incorrect: Expected `((Connection, X509, int, int, int, /) -> bool) | None`, found `(*args: Connection) -> Literal[True]`
+- Found 194 diagnostics
++ Found 195 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 + testing/_py/test_local.py:918:35: error[invalid-argument-type] Argument to bound method `sysfind` is incorrect: Expected `((local, /) -> bool) | None`, found `(x: local) -> None`
 - Found 424 diagnostics
 + Found 425 diagnostics
 
-httpx-caching (https://github.com/johtso/httpx-caching)
-+ httpx_caching/_utils.py:47:19: error[invalid-await] `Unknown | None` is not awaitable
-- Found 27 diagnostics
-+ Found 28 diagnostics
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/frameworks/constraints.py:25:37: error[invalid-assignment] Object of type `dict[str, ((str, str, str, dict[str, dict[str, Any]], /) -> bool) | ((cv: str, ov: str, *_: str) -> Unknown) | ((cv: str, ov: str, *_: str) -> bool)]` is not assignable to `dict[str, (str, str, str, dict[str, dict[str, Any]], /) -> bool]`
+- Found 1101 diagnostics
++ Found 1102 diagnostics
 
 sockeye (https://github.com/awslabs/sockeye)
 + sockeye_contrib/plot_metrics.py:24:1: error[no-matching-overload] No overload of bound method `update` matches arguments
 - Found 416 diagnostics
 + Found 417 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ httpx_caching/_utils.py:47:19: error[invalid-await] `Unknown | None` is not awaitable
+- Found 27 diagnostics
++ Found 28 diagnostics
 
 ignite (https://github.com/pytorch/ignite)
 - tests/ignite/engine/test_engine.py:60:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(Engine, Any, /) -> Any`, found `() -> Unknown`
@@ -162,11 +167,6 @@ ignite (https://github.com/pytorch/ignite)
 - Found 2036 diagnostics
 + Found 2037 diagnostics
 
-paasta (https://github.com/yelp/paasta)
-+ paasta_tools/frameworks/constraints.py:25:37: error[invalid-assignment] Object of type `dict[str, ((str, str, str, dict[str, dict[str, Any]], /) -> bool) | ((cv: str, ov: str, *_: str) -> Unknown) | ((cv: str, ov: str, *_: str) -> bool)]` is not assignable to `dict[str, (str, str, str, dict[str, dict[str, Any]], /) -> bool]`
-- Found 1101 diagnostics
-+ Found 1102 diagnostics
-
 schemathesis (https://github.com/schemathesis/schemathesis)
 + src/schemathesis/specs/openapi/adapter/parameters.py:998:48: error[invalid-argument-type] Argument to bound method `filter` is incorrect: Expected `(GeneratedValue, /) -> Any`, found `Unknown | ((parameters: dict[str, object]) -> bool) | ((headers: dict[str, object]) -> bool) | ((query: dict[str, object]) -> bool)`
 + src/schemathesis/specs/openapi/adapter/parameters.py:1010:45: error[invalid-argument-type] Argument to bound method `map` is incorrect: Expected `(GeneratedValue, /) -> Unknown`, found `def quote_all(parameters: dict[str, Any]) -> dict[str, Any]`
@@ -175,8 +175,6 @@ schemathesis (https://github.com/schemathesis/schemathesis)
 + Found 285 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 - tornado/test/escape_test.py:217:51: error[invalid-argument-type] Argument to function `linkify` is incorrect: Expected `bool`, found `Unknown | list[Unknown | str] | bool | str | ((href) -> Unknown)`
 + tornado/test/escape_test.py:217:51: error[invalid-argument-type] Argument to function `linkify` is incorrect: Expected `bool`, found `Unknown | list[Unknown | str] | bool | str | ((href) -> str)`
 - tornado/test/escape_test.py:217:51: error[invalid-argument-type] Argument to function `linkify` is incorrect: Expected `str | ((str, /) -> str)`, found `Unknown | list[Unknown | str] | bool | str | ((href) -> Unknown)`
@@ -186,10 +184,19 @@ tornado (https://github.com/tornadoweb/tornado)
 - tornado/test/escape_test.py:217:51: error[invalid-argument-type] Argument to function `linkify` is incorrect: Expected `list[str]`, found `Unknown | list[Unknown | str] | bool | str | ((href) -> Unknown)`
 + tornado/test/escape_test.py:217:51: error[invalid-argument-type] Argument to function `linkify` is incorrect: Expected `list[str]`, found `Unknown | list[Unknown | str] | bool | str | ((href) -> str)`
 
+urllib3 (https://github.com/urllib3/urllib3)
+- test/contrib/emscripten/test_emscripten.py:387:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `is_cross_origin_isolated` of type `def is_cross_origin_isolated() -> bool`
++ test/contrib/emscripten/test_emscripten.py:387:9: error[invalid-assignment] Object of type `() -> Literal[False]` is not assignable to attribute `is_cross_origin_isolated` of type `def is_cross_origin_isolated() -> bool`
+
 vision (https://github.com/pytorch/vision)
 + references/depth/stereo/transforms.py:124:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None], tuple[Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None, Unknown | ndarray[tuple[Any, ...], dtype[Any]] | None]]`, found `tuple[tuple[Unknown, ...], tuple[Unknown | None, ...], tuple[Unknown | None, ...]]`
 - Found 1409 diagnostics
 + Found 1410 diagnostics
+
+operator (https://github.com/canonical/operator)
+- ops/_private/harness.py:2075:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 132 diagnostics
++ Found 131 diagnostics
 
 optuna (https://github.com/optuna/optuna)
 + optuna/visualization/matplotlib/_contour.py:168:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Buffer]`, found `filter[Unknown | str | int | float | None]`
@@ -199,10 +206,6 @@ optuna (https://github.com/optuna/optuna)
 - Found 577 diagnostics
 + Found 575 diagnostics
 
-urllib3 (https://github.com/urllib3/urllib3)
-- test/contrib/emscripten/test_emscripten.py:387:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `is_cross_origin_isolated` of type `def is_cross_origin_isolated() -> bool`
-+ test/contrib/emscripten/test_emscripten.py:387:9: error[invalid-assignment] Object of type `() -> Literal[False]` is not assignable to attribute `is_cross_origin_isolated` of type `def is_cross_origin_isolated() -> bool`
-
 Expression (https://github.com/cognitedata/Expression)
 + tests/test_result.py:315:46: error[invalid-argument-type] Argument to bound method `filter_with` is incorrect: Expected `(Any, /) -> Literal["original error"]`, found `(value: Any) -> str`
 + tests/test_result.py:517:26: error[invalid-argument-type] Argument to bound method `or_else_with` is incorrect: Expected `(Any, /) -> Result[Literal["good"], Any]`, found `(error: Any) -> Result[str, Any]`
@@ -211,29 +214,18 @@ Expression (https://github.com/cognitedata/Expression)
 - Found 205 diagnostics
 + Found 209 diagnostics
 
-xarray (https://github.com/pydata/xarray)
-- xarray/tests/test_datatree_mapping.py:92:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- xarray/tests/test_datatree_mapping.py:104:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 1772 diagnostics
-+ Found 1770 diagnostics
-
-operator (https://github.com/canonical/operator)
-- ops/_private/harness.py:2075:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 132 diagnostics
-+ Found 131 diagnostics
-
 mkdocs (https://github.com/mkdocs/mkdocs)
 - mkdocs/tests/livereload_tests.py:21:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `close` of type `def close(self) -> None`
 + mkdocs/tests/livereload_tests.py:21:9: error[invalid-assignment] Object of type `() -> None` is not assignable to attribute `close` of type `def close(self) -> None`
-
-discord.py (https://github.com/Rapptz/discord.py)
-- discord/file.py:106:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `close` of type `def close(self) -> None`
-+ discord/file.py:106:9: error[invalid-assignment] Object of type `() -> None` is not assignable to attribute `close` of type `def close(self) -> None`
 
 pyppeteer (https://github.com/pyppeteer/pyppeteer)
 + pyppeteer/browser.py:66:13: error[invalid-argument-type] Argument to bound method `setClosedCallback` is incorrect: Expected `() -> None`, found `() -> bool`
 - Found 87 diagnostics
 + Found 88 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/file.py:106:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `close` of type `def close(self) -> None`
++ discord/file.py:106:9: error[invalid-assignment] Object of type `() -> None` is not assignable to attribute `close` of type `def close(self) -> None`
 
 zope.interface (https://github.com/zopefoundation/zope.interface)
 - src/zope/interface/registry.py:552:9: error[invalid-assignment] Object of type `(_) -> Unknown` is not assignable to attribute `changed` on type `Unknown | AdapterRegistry`
@@ -255,6 +247,24 @@ meson (https://github.com/mesonbuild/meson)
 - unittests/internaltests.py:275:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `get_default_include_dirs` of type `def get_default_include_dirs(self) -> list[str]`
 + unittests/internaltests.py:275:9: error[invalid-assignment] Object of type `() -> list[Unknown | str]` is not assignable to attribute `get_default_include_dirs` of type `def get_default_include_dirs(self) -> list[str]`
 + unittests/machinefiletests.py:154:26: warning[possibly-missing-attribute] Attribute `id` may be missing on object of type `Compiler | None`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/build_meta.py:107:5: error[invalid-assignment] Object of type `(attrs) -> Unknown` is not assignable to attribute `_install_setup_requires` of type `def _install_setup_requires(attrs) -> Unknown`
++ setuptools/build_meta.py:107:5: error[invalid-assignment] Object of type `(attrs) -> None` is not assignable to attribute `_install_setup_requires` of type `def _install_setup_requires(attrs) -> Unknown`
+
+manticore (https://github.com/trailofbits/manticore)
+- manticore/native/plugins.py:13:9: error[invalid-assignment] Object of type `(...) -> Unknown` is not assignable to attribute `_publish` on type `Unknown | None`
++ manticore/native/plugins.py:13:9: error[invalid-assignment] Object of type `(...) -> None` is not assignable to attribute `_publish` on type `Unknown | None`
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- cwltool/main.py:165:9: error[invalid-assignment] Object of type `(*args) -> Unknown` is not assignable to attribute `default_user_agent` of type `def default_user_agent(name: str = "python-requests") -> str`
++ cwltool/main.py:165:9: error[invalid-assignment] Object of type `(*args) -> str` is not assignable to attribute `default_user_agent` of type `def default_user_agent(name: str = "python-requests") -> str`
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/book_providers.py:829:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal["min", "max"], (Unknown | tuple[Edition, AbstractBookProvider[Unknown] | None], /) -> int | float]]`, found `list[Unknown | tuple[str, (rec) -> Unknown]]`
++ openlibrary/book_providers.py:829:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal["min", "max"], (Unknown | tuple[Edition, AbstractBookProvider[Unknown] | None], /) -> int | float]]`, found `list[Unknown | tuple[str, (rec) -> int | float]]`
+- openlibrary/conftest.py:110:5: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `init_plugin` of type `def init_plugin() -> Unknown`
++ openlibrary/conftest.py:110:5: error[invalid-assignment] Object of type `() -> None` is not assignable to attribute `init_plugin` of type `def init_plugin() -> Unknown`
 
 cloud-init (https://github.com/canonical/cloud-init)
 - tests/unittests/sources/test_altcloud.py:157:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `user_data_rhevm` of type `def user_data_rhevm(self) -> Unknown`
@@ -284,90 +294,9 @@ cloud-init (https://github.com/canonical/cloud-init)
 - Found 1166 diagnostics
 + Found 1170 diagnostics
 
-openlibrary (https://github.com/internetarchive/openlibrary)
-- openlibrary/book_providers.py:829:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal["min", "max"], (Unknown | tuple[Edition, AbstractBookProvider[Unknown] | None], /) -> int | float]]`, found `list[Unknown | tuple[str, (rec) -> Unknown]]`
-+ openlibrary/book_providers.py:829:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal["min", "max"], (Unknown | tuple[Edition, AbstractBookProvider[Unknown] | None], /) -> int | float]]`, found `list[Unknown | tuple[str, (rec) -> int | float]]`
-- openlibrary/conftest.py:110:5: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `init_plugin` of type `def init_plugin() -> Unknown`
-+ openlibrary/conftest.py:110:5: error[invalid-assignment] Object of type `() -> None` is not assignable to attribute `init_plugin` of type `def init_plugin() -> Unknown`
-
-manticore (https://github.com/trailofbits/manticore)
-- manticore/native/plugins.py:13:9: error[invalid-assignment] Object of type `(...) -> Unknown` is not assignable to attribute `_publish` on type `Unknown | None`
-+ manticore/native/plugins.py:13:9: error[invalid-assignment] Object of type `(...) -> None` is not assignable to attribute `_publish` on type `Unknown | None`
-
 prefect (https://github.com/PrefectHQ/prefect)
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `str | list[str] | None`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `bool | None`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `str | list[str] | None`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, str] | list[str] | None`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:27:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str | bool | dict[Unknown | str, Unknown | int] | None`
-+ src/integrations/prefect-docker/tests/test_containers.py:42:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_containers.py:55:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_containers.py:68:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_containers.py:81:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `DockerHost | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `DockerRegistryCredentials | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:16:44: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:21:16: warning[possibly-missing-attribute] Attribute `id` may be missing on object of type `Unknown | list[Unknown]`
-+ src/integrations/prefect-docker/tests/test_images.py:29:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:29:47: error[invalid-argument-type] Argument is incorrect: Expected `DockerRegistryCredentials | None`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:29:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:31:16: warning[possibly-missing-attribute] Attribute `id` may be missing on object of type `Unknown | list[Unknown]`
-+ src/integrations/prefect-docker/tests/test_images.py:51:17: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:51:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-docker/tests/test_images.py:53:16: warning[possibly-missing-attribute] Attribute `id` may be missing on object of type `Unknown | list[Unknown]`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `str | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `DockerRegistryCredentials | None`, found `str | bool`
-+ src/integrations/prefect-docker/tests/test_images.py:64:47: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str | bool`
 - src/integrations/prefect-github/prefect_github/utils.py:46:12: error[invalid-return-type] Return type does not match returned value: expected `list[Unknown]`, found `defaultdict[Unknown, Unknown]`
 + src/integrations/prefect-github/prefect_github/utils.py:46:12: error[invalid-return-type] Return type does not match returned value: expected `list[Unknown]`, found `defaultdict[Unknown, list[Unknown]]`
-+ src/integrations/prefect-kubernetes/prefect_kubernetes/jobs.py:429:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `str`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:20:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `None`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:29:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `None`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:38:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `None`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:57:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:103:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:149:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:195:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:240:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:286:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_custom_objects.py:344:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:18:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:38:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:70:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:92:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:113:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_deployments.py:141:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:36:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:52:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:68:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:87:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:107:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:131:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_jobs.py:159:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:29:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:46:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:78:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:96:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:115:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:137:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-+ src/integrations/prefect-kubernetes/tests/test_pods.py:167:9: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `Literal["test"]`
-- src/prefect/cache_policies.py:311:25: warning[possibly-missing-attribute] Attribute `__code__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/cache_policies.py:311:25: warning[possibly-missing-attribute] Attribute `__code__` may be missing on object of type `Unknown | ((...) -> Any)`
 - src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
 + src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
 + src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
@@ -381,28 +310,8 @@ prefect (https://github.com/PrefectHQ/prefect)
 - src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
 + src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
 - src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ src/prefect/task_engine.py:1613:28: error[invalid-await] `Unknown | R@AsyncTaskRunEngine | Coroutine[Any, Any, R@AsyncTaskRunEngine]` is not awaitable
-+ src/prefect/task_engine.py:1721:47: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_task_sync`
-+ src/prefect/task_engine.py:1734:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_task_sync`
-+ src/prefect/task_engine.py:1780:48: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_task_async`
-+ src/prefect/task_engine.py:1792:29: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_task_async`
-- src/prefect/tasks.py:184:9: warning[possibly-missing-attribute] Attribute `__code__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/tasks.py:184:9: warning[possibly-missing-attribute] Attribute `__code__` may be missing on object of type `Unknown | ((...) -> Any)`
-- Found 5335 diagnostics
+- Found 5409 diagnostics
 + Found 5414 diagnostics
-
-cwltool (https://github.com/common-workflow-language/cwltool)
-- cwltool/main.py:165:9: error[invalid-assignment] Object of type `(*args) -> Unknown` is not assignable to attribute `default_user_agent` of type `def default_user_agent(name: str = "python-requests") -> str`
-+ cwltool/main.py:165:9: error[invalid-assignment] Object of type `(*args) -> str` is not assignable to attribute `default_user_agent` of type `def default_user_agent(name: str = "python-requests") -> str`
-
-setuptools (https://github.com/pypa/setuptools)
-- setuptools/build_meta.py:107:5: error[invalid-assignment] Object of type `(attrs) -> Unknown` is not assignable to attribute `_install_setup_requires` of type `def _install_setup_requires(attrs) -> Unknown`
-+ setuptools/build_meta.py:107:5: error[invalid-assignment] Object of type `(attrs) -> None` is not assignable to attribute `_install_setup_requires` of type `def _install_setup_requires(attrs) -> Unknown`
-
-hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
-+ src/hydra_zen/wrapper/_implementations.py:1735:52: error[invalid-assignment] Object of type `((x: str | None) -> object) | (((str | None, /) -> str | None) & ~Top[Mapping[Unknown, object]])` is not assignable to `(str | None, /) -> str | None`
-- Found 521 diagnostics
-+ Found 522 diagnostics
 
 pwndbg (https://github.com/pwndbg/pwndbg)
 + pwndbg/aglib/disasm/disassembly.py:89:53: error[invalid-assignment] Object of type `defaultdict[int, int | None]` is not assignable to `defaultdict[int, int]`
@@ -420,14 +329,20 @@ pwndbg (https://github.com/pwndbg/pwndbg)
 - Found 2000 diagnostics
 + Found 2010 diagnostics
 
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ src/hydra_zen/wrapper/_implementations.py:1735:52: error[invalid-assignment] Object of type `((x: str | None) -> object) | (((str | None, /) -> str | None) & ~Top[Mapping[Unknown, object]])` is not assignable to `(str | None, /) -> str | None`
+- Found 521 diagnostics
++ Found 522 diagnostics
+
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 - lib/Crypto/SelfTest/Protocol/test_KDF.py:142:26: error[invalid-argument-type] Argument to function `PBKDF2` is incorrect: Expected `((int, /) -> bytes) | None`, found `(p, s) -> Unknown`
 + lib/Crypto/SelfTest/Protocol/test_KDF.py:142:26: error[invalid-argument-type] Argument to function `PBKDF2` is incorrect: Expected `((int, /) -> bytes) | None`, found `(p: int, s) -> bytes`
 
-aiohttp (https://github.com/aio-libs/aiohttp)
-+ aiohttp/client_reqrep.py:211:66: error[invalid-assignment] Object of type `(*_: ClientResponse) -> Literal["utf-8"]` is not assignable to `(ClientResponse, bytes, /) -> str`
-- Found 180 diagnostics
-+ Found 181 diagnostics
+xarray (https://github.com/pydata/xarray)
+- xarray/tests/test_datatree_mapping.py:92:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_datatree_mapping.py:104:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1772 diagnostics
++ Found 1770 diagnostics
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - ddtrace/debugging/_debugger.py:269:13: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Unknown | DerivedVariable[int | float | Unknown]`
@@ -463,9 +378,94 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - tests/debugging/mocking.py:192:9: error[invalid-assignment] Object of type `(_) -> Unknown` is not assignable to attribute `register` of type `def register[**_P, _T](func: (**_P@register) -> _T, /, *args: _P.args, **kwargs: _P.kwargs) -> (**_P@register) -> _T`
 + tests/debugging/mocking.py:192:9: error[invalid-assignment] Object of type `(_) -> None` is not assignable to attribute `register` of type `def register[**_P, _T](func: (**_P@register) -> _T, /, *args: _P.args, **kwargs: _P.kwargs) -> (**_P@register) -> _T`
 - tests/internal/symbol_db/test_config.py:8:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
-+ tests/internal/symbol_db/test_config.py:8:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[s
++ tests/internal/symbol_db/test_config.py:8:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/internal/symbol_db/test_config.py:9:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
++ tests/internal/symbol_db/test_config.py:9:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/internal/symbol_db/test_config.py:10:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
++ tests/internal/symbol_db/test_config.py:10:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/internal/symbol_db/test_config.py:12:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
++ tests/internal/symbol_db/test_config.py:12:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/internal/symbol_db/test_config.py:13:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
++ tests/internal/symbol_db/test_config.py:13:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/internal/symbol_db/test_config.py:14:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Unknown]`
++ tests/internal/symbol_db/test_config.py:14:12: warning[possibly-missing-attribute] Attribute `match` may be missing on object of type `Unknown | DerivedVariable[Pattern[Unknown] | Pattern[str]]`
+- tests/testing/internal/test_telemetry.py:396:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `is_benchmark` of type `def is_benchmark(self) -> bool`
++ tests/testing/internal/test_telemetry.py:396:9: error[invalid-assignment] Object of type `() -> Literal[True]` is not assignable to attribute `is_benchmark` of type `def is_benchmark(self) -> bool`
+- Found 8409 diagnostics
++ Found 8411 diagnostics
 
-... (truncated 340 lines) ...
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/client_reqrep.py:211:66: error[invalid-assignment] Object of type `(*_: ClientResponse) -> Literal["utf-8"]` is not assignable to `(ClientResponse, bytes, /) -> str`
+- Found 180 diagnostics
++ Found 181 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- tests/assert_type/apps/test_config.py:38:1: error[type-assertion-failure] Type `str` does not match asserted type `Unknown`
++ tests/assert_type/apps/test_config.py:38:1: error[type-assertion-failure] Type `str` does not match asserted type `Unknown | Literal["django.db.models.BigAutoField"]`
+
+jax (https://github.com/google/jax)
+- jax/_src/ad_checkpoint.py:805:16: error[unresolved-attribute] Unresolved attribute `in_cts_zero` on type `() -> Unknown`.
++ jax/_src/ad_checkpoint.py:805:16: error[unresolved-attribute] Unresolved attribute `in_cts_zero` on type `() -> None`.
+- jax/_src/ad_checkpoint.py:814:28: error[unresolved-attribute] Object of type `() -> Unknown` has no attribute `in_cts_zero`
++ jax/_src/ad_checkpoint.py:814:28: error[unresolved-attribute] Object of type `() -> None` has no attribute `in_cts_zero`
+- jax/_src/ad_checkpoint.py:953:32: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, name) -> Unknown`
++ jax/_src/ad_checkpoint.py:953:32: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, name) -> list[Unknown]`
+- jax/_src/error_check.py:278:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_SerializeAuxData`, found `(x) -> Unknown`
++ jax/_src/error_check.py:278:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_SerializeAuxData`, found `(x) -> bytes`
+- jax/_src/error_check.py:281:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(x) -> Unknown`
++ jax/_src/error_check.py:281:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(x) -> Any`
+- jax/_src/export/_export.py:535:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(b) -> Unknown`
++ jax/_src/export/_export.py:535:5: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(b) -> Any`
+- jax/_src/hijax.py:454:7: error[unresolved-attribute] Unresolved attribute `out_nzs` on type `() -> Unknown`.
++ jax/_src/hijax.py:454:7: error[unresolved-attribute] Unresolved attribute `out_nzs` on type `() -> None`.
+- jax/_src/interpreters/mlir.py:2829:44: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x) -> Unknown`
++ jax/_src/interpreters/mlir.py:2829:44: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x) -> list[Unknown]`
+- jax/_src/lax/lax.py:5114:37: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> Unknown`
++ jax/_src/lax/lax.py:5114:37: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> list[Unknown]`
+- jax/_src/lax/lax.py:5153:39: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> Unknown`
++ jax/_src/lax/lax.py:5153:39: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> list[Unknown]`
+- jax/_src/lax/lax.py:8458:32: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x) -> Unknown`
++ jax/_src/lax/lax.py:8458:32: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x) -> list[Unknown]`
+- jax/_src/lax/lax.py:8477:36: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, _) -> Unknown`
++ jax/_src/lax/lax.py:8477:36: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, _) -> list[Unknown]`
+- jax/_src/lax/lax.py:8944:31: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, y) -> Unknown`
++ jax/_src/lax/lax.py:8944:31: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, y) -> list[Unknown]`
+- jax/_src/lax/parallel.py:2396:38: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> Unknown`
++ jax/_src/lax/parallel.py:2396:38: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> list[Unknown]`
+- jax/_src/lax/parallel.py:2676:36: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> Unknown`
++ jax/_src/lax/parallel.py:2676:36: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> list[Unknown]`
+- jax/_src/lax/parallel.py:2722:47: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> Unknown`
++ jax/_src/lax/parallel.py:2722:47: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> list[Unknown]`
+- jax/_src/lax/parallel.py:2766:50: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> Unknown`
++ jax/_src/lax/parallel.py:2766:50: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(ctx, x, *, axes) -> list[Unknown]`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3331:17: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
++ jax/_src/pallas/mosaic_gpu/lowering.py:3331:17: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown | FragmentedArray`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown | FragmentedArray)`
+- jax/_src/pallas/mosaic_gpu/lowering.py:3354:22: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown)`
++ jax/_src/pallas/mosaic_gpu/lowering.py:3354:22: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(Any, dtype[Any] | Unknown | ShapedAbstractValue, /) -> Unknown | FragmentedArray`, found `(def _ensure_ir_value(x: Any, dtype: dtype[Any]) -> Unknown) | ((v, aval) -> Unknown | FragmentedArray)`
++ jax/_src/pallas/pipelining/schedulers.py:121:7: error[invalid-assignment] Invalid subscript assignment with key of type `int | str` and value of type `int` on object of type `defaultdict[Unknown, None]`
++ jax/_src/pallas/pipelining/schedulers.py:124:8: error[unsupported-operator] Operator `>` is not supported between two objects of type `None`
++ jax/_src/pallas/pipelining/schedulers.py:154:9: error[invalid-assignment] Invalid subscript assignment with key of type `int | str` and value of type `int` on object of type `defaultdict[Unknown, None]`
++ jax/_src/pallas/pipelining/schedulers.py:157:16: error[invalid-argument-type] Argument is incorrect: Expected `Mapping[int | str, int]`, found `defaultdict[Unknown, None]`
+- jax/_src/pallas/primitives.py:348:42: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> Unknown`
++ jax/_src/pallas/primitives.py:348:42: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> list[Unknown]`
+- jax/_src/pallas/primitives.py:364:39: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> Unknown`
++ jax/_src/pallas/primitives.py:364:39: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, x, **__) -> list[Unknown]`
+- jax/_src/random.py:2892:40: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, k) -> Unknown`
++ jax/_src/random.py:2892:40: error[invalid-argument-type] Argument to function `register_lowering` is incorrect: Expected `LoweringRule`, found `(_, k) -> list[Unknown]`
+- jax/_src/test_loader.py:152:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `time_getter` on type `Unknown | TestResult`
++ jax/_src/test_loader.py:152:9: error[invalid-assignment] Object of type `() -> Unknown | int | float` is not assignable to attribute `time_getter` on type `Unknown | TestResult`
+- jax/_src/test_loader.py:156:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `time_getter` on type `Unknown | TestResult`
++ jax/_src/test_loader.py:156:9: error[invalid-assignment] Object of type `() -> int | float` is not assignable to attribute `time_getter` on type `Unknown | TestResult`
+- jax/experimental/array_serialization/serialization_test.py:991:40: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_SerializeAuxData`, found `(p) -> Unknown`
++ jax/experimental/array_serialization/serialization_test.py:991:40: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_SerializeAuxData`, found `(p) -> bytes`
+- jax/experimental/array_serialization/serialization_test.py:992:40: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(data) -> Unknown`
++ jax/experimental/array_serialization/serialization_test.py:992:40: error[invalid-argument-type] Argument to function `register_pytree_node_serialization` is incorrect: Expected `_DeserializeAuxData`, found `(data) -> P`
++ jax/experimental/colocated_python/func.py:647:48: error[invalid-assignment] Object of type `None` is not assignable to `_SpecializedCollection`
++ jax/experimental/colocated_python/func.py:661:36: error[invalid-assignment] Object of type `None` is not assignable to `(...) -> Any`
++ jax/experimental/jax2tf/tests/call_tf_test.py:1476:26: warning[possibly-missing-attribute] Attribute `py_function` may be missing on object of type `Unknown | None`
++ jax/experimental/jax2tf/tests/call_tf_test.py:1476:54: warning[possibly-missing-
+
+... (truncated 265 lines) ...
 ```
 
 </details>
@@ -478,5 +478,54 @@ No memory usage changes detected ✅
 ---
 
 _Label `ecosystem-analyzer` added by @ibraheemdev on 2026-01-16 22:58_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-16 23:03_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 29 | 17 | 97 |
+| `invalid-assignment` | 13 | 0 | 35 |
+| `unused-ignore-comment` | 0 | 21 | 0 |
+| `possibly-missing-attribute` | 4 | 5 | 9 |
+| `unresolved-attribute` | 9 | 0 | 5 |
+| `type-assertion-failure` | 0 | 5 | 1 |
+| `invalid-return-type` | 2 | 1 | 2 |
+| `unsupported-operator` | 5 | 0 | 0 |
+| `not-subscriptable` | 4 | 0 | 0 |
+| `no-matching-overload` | 3 | 0 | 0 |
+| `invalid-await` | 1 | 0 | 0 |
+| **Total** | **70** | **49** | **149** |
+
+
+**[Full report with detailed diff](https://c7baf85c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://c7baf85c.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_@ibraheemdev reviewed on 2026-01-16 23:25_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/resources/mdtest/cycle.md`:141 on 2026-01-16 23:25_
+
+The revealed type here is a little unfortunate. Ideally it would just be `() -> Unknown | (() -> Divergent)`, but I'm not sure that is an issue related to this PR.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-16 23:26_
+
+> This PR is stacked on #22564.
+
+The weird typing- conformance comment should be fixed if you rebase that PR on main, and then this PR on that PR (sorry for the teething problems there with the new workflow...)
 
 ---
