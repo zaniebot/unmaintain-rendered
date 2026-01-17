@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/bidi-diagnostics
 created_at: 2026-01-17T03:51:36Z
-updated_at: 2026-01-17T03:59:13Z
+updated_at: 2026-01-17T04:08:45Z
 url: https://github.com/astral-sh/ruff/pull/22643
-synced_at: 2026-01-17T04:14:33Z
+synced_at: 2026-01-17T05:15:41Z
 ```
 
 # [ty] Improve invalid assignment diagnostics with type context
@@ -441,6 +441,44 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 03:59_
 
 **[Full report with detailed diff](https://902123ef.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://902123ef.ty-ecosystem-ext.pages.dev/timing))
 
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2026-01-17 04:08_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## Merging this PR will **improve performance by 4.94%**
+
+
+
+
+`⚡ 2` improved benchmarks  
+`✅ 21` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
+
+
+
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ⚡ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 22 s | 21 s | +4.64% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8.3 s | 7.9 s | +4.94% |
+---
+
+<sub>Comparing <code>ibraheem/bidi-diagnostics</code> (d6a2820) with <code>main</code> (938c1c5)</sub>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?utm_source=github&utm_medium=comment-v2&utm_content=button">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
+  </picture>
+</a>
+
+
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
 
 ---

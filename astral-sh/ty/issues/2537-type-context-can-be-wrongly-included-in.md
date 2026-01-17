@@ -10,9 +10,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2026-01-16T20:33:40Z
-updated_at: 2026-01-17T03:13:50Z
+updated_at: 2026-01-17T04:20:39Z
 url: https://github.com/astral-sh/ty/issues/2537
-synced_at: 2026-01-17T04:14:15Z
+synced_at: 2026-01-17T05:15:22Z
 ```
 
 # Type context can be wrongly included in diagnostic type when there is no solution
@@ -134,5 +134,23 @@ y: list[A | bool] = [{"bar": 1}, 1]
 The second diagnostic is a lot more confusing in both cases, and suggests that there is a problem with literal promotion or typed dict inference.
 
 I do think we can be better in the generics case though, and should not resolve without the type context if we fail to arrive at a valid specialization.
+
+---
+
+_Comment by @electronick1 on 2026-01-17 04:03_
+
+I mean, if we consider function:
+```
+def f[T](x: T) -> list[T]:
+    return [x]
+```
+
+And function call `f("a")` - `f` will produce `list[str]`, while message says: "`list[int | str]` is not assignable to `list[int]`" - which is confusing in case of `f("a")` call, even if `T` of `f` could be any other type.
+
+> I do think we can be better in the generics case though, and should not resolve without the type context if we fail to arrive at a valid specialization.
+
+Yeah I was looking at specialization logic too, I can see your PR #22643 is addressing this 
+
+
 
 ---

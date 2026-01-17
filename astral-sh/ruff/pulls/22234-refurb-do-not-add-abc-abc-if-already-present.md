@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-16T21:17:30Z
+updated_at: 2026-01-17T05:01:30Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-16T22:15:00Z
+synced_at: 2026-01-17T05:15:41Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -456,7 +456,7 @@ _Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclas
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:153 on 2026-01-13 20:25_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:155 on 2026-01-13 20:25_
 
 What do you think about something like this:
 
@@ -533,7 +533,7 @@ Thank you! This looks great, I just had a couple of minor suggestions. I also no
 
 ---
 
-_Review comment by @akawd on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:153 on 2026-01-16 19:59_
+_Review comment by @akawd on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:155 on 2026-01-16 19:59_
 
 In my humble opinion, avoiding the heap is worth a few extra lines of code.
 
@@ -595,7 +595,7 @@ _@ntBre reviewed on 2026-01-16 20:57_
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:95 on 2026-01-16 20:59_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:97 on 2026-01-16 20:59_
 
 I think we could narrow this to `keyword.range` instead of the whole `arguments.range()`, but I'm not totally sure:
 
@@ -623,5 +623,93 @@ class C(
 _@ntBre reviewed on 2026-01-16 21:04_
 
 Thank you! I had one suggestion about narrowing the comment range check and a test for that. Then we just need to update the `## Fix safety` section of the rule docs.
+
+---
+
+_@akawd reviewed on 2026-01-17 05:00_
+
+---
+
+_Review comment by @akawd on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:97 on 2026-01-17 05:00_
+
+Thank you, but I have some comments about this...
+
+At first, I implemented it like you said:
+
+```rust
+} else if checker.comment_ranges().intersects(keyword.range()) {
+```
+and I used the following test to check this particular change:
+
+##### main.py
+```python
+import abc
+
+class Foo(
+    other_kwarg=1,
+    # comment
+    metaclass=abc.ABCMeta,
+):
+    ...
+```
+
+I also added some debug messages in advance:
+```rust
+    println!("Keyword range: {:?}", keyword.range());
+    println!("Arguments range: {:?}", arguments.range());
+    let applicability = if !class_def.bases().is_empty() {
+```
+
+When I run the `ruff`, it fixes the file:
+```python
+import abc
+
+class Foo(
+    abc.ABC, other_kwarg=1,
+):
+    ...
+```
+
+but **without** the notion about the unsafe-fix. The output:
+```bash
+$ cargo run -p ruff -- check ../py --no-cache --fix
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target\debug\ruff.exe check ../py --no-cache --fix`
+Keyword range: 65..86
+Arguments range: 23..90
+Found 1 error (1 fixed, 0 remaining).
+```
+
+In other words, the comment was removed but the fix was not considered as unsafe.
+
+When I use the 
+```rust
+} else if checker.comment_ranges().intersects(arguments.range()) {
+```
+
+I have a proper message as I can see:
+```bash
+$ cargo run -p ruff -- check ../py --no-cache --fix
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running `target\debug\ruff.exe check ../py --no-cache --fix`
+Keyword range: 65..86
+Arguments range: 23..90
+FURB180 Use of `metaclass=abc.ABCMeta` to define abstract base class
+ --> C:\AK\Rust\py\main.py:6:5
+  |
+4 |     other_kwarg=1,
+5 |     # comment
+6 |     metaclass=abc.ABCMeta,
+  |     ^^^^^^^^^^^^^^^^^^^^^
+7 | ):
+8 |     ...
+  |
+help: Replace with `abc.ABC`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+```
+
+Please let me know if I'm missing something. Thanks!
 
 ---
