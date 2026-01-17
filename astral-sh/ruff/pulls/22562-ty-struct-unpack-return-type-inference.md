@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-16T23:18:56Z
+updated_at: 2026-01-17T00:17:59Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-17T00:08:11Z
+synced_at: 2026-01-17T01:09:41Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -265,5 +265,15 @@ reveal_type(struct.unpack("@i18446744073709551616c", buf))
 should return `tuple[Unknown]`, `Unknown`, or `Any`?
 
 i'm ok with either option, though i'd prefer `tuple[Unknown]`
+
+---
+
+_@dscorbett reviewed on 2026-01-17 00:17_
+
+---
+
+_Review comment by @dscorbett on `crates/ty_python_semantic/src/types/call/bind.rs`:1261 on 2026-01-17 00:17_
+
+It could also be a `tuple[bytes, ...]`, ignoring the count but keeping the type. Similarly, `struct.unpack("18446744073709551616c?", buf)` could be a `tuple[bytes | bool, ...]`.
 
 ---

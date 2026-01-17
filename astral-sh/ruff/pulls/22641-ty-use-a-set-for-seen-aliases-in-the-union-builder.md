@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/seen-aliases-set
 created_at: 2026-01-16T23:42:10Z
-updated_at: 2026-01-16T23:56:10Z
+updated_at: 2026-01-17T00:11:55Z
 url: https://github.com/astral-sh/ruff/pull/22641
-synced_at: 2026-01-17T00:08:11Z
+synced_at: 2026-01-17T01:09:41Z
 ```
 
 # [ty] Use a set for `seen_aliases` in the union builder
@@ -169,5 +169,11 @@ _Review requested from @sharkdp by @AlexWaygood on 2026-01-16 23:56_
 ---
 
 _Review requested from @dcreager by @AlexWaygood on 2026-01-16 23:56_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-17 00:11_
+
+Hmm, maybe this isn't actually a good idea if we expect `seen_aliases` to almost always be very small? I guess hashing types isn't free; an `O(n)` check can be quicker than an `O(1)` check if `n` is almost always very small.
 
 ---
