@@ -14,7 +14,7 @@
     <h1>index-out-of-bounds error after numpy reshape</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ty/issues/2501">#2501</a>
         opened by <a href="https://github.com/ntjohnson1">@ntjohnson1</a>
         on 2026-01-14 21:43
@@ -129,10 +129,33 @@ uv run ty check
 <p>My guess is that its related to the circular dependency.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:39</div>
+            <div class="timeline-body"><p>Thanks for the reproducer!</p>
+<p>It's not related to the circular dependency. It is in fact the Python version -- now that I see the <code>pyproject.toml</code> in your reproducer, I see that ty will actually choose Python 3.10 (the lowest supported Python version). And in fact the issue repros consistently under Python 3.10, but not on 3.11+, with this simple reproducer:</p>
+<pre><code class="language-py">import numpy as np
+
+def reshape_test(data: np.ndarray[tuple[int, int], np.dtype[np.uint8]]):
+    out = data.reshape((1, -1))
+    reveal_type(out)
+
+</code></pre>
+<p>Both mypy and pyright reveal the type of <code>out</code> correctly here as <code>np.ndarray[tuple[int, int], np.dtype[np.uint8]]</code>, but ty reveals it wrongly as <code>np.ndarray[tuple[()], np.dtype[np.uint8]]</code>. (Same is true no matter the shape of the input array, and all type checkers correctly match the output dtype to the input dtype.)</p>
+<p>So the problem is that under Python 3.10, ty is picking this first overload here: https://github.com/numpy/numpy/blob/maintenance/2.3.x/numpy/<strong>init</strong>.pyi#L2429</p>
+<p>And the root cause is both simple and silly: numpy does <a href="https://github.com/numpy/numpy/blob/maintenance/2.3.x/numpy/__init__.pyi#L174"><code>from typing import Never</code></a>, and we correctly model that <code>typing.Never</code> does not exist on Python 3.10. So that overload becomes an overload on <code>Sequence[Unknown]</code> (which matches) instead of <code>Sequence[Never]</code>.</p>
+<p>And in fact mypy does exactly the same thing as ty, if you give it <code>--python-version 3.10</code>!</p>
+<p>So the only difference between mypy and ty here is the Python version they use to check by default: ty chooses the lowest version supported in your <code>pyproject.toml</code>.</p>
+<p>It seems like numpy 2.3.5 doesn't really support Python 3.10 (or if it intends to, its stubs are subtly broken on 3.10). So if you can, it seems like the best fix would be for you to bump your minimum supported Python version to 3.11 in your <code>pyproject.toml</code>. Or failing that, explicitly configure ty to check against Python 3.11.</p>
+<p>Closing, since it doesn't look like there's a bug in ty here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-17 01:39</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 22:05:48 UTC
+        Synced at 2026-01-17 02:02:43 UTC
     </footer>
 </body>
 </html>
