@@ -155,10 +155,30 @@ index 5a32051..72af669 100644
             <div class="timeline-body"><p>Per the specification trailing zeros have no semantic meaning so we're probably just considering these versions equal. It's not clear to me that we should actually invalidate the lockfile in this case. It seems pretty rare to be adding <code>.0</code> to your dependencies, no?</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2026-01-17 15:49</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems pretty rare to be adding <code>.0</code> to your dependencies, no?</p>
+</blockquote>
+<p>No, the removal occurs pretty often when using <code>pyproject-fmt</code> (https://github.com/tox-dev/pyproject-fmt). It enforces removing trailing zeroes, while <code>uv add</code> adds them by default.</p>
+<blockquote>
+<p>It's not clear to me that we should actually invalidate the lockfile in this case</p>
+</blockquote>
+<p>I use <code>uv-pre-commit</code>'s <code>uv-lock</code> to ensure I don't accidentally commit with an old lockfile. But because of this, there is nothing preventing me from committing a lockfile that is, arguably, outdated, since running <code>uv version --bump patch</code> changes the specifier.</p>
+<p>This looks like an edge case where it is updatable but not invalidated. I haven't seen any other way to get this behavior.
+Semantically there's no difference, but there <em>is</em> a difference in the file content; and Git doesn't care about the semantics, only the file content.</p>
+<p>I propose to either:</p>
+<ol>
+<li>Normalize the specifier in the lockfile (to always <code>&gt;=3.3.0</code> or always <code>&gt;=3.3</code>)</li>
+<li>Allow <code>uv lock</code> to change the lockfile when the specifier is changed, even if they are equivalent</li>
+</ol>
+<p>Normalizing the specifier seems like the best solution, given the function of a lockfile.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-17 15:17:17 UTC
+        Synced at 2026-01-17 16:06:59 UTC
     </footer>
 </body>
 </html>
