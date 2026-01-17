@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/class-decorator-validate-args
 created_at: 2026-01-04T22:28:17Z
-updated_at: 2026-01-16T17:33:14Z
+updated_at: 2026-01-17T07:03:40Z
 url: https://github.com/astral-sh/ruff/pull/22377
-synced_at: 2026-01-16T18:01:01Z
+synced_at: 2026-01-17T07:05:27Z
 ```
 
 # [ty] Validate constructor arguments when a class is used as a decorator
@@ -390,5 +390,38 @@ This isn't a full review but it looks like I got halfway through reviewing last 
 ---
 
 _Renamed from "[ty] Validate class decorator constructor arguments" to "[ty] Validate constructor arguments when a class is used as a decorator" by @AlexWaygood on 2026-01-16 17:33_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/infer/builder.rs`:7258 on 2026-01-17 07:00_
+
+This error arm is slightly different than the one below. Do they produce different diagnostics? If so, is that on purpose? If we could consolidate these two arms to be identical, then we could collapse this down overall to something like
+
+```rust
+let call_arguments = CallArguments::positional([decorated_ty]);
+let call_result = if use_constructor_call {
+    decorator_ty.try_call_constructor(
+        self.db(),
+        |_| call_arguments,
+        TypeContext::default(),
+    )
+} else {
+    decorator_ty
+        .try_call(self.db(), &call_arguments)
+        .map(|bindings| bindings.return_type(self.db()))
+};
+match call_result {
+    Ok(return_ty) => ...
+    Err(err) => ...
+}
+```
+
+---
+
+_@dcreager approved on 2026-01-17 07:03_
+
+I did not review the tests very thoroughly since @AlexWaygood already did.
+
+On the code side, I have a mild concern that we're duplicating the "class constructors should not use `try_call`" logic in so many places, but that fact isn't introduced by this PR, so I don't consider that a blocker here. If we don't have an open issue for that (making `try_call` work for all call sites and callables) we should open one.
 
 ---

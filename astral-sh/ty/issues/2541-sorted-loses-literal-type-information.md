@@ -2,14 +2,14 @@
 number: 2541
 title: sorted() loses Literal type information
 type: issue
-state: open
+state: closed
 author: gaborbernat
 labels: []
 assignees: []
 created_at: 2026-01-17T05:39:35Z
-updated_at: 2026-01-17T05:39:35Z
+updated_at: 2026-01-17T06:30:58Z
 url: https://github.com/astral-sh/ty/issues/2541
-synced_at: 2026-01-17T06:04:04Z
+synced_at: 2026-01-17T07:05:09Z
 ```
 
 # sorted() loses Literal type information
@@ -57,5 +57,15 @@ error[invalid-assignment]: Object of type `str` is not assignable to `Literal["P
 ### Version
 
 0.0.12
+
+---
+
+_Comment by @ibraheemdev on 2026-01-17 06:27_
+
+This looks like another instance of https://github.com/astral-sh/ty/issues/1815. We should be considering the variance of `PackageType` in the `list`, not the `Iterable` parameter of `sorted`.
+
+---
+
+_Closed by @ibraheemdev on 2026-01-17 06:27_
 
 ---

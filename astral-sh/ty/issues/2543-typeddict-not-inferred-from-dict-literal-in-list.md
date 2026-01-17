@@ -2,14 +2,14 @@
 number: 2543
 title: TypedDict not inferred from dict literal in list comprehension
 type: issue
-state: open
+state: closed
 author: gaborbernat
 labels: []
 assignees: []
 created_at: 2026-01-17T05:43:01Z
-updated_at: 2026-01-17T05:43:01Z
+updated_at: 2026-01-17T06:26:08Z
 url: https://github.com/astral-sh/ty/issues/2543
-synced_at: 2026-01-17T06:04:04Z
+synced_at: 2026-01-17T07:05:09Z
 ```
 
 # TypedDict not inferred from dict literal in list comprehension
@@ -60,5 +60,15 @@ The dict literal `{"name": "", "packageType": t}` should be inferred as `RepoReq
 ### Version
 
 0.0.12
+
+---
+
+_Comment by @ibraheemdev on 2026-01-17 06:26_
+
+Thanks for the report! This is a known issue, and will be resolved by https://github.com/astral-sh/ruff/pull/22564.
+
+---
+
+_Closed by @ibraheemdev on 2026-01-17 06:26_
 
 ---
