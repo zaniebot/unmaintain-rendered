@@ -2,15 +2,15 @@
 number: 2232
 title: No argument errors reported when a class is used as a decorator
 type: issue
-state: open
+state: closed
 author: MeGaGiGaGon
 labels:
   - bug
 assignees: []
 created_at: 2025-12-26T22:55:23Z
-updated_at: 2026-01-04T22:25:09Z
+updated_at: 2026-01-17T15:49:01Z
 url: https://github.com/astral-sh/ty/issues/2232
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-17T16:15:01Z
 ```
 
 # No argument errors reported when a class is used as a decorator
@@ -76,5 +76,9 @@ _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 21:00_
 ---
 
 _Label `bug` added by @charliermarsh on 2026-01-04 22:25_
+
+---
+
+_Closed by @charliermarsh on 2026-01-17 15:49_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-17T14:15:05Z
-updated_at: 2026-01-17T14:58:32Z
+updated_at: 2026-01-17T15:49:01Z
 url: https://github.com/astral-sh/uv/issues/17549
-synced_at: 2026-01-17T15:13:16Z
+synced_at: 2026-01-17T16:15:24Z
 ```
 
 # `uv lock` does not update `uv.lock` `package.metadata.requires-dist[*].specifier` when useless trailing `.0` is added/removed from specifier in `pyproject.toml`
@@ -164,5 +164,26 @@ _Label `bug` added by @GideonBear on 2026-01-17 14:15_
 _Comment by @zanieb on 2026-01-17 14:58_
 
 Per the specification trailing zeros have no semantic meaning so we're probably just considering these versions equal. It's not clear to me that we should actually invalidate the lockfile in this case. It seems pretty rare to be adding `.0` to your dependencies, no?
+
+---
+
+_Comment by @GideonBear on 2026-01-17 15:49_
+
+> It seems pretty rare to be adding `.0` to your dependencies, no?
+
+No, the removal occurs pretty often when using `pyproject-fmt` (https://github.com/tox-dev/pyproject-fmt). It enforces removing trailing zeroes, while `uv add` adds them by default.
+
+> It's not clear to me that we should actually invalidate the lockfile in this case
+
+I use `uv-pre-commit`'s `uv-lock` to ensure I don't accidentally commit with an old lockfile. But because of this, there is nothing preventing me from committing a lockfile that is, arguably, outdated, since running `uv version --bump patch` changes the specifier.
+
+This looks like an edge case where it is updatable but not invalidated. I haven't seen any other way to get this behavior.
+Semantically there's no difference, but there *is* a difference in the file content; and Git doesn't care about the semantics, only the file content.
+
+I propose to either:
+1. Normalize the specifier in the lockfile (to always `>=3.3.0` or always `>=3.3`)
+2. Allow `uv lock` to change the lockfile when the specifier is changed, even if they are equivalent
+
+Normalizing the specifier seems like the best solution, given the function of a lockfile.
 
 ---

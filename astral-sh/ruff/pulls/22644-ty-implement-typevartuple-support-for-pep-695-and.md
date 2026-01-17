@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat/typevartuple-support
 created_at: 2026-01-17T09:17:10Z
-updated_at: 2026-01-17T14:35:20Z
+updated_at: 2026-01-17T15:48:00Z
 url: https://github.com/astral-sh/ruff/pull/22644
-synced_at: 2026-01-17T15:13:10Z
+synced_at: 2026-01-17T16:15:19Z
 ```
 
 # [ty] Implement TypeVarTuple support for PEP 695 and legacy syntax
@@ -495,5 +495,11 @@ _Comment by @codspeed-hq[bot] on 2026-01-17 14:35_
 | --- | ---- | --------- | ------ | ------ | ---------- |
 | ❌ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/bxff%3Afeat%2Ftypevartuple-support?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 22 s | 23 s | -4.37% |
 
+
+---
+
+_Comment by @bxff on 2026-01-17 15:47_
+
+The 4.37% slowdown on static_frame (22s to 23s) is expected and acceptable. Previously, TypeVarTuple just returned `@Todo` and skipped analysis entirely; now we're properly processing it by creating TypeVarIdentity/TypeVarInstance, handling legacy typevars, traversing generic contexts, and resolving Unpack[Ts]. Since static-frame uses TypeVarTuple heavily for its DataFrame typing, that extra work adds up to about a second. This is simply the unavoidable cost of moving from silently ignoring features to doing correct type-checking.
 
 ---

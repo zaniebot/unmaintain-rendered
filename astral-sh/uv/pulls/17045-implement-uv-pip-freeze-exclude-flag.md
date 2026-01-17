@@ -2,16 +2,18 @@
 number: 17045
 title: "Implement `uv pip freeze --exclude` flag"
 type: pull_request
-state: open
+state: merged
 author: gaardhus
-labels: []
+labels:
+  - enhancement
 assignees: []
+merged: true
 base: main
 head: freeze-exclude
 created_at: 2025-12-09T10:20:22Z
-updated_at: 2026-01-17T09:12:09Z
+updated_at: 2026-01-17T15:34:32Z
 url: https://github.com/astral-sh/uv/pull/17045
-synced_at: 2026-01-17T10:08:12Z
+synced_at: 2026-01-17T16:15:32Z
 ```
 
 # Implement `uv pip freeze --exclude` flag
@@ -154,5 +156,27 @@ As in https://github.com/astral-sh/uv/pull/17045/files#r2614916235 we can just o
 _Comment by @gaardhus on 2026-01-17 09:12_
 
 @zanieb Sorry for the delayed response. I have rebased on main and created two issues, let me know if anything else is missing.
+
+---
+
+_@zanieb approved on 2026-01-17 15:34_
+
+---
+
+_Comment by @zanieb on 2026-01-17 15:34_
+
+Thanks!
+
+---
+
+_Label `enhancement` added by @zanieb on 2026-01-17 15:34_
+
+---
+
+_Merged by @zanieb on 2026-01-17 15:34_
+
+---
+
+_Closed by @zanieb on 2026-01-17 15:34_
 
 ---

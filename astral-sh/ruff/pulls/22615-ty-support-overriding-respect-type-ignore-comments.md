@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: micha/analysis-file-level-overrides
 created_at: 2026-01-16T11:07:32Z
-updated_at: 2026-01-16T12:40:39Z
+updated_at: 2026-01-17T15:34:33Z
 url: https://github.com/astral-sh/ruff/pull/22615
-synced_at: 2026-01-16T12:56:31Z
+synced_at: 2026-01-17T16:15:19Z
 ```
 
 # [ty] Support overriding `respect-type-ignore-comments`
@@ -267,5 +267,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 11:30_
 ---
 
 _Renamed from "[ty] Support overriding `respect-type-ignore-comments" to "[ty] Support overriding `respect-type-ignore-comments`" by @AlexWaygood on 2026-01-16 12:40_
+
+---
+
+_@charliermarsh approved on 2026-01-17 15:34_
 
 ---
