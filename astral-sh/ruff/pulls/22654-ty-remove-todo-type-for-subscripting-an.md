@@ -10,9 +10,9 @@ draft: true
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-17T17:53:19Z
+updated_at: 2026-01-17T18:30:48Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-17T18:19:15Z
+synced_at: 2026-01-17T19:08:58Z
 ```
 
 # [ty] Remove TODO type for subscripting an intersection
@@ -119,11 +119,6 @@ pip (https://github.com/pypa/pip)
 - Found 594 diagnostics
 + Found 601 diagnostics
 
-jinja (https://github.com/pallets/jinja)
-+ src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
-- Found 180 diagnostics
-+ Found 181 diagnostics
-
 beartype (https://github.com/beartype/beartype)
 + beartype/_check/code/codescope.py:448:13: error[invalid-argument-type] Argument to function `add_func_scope_type` is incorrect: Expected `type`, found `object`
 - beartype/_util/text/utiltextjoin.py:123:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -132,6 +127,11 @@ beartype (https://github.com/beartype/beartype)
 - beartype/bite/collection/infercollectionitems.py:504:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 495 diagnostics
 + Found 494 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
+- Found 180 diagnostics
++ Found 181 diagnostics
 
 black (https://github.com/psf/black)
 + src/black/ranges.py:404:28: error[invalid-argument-type] Argument to function `first_leaf` is incorrect: Expected `Leaf | Node`, found `object`
@@ -151,6 +151,20 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - tests/pyutils/test_ref_map.py:72:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 641 diagnostics
 + Found 638 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/runner.py:551:43: error[not-subscriptable] Cannot subscript object of type `Item & ~AlwaysTruthy & ~AlwaysFalsy` with no `__getitem__` method
+- Found 413 diagnostics
++ Found 414 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | @Todo`
++ paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | Unknown`
++ paasta_tools/paastaapi/api_client.py:720:21: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | dict[Unknown, Unknown] | list[Unknown]`
++ paasta_tools/paastaapi/api_client.py:722:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `None`
++ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1103 diagnostics
++ Found 1106 diagnostics
 
 kopf (https://github.com/nolar/kopf)
 + kopf/_cogs/structs/dicts.py:65:30: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Mapping[Unknown, object]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `KubernetesModel & Top[Mapping[Unknown, object]]`
@@ -173,19 +187,9 @@ kopf (https://github.com/nolar/kopf)
 - Found 268 diagnostics
 + Found 283 diagnostics
 
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | @Todo`
-+ paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | Unknown`
-+ paasta_tools/paastaapi/api_client.py:720:21: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | dict[Unknown, Unknown] | list[Unknown]`
-+ paasta_tools/paastaapi/api_client.py:722:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `None`
-+ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
-- Found 1103 diagnostics
-+ Found 1106 diagnostics
-
-pytest (https://github.com/pytest-dev/pytest)
-+ src/_pytest/runner.py:551:43: error[not-subscriptable] Cannot subscript object of type `Item & ~AlwaysTruthy & ~AlwaysFalsy` with no `__getitem__` method
-- Found 413 diagnostics
-+ Found 414 diagnostics
+porcupine (https://github.com/Akuli/porcupine)
+- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
++ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
 
 dulwich (https://github.com/dulwich/dulwich)
 + dulwich/contrib/swift.py:842:56: error[not-subscriptable] Cannot subscript object of type `~None` with no `__getitem__` method
@@ -202,21 +206,6 @@ ignite (https://github.com/pytorch/ignite)
 + tests/ignite/distributed/utils/__init__.py:484:24: warning[possibly-missing-attribute] Attribute `item` may be missing on object of type `Unknown | int | float | str`
 - Found 2033 diagnostics
 + Found 2036 diagnostics
-
-porcupine (https://github.com/Akuli/porcupine)
-- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
-+ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
-
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-- tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `@Todo | dict[str, Any] | str`
-+ tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `object`
-- tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `@Todo | dict[str, Any] | str`
-+ tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `object`
-+ tornado/routing.py:355:56: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Rule & Top[list[Unknown]]`
-- Found 328 diagnostics
-+ Found 329 diagnostics
 
 PyGithub (https://github.com/PyGithub/PyGithub)
 + github/AdvisoryCredit.py:97:31: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["login"]` on object of type `AdvisoryCredit & Top[dict[Unknown, Unknown]]`
@@ -248,6 +237,17 @@ PyGithub (https://github.com/PyGithub/PyGithub)
 - Found 299 diagnostics
 + Found 325 diagnostics
 
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+- tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `@Todo | dict[str, Any] | str`
++ tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `object`
+- tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `@Todo | dict[str, Any] | str`
++ tornado/routing.py:355:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `object`
++ tornado/routing.py:355:56: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Rule & Top[list[Unknown]]`
+- Found 328 diagnostics
++ Found 329 diagnostics
+
 schemathesis (https://github.com/schemathesis/schemathesis)
 + src/schemathesis/config/_diff_base.py:44:39: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[dict[Unknown, Unknown]] & ~DataclassInstance`
 - Found 282 diagnostics
@@ -262,13 +262,6 @@ mitmproxy (https://github.com/mitmproxy/mitmproxy)
 pandera (https://github.com/pandera-dev/pandera)
 - pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `@Todo | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
 + pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `Any | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
-
-mypy (https://github.com/python/mypy)
-- mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo & ~AlwaysFalsy) | bool`
-+ mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] & ~AlwaysTruthy & ~AlwaysFalsy) | bool`
-+ mypyc/ir/ops.py:118:16: error[invalid-return-type] Return type does not match returned value: expected `ControlOp`, found `Op`
-- Found 1740 diagnostics
-+ Found 1741 diagnostics
 
 vision (https://github.com/pytorch/vision)
 + torchvision/transforms/functional.py:152:19: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: ndarray[tuple[Any, ...], dtype[integer[Any] | numpy.bool[builtins.bool]]] | tuple[ndarray[tuple[Any, ...], dtype[integer[Any] | numpy.bool[builtins.bool]]], ...], /) -> ndarray[tuple[Any, ...], dtype[object]], (key: SupportsIndex | tuple[SupportsIndex, ...], /) -> Any, (key: SupportsIndex | slice[Any, Any, Any] | EllipsisType | ... omitted 5 union elements, /) -> ndarray[tuple[Any, ...], dtype[object]], (key: str, /) -> ndarray[tuple[object, ...], dtype[Any]], (key: list[str], /) -> ndarray[tuple[object, ...], Unknown]]` cannot be called with key of type `tuple[slice[None, None, None], slice[None, None, None], None]` on object of type `Image & ndarray[tuple[object, ...], dtype[object]]`
@@ -341,6 +334,17 @@ freqtrade (https://github.com/freqtrade/freqtrade)
 - freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `@Todo` on object of type `_iLocIndexerFrame[DataFrame]`
 + freqtrade/freqai/data_drawer.py:383:17: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[Literal[-1], int | slice[Any, Any, Any] | ndarray[tuple[int], dtype[numpy.bool[builtins.bool]]]]` and value of type `Any` on object of type `_iLocIndexerFrame[DataFrame]`
 
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `@Todo | int | None`
++ mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `Unknown | int | None`
+
+mypy (https://github.com/python/mypy)
+- mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo & ~AlwaysFalsy) | bool`
++ mypy/checker.py:7612:69: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `(list[PartialTypeScope] & ~AlwaysTruthy & ~AlwaysFalsy) | bool`
++ mypyc/ir/ops.py:118:16: error[invalid-return-type] Return type does not match returned value: expected `ControlOp`, found `Op`
+- Found 1740 diagnostics
++ Found 1741 diagnostics
+
 Tanjun (https://github.com/FasterSpeeding/Tanjun)
 + tanjun/annotations.py:2520:30: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@add_to_slash_cmds`
 + tanjun/commands/slash.py:1435:22: error[invalid-assignment] Object of type `<special-form 'typing.Self'>` is not assignable to `CommandInteractionOption | None`
@@ -352,12 +356,19 @@ Tanjun (https://github.com/FasterSpeeding/Tanjun)
 + tanjun/commands/slash.py:1811:80: error[invalid-argument-type] Argument is incorrect: Expected `str | int | float`, found `object`
 + tanjun/commands/slash.py:2094:64: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `object`
 + tanjun/commands/slash.py:2094:80: error[invalid-argument-type] Argument is incorrect: Expected `str | int | float`, found `object`
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
 - Found 131 diagnostics
 + Found 141 diagnostics
 
-mkdocs (https://github.com/mkdocs/mkdocs)
-- mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `@Todo | int | None`
-+ mkdocs/tests/config/config_options_tests.py:1484:9: error[type-assertion-failure] Type `int | None` does not match asserted type `Unknown | int | None`
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/abc.py:1808:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["items"], /) -> list[MessagePin], (key: Literal["has_more"], /) -> bool]` cannot be called with key of type `Literal[-1]` on object of type `ChannelPins & ~AlwaysTruthy & ~AlwaysFalsy`
++ discord/channel.py:632:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
++ discord/channel.py:1276:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
+- discord/poll.py:406:94: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/threads.py:491:26: error[unresolved-attribute] Object of type `object` has no attribute `id`
+- Found 542 diagnostics
++ Found 545 diagnostics
 
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - bson/json_util.py:1002:9: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `@Todo` on object of type `dict[int, (Any, JSONOptions, /) -> Any]`
@@ -365,11 +376,19 @@ mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - pymongo/helpers_shared.py:193:13: error[invalid-assignment] Invalid subscript assignment with key of type `str | tuple[str, int | str | Mapping[str, Any]]` and value of type `@Todo` on object of type `dict[str, Any]`
 + pymongo/helpers_shared.py:193:13: error[invalid-assignment] Invalid subscript assignment with key of type `str | tuple[str, int | str | Mapping[str, Any]]` and value of type `Any` on object of type `dict[str, Any]`
 
-sphinx (https://github.com/sphinx-doc/sphinx)
-+ sphinx/builders/latex/transforms.py:118:22: error[not-subscriptable] Cannot subscript object of type `Node & ~AlwaysTruthy` with no `__getitem__` method
-+ sphinx/environment/collectors/toctree.py:170:41: error[unresolved-attribute] Object of type `Node` has no attribute `append`
-- Found 344 diagnostics
-+ Found 346 diagnostics
+manticore (https://github.com/trailofbits/manticore)
++ manticore/wasm/structure.py:1670:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `F32` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1670:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `F64` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1670:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `BitVec` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1670:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `Label` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1670:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `Activation` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1672:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `F32` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1672:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `F64` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1672:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `BitVec` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1672:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `Label` on object of type `list[FuncAddr | None]`
++ manticore/wasm/structure.py:1672:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> FuncAddr | None, (s: slice[Any, Any, Any], /) -> list[FuncAddr | None]]` cannot be called with key of type `Activation` on object of type `list[FuncAddr | None]`
+- Found 11070 diagnostics
++ Found 11080 diagnostics
 
 meson (https://github.com/mesonbuild/meson)
 - mesonbuild/backend/ninjabackend.py:858:9: warning[possibly-missing-attribute] Attribute `extend` may be missing on object of type `@Todo | str | list[str] | list[Unknown]`
@@ -381,35 +400,9 @@ meson (https://github.com/mesonbuild/meson)
 + mesonbuild/backend/ninjabackend.py:1219:27: error[unresolved-attribute] Object of type `object` has no attribute `get_outputs`
 + mesonbuild/backend/ninjabackend.py:3472:16: warning[possibly-missing-attribute] Attribute `is_aix` may be missing on object of type `Unknown | MachineInfo | None`
 + mesonbuild/backend/ninjabackend.py:3535:16: warning[possibly-missing-attribute] Attribute `is_windows` may be missing on object of type `Unknown | MachineInfo | None`
-+ mesonbuild/backend/ninjabackend.py:3535:34: warning[possibly-missing-attribute] Attribute `is_cygwin` may be missing on object of type `Unknown | MachineInfo | None`
-+ mesonbuild/dependencies/cuda.py:131:164: error[no-matching-overload] No overload of function `realpath` matches arguments
-+ mesonbuild/interpreter/interpreter.py:1946:50: error[invalid-argument-type] Argument to bound method `find_program_impl` is incorrect: Expected `list[File | str]`, found `str | File`
-+ mesonbuild/interpreter/interpreter.py:3611:20: error[invalid-return-type] Return type does not match returned value: expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `InterpreterObject`
-+ mesonbuild/interpreterbase/interpreterbase.py:469:79: error[invalid-argument-type] Argument to bound method `_holderify` is incorrect: Expected `str | int | Sequence[Divergent] | ... omitted 5 union elements`, found `object`
-+ mesonbuild/mconf.py:304:36: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]].__getitem__(key: str, /) -> dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]` cannot be called with key of type `None` on object of type `dict[str, dict[OptionKey, UserBooleanOption | UserComboOption | UserIntegerOption | ... omitted 3 union elements]] & ~AlwaysFalsy`
-- mesonbuild/modules/pkgconfig.py:582:43: error[invalid-assignment] Object of type `@Todo | None` is not assignable to `str | bool`
-+ mesonbuild/modules/pkgconfig.py:582:43: error[invalid-assignment] Object of type `str | Literal[False] | None` is not assignable to `str | bool`
-- mesonbuild/modules/pkgconfig.py:754:103: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None | Unknown`
-+ mesonbuild/modules/pkgconfig.py:754:103: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
-- mesonbuild/modules/python.py:536:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `str`, found `@Todo | None`
-+ mesonbuild/modules/python.py:536:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `str`, found `Unknown | str | None`
-- mesonbuild/modules/python.py:538:72: error[invalid-argument-type] Argument to bound method `_find_installation_impl` is incorrect: Expected `str`, found `@Todo | None`
-+ mesonbuild/modules/python.py:538:72: error[invalid-argument-type] Argument to bound method `_find_installation_impl` is incorrect: Expected `str`, found `Unknown | str | None`
-- mesonbuild/modules/python.py:539:13: error[invalid-assignment] Invalid subscript assignment with key of type `@Todo | None` and value of type `NonExistingExternalProgram | PythonExternalProgram` on object of type `dict[str, NonExistingExternalProgram | PythonExternalProgram]`
-+ mesonbuild/modules/python.py:539:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown | str | None` and value of type `NonExistingExternalProgram | PythonExternalProgram` on object of type `dict[str, NonExistingExternalProgram | PythonExternalProgram]`
-- Found 2157 diagnostics
-+ Found 2166 diagnostics
++ mesonbuild/backend/ninjabackend.py:3535:34: warning[possibly-missing-attribute] Attribute `is_cygwin` may be missing on object of type `Unknown | MachineInfo
 
-discord.py (https://github.com/Rapptz/discord.py)
-+ discord/abc.py:1808:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["items"], /) -> list[MessagePin], (key: Literal["has_more"], /) -> bool]` cannot be called with key of type `Literal[-1]` on object of type `ChannelPins & ~AlwaysTruthy & ~AlwaysFalsy`
-+ discord/channel.py:632:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
-+ discord/channel.py:1276:31: error[unresolved-attribute] Object of type `object` has no attribute `id`
-- discord/poll.py:406:94: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ discord/threads.py:491:26: error[unresolved-attribute] Object of type `object` has no attribute `id`
-- Found 542 diagnostics
-+ Fo
-
-... (truncated 484 lines) ...
+... (truncated 505 lines) ...
 ```
 
 </details>
@@ -418,5 +411,11 @@ discord.py (https://github.com/Rapptz/discord.py)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @charliermarsh on 2026-01-17 18:20_
+
+(Needs work.)
 
 ---

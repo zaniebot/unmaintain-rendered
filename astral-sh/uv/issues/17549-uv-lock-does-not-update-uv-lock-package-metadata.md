@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-17T14:15:05Z
-updated_at: 2026-01-17T15:49:01Z
+updated_at: 2026-01-17T18:14:18Z
 url: https://github.com/astral-sh/uv/issues/17549
-synced_at: 2026-01-17T16:15:24Z
+synced_at: 2026-01-17T19:09:03Z
 ```
 
 # `uv lock` does not update `uv.lock` `package.metadata.requires-dist[*].specifier` when useless trailing `.0` is added/removed from specifier in `pyproject.toml`
@@ -171,7 +171,7 @@ _Comment by @GideonBear on 2026-01-17 15:49_
 
 > It seems pretty rare to be adding `.0` to your dependencies, no?
 
-No, the removal occurs pretty often when using `pyproject-fmt` (https://github.com/tox-dev/pyproject-fmt). It enforces removing trailing zeroes, while `uv add` adds them by default.
+No, the removal occurs pretty often when using `pyproject-fmt` (https://github.com/tox-dev/pyproject-fmt). It enforces removing trailing zeroes, while `uv add` adds them by default. (So this happens every time I `uv add` a dep whose latest version is `*.0`)
 
 > It's not clear to me that we should actually invalidate the lockfile in this case
 
