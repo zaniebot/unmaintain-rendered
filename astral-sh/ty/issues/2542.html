@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function not recognized as satisfying ParamSpec Protocol - astral-sh/ty #2542</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Function not recognized as satisfying ParamSpec Protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2542">#2542</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2026-01-17 05:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a></div>
+            <div class="timeline-body"><p>A function with matching signature is not recognized as satisfying a Protocol that uses ParamSpec.</p>
+<h2>Minimal reproduction</h2>
+<pre><code class="language-python">from typing import Protocol, ParamSpec, Callable, Awaitable, Any
+
+P = ParamSpec(&quot;P&quot;)
+
+class ASGIApp(Protocol):
+    async def __call__(self, scope: Any, receive: Any, send: Any) -&gt; None: ...
+
+class MiddlewareFactory(Protocol[P]):
+    def __call__(self, app: ASGIApp, /, *args: P.args, **kwargs: P.kwargs) -&gt; ASGIApp: ...
+
+def my_middleware(app: ASGIApp) -&gt; ASGIApp:
+    async def wrapper(scope: Any, receive: Any, send: Any) -&gt; None:
+        await app(scope, receive, send)
+    return wrapper
+
+def add_middleware(factory: MiddlewareFactory[...]) -&gt; None:
+    pass
+
+add_middleware(my_middleware)
+</code></pre>
+<h2>Error</h2>
+<pre><code>error[invalid-argument-type]: Argument to function `add_middleware` is incorrect
+  --&gt; issue.py:19:16
+   |
+17 |     pass
+18 |
+19 | add_middleware(my_middleware)
+   |                ^^^^^^^^^^^^^ Expected `MiddlewareFactory[(...)]`, found `def my_middleware(app: ASGIApp) -&gt; ASGIApp`
+</code></pre>
+<h2>Expected behavior</h2>
+<p><code>my_middleware</code> has signature <code>(app: ASGIApp) -&gt; ASGIApp</code> which should satisfy <code>MiddlewareFactory[...]</code> since it takes
+<code>app</code> as first argument and returns <code>ASGIApp</code>, with no additional args/kwargs (matching empty ParamSpec).</p>
+<h3>Version</h3>
+<p>0.0.12</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-17 06:07:47 UTC
+    </footer>
+</body>
+</html>

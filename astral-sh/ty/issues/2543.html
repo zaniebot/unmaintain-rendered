@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypedDict not inferred from dict literal in list comprehension - astral-sh/ty #2543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypedDict not inferred from dict literal in list comprehension</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2543">#2543</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2026-01-17 05:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Dict literals in list comprehensions are not recognized as TypedDict, even when the iteration variable has the correct type.</p>
+<h2>Minimal reproduction</h2>
+<pre><code class="language-python">from typing import Literal, TypedDict
+
+PackageType = Literal[&quot;Python&quot;, &quot;OCI&quot;, &quot;JVM&quot;]
+
+class RepoReq(TypedDict):
+    name: str
+    packageType: PackageType
+
+def make_repos() -&gt; list[RepoReq]:
+    pkg_types: list[PackageType] = [&quot;Python&quot;, &quot;JVM&quot;]
+    return [{&quot;name&quot;: &quot;&quot;, &quot;packageType&quot;: t} for t in pkg_types]
+</code></pre>
+<h2>Error</h2>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+  --&gt; issue.py:11:21
+   |
+11 | def make_repos() -&gt; list[RepoReq]:
+   |                     ------------- Expected `list[RepoReq]` because of return type
+12 |     pkg_types: list[PackageType] = [&quot;Python&quot;, &quot;JVM&quot;]
+13 |     return [{&quot;name&quot;: &quot;&quot;, &quot;packageType&quot;: t} for t in pkg_types]
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `list[RepoReq]`, found `list[dict[Unknown | str, Unknown | str] | Unknown]`
+</code></pre>
+<h2>Expected behavior</h2>
+<p>The dict literal <code>{&quot;name&quot;: &quot;&quot;, &quot;packageType&quot;: t}</code> should be inferred as <code>RepoReq</code> since all keys and value types match.</p>
+<h3>Version</h3>
+<p>0.0.12</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-17 06:07:47 UTC
+    </footer>
+</body>
+</html>
