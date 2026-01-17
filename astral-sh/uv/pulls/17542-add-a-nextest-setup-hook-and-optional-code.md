@@ -8,13 +8,12 @@ labels:
   - internal
   - testing
 assignees: []
-draft: true
 base: main
 head: zb/sign-macos
 created_at: 2026-01-16T22:18:26Z
-updated_at: 2026-01-16T22:38:03Z
+updated_at: 2026-01-17T16:43:30Z
 url: https://github.com/astral-sh/uv/pull/17542
-synced_at: 2026-01-16T23:06:08Z
+synced_at: 2026-01-17T17:17:50Z
 ```
 
 # Add a nextest setup hook and optional code signing for tests on macOS
@@ -32,5 +31,13 @@ _Label `internal` added by @zanieb on 2026-01-16 22:18_
 ---
 
 _Label `testing` added by @zanieb on 2026-01-16 22:18_
+
+---
+
+_Review requested from @woodruffw by @zanieb on 2026-01-17 16:23_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-17 16:43_
 
 ---

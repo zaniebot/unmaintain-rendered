@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-08-06T16:36:33Z
-updated_at: 2025-08-22T13:11:21Z
+updated_at: 2026-01-17T16:50:13Z
 url: https://github.com/astral-sh/ty/issues/947
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-17T17:17:18Z
 ```
 
 # Incorrect types inferred when a "mixed tuple" is unpacked
@@ -107,5 +107,9 @@ def f(x: tuple[I0, *tuple[I1, ...], I2]):
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:11_
+
+---
+
+_Unassigned @AlexWaygood by @AlexWaygood on 2026-01-17 16:50_
 
 ---

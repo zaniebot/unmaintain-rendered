@@ -5,12 +5,13 @@ type: issue
 state: open
 author: AlexWaygood
 labels:
+  - help wanted
   - testing
 assignees: []
 created_at: 2025-12-24T12:34:47Z
-updated_at: 2025-12-25T11:27:47Z
+updated_at: 2026-01-17T16:43:57Z
 url: https://github.com/astral-sh/ty/issues/2202
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-17T17:17:19Z
 ```
 
 # Improve test coverage for iterating over intersections of tuples
@@ -32,5 +33,9 @@ _Comment by @silamon on 2025-12-25 11:27_
 Code coverage shows red lines for: 
 https://github.com/astral-sh/ruff/blob/81f34fbc8e404cd26fa40ee86a339947dce7617c/crates/ty_python_semantic/src/types/tuple.rs#L1817-L1825
 https://github.com/astral-sh/ruff/blob/81f34fbc8e404cd26fa40ee86a339947dce7617c/crates/ty_python_semantic/src/types/tuple.rs#L1846-L1852
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2026-01-17 16:43_
 
 ---

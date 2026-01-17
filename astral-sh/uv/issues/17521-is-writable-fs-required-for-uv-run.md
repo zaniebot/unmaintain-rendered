@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-16T14:20:39Z
-updated_at: 2026-01-17T14:04:54Z
+updated_at: 2026-01-17T16:25:12Z
 url: https://github.com/astral-sh/uv/issues/17521
-synced_at: 2026-01-17T14:11:35Z
+synced_at: 2026-01-17T17:17:42Z
 ```
 
 # Is writable FS required for `uv run`?
@@ -98,5 +98,11 @@ warning: `--no-sync` has no effect when used outside of a project
 ```
 
 I've also tried to mount a separate volume for `/tmp` and toggled access modes on it. This verified that `/tmp` is the only place that needs to be writable for `uv run` to work, the rest of the FS can be read-only.
+
+---
+
+_Comment by @zanieb on 2026-01-17 16:25_
+
+I think we are eagerly initializing the cache. `--no-cache` just moves the cache to a temporary directory. uv always assumes it has access to a cache directory.
 
 ---

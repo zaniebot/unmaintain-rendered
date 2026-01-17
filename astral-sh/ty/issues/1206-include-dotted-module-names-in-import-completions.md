@@ -9,9 +9,9 @@ labels:
   - completions
 assignees: []
 created_at: 2025-09-18T17:08:45Z
-updated_at: 2025-11-18T16:10:37Z
+updated_at: 2026-01-17T16:49:48Z
 url: https://github.com/astral-sh/ty/issues/1206
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-17T17:17:18Z
 ```
 
 # Include dotted module names in `import` completions?
@@ -77,5 +77,11 @@ _Added to milestone `Z post-stable` by @MichaReiser on 2025-11-14 08:47_
 ---
 
 _Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-17 16:49_
+
+@BurntSushi is this now completed following https://github.com/astral-sh/ruff/pull/21799?
 
 ---

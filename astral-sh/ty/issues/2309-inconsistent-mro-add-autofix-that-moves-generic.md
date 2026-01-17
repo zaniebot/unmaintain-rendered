@@ -5,12 +5,13 @@ type: issue
 state: open
 author: AlexWaygood
 labels:
+  - help wanted
   - fixes
 assignees: []
 created_at: 2026-01-02T20:55:08Z
-updated_at: 2026-01-02T20:55:08Z
+updated_at: 2026-01-17T16:43:38Z
 url: https://github.com/astral-sh/ty/issues/2309
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-17T17:17:19Z
 ```
 
 # `inconsistent-mro`: add autofix that moves `Generic[]` to the end of the bases list, if doing so would fix the violation
@@ -36,5 +37,9 @@ And issues involving `Generic[]` are probably some of the most common causes of 
 ---
 
 _Label `fixes` added by @AlexWaygood on 2026-01-02 20:55_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2026-01-17 16:43_
 
 ---

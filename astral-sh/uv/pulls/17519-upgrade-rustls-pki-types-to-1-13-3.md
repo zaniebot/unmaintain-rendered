@@ -2,16 +2,17 @@
 number: 17519
 title: Upgrade rustls-pki-types to 1.13.3
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels: []
 assignees: []
+merged: true
 base: main
 head: claude/upgrade-rustls-pki-types-W3sVa
 created_at: 2026-01-16T14:12:38Z
-updated_at: 2026-01-17T16:00:33Z
+updated_at: 2026-01-17T16:28:11Z
 url: https://github.com/astral-sh/uv/pull/17519
-synced_at: 2026-01-17T16:15:32Z
+synced_at: 2026-01-17T17:17:50Z
 ```
 
 # Upgrade rustls-pki-types to 1.13.3
@@ -39,5 +40,17 @@ Should the changes from https://github.com/astral-sh/uv/pull/17503 be reverted?
 _Comment by @zanieb on 2026-01-17 16:00_
 
 I don't think so, we were already doing an existence check and the cost of checking if it's a directory is low and I presume it gives a better error message.
+
+---
+
+_@samypr100 approved on 2026-01-17 16:25_
+
+---
+
+_Merged by @zanieb on 2026-01-17 16:28_
+
+---
+
+_Closed by @zanieb on 2026-01-17 16:28_
 
 ---

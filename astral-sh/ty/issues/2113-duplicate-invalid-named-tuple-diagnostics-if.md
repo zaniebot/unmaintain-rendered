@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-12-19T12:37:47Z
-updated_at: 2025-12-19T12:37:47Z
+updated_at: 2026-01-17T16:46:07Z
 url: https://github.com/astral-sh/ty/issues/2113
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-17T17:17:19Z
 ```
 
 # Duplicate `invalid-named-tuple` diagnostics if `_asdict` is declared and bound in separate statements
@@ -32,5 +32,9 @@ _No response_
 ---
 
 _Label `bug` added by @AlexWaygood on 2025-12-19 12:37_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-17 16:46_
 
 ---

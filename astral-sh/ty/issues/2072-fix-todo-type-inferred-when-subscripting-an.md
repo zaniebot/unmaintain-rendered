@@ -8,9 +8,9 @@ labels:
   - typing semantics
 assignees: []
 created_at: 2025-12-18T14:18:07Z
-updated_at: 2025-12-18T20:51:01Z
+updated_at: 2026-01-17T16:43:11Z
 url: https://github.com/astral-sh/ty/issues/2072
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-17T17:17:19Z
 ```
 
 # Fix `Todo` type inferred when subscripting an intersection
@@ -44,5 +44,11 @@ _Label `typing semantics` added by @AlexWaygood on 2025-12-18 14:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-18 20:51_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-17 16:43_
+
+(@charliermarsh I think I previously asked you to hold off on this one because it would conflict with https://github.com/astral-sh/ruff/pull/22035 -- but that one's now merged, so feel free to have at it!)
 
 ---

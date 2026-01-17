@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-17T16:02:48Z
+updated_at: 2026-01-17T17:06:10Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-17T16:15:18Z
+synced_at: 2026-01-17T17:17:37Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -163,22 +164,6 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 - Found 78 diagnostics
 + Found 76 diagnostics
 
-stone (https://github.com/dropbox/stone)
-- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- Found 252 diagnostics
-+ Found 249 diagnostics
-
-pip (https://github.com/pypa/pip)
-- src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
-+ src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `Unknown | socket`
-- src/pip/_vendor/urllib3/poolmanager.py:508:13: warning[possibly-missing-attribute] Attribute `host` may be missing on object of type `Unknown | None`
-- src/pip/_vendor/urllib3/poolmanager.py:508:30: warning[possibly-missing-attribute] Attribute `port` may be missing on object of type `Unknown | None`
-- src/pip/_vendor/urllib3/poolmanager.py:508:47: warning[possibly-missing-attribute] Attribute `scheme` may be missing on object of type `Unknown | None`
-- Found 594 diagnostics
-+ Found 591 diagnostics
-
 werkzeug (https://github.com/pallets/werkzeug)
 - src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
 + src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@UpdateDictMixin`, found `UpdateDictMixin[Any, Any]`
@@ -194,6 +179,22 @@ werkzeug (https://github.com/pallets/werkzeug)
 - src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
 - Found 407 diagnostics
 + Found 401 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- Found 252 diagnostics
++ Found 249 diagnostics
+
+pip (https://github.com/pypa/pip)
+- src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
++ src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `Unknown | socket`
+- src/pip/_vendor/urllib3/poolmanager.py:508:13: warning[possibly-missing-attribute] Attribute `host` may be missing on object of type `Unknown | None`
+- src/pip/_vendor/urllib3/poolmanager.py:508:30: warning[possibly-missing-attribute] Attribute `port` may be missing on object of type `Unknown | None`
+- src/pip/_vendor/urllib3/poolmanager.py:508:47: warning[possibly-missing-attribute] Attribute `scheme` may be missing on object of type `Unknown | None`
+- Found 594 diagnostics
++ Found 591 diagnostics
 
 jinja (https://github.com/pallets/jinja)
 - tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | None | Environment`
@@ -258,6 +259,14 @@ aiortc (https://github.com/aiortc/aiortc)
 - Found 194 diagnostics
 + Found 169 diagnostics
 
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (bound method Self@to_kwargs.parse_literal(node: ValueNode, variables: dict[str, Any] | None = None) -> Any) | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
++ src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
+
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
++ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
+
 pytest (https://github.com/pytest-dev/pytest)
 - src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
 - Found 413 diagnostics
@@ -279,19 +288,16 @@ alerta (https://github.com/alerta/alerta)
 - Found 620 diagnostics
 + Found 622 diagnostics
 
-scrapy (https://github.com/scrapy/scrapy)
-- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
-+ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
-
 dulwich (https://github.com/dulwich/dulwich)
 - dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
 + dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
 - dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
 + dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
 
-graphql-core (https://github.com/graphql-python/graphql-core)
-- src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (bound method Self@to_kwargs.parse_literal(node: ValueNode, variables: dict[str, Any] | None = None) -> Any) | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
-+ src/graphql/type/definition.py:430:27: error[invalid-argument-type] Invalid argument to key "parse_literal" with declared type `((ValueNode, dict[str, Any] | None, /) -> Any) | None` on TypedDict `GraphQLScalarTypeKwargs`: value of type `None | (def parse_literal(self, node: ValueNode, variables: dict[str, Any] | None = None) -> Any)`
+poetry (https://github.com/python-poetry/poetry)
++ src/poetry/console/commands/build.py:242:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 977 diagnostics
++ Found 978 diagnostics
 
 PyGithub (https://github.com/PyGithub/PyGithub)
 - tests/Requester.py:216:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
@@ -299,10 +305,57 @@ PyGithub (https://github.com/PyGithub/PyGithub)
 - Found 299 diagnostics
 + Found 297 diagnostics
 
-poetry (https://github.com/python-poetry/poetry)
-+ src/poetry/console/commands/build.py:242:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 977 diagnostics
-+ Found 978 diagnostics
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+- tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | None | socket`
++ tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | socket | None`
+- tornado/iostream.py:1363:13: warning[possibly-missing-attribute] Attribute `do_handshake` may be missing on object of type `Unknown | None | socket`
++ tornado/iostream.py:1363:13: warning[possibly-missing-attribute] Attribute `do_handshake` may be missing on object of type `Unknown | socket | None`
+- tornado/iostream.py:1375:28: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | None | socket`
++ tornado/iostream.py:1375:28: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | socket | None`
+- tornado/iostream.py:1379:47: warning[possibly-missing-attribute] Attribute `fileno` may be missing on object of type `Unknown | None | socket`
++ tornado/iostream.py:1379:47: warning[possibly-missing-attribute] Attribute `fileno` may be missing on object of type `Unknown | socket | None`
+- tornado/iostream.py:1461:37: error[invalid-argument-type] Argument to bound method `remove_handler` is incorrect: Expected `int | _Selectable`, found `Unknown | None | socket`
++ tornado/iostream.py:1461:37: error[invalid-argument-type] Argument to bound method `remove_handler` is incorrect: Expected `int | _Selectable`, found `Unknown | socket | None`
+- tornado/iostream.py:1466:13: error[invalid-argument-type] Argument to function `ssl_wrap_socket` is incorrect: Expected `socket`, found `Unknown | None | socket`
++ tornado/iostream.py:1466:13: error[invalid-argument-type] Argument to function `ssl_wrap_socket` is incorrect: Expected `socket`, found `Unknown | socket | None`
+- tornado/iostream.py:1542:24: warning[possibly-missing-attribute] Attribute `recv_into` may be missing on object of type `Unknown | None | socket`
++ tornado/iostream.py:1542:24: warning[possibly-missing-attribute] Attribute `recv_into` may be missing on object of type `Unknown | socket | None`
+- tornado/queues.py:175:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None | deque[Unknown]`
+- tornado/queues.py:310:16: warning[possibly-missing-attribute] Attribute `popleft` may be missing on object of type `Unknown | None | deque[Unknown]`
+- tornado/queues.py:313:9: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | deque[Unknown]`
+- tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[Unknown]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
++ tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[Unknown]`, found `Unknown | list[Unknown] | deque[Unknown]`
+- tornado/queues.py:385:30: error[invalid-argument-type] Argument to function `heappop` is incorrect: Expected `list[Unknown]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
++ tornado/queues.py:385:30: error[invalid-argument-type] Argument to function `heappop` is incorrect: Expected `list[Unknown]`, found `Unknown | list[Unknown] | deque[Unknown]`
+- tornado/queues.py:419:9: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | list[Unknown] | deque[Unknown]`
+- tornado/queues.py:422:16: warning[possibly-missing-attribute] Attribute `pop` may be missing on object of type `Unknown | None | list[Unknown] | deque[Unknown]`
+- tornado/test/netutil_test.py:100:24: warning[possibly-missing-attribute] Attribute `resolve` may be missing on object of type `Unknown | None | OverrideResolver`
+- tornado/test/netutil_test.py:103:24: warning[possibly-missing-attribute] Attribute `resolve` may be missing on object of type `Unknown | None | OverrideResolver`
+- tornado/test/netutil_test.py:116:9: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | None | ThreadedResolver`
+- tornado/web.py:1214:30: error[not-iterable] Object of type `Unknown | None | list[OutputTransform]` may not be iterable
+- tornado/web.py:1239:30: error[not-iterable] Object of type `Unknown | None | list[OutputTransform]` may not be iterable
+- tornado/websocket.py:1086:16: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1086:16: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1137:22: warning[possibly-missing-attribute] Attribute `read_bytes` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1137:22: warning[possibly-missing-attribute] Attribute `read_bytes` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1278:20: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1278:20: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1294:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1294:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1296:13: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1296:13: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1300:29: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1300:29: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1301:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1301:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1314:16: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1314:16: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | IOStream | None`
+- tornado/websocket.py:1317:9: warning[possibly-missing-attribute] Attribute `set_nodelay` may be missing on object of type `Unknown | None | IOStream`
++ tornado/websocket.py:1317:9: warning[possibly-missing-attribute] Attribute `set_nodelay` may be missing on object of type `Unknown | IOStream | None`
+- Found 328 diagnostics
++ Found 318 diagnostics
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - examples/contrib/search.py:68:23: warning[possibly-missing-attribute] Attribute `findall` may be missing on object of type `Unknown | Pattern[str] | None`
@@ -360,58 +413,6 @@ urllib3 (https://github.com/urllib3/urllib3)
 - Found 303 diagnostics
 + Found 304 diagnostics
 
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-- tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | None | socket`
-+ tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | socket | None`
-- tornado/iostream.py:1363:13: warning[possibly-missing-attribute] Attribute `do_handshake` may be missing on object of type `Unknown | None | socket`
-+ tornado/iostream.py:1363:13: warning[possibly-missing-attribute] Attribute `do_handshake` may be missing on object of type `Unknown | socket | None`
-- tornado/iostream.py:1375:28: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | None | socket`
-+ tornado/iostream.py:1375:28: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | socket | None`
-- tornado/iostream.py:1379:47: warning[possibly-missing-attribute] Attribute `fileno` may be missing on object of type `Unknown | None | socket`
-+ tornado/iostream.py:1379:47: warning[possibly-missing-attribute] Attribute `fileno` may be missing on object of type `Unknown | socket | None`
-- tornado/iostream.py:1461:37: error[invalid-argument-type] Argument to bound method `remove_handler` is incorrect: Expected `int | _Selectable`, found `Unknown | None | socket`
-+ tornado/iostream.py:1461:37: error[invalid-argument-type] Argument to bound method `remove_handler` is incorrect: Expected `int | _Selectable`, found `Unknown | socket | None`
-- tornado/iostream.py:1466:13: error[invalid-argument-type] Argument to function `ssl_wrap_socket` is incorrect: Expected `socket`, found `Unknown | None | socket`
-+ tornado/iostream.py:1466:13: error[invalid-argument-type] Argument to function `ssl_wrap_socket` is incorrect: Expected `socket`, found `Unknown | socket | None`
-- tornado/iostream.py:1542:24: warning[possibly-missing-attribute] Attribute `recv_into` may be missing on object of type `Unknown | None | socket`
-+ tornado/iostream.py:1542:24: warning[possibly-missing-attribute] Attribute `recv_into` may be missing on object of type `Unknown | socket | None`
-- tornado/queues.py:175:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | None | deque[Unknown]`
-- tornado/queues.py:310:16: warning[possibly-missing-attribute] Attribute `popleft` may be missing on object of type `Unknown | None | deque[Unknown]`
-- tornado/queues.py:313:9: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | deque[Unknown]`
-- tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[Unknown]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
-+ tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[Unknown]`, found `Unknown | list[Unknown] | deque[Unknown]`
-- tornado/queues.py:385:30: error[invalid-argument-type] Argument to function `heappop` is incorrect: Expected `list[Unknown]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
-+ tornado/queues.py:385:30: error[invalid-argument-type] Argument to function `heappop` is incorrect: Expected `list[Unknown]`, found `Unknown | list[Unknown] | deque[Unknown]`
-- tornado/queues.py:419:9: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | list[Unknown] | deque[Unknown]`
-- tornado/queues.py:422:16: warning[possibly-missing-attribute] Attribute `pop` may be missing on object of type `Unknown | None | list[Unknown] | deque[Unknown]`
-- tornado/test/netutil_test.py:100:24: warning[possibly-missing-attribute] Attribute `resolve` may be missing on object of type `Unknown | None | OverrideResolver`
-- tornado/test/netutil_test.py:103:24: warning[possibly-missing-attribute] Attribute `resolve` may be missing on object of type `Unknown | None | OverrideResolver`
-- tornado/test/netutil_test.py:116:9: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | None | ThreadedResolver`
-- tornado/web.py:1214:30: error[not-iterable] Object of type `Unknown | None | list[OutputTransform]` may not be iterable
-- tornado/web.py:1239:30: error[not-iterable] Object of type `Unknown | None | list[OutputTransform]` may not be iterable
-- tornado/websocket.py:1086:16: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1086:16: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1137:22: warning[possibly-missing-attribute] Attribute `read_bytes` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1137:22: warning[possibly-missing-attribute] Attribute `read_bytes` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1278:20: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1278:20: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1294:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1294:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1296:13: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1296:13: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1300:29: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1300:29: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1301:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1301:17: warning[possibly-missing-attribute] Attribute `io_loop` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1314:16: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1314:16: warning[possibly-missing-attribute] Attribute `closed` may be missing on object of type `Unknown | IOStream | None`
-- tornado/websocket.py:1317:9: warning[possibly-missing-attribute] Attribute `set_nodelay` may be missing on object of type `Unknown | None | IOStream`
-+ tornado/websocket.py:1317:9: warning[possibly-missing-attribute] Attribute `set_nodelay` may be missing on object of type `Unknown | IOStream | None`
-- Found 328 diagnostics
-+ Found 318 diagnostics
-
 psycopg (https://github.com/psycopg/psycopg)
 - docs/lib/libpq_docs.py:99:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
 - Found 652 diagnostics
@@ -425,6 +426,23 @@ antidote (https://github.com/Finistere/antidote)
 + src/antidote/core/_raw/wrapper.py:136:13: error[unresolved-attribute] Object of type `(...) -> Awaitable[object]` has no attribute `__get__`
 - Found 247 diagnostics
 + Found 248 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- manticore/core/smtlib/constraints.py:81:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `_parent` on type `Unknown | None | Self@__enter__`
++ manticore/core/smtlib/constraints.py:81:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `_parent` on type `Unknown | None | Self@__exit__`
+- tests/native/test_armv7unicorn.py:1518:9: warning[possibly-missing-attribute] Attribute `STACK` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1520:15: warning[possibly-missing-attribute] Attribute `symbolicate_buffer` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1521:9: warning[possibly-missing-attribute] Attribute `write_bytes` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1527:9: warning[possibly-missing-attribute] Attribute `STACK` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1529:15: warning[possibly-missing-attribute] Attribute `symbolicate_buffer` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1531:9: warning[possibly-missing-attribute] Attribute `write_bytes` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1542:15: warning[possibly-missing-attribute] Attribute `new_symbolic_value` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1576:15: warning[possibly-missing-attribute] Attribute `new_symbolic_value` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:13: warning[possibly-missing-attribute] Attribute `emulate` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:30: warning[possibly-missing-attribute] Attribute `decode_instruction` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:58: warning[possibly-missing-attribute] Attribute `PC` may be missing on object of type `Unknown | None`
+- Found 11070 diagnostics
++ Found 11059 diagnostics
 
 discord.py (https://github.com/Rapptz/discord.py)
 - discord/app_commands/tree.py:1133:33: error[invalid-argument-type] Argument to function `on_error` is incorrect: Argument type `Interaction[ClientT@CommandTree]` does not satisfy upper bound `CommandTree[ClientT@CommandTree]` of type variable `Self`
@@ -447,23 +465,28 @@ discord.py (https://github.com/Rapptz/discord.py)
 - discord/emoji.py:294:22: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
 - discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
 - discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
-+ discord/ext/commands/cog.py:715:13: error[invalid-assignment] Invalid assignment to data descriptor attribute `cog` on type `Command[Self@_inject, (...), Any]` with custom `__set__` method
-- discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -> list[Command[Any, (...), Any]] = ...) -> list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands[Self](self) -> list[Command[Self, (...), Any]]`
-+ discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -> list[Command[Any, (...), Any]] = ...) -> list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands(self) -> list[Command[Cog, (...), Any]]`
-- discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands[Self](self) -> Generator[Command[Self, (...), Any], None, None]`
-+ discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands(self) -> Generator[Command[Cog, (...), Any], None, None]`
-- discord/ext/tasks/__init__.py:304:9: error[invalid-assignment] Object of type `(bound method Self@__get__._error(*args: Any) -> CoroutineType[Any, Any, None]) | (def _error(self, *args: Any) -> CoroutineType[Any, Any, None])` is not assignable to attribute `_error` of type `def _error(self, *args: Any) -> CoroutineType[Any, Any, None]`
-+ discord/ext/tasks/__init__.py:304:9: error[invalid-assignment] Object of type `def _error(self, *args: Any) -> CoroutineType[Any, Any, None]` is not assignable to attribute `_error` of type `def _error(self, *args: Any) -> CoroutineType[Any, Any, None]`
-- discord/soundboard.py:232:20: warning[possibly-missing-attribute] Attribute `get_user` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sou
++ discord/ext/commands/cog.py:715:13: error[invalid-assignment] Invalid assignm
 
-... (truncated 6019 lines) ...
+... (truncated 6020 lines) ...
 ```
 
 </details>
 
 
-No memory usage changes detected ✅
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~287MB
+
+
+```
+
+</details>
+
 
 
 
@@ -623,25 +646,27 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `unresolved-attribute` | 3,548 | 60 | 16 |
-| `invalid-argument-type` | 1,167 | 153 | 34 |
-| `possibly-missing-attribute` | 153 | 159 | 91 |
-| `invalid-return-type` | 163 | 40 | 40 |
+| `unresolved-attribute` | 3,548 | 60 | 18 |
+| `invalid-argument-type` | 1,168 | 153 | 36 |
+| `possibly-missing-attribute` | 156 | 159 | 92 |
+| `invalid-return-type` | 164 | 43 | 38 |
 | `invalid-assignment` | 49 | 51 | 29 |
 | `unsupported-operator` | 3 | 39 | 6 |
 | `call-non-callable` | 0 | 44 | 0 |
 | `not-subscriptable` | 0 | 19 | 0 |
 | `invalid-type-arguments` | 0 | 18 | 0 |
-| `unused-ignore-comment` | 9 | 4 | 0 |
+| `unused-ignore-comment` | 9 | 5 | 0 |
 | `not-iterable` | 2 | 8 | 0 |
-| `type-assertion-failure` | 2 | 6 | 0 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `type-assertion-failure` | 0 | 6 | 0 |
 | `no-matching-overload` | 0 | 5 | 0 |
 | `invalid-raise` | 0 | 4 | 0 |
+| `invalid-await` | 2 | 0 | 0 |
 | `parameter-already-assigned` | 0 | 1 | 0 |
-| **Total** | **5,096** | **611** | **216** |
+| **Total** | **5,101** | **615** | **226** |
 
 
-**[Full report with detailed diff](https://a574f6a4.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://a574f6a4.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://0955eba3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://0955eba3.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -650,5 +675,19 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 _Comment by @charliermarsh on 2026-01-17 15:56_
 
 Need to review the ecosystem changes. Look likes all of the new diagnostics are in Zulip.
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-17 17:03_
+
+---
+
+_@ibraheemdev reviewed on 2026-01-17 17:04_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types.rs`:2562 on 2026-01-17 17:04_
+
+Right, but the type mapping here seems to be mapping `typing.Self` variables with the identity of `bound_typevar.typevar(db).identity(db)` to `bound_typevar`, while `Self@LinkedList` and `Self@next` have diferent identities there?
 
 ---

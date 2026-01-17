@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-03-05T22:02:26Z
-updated_at: 2026-01-17T09:24:48Z
+updated_at: 2026-01-17T16:27:37Z
 url: https://github.com/astral-sh/uv/issues/11991
-synced_at: 2026-01-17T10:08:04Z
+synced_at: 2026-01-17T17:17:41Z
 ```
 
 # Improve documentation on how to run uv script in a cron
@@ -159,5 +159,14 @@ What am I missing? (Suspect I'll kick myself..!)
 _Comment by @technicaltitch on 2026-01-17 09:24_
 
 I am so sorry for taking your time, that is even dumber than I expected.
+
+---
+
+_Comment by @rwkopcke on 2026-01-17 16:27_
+
+No problem. We’ve all been there, and we will experience those moments again.Sent from my iPhone.On Jan 17, 2026, at 04:25, technicaltitch ***@***.***> wrote:﻿technicaltitch left a comment (astral-sh/uv#11991)
+I am so sorry for taking your time, that is even dumber than I expected.
+
+—Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you commented.Message ID: ***@***.***>
 
 ---

@@ -2,15 +2,15 @@
 number: 17546
 title: Refactor arguments that parses requirements to use HashSet instead of Vec
 type: issue
-state: open
+state: closed
 author: gaardhus
 labels:
   - enhancement
 assignees: []
 created_at: 2026-01-17T09:09:44Z
-updated_at: 2026-01-17T09:13:02Z
+updated_at: 2026-01-17T16:45:20Z
 url: https://github.com/astral-sh/uv/issues/17546
-synced_at: 2026-01-17T10:08:04Z
+synced_at: 2026-01-17T17:17:42Z
 ```
 
 # Refactor arguments that parses requirements to use HashSet instead of Vec
@@ -55,5 +55,9 @@ _Label `enhancement` added by @gaardhus on 2026-01-17 09:09_
 ---
 
 _Renamed from "Refactor `exclude` arguments to use HashSet instead of Vec" to "Refactor arguments that parses requirements to use HashSet instead of Vec" by @gaardhus on 2026-01-17 09:13_
+
+---
+
+_Closed by @zanieb on 2026-01-17 16:45_
 
 ---
