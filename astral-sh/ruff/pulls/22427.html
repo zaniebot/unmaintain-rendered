@@ -148,10 +148,97 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
         <div class="timeline-entry">
             <div class="event">Review requested from @ntBre by @amyreese on 2026-01-16 02:25</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_annotation_complexity/TAE002_quoted.py</code>:1 on 2026-01-16 21:42</div>
+            <div class="timeline-body"><p>This is a small nit, but I would probably just include ~1 test case with a quoted annotation and keep it in the same file as the other tests. I think that should be enough to demonstrate that the rule applies to quoted annotations, otherwise I wouldn't expect there to be any differences in behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:36 on 2026-01-16 21:44</div>
+            <div class="timeline-body"><p>0.14.14 would be the current version to include here, assuming it lands before next Thursday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:28 on 2026-01-16 21:45</div>
+            <div class="timeline-body"><p>I think it might be worth suggesting a type alias too, that's what clippy does for its similar lint: https://rust-lang.github.io/rust-clippy/master/index.html?search=type_#type_complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/snapshots/ruff_linter__rules__flake8_annotation_complexity__tests__TAE002_yields_errors_TAE002.py.snap</code>:29 on 2026-01-16 21:48</div>
+            <div class="timeline-body"><p>Agreed, I think this would look better as:</p>
+<pre><code class="language-suggestion">21 | variable_with_complex_ann: dict[str, dict[str, dict[str, dict[str, str]]]] = {}
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:1023 on 2026-01-16 21:53</div>
+            <div class="timeline-body"><p>I think this should just be <code>int</code> in this attribute, at least that's what we have for another complexity metric:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c97b6ef40cd7fb34c2c69619657ef150d6031f4/crates/ruff_workspace/src/options.rs#L2907-L2915</p>
+<pre><code class="language-suggestion">        value_type = &quot;int&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:40 on 2026-01-16 21:54</div>
+            <div class="timeline-body"><p>Can these ever be negative? If not, I would usually default to a <code>usize</code>, like the other complexity metric I linked to below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:161 on 2026-01-16 21:55</div>
+            <div class="timeline-body"><p>Let's move this function and the assignment version closer to the top of the file, just below the <code>Violation</code> struct and implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:54 on 2026-01-16 21:57</div>
+            <div class="timeline-body"><p>I think it would make sense to implement a <code>fix_title</code> function too (even if we can't provide an actual fix). That will attach a <code>help</code> sub-diagnostic to the end of the main diagnostic, where we could put a message like <code>consider using a type alias</code> or something. Just an idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:99 on 2026-01-16 21:59</div>
+            <div class="timeline-body"><p>I haven't really looked closely enough to see if this is a drop-in replacement, but this function reminds me of an existing helper:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c97b6ef40cd7fb34c2c69619657ef150d6031f4/crates/ruff_python_ast/src/helpers.rs#L131-L134</p>
+<p>We also have a more specific helper for traversing unions that may be helpful here:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c97b6ef40cd7fb34c2c69619657ef150d6031f4/crates/ruff_python_semantic/src/analyze/typing.rs#L453-L459</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:119 on 2026-01-16 22:03</div>
+            <div class="timeline-body"><p>I could definitely be wrong, but I'm not sure we need to manually visit strings. String type annotations should already be classified as such and visited as type definitions:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c97b6ef40cd7fb34c2c69619657ef150d6031f4/crates/ruff_linter/src/checkers/ast/mod.rs#L2936</p>
+<p>but we may need to adjust where the rule is applied. I.e. we may need to invoke <code>complex_annotation_function</code> not in <code>analyze::statement</code> but somewhere around here:</p>
+<p>https://github.com/astral-sh/ruff/blob/5c97b6ef40cd7fb34c2c69619657ef150d6031f4/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L49-L62</p>
+<p>I think these rules are somewhat similar to yours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:192 on 2026-01-16 22:09</div>
+            <div class="timeline-body"><p>If these are always static, we can use a <code>&amp;'static str</code> in the rule struct, or even define an enum if there are a fixed number of options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:57 on 2026-01-16 22:10</div>
+            <div class="timeline-body"><p>Could you say what this trait is for? It's not really clear to me how useful it is, at least on a first pass through the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs</code>:283 on 2026-01-16 23:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let flattened: Vec&lt;_&gt; = flatten_bin_op_expr(&amp;expr.expr().as_bin_op_expr().unwrap())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-17 00:01</div>
+            <div class="timeline-body"><p>Thanks for working on this! I had a few comments in addition to Amy's.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2026-01-17 00:01</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 02:55:23 UTC
+        Synced at 2026-01-17 00:11:17 UTC
     </footer>
 </body>
 </html>
