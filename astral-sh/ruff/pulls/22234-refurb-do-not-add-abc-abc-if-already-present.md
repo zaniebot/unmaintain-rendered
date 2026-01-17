@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-17T05:01:30Z
+updated_at: 2026-01-17T05:05:20Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-17T05:15:41Z
+synced_at: 2026-01-17T06:04:22Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -711,5 +711,27 @@ No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option
 ```
 
 Please let me know if I'm missing something. Thanks!
+
+---
+
+_@akawd reviewed on 2026-01-17 05:03_
+
+---
+
+_Review comment by @akawd on `crates/ruff_linter/resources/test/fixtures/refurb/FURB180.py`:92 on 2026-01-17 05:03_
+
+Sure, the test case was added: https://github.com/astral-sh/ruff/pull/22234/changes/9c429186ed3eb060415d1b67f4c5ae96ad64722b
+
+---
+
+_Comment by @akawd on 2026-01-17 05:05_
+
+> Thank you! I had one suggestion about narrowing the comment range check and a test for that. Then we just need to update the `## Fix safety` section of the rule docs.
+
+Yep, updated the doc too: https://github.com/astral-sh/ruff/pull/22234/changes/0292c8776af8d87cfc3688e69a7a088184aad3d7 
+
+---
+
+_Review requested from @ntBre by @akawd on 2026-01-17 05:05_
 
 ---

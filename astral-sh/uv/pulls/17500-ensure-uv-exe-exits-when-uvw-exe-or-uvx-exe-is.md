@@ -11,9 +11,9 @@ draft: true
 base: main
 head: claude/investigate-issue-17492-znH4F
 created_at: 2026-01-15T20:54:57Z
-updated_at: 2026-01-16T00:10:41Z
+updated_at: 2026-01-17T05:17:07Z
 url: https://github.com/astral-sh/uv/pull/17500
-synced_at: 2026-01-16T01:04:20Z
+synced_at: 2026-01-17T06:04:36Z
 ```
 
 # Ensure `uv.exe` exits when `uvw.exe` or `uvx.exe` is killed
@@ -39,5 +39,11 @@ _Renamed from "Ensure `uv.exe` exits when `uvw.exe` is killed" to "Ensure `uv.ex
 _Comment by @zanieb on 2026-01-15 23:57_
 
 Terrifying code. Will need to review this closely.
+
+---
+
+_Comment by @samypr100 on 2026-01-17 05:14_
+
+This relates to https://github.com/astral-sh/uv/issues/11817 (can also close)
 
 ---

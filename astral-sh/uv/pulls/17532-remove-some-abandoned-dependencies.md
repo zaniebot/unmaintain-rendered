@@ -11,9 +11,9 @@ merged: true
 base: main
 head: zb/abandoned-deps
 created_at: 2026-01-16T16:54:35Z
-updated_at: 2026-01-16T18:49:20Z
+updated_at: 2026-01-17T05:30:30Z
 url: https://github.com/astral-sh/uv/pull/17532
-synced_at: 2026-01-16T19:02:00Z
+synced_at: 2026-01-17T06:04:36Z
 ```
 
 # Remove some abandoned dependencies
@@ -117,5 +117,15 @@ _Closed by @zanieb on 2026-01-16 18:49_
 ---
 
 _Branch deleted on 2026-01-16 18:49_
+
+---
+
+_@samypr100 reviewed on 2026-01-17 05:30_
+
+---
+
+_Review comment by @samypr100 on `.github/workflows/check-lint.yml`:66 on 2026-01-17 05:30_
+
+Another potential approach is shellcheck supporting GH's new immutable releases, although less explored
 
 ---
