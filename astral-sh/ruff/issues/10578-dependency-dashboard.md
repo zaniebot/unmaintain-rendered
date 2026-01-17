@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-16T18:58:13Z
+updated_at: 2026-01-17T12:48:18Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-16T19:01:34Z
+synced_at: 2026-01-17T13:10:43Z
 ```
 
 # Dependency Dashboard
@@ -77,12 +77,12 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
- - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.15
- - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
+ - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- unschedule-branch=renovate/ordermap-1.x-lockfile -->Update Rust crate ordermap to v1.1.0
+ - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.0
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
 ## Pending Status Checks
@@ -577,17 +577,17 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
@@ -648,25 +648,25 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.65.15`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.0`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `node 24`

@@ -9,9 +9,9 @@ labels:
   - error messages
 assignees: []
 created_at: 2026-01-11T22:37:21Z
-updated_at: 2026-01-15T16:58:12Z
+updated_at: 2026-01-17T12:41:36Z
 url: https://github.com/astral-sh/uv/issues/17406
-synced_at: 2026-01-15T17:50:29Z
+synced_at: 2026-01-17T13:11:01Z
 ```
 
 # Bad error message trying to install abi3 wheel on a free threaded venv
@@ -101,5 +101,25 @@ please review, thanks
 ---
 
 _Closed by @zanieb on 2026-01-15 16:58_
+
+---
+
+_Comment by @AngheloAlf on 2026-01-17 12:41_
+
+Thanks a lot! The error message is a lot clearer now!
+
+
+<img width="1205" height="167" alt="Image" src="https://github.com/user-attachments/assets/fea1b813-b9a5-46c8-a3fa-d655ddfe79d6" />
+
+```sh
+$ cargo run -- pip install ./crunch64-0.6.1-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl 
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target/debug/uv pip install ./crunch64-0.6.1-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl`
+Resolved 1 package in 5ms
+error: Failed to determine installation plan
+  Caused by: A path dependency is incompatible with the current platform: crunch64-0.6.1-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
+hint: The wheel uses the stable ABI (`abi3`), but you're using free-threaded CPython 3.14 (`cp314t`), which is incompatible
+```
 
 ---

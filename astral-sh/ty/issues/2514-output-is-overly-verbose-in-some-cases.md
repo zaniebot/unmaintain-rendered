@@ -2,7 +2,7 @@
 number: 2514
 title: output is overly verbose in some cases
 type: issue
-state: open
+state: closed
 author: danielgafni
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-15T12:27:14Z
-updated_at: 2026-01-15T15:26:53Z
+updated_at: 2026-01-17T12:41:39Z
 url: https://github.com/astral-sh/ty/issues/2514
-synced_at: 2026-01-15T15:50:04Z
+synced_at: 2026-01-17T13:10:38Z
 ```
 
 # output is overly verbose in some cases
@@ -83,5 +83,9 @@ I bet LLM providers love this bug :)
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-15 15:26_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-17 12:41_
 
 ---
