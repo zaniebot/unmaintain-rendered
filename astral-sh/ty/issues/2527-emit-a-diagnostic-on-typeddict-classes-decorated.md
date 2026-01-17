@@ -9,9 +9,9 @@ labels:
   - typeddict
 assignees: []
 created_at: 2026-01-16T02:02:56Z
-updated_at: 2026-01-16T08:26:27Z
+updated_at: 2026-01-17T20:07:26Z
 url: https://github.com/astral-sh/ty/issues/2527
-synced_at: 2026-01-16T08:55:00Z
+synced_at: 2026-01-17T20:10:32Z
 ```
 
 # Emit a diagnostic on `TypedDict` classes decorated with `@dataclass`
@@ -40,5 +40,9 @@ _Label `dataclasses` added by @AlexWaygood on 2026-01-16 08:26_
 ---
 
 _Label `typeddict` added by @AlexWaygood on 2026-01-16 08:26_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-17 20:07_
 
 ---

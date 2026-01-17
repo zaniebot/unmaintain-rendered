@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: sarif_output
 created_at: 2026-01-17T10:23:58Z
-updated_at: 2026-01-17T11:42:26Z
+updated_at: 2026-01-17T19:31:47Z
 url: https://github.com/astral-sh/ruff/pull/22645
-synced_at: 2026-01-17T12:09:43Z
+synced_at: 2026-01-17T20:10:51Z
 ```
 
 # [ty]: Add Sarif Output Format
@@ -84,5 +84,22 @@ _Label `cli` added by @AlexWaygood on 2026-01-17 11:42_
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-17 11:42_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/tests/cli/snapshots/cli__lint__output_format_sarif.snap`:121 on 2026-01-17 19:31_
+
+We should make sure not to regress the sarif output format of Ruff. 
+
+I see two options:
+
+* Duplicate the implementations and have one implementation in Ruff and another. This way, both have access to the rule registry
+* Add a new `RuleMetadata` trait or similar where the Sarif emitter is either generic over `RuleMetadata` or takes a `&dyn RuleMetadata` (it can store it in a `Box<dyn RuleMetadata>` I would probably do this, given that this code isn't performance sensitive. 
+
+
+
+---
+
+_@MichaReiser reviewed on 2026-01-17 19:31_
 
 ---

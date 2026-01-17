@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: constructor-bindings-refactor
 created_at: 2025-12-21T03:30:02Z
-updated_at: 2026-01-07T08:59:27Z
+updated_at: 2026-01-17T19:11:27Z
 url: https://github.com/astral-sh/ruff/pull/22124
-synced_at: 2026-01-12T15:57:42Z
+synced_at: 2026-01-17T20:10:50Z
 ```
 
 # [ty] route constructor calls through bindings
@@ -677,5 +677,11 @@ _Comment by @Hugo-Polloli on 2026-01-07 08:59_
 Looks like the branch got stale and a conflict appeared, I’m going to rebase onto main to resolve the current conflicts and refresh CI ASAP (prob tonight if everything goes well), I’ll follow up with an update after #22377 lands to adapt this refactor to the new "class decorator calls go through constructor" path.
 
 The open question about mypy_primer remains , if maintainers consider that "duplication" a regression (though from digging a bit in mdtests pertaining to unions it seems consistent with existing behavior?) I can prioritize fixing it before merge.
+
+---
+
+_Comment by @Hugo-Polloli on 2026-01-17 19:11_
+
+I see #22377 has been merged, I will work on starting the rebase work soon :)
 
 ---
