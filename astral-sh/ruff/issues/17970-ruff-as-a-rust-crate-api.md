@@ -8,9 +8,9 @@ labels:
   - release
 assignees: []
 created_at: 2025-05-08T21:48:10Z
-updated_at: 2025-05-09T06:01:09Z
+updated_at: 2026-01-17T20:47:54Z
 url: https://github.com/astral-sh/ruff/issues/17970
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-17T21:12:23Z
 ```
 
 # Ruff as a rust crate / API?
@@ -43,5 +43,11 @@ I don't see any problems with this for as long as you use different names. CC: @
 ---
 
 _Label `release` added by @MichaReiser on 2025-05-09 06:01_
+
+---
+
+_Comment by @pygarap on 2026-01-17 20:47_
+
+@MichaReiser any updates about it?
 
 ---

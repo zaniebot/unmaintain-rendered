@@ -1,22 +1,23 @@
 ```yaml
 number: 22453
-title: "[`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)"
+title: "[`airflow`] Second positional argument to `Asset`/`Dataset` should not be a dictionary (`AIR303`)"
 type: pull_request
-state: open
+state: merged
 author: sjyangkevin
 labels:
   - rule
   - preview
 assignees: []
+merged: true
 base: main
 head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
-updated_at: 2026-01-17T17:44:14Z
+updated_at: 2026-01-17T20:16:12Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-17T18:19:14Z
+synced_at: 2026-01-17T21:12:36Z
 ```
 
-# [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
+# [`airflow`] Second positional argument to `Asset`/`Dataset` should not be a dictionary (`AIR303`)
 
 ---
 
@@ -273,5 +274,17 @@ _@sjyangkevin reviewed on 2026-01-17 17:34_
 _Review comment by @sjyangkevin on `crates/ruff_linter/resources/test/fixtures/airflow/AIR303.py`:75 on 2026-01-17 17:34_
 
 fixed. thanks for caching it.
+
+---
+
+_Renamed from "[`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)" to "[`airflow`] Second positional argument to `Asset`/`Dataset` should not be a dictionary (`AIR303`)" by @ntBre on 2026-01-17 20:16_
+
+---
+
+_Merged by @ntBre on 2026-01-17 20:16_
+
+---
+
+_Closed by @ntBre on 2026-01-17 20:16_
 
 ---
