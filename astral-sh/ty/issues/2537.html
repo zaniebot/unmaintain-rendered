@@ -80,10 +80,38 @@ g: list[int] = f(&quot;a&quot;)
 <p><code>f(&quot;a&quot;)</code> - can not return <code>list[int | str]</code></p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2026-01-17 03:13</div>
+            <div class="timeline-body"><blockquote>
+<p><code>f(&quot;a&quot;)</code> - can not return <code>list[int | str]</code></p>
+</blockquote>
+<p>I'm not sure what you mean by that. <code>f(&quot;a&quot;)</code> can and should produce a <code>list[int | str]</code> given a type context of <code>list[int | str]</code>. In this case, the constraints are unsolvable, and our attempt to solve them produces a <code>list[int | str]</code>. I do agree that it is slightly confusing, but it is not incorrect.</p>
+<p>Ignoring the type context completely can lead to confusing diagnostics, which is why we removed that behavior in https://github.com/astral-sh/ruff/pull/21267. For example, we use the type context to avoid literal promotion</p>
+<pre><code class="language-py">from typing import Literal
+
+def f[T](x: T) -&gt; list[T]:
+    return [x]
+
+# Option A: Object of type `list[Literal[&quot;hello&quot;] | int]` is not assignable to `list[Literal[&quot;hello&quot;] | bool]`
+# Option B: Object of type `list[Literal[&quot;hello&quot;] | int]` is not assignable to `list[str | bool]`
+x: list[Literal[&quot;hello&quot;] | bool] = [&quot;hello&quot;, 1]
+</code></pre>
+<p>Or to infer <code>TypedDict</code> types:</p>
+<pre><code class="language-py">class A(TypedDict):
+    bar: int
+
+# Option A: Object of type `list[A | int]` is not assignable to `list[A | bool]`
+# Option B: Object of type `list[A | int | dict[Unknown | str, Unknown | int]]` is not assignable to `list[A | bool]`
+y: list[A | bool] = [{&quot;bar&quot;: 1}, 1]
+</code></pre>
+<p>The second diagnostic is a lot more confusing in both cases, and suggests that there is a problem with literal promotion or typed dict inference.</p>
+<p>I do think we can be better in the generics case though, and should not resolve without the type context if we fail to arrive at a valid specialization.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-17 03:04:16 UTC
+        Synced at 2026-01-17 04:05:29 UTC
     </footer>
 </body>
 </html>
