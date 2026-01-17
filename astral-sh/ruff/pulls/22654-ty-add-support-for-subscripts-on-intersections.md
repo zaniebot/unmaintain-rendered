@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-17T21:26:32Z
+updated_at: 2026-01-17T22:28:56Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-17T22:25:51Z
+synced_at: 2026-01-17T23:15:40Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -548,5 +549,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
 **[Full report with detailed diff](https://cce1ccd6.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://cce1ccd6.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-17 22:28_
+
+---
+
+_Comment by @charliermarsh on 2026-01-17 22:28_
+
+I’d like to do more investigation of the ecosystem changes (unless this is obviously correct).
 
 ---

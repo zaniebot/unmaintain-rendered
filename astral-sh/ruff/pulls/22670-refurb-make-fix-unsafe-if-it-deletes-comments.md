@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: FURB145
 created_at: 2026-01-17T21:56:31Z
-updated_at: 2026-01-17T21:56:31Z
+updated_at: 2026-01-17T22:08:44Z
 url: https://github.com/astral-sh/ruff/pull/22670
-synced_at: 2026-01-17T22:25:51Z
+synced_at: 2026-01-17T23:15:40Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB145`)
@@ -36,6 +36,26 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 ## Test Plan
 
 <!-- How was it tested? -->
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-17 22:08_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
 
 
 ---
