@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: freeze-exclude
 created_at: 2025-12-09T10:20:22Z
-updated_at: 2025-12-13T18:33:43Z
+updated_at: 2026-01-17T09:12:09Z
 url: https://github.com/astral-sh/uv/pull/17045
-synced_at: 2026-01-12T16:12:35Z
+synced_at: 2026-01-17T10:08:12Z
 ```
 
 # Implement `uv pip freeze --exclude` flag
@@ -148,5 +148,11 @@ _@zanieb reviewed on 2025-12-12 16:49_
 _Review comment by @zanieb on `crates/uv/tests/it/pip_freeze.rs`:590 on 2025-12-12 16:49_
 
 As in https://github.com/astral-sh/uv/pull/17045/files#r2614916235 we can just open an issue to simplify some of the test cases.
+
+---
+
+_Comment by @gaardhus on 2026-01-17 09:12_
+
+@zanieb Sorry for the delayed response. I have rebased on main and created two issues, let me know if anything else is missing.
 
 ---
