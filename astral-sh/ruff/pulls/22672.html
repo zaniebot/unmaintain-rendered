@@ -719,10 +719,104 @@ index a4998b973d..2ab1b3049e 100644
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 14:53</div>
             <div class="timeline-body"></div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1852 on 2026-01-18 15:58</div>
+            <div class="timeline-body"><p>you can rewrite this test without the <code>[subclass-of-final-class]</code> error, which is a bit distracting (enum classes are only <code>final</code> if they have members):</p>
+<pre><code class="language-suggestion">class BaseColor(Enum):
+    def fancy_mixin_method(self) -&gt; str:
+        return &quot;hi&quot;
+
+@dataclass
+# error: [invalid-dataclass]
+class Color(BaseColor):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1857 on 2026-01-18 15:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Applying `@dataclass` to a protocol class is invalid because protocols define abstract interfaces and cannot
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1883 on 2026-01-18 16:00</div>
+            <div class="timeline-body"><p>the prose says &quot;this applies to classes that inherit from <code>Protocol</code> indirectly&quot;, but that's not what the example shows (<code>ExtendedProtocol</code> inherits from <code>Protocol</code> directly), and I don't think that should be our behaviour: something like this should be fine:</p>
+<pre><code class="language-py">from typing import Protocol
+from dataclasses import dataclass
+
+class Foo(Protocol):
+    x: int
+
+@dataclass
+class Bar(Foo):
+    x: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code>:1446 on 2026-01-18 16:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The same error occurs with `dataclasses.dataclass` used with parentheses:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:2383 on 2026-01-18 16:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`@dataclass` is a tool for customising the creation of new nominal types. An exception may be
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:2397 on 2026-01-18 16:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The same error occurs with `dataclasses.dataclass` used with parentheses:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2703 on 2026-01-18 16:10</div>
+            <div class="timeline-body"><p>should be slightly more efficient:</p>
+<pre><code class="language-suggestion">    pub(crate) fn has_named_tuple_class_in_mro(self, db: &amp;'db dyn Db) -&gt; bool {
+        self.iter_mro(db, None)
+            .filter_map(ClassBase::into_class)
+            .any(|base| match base.class_literal(db) {
+                ClassLiteral::DynamicNamedTuple(_) =&gt; true,
+                ClassLiteral::Dynamic(_) =&gt; false,
+                ClassLiteral::Static(class) =&gt; class
+                    .explicit_bases(db)
+                    .contains(&amp;Type::SpecialForm(SpecialFormType::NamedTuple)),
+            })
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:717 on 2026-01-18 16:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                } else if class.is_typed_dict(self.db()) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:731 on 2026-01-18 16:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                } else if is_enum_class_by_inheritance(self.db(), class) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:744 on 2026-01-18 16:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                } else if is_protocol {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2026-01-18 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-18 16:15:18 UTC
+        Synced at 2026-01-18 17:17:04 UTC
     </footer>
 </body>
 </html>
