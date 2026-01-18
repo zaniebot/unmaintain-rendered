@@ -536,10 +536,95 @@ if hasattr(self, &quot;urls&quot;) and self.urls:
             <div class="timeline-body"><p>It's a lot of new diagnostics... but my impression from checking around is that this is merely surfacing existing ty behavior in more contexts now. I don't see anything obviously wrong from my spot checks.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-18 15:31</div>
+            <div class="timeline-body"><p>This leads to one new false positive on docstring-adder (currently <em>full</em> of intersection-subscript <code>@Todo</code> types), which is not emitted by mypy or pyright:</p>
+<pre><code>error[not-subscriptable]: Cannot subscript object of type `Else` with no `__getitem__` method
+   --&gt; add_docstrings.py:480:17
+    |
+478 |             and self.if_stack[-1][-1]
+479 |             and not isinstance(self.if_stack[-1][-1], libcst.Else)
+480 |             and self.if_stack[-1][-1][0].orelse is node
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^
+481 |         ):
+482 |             self.if_stack[-1].append((node, parsed_condition))
+    |
+info: rule `not-subscriptable` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>But I agree that this seems like a pre-existing issue with our narrowing behaviour, not an issue with this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-18 15:44</div>
+            <div class="timeline-body"><p>I will fix that in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:14622 on 2026-01-18 15:46</div>
+            <div class="timeline-body"><p>This works well for most cases, but not for slices on tuple types, because that's a special case that can't be modeled in <code>try_call_dunder</code> and is instead handled in <code>infer_subscript_expression_types</code>. Here's the types we reveal on your branch:</p>
+<pre><code class="language-py">from ty_extensions import Intersection
+
+class A: ...
+class B: ...
+class C: ...
+class D: ...
+
+def f(
+    x: tuple[A, B],
+    y: tuple[C, D],
+    z: Intersection[tuple[A, B], tuple[C, D]]
+):
+    reveal_type(x[1:])  # tuple[B]
+    reveal_type(y[1:])  # tuple[D]
+    reveal_type(z[1:])  # tuple[A | B, ...] &amp; tuple[C | D, ...]
+</code></pre>
+<p>Ideally the final type there would be <code>tuple[B] &amp; tuple[D]</code> (or <code>tuple[B &amp; D]</code>).</p>
+<p>Handling this properly would probably require refactoring the <code>infer_subscript_expression_types</code> method so that it's a method on <code>Type</code> that returns a <code>Result</code> (rather than eagerly emitting diagnostics when encountering errors) so that it can be recursively called for each intersection element without necessarily emitting an error on each invalid intersection element</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:14622 on 2026-01-18 15:49</div>
+            <div class="timeline-body"><p>A similar repro on this branch:</p>
+<pre><code class="language-py">class A: ...
+class B: ...
+class C: ...
+
+def f(
+    x: tuple[A, B],
+):
+    reveal_type(x[1:])  # tuple[B]
+    if isinstance(x, C):
+        reveal_type(x[1:])  # tuple[A | B, ...]
+</code></pre>
+<p>if we're confident that this isn't causing any false positives in the ecosystem, we could possibly land this PR as-is for now. But I do think we need to do the big refactor of <code>infer_subscript_expression_types</code> at <em>some</em> point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2026-01-18 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-18 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:14622 on 2026-01-18 16:00</div>
+            <div class="timeline-body"><p>(Marking as draft while I look into it + consider.)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-18 01:10:56 UTC
+        Synced at 2026-01-18 16:15:18 UTC
     </footer>
 </body>
 </html>
