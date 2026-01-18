@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: constructor-bindings-refactor
 created_at: 2025-12-21T03:30:02Z
-updated_at: 2026-01-17T19:11:27Z
+updated_at: 2026-01-17T23:47:25Z
 url: https://github.com/astral-sh/ruff/pull/22124
-synced_at: 2026-01-17T20:10:50Z
+synced_at: 2026-01-18T00:18:13Z
 ```
 
 # [ty] route constructor calls through bindings
@@ -62,34 +62,33 @@ _Comment by @astral-sh-bot[bot] on 2025-12-21 03:32_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/) improved 🎉
 
+The percentage of diagnostics emitted that were expected errors increased from 70.65% to 70.68%. The percentage of expected errors that received a diagnostic increased from 61.24% to 61.33%.
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 662 | 663 | +1 | ⏫ (✅) |
+| False Positives | 275 | 275 | +0 |  |
+| False Negatives | 419 | 418 | -1 | ⏬ (✅) |
+| Total Diagnostics | 937 | 938 | +1 | ⏫ |
+| Precision | 70.65% | 70.68% | +0.03% | ⏫ (✅) |
+| Recall | 61.24% | 61.33% | +0.09% | ⏫ (✅) |
+
+
+
+### True positives added
 
 <details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
 
-```diff
---- old-output.txt	2025-12-27 11:33:08.960835361 +0000
-+++ new-output.txt	2025-12-27 11:33:11.098858578 +0000
-@@ -511,6 +511,7 @@
- generics_paramspec_specialization.py:61:16: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `Literal[""]`
- generics_scoping.py:14:1: error[type-assertion-failure] Type `int` does not match asserted type `Literal[1]`
- generics_scoping.py:15:1: error[type-assertion-failure] Type `str` does not match asserted type `Literal["a"]`
-+generics_scoping.py:29:10: error[invalid-argument-type] Argument to bound method `meth_2` is incorrect: Expected `int`, found `Literal["a"]`
- generics_scoping.py:42:1: error[type-assertion-failure] Type `str` does not match asserted type `Literal["abc"]`
- generics_scoping.py:43:1: error[type-assertion-failure] Type `bytes` does not match asserted type `Literal[b"abc"]`
- generics_scoping.py:65:11: error[invalid-generic-class] Generic class `MyGeneric` must not reference type variables bound in an enclosing scope: `T` referenced in class definition here
-@@ -1030,4 +1031,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
- typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
- typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
--Found 1032 diagnostics
-+Found 1033 diagnostics
+| Location | Name | Message |
+|----------|------|---------|
+| [generics_scoping.py:29:10](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/tests/generics_scoping.py#L29) | invalid-argument-type | Argument to bound method `meth_2` is incorrect: Expected `int`, found `Literal["a"]` |
 
-```
 
 </details>
-
 
 
 
@@ -108,11 +107,15 @@ _Comment by @astral-sh-bot[bot] on 2025-12-21 03:32_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-bandersnatch (https://github.com/pypa/bandersnatch)
-+ src/bandersnatch/tests/test_configuration.py:108:17: error[no-matching-overload] No overload of class `str` matches arguments
-+ src/bandersnatch/tests/test_configuration.py:108:29: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
-- Found 80 diagnostics
-+ Found 82 diagnostics
+attrs (https://github.com/python-attrs/attrs)
++ tests/test_make.py:2880:20: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ tests/test_make.py:2880:26: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ tests/test_make.py:2885:20: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ tests/test_make.py:2885:26: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ tests/test_make.py:2890:20: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
++ tests/test_make.py:2890:26: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+- Found 628 diagnostics
++ Found 634 diagnostics
 
 spack (https://github.com/spack/spack)
 + lib/spack/spack/cmd/create.py:1084:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str]`, found `Unknown | str | list[str]`
@@ -142,50 +145,32 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/cmd/create.py:1084:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[str]`, found `Unknown | str | list[str]`
 + lib/spack/spack/database.py:652:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `lib.spack.spack.llnl.util.lock.Lock`, found `ForbiddenLock | lib.spack.spack.util.lock.Lock`
 + lib/spack/spack/database.py:656:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `lib.spack.spack.llnl.util.lock.Lock`, found `ForbiddenLock | lib.spack.spack.util.lock.Lock`
-- Found 4292 diagnostics
-+ Found 4319 diagnostics
+- Found 4344 diagnostics
++ Found 4371 diagnostics
 
 werkzeug (https://github.com/pallets/werkzeug)
 + src/werkzeug/datastructures/structures.py:416:16: error[invalid-return-type] Return type does not match returned value: expected `dict[K@MultiDict, V@MultiDict] | dict[K@MultiDict, list[V@MultiDict]]`, found `dict[K@MultiDict, V@MultiDict | list[V@MultiDict]]`
-- src/werkzeug/debug/__init__.py:552:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ src/werkzeug/debug/tbtools.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `list[DebugFrameSummary]`, found `list[FrameSummary | Unknown]`
 + tests/test_datastructures.py:582:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `(str | None, /) -> Literal[-1]`, found `<class 'int'>`
 + tests/test_datastructures.py:583:41: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `(str | None, /) -> Literal[-1]`, found `<class 'int'>`
-+ tests/test_formparser.py:214:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `FileStorage` does not satisfy upper bound `_WrappedBuffer` of type variable `_BufferT_co`
-+ tests/test_formparser.py:214:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `FileStorage`
-+ tests/test_routing.py:1310:9: warning[possibly-missing-attribute] Attribute `endpoint` may be missing on object of type `Rule | None`
-+ tests/test_test.py:306:12: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
-+ tests/test_test.py:307:12: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
-+ tests/test_utils.py:285:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(Any, /) -> Unknown`, found `def foo() -> Unknown`
-+ tests/test_wrappers.py:179:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:180:12: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:181:12: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:189:12: warning[possibly-missing-attribute] Attribute `type` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:190:12: warning[possibly-missing-attribute] Attribute `username` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:191:12: warning[possibly-missing-attribute] Attribute `password` may be missing on object of type `Authorization | None`
-+ tests/test_wrappers.py:243:27: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `bytes`, found `Literal["bar"]`
-+ tests/test_wrappers.py:465:5: error[invalid-assignment] Invalid assignment to data descriptor attribute `stream` on type `Request` with custom `__set__` method
-+ tests/test_wrappers.py:710:27: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `bytes`, found `Literal["Hello "]`
-+ tests/test_wrappers.py:711:27: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `bytes`, found `Literal["World!"]`
-+ tests/test_wrappers.py:1079:12: warning[possibly-missing-attribute] Attribute `ranges` may be missing on object of type `Range | None`
-+ tests/test_wrappers.py:1082:26: warning[possibly-missing-attribute] Attribute `make_content_range` may be missing on object of type `Range | None`
-+ tests/test_wrappers.py:1124:28: error[invalid-argument-type] Argument to bound method `writelines` is incorrect: Expected `Iterable[bytes]`, found `list[Unknown | str]`
-+ tests/test_wrappers.py:1129:28: error[invalid-argument-type] Argument to bound method `writelines` is incorrect: Expected `Iterable[bytes]`, found `list[Unknown | str]`
-+ tests/test_wrappers.py:1133:28: error[invalid-argument-type] Argument to bound method `writelines` is incorrect: Expected `Iterable[bytes]`, found `list[Unknown | str]`
-- Found 386 diagnostics
+- Found 407 diagnostics
 + Found 410 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/test_configuration.py:108:17: error[no-matching-overload] No overload of class `str` matches arguments
++ src/bandersnatch/tests/test_configuration.py:108:29: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `str | None`
+- Found 78 diagnostics
++ Found 80 diagnostics
 
 black (https://github.com/psf/black)
 - src/black/trans.py:466:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
 - src/black/trans.py:980:20: error[invalid-return-type] Return type does not match returned value: expected `Ok[list[int]] | Err[CannotTransform]`, found `Ok[list[Unknown] & ~AlwaysFalsy]`
-- Found 68 diagnostics
-+ Found 66 diagnostics
+- Found 53 diagnostics
++ Found 51 diagnostics
 
-graphql-core (https://github.com/graphql-python/graphql-core)
-- src/graphql/execution/execute.py:1676:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[CoroutineType[Any, Any, ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult])`
-+ src/graphql/execution/execute.py:1676:21: error[invalid-assignment] Object of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | CoroutineType[Any, Any, ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult]]` is not assignable to attribute `result` of type `BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult] | (() -> BoxedAwaitableOrValue[ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult])`
-- src/graphql/execution/execute.py:1828:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `BoxedAwaitableOrValue[StreamItemResult] | (() -> BoxedAwaitableOrValue[StreamItemResult])`, found `BoxedAwaitableOrValue[CoroutineType[Any, Any, StreamItemResult] | StreamItemResult]`
-+ src/graphql/execution/execute.py:1828:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `BoxedAwaitableOrValue[StreamItemResult] | (() -> BoxedAwaitableOrValue[StreamItemResult])`, found `BoxedAwaitableOrValue[StreamItemResult | CoroutineType[Any, Any, StreamItemResult]]`
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/cli/cmds/logs.py:1228:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `str | None`
+- Found 1103 diagnostics
++ Found 1104 diagnostics
 
 scrapy (https://github.com/scrapy/scrapy)
 + tests/test_http_request.py:33:13: error[missing-argument] No argument provided for required parameter `url` of bound method `__init__`
@@ -205,13 +190,8 @@ scrapy (https://github.com/scrapy/scrapy)
 + tests/test_http_response.py:37:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `dict[Unknown, Unknown]`
 + tests/test_http_response.py:72:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal["301"]`
 + tests/test_http_response.py:75:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal["lala200"]`
-- Found 1791 diagnostics
-+ Found 1808 diagnostics
-
-paasta (https://github.com/yelp/paasta)
-+ paasta_tools/cli/cmds/logs.py:1228:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `str | None`
-- Found 1107 diagnostics
-+ Found 1108 diagnostics
+- Found 1789 diagnostics
++ Found 1806 diagnostics
 
 ignite (https://github.com/pytorch/ignite)
 + tests/ignite/handlers/test_state_param_scheduler.py:351:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `Unknown | str | list[Unknown | tuple[int, int]] | ... omitted 4 union elements`
@@ -254,27 +234,78 @@ ignite (https://github.com/pytorch/ignite)
 + tests/ignite/handlers/test_state_param_scheduler.py:358:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | str | list[Unknown | tuple[int, int]] | ... omitted 4 union elements`
 + tests/ignite/handlers/test_state_param_scheduler.py:358:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | list[Unknown | tuple[int, int]] | ... omitted 4 union elements`
 + tests/ignite/handlers/test_state_param_scheduler.py:358:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Unknown | str | list[Unknown | tuple[int, int]] | ... omitted 4 union elements`
-- Found 2053 diagnostics
-+ Found 2093 diagnostics
+- Found 2033 diagnostics
++ Found 2073 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ tests/test_pytypes.py:457:29: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[SupportsIndex] | SupportsIndex | Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
++ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
+- Found 216 diagnostics
++ Found 225 diagnostics
 
 PyGithub (https://github.com/PyGithub/PyGithub)
 - github/PaginatedList.py:372:101: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- github/Requester.py:888:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- github/Requester.py:896:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 354 diagnostics
-+ Found 351 diagnostics
+- github/Requester.py:916:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- github/Requester.py:924:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 299 diagnostics
++ Found 296 diagnostics
 
 flake8 (https://github.com/pycqa/flake8)
 + src/flake8/__init__.py:64:15: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 38 diagnostics
-+ Found 39 diagnostics
+- Found 37 diagnostics
++ Found 38 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/pandas/test_decorators.py:930:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:932:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:934:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:943:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:945:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:947:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:958:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:960:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_decorators.py:962:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1581 diagnostics
++ Found 1572 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
 vision (https://github.com/pytorch/vision)
 + test/test_transforms_v2.py:2572:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[(...) -> Unknown]`, found `(x) -> Unknown`
 + test/test_transforms_v2.py:2572:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[(...) -> Unknown]`, found `(x) -> Unknown`
 + test/test_transforms_v2.py:2572:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[(...) -> Unknown]`, found `(x) -> Unknown`
-- Found 1412 diagnostics
-+ Found 1415 diagnostics
+- Found 1403 diagnostics
++ Found 1406 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/types/bigquery.py:231:13: error[invalid-argument-type] Argument is incorrect: Expected `Struct`, found `Type`
++ src/arti/types/pyarrow.py:241:13: error[invalid-argument-type] Argument is incorrect: Expected `Struct`, found `Type`
++ src/arti/types/python.py:158:83: error[invalid-argument-type] Argument is incorrect: Expected `frozenset[Any]`, found `tuple[Any, ...]`
+- Found 145 diagnostics
++ Found 148 diagnostics
 
 optuna (https://github.com/optuna/optuna)
 - optuna/storages/_rdb/storage.py:351:16: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Unknown | Column[Unknown]`
@@ -295,175 +326,169 @@ optuna (https://github.com/optuna/optuna)
 + optuna/storages/_rdb/storage.py:394:50: error[invalid-argument-type] Argument to function `loads` is incorrect: Expected `str | bytes | bytearray`, found `Unknown | Column[str]`
 - optuna/storages/_rdb/storage.py:396:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
 + optuna/storages/_rdb/storage.py:396:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[str], Any]`
-- optuna/storages/_rdb/storage.py:651:16: error[invalid-return-type] Return type does not match returned value: expected `int | float`, found `Unknown | Column[Unknown]`
-+ optuna/storages/_rdb/storage.py:651:16: error[invalid-return-type] Return type does not match returned value: expected `int | float`, found `Unknown | Column[int | float]`
-
-pandera (https://github.com/pandera-dev/pandera)
-- tests/pandas/test_decorators.py:930:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:932:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:934:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:943:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:945:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:947:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:958:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:960:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pandas/test_decorators.py:962:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 1573 diagnostics
-+ Found 1564 diagnostics
-
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-
-pybind11 (https://github.com/pybind/pybind11)
-+ tests/test_pytypes.py:457:29: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[SupportsIndex] | SupportsIndex | SupportsBytes | Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[SupportsIndex] | SupportsIndex | Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-+ tests/test_pytypes.py:457:31: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Buffer`, found `Unknown | bytes | bytearray | ... omitted 5 union elements`
-- Found 216 diagnostics
-+ Found 225 diagnostics
-
-artigraph (https://github.com/artigraph/artigraph)
-+ src/arti/types/bigquery.py:231:13: error[invalid-argument-type] Argument is incorrect: Expected `Struct`, found `Type`
-+ src/arti/types/pyarrow.py:241:13: error[invalid-argument-type] Argument is incorrect: Expected `Struct`, found `Type`
-+ src/arti/types/python.py:158:83: error[invalid-argument-type] Argument is incorrect: Expected `frozenset[Any]`, found `tuple[Any, ...]`
-- Found 149 diagnostics
-+ Found 152 diagnostics
 
 comtypes (https://github.com/enthought/comtypes)
 + comtypes/test/test_util.py:28:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | float | bytes`
 + comtypes/test/test_util.py:28:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | int | float | bytes`
 + comtypes/test/test_util.py:28:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | bytes | bytearray`, found `Unknown | int | float | bytes`
-- Found 391 diagnostics
-+ Found 394 diagnostics
-
-mkdocs (https://github.com/mkdocs/mkdocs)
-+ mkdocs/tests/structure/page_tests.py:539:14: error[no-matching-overload] No overload of function `open` matches arguments
-- Found 224 diagnostics
-+ Found 225 diagnostics
-
-koda-validate (https://github.com/keithasaurus/koda-validate)
-- koda_validate/dictionary.py:60:20: error[invalid-return-type] Return type does not match returned value: expected `Valid[Just[A@KeyNotRequired] | Nothing] | Invalid`, found `Valid[Just[Unknown | A@KeyNotRequired]]`
-- koda_validate/dictionary.py:67:20: error[invalid-return-type] Return type does not match returned value: expected `Valid[Just[A@KeyNotRequired] | Nothing] | Invalid`, found `Valid[Just[Unknown | A@KeyNotRequired]]`
-- Found 407 diagnostics
-+ Found 405 diagnostics
-
-speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
-+ backend/api/global_scoreboard_api.py:104:32: warning[redundant-cast] Value is already of type `str`
-- Found 29 diagnostics
-+ Found 30 diagnostics
-
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
-
-mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
-- pymongo/read_preferences.py:535:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 448 diagnostics
-+ Found 447 diagnostics
+- Found 412 diagnostics
++ Found 415 diagnostics
 
 discord.py (https://github.com/Rapptz/discord.py)
-- discord/ext/commands/context.py:485:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/context.py:519:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ discord/ext/commands/converter.py:379:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[int | None, int, int]`, found `tuple[(Guild & ~AlwaysTruthy) | None | int, int, int]`
-- discord/ext/commands/converter.py:1032:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/converter.py:1036:85: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/converter.py:1051:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/core.py:2067:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/core.py:2069:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/core.py:2278:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/core.py:2304:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- discord/ext/commands/core.py:2429:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - discord/interactions.py:386:16: error[invalid-return-type] Return type does not match returned value: expected `InteractionResponse[ClientT@Interaction]`, found `InteractionResponse[Client]`
-- Found 555 diagnostics
-+ Found 545 diagnostics
+- Found 542 diagnostics
++ Found 541 diagnostics
 
-xarray (https://github.com/pydata/xarray)
-+ xarray/backends/zarr.py:1090:25: error[invalid-assignment] Object of type `dict[str, bool | dict[Unknown | str, Unknown | bool]]` is not assignable to `dict[str, bool] | dict[str, dict[str, bool]]`
-+ xarray/coding/times.py:451:53: error[no-matching-overload] No overload of function `__new__` matches arguments
-- xarray/core/dataarray.py:5744:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `DataArray | Dataset`
-+ xarray/core/dataarray.py:5744:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `T_Xarray@map_blocks | DataArray | Dataset`
-- xarray/core/dataset.py:8873:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `DataArray | Dataset`
-+ xarray/core/dataset.py:8873:16: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@map_blocks`, found `T_Xarray@map_blocks | DataArray | Dataset`
-+ xarray/core/resample_cftime.py:409:23: error[no-matching-overload] No overload of function `__new__` matches arguments
-- xarray/tests/test_variable.py:2740:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 1783 diagnostics
-+ Found 1785 diagnostics
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/backend/ninjabackend.py:654:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[str] | None`, found `Unknown | _odict_values[str, CustomTarget | BuildTarget]`
++ mesonbuild/compilers/detect.py:1151:83: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | list[str]`, found `None | str | list[str]`
++ mesonbuild/interpreter/interpreter.py:3557:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
++ mesonbuild/interpreter/interpreter.py:3557:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
++ mesonbuild/interpreter/interpreter.py:3557:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
++ mesonbuild/interpreter/interpreter.py:3557:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
++ mesonbuild/interpreter/interpreter.py:3558:77: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ExecutableKeywordArguments`, found `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3558:77: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `StaticLibraryKeywordArguments`, found `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- Found 2157 diagnostics
++ Found 2165 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_tests/test_run.py:2871:22: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ValueError | ExceptionGroup[ValueError]`
+- Found 487 diagnostics
++ Found 486 diagnostics
 
 apprise (https://github.com/caronc/apprise)
-+ apprise/plugins/email/base.py:562:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | int | tuple[Unknown | str] | None`
-+ apprise/plugins/email/base.py:562:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | int | tuple[Unknown | str] | None`
-+ apprise/plugins/email/base.py:563:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | str | tuple[Unknown | str] | None`
-+ apprise/plugins/email/base.py:563:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | str | tuple[Unknown | str] | None`
++ apprise/plugins/email/base.py:562:22: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ apprise/plugins/email/base.py:563:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | int | tuple[Unknown | str] | None`
++ apprise/plugins/email/base.py:564:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | str | tuple[Unknown | str] | None`
 + apprise/plugins/fcm/__init__.py:266:13: error[unknown-argument] Argument `user_agent` does not match any known parameter of bound method `__init__`
 + apprise/plugins/fcm/__init__.py:267:13: error[unknown-argument] Argument `timeout` does not match any known parameter of bound method `__init__`
 + apprise/plugins/fcm/__init__.py:268:13: error[unknown-argument] Argument `verify_certificate` does not match any known parameter of bound method `__init__`
-- Found 2652 diagnostics
-+ Found 2659 diagnostics
+- Found 2648 diagnostics
++ Found 2654 diagnostics
 
-meson (https://github.com/mesonbuild/meson)
-+ mesonbuild/backend/ninjabackend.py:653:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[str] | None`, found `Unknown | _odict_values[str, CustomTarget | BuildTarget]`
-+ mesonbuild/cargo/builder.py:191:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `int | str` does not satisfy constraints (`int`, `str`, `bool`) of type variable `TV_TokenTypes`
-+ mesonbuild/compilers/detect.py:1151:74: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | list[str]`, found `None | str | list[str]`
-+ mesonbuild/interpreter/interpreter.py:3550:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
-+ mesonbuild/interpreter/interpreter.py:3550:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
-+ mesonbuild/interpreter/interpreter.py:3550:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
-+ mesonbuild/interpreter/interpreter.py:3550:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[File | CustomTarget | CustomTargetIndex | ... omitted 4 union elements]`, found `list[File | str | CustomTarget | ... omitted 5 union elements]`
-+ mesonbuild/interpreter/interpreter.py:3551:77: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ExecutableKeywordArguments`, found `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
-+ mesonbuild/interpreter/interpreter.py:3551:77: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `StaticLibraryKeywordArguments`, found `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
-- Found 1946 diagnostics
-+ Found 1955 diagnostics
-
-setuptools (https://github.com/pypa/setuptools)
-+ setuptools/_vendor/typing_extensions.py:1416:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:1817:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:1854:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:1958:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:2168:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:2188:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-+ setuptools/_vendor/typing_extensions.py:2248:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
-- Found 1271 diagnostics
-+ Found 1278 diagnostics
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/cmd/devel/net_convert.py:194:15: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[Unknown, Unknown] | None`, found `MutableMapping[str, Any] | None`
+- Found 1169 diagnostics
++ Found 1170 diagnostics
 
 openlibrary (https://github.com/internetarchive/openlibrary)
 - openlibrary/plugins/worksearch/code.py:453:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, list[tuple[str, str, int]]]`, found `dict[Unknown, Unknown] | None`
 + openlibrary/plugins/worksearch/code.py:453:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, list[tuple[str, str, int]]]`, found `dict[str, list[tuple[str, str, int]]] | None`
 
-cloud-init (https://github.com/canonical/cloud-init)
-+ cloudinit/cmd/devel/net_convert.py:194:15: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[Unknown, Unknown] | None`, found `MutableMapping[str, Any] | None | Unknown`
-- Found 1196 diagnostics
-+ Found 1197 diagnostics
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/prefect/utilities/collections.py:484:36: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Any]`, found `list[Any | None]`
+- Found 5411 diagnostics
++ Found 5407 diagnostics
 
-strawberry (https://github.com/strawberry-graphql/strawberry)
-- strawberry/federation/schema.py:283:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- strawberry/federation/schema.py:304:62: warning[unused-ignore-comment] Unused blank
+xarray (https://github.com/pydata/xarray)
++ xarray/backends/zarr.py:1091:25: error[invalid-assignment] Object of type `dict[str, bool | dict[Unknown | str, Unknown | bool]]` is not assignable to `dict[str, bool] | dict[str, dict[str, bool]]`
++ xarray/coding/times.py:451:53: error[no-matching-overload] No overload of function `__new__` matches arguments
++ xarray/core/resample_cftime.py:409:23: error[no-matching-overload] No overload of function `__new__` matches arguments
+- xarray/tests/test_variable.py:2740:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1762 diagnostics
++ Found 1764 diagnostics
 
-... (truncated 474 lines) ...
+aiohttp (https://github.com/aio-libs/aiohttp)
+- aiohttp/web_protocol.py:65:10: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- aiohttp/web_protocol.py:66:10: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 181 diagnostics
++ Found 179 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/ensemble/_forest.py:348:21: error[missing-argument] No argument provided for required parameter `self` of function `__init__`
++ sklearn/ensemble/_forest.py:348:42: error[unknown-argument] Argument `criterion` does not match any known parameter of function `__init__`
++ sklearn/ensemble/_forest.py:700:21: error[missing-argument] No argument provided for required parameter `self` of function `__init__`
++ sklearn/ensemble/_forest.py:700:42: error[unknown-argument] Argument `criterion` does not match any known parameter of function `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_gb.py:2146:68: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
++ sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:1869:46: error[unknown-argument] Argument `quantile` does not match any known parameter of bound method `__init__`
+- Found 2423 diagnostics
++ Found 2443 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/layouts.py:298:20: error[invalid-assignment] Object of type `list[Sequence[Unknown]]` is not assignable to `list[UIElement | None] | list[list[UIElement | None]]`
++ src/bokeh/layouts.py:298:20: error[invalid-assignment] Object of type `list[UIElement | None | Sequence[Unknown]]` is not assignable to `list[UIElement | None] | list[list[UIElement | None]]`
+
+ibis (https://github.com/ibis-project/ibis)
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:365:46: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/backends/sql/datatypes.py:380:47: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | None`
++ ibis/expr/types/generic.py:2177:16: error[missing-argument] No argument provided for required parameter `quantile`
++ ibis/expr/types/generic.py:2177:16: error[missing-argument] No argument provided for required parameter `quantile`
++ ibis/expr/types/generic.py:2177:25: error[invalid-argument-type] Argument is incorrect: Expected `Value[Unknown, Columnar]`, found `int | float | NumericValue | Sequence[NumericValue | int | float]`
++ ibis/expr/types/generic.py:2177:25: error[invalid-argument-type] Argument is incorrect: Expected `Value[Unknown, Columnar]`, found `int | float | NumericValue | Sequence[NumericValue | int | float]`
++ ibis/expr/types/generic.py:2177:35: error[invalid-argument-type] Argument is incorrect: Expected `ibis.expr.operations.core.Value[Boolean, Any] | None`, found `ibis.expr.types.generic.Value | None | @Todo`
++ ibis/expr/types/generic.py:2177:35: error[invalid-argument-type] Argument is incorrect: Expected `ibis.expr.operations.core.Value[Boolean, Any] | None`, found `ibis.expr.types.generic.Value | None | @Todo`
++ ibis/expr/types/generic.py:2177:35: error[parameter-already-assigned] Multiple values provided for parameter `where`
++ ibis/expr/types/generic.py:2177:35: error[parameter-already-assigned] Multiple values provided for parameter `where`
++ ibis/expr/types/numeric.py:1465:16: error[missing-argument] No argument provided for required parameter `quantile`
++ ibis/expr/types/numeric.py:1465:16: error[missing-argument] No argument provided for required parameter `quantile`
++ ibis/expr/types/numeric.py:1465:25: error[invalid-argument-type] Argument is incorrect: Expected `Value[Numeric, Columnar]`, found `int | float | NumericValue | Sequence[NumericValue | int | float]`
++ ibis/expr/types/numeric.py:1465:25: error[invalid-argument-type] Argument is incorrect: Expected `Value[Numeric, Columnar]`, found `int | float | NumericValue | Sequence[NumericValue | int | float]`
++ ibis/expr/types/numeric.py:1465:35: error[invalid-argument-type] Argument is incorrect: Expected `ibis.expr.operations.core.Value[Boolean, Any] | None`, found `ibis.expr.types.generic.Value | None | @Todo`
++ ibis/expr/types/numeric.py:1465:35: error[invalid-argument-type] Argument is incorrect: Expected `ibis.expr.operations.core.Value[Boolean, Any] | None`
+
+... (truncated 338 lines) ...
 ```
 
 </details>
 
 
-No memory usage changes detected ✅
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+-     struct fields = ~12MB
++     struct fields = ~11MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~287MB
+
+
+```
+
+</details>
+
 
 
 
@@ -474,18 +499,27 @@ _Comment by @codspeed-hq[bot] on 2025-12-21 03:48_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Aconstructor-bindings-refactor?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging #22124 will **not alter performance**
+### Merging this PR will **improve performance by 4.28%**
 
-<sub>Comparing <code>Hugo-Polloli:constructor-bindings-refactor</code> (f298447) with <code>main</code> (da188d5)</sub>
+<sub>Comparing <code>Hugo-Polloli:constructor-bindings-refactor</code> (1d0e882) with <code>main</code> (704d30f)</sub>
 
 
 
 ### Summary
 
-`✅ 52` untouched  
+`⚡ 1` improved benchmark  
+`✅ 22` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
 
 
 
+### Performance Changes
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ⚡ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Aconstructor-bindings-refactor?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 22 s | 21.1 s | +4.28% |
+
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Aconstructor-bindings-refactor?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
 
 ---
@@ -530,7 +564,7 @@ _Label `ecosystem-analyzer` added by @carljm on 2025-12-23 02:17_
 
 ---
 
-_Review comment by @Hugo-Polloli on `crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md`:944 on 2025-12-23 12:04_
+_Review comment by @Hugo-Polloli on `crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md`:961 on 2025-12-23 12:04_
 
 the previous TODO mentioned no error but to my knowledge the comment I added is correct and the two errors surfaced should indeed appear, so I'd like your input on which it should be, thanks !
 
@@ -586,24 +620,21 @@ _Comment by @astral-sh-bot[bot] on 2025-12-26 19:56_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 404 | 0 | 20 |
-| `unused-ignore-comment` | 1 | 34 | 0 |
+| `invalid-argument-type` | 396 | 1 | 10 |
 | `unknown-argument` | 32 | 0 | 0 |
-| `invalid-return-type` | 3 | 5 | 13 |
-| `too-many-positional-arguments` | 17 | 0 | 0 |
-| `possibly-missing-attribute` | 13 | 0 | 0 |
-| `missing-argument` | 12 | 0 | 0 |
-| `invalid-assignment` | 2 | 1 | 7 |
-| `no-matching-overload` | 7 | 0 | 0 |
+| `unused-ignore-comment` | 0 | 23 | 0 |
+| `missing-argument` | 16 | 0 | 0 |
+| `invalid-return-type` | 2 | 4 | 9 |
+| `too-many-positional-arguments` | 15 | 0 | 0 |
+| `invalid-assignment` | 1 | 1 | 6 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `no-matching-overload` | 5 | 0 | 0 |
 | `parameter-already-assigned` | 4 | 0 | 0 |
-| `unresolved-attribute` | 0 | 0 | 3 |
-| `redundant-cast` | 2 | 0 | 0 |
-| `not-iterable` | 0 | 1 | 0 |
-| `type-assertion-failure` | 0 | 1 | 0 |
-| **Total** | **497** | **42** | **43** |
+| `type-assertion-failure` | 0 | 2 | 0 |
+| **Total** | **471** | **31** | **32** |
 
 
-**[Full report with detailed diff](https://52074d92.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://52074d92.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://5957b35e.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://5957b35e.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -683,5 +714,14 @@ The open question about mypy_primer remains , if maintainers consider that "dupl
 _Comment by @Hugo-Polloli on 2026-01-17 19:11_
 
 I see #22377 has been merged, I will work on starting the rebase work soon :)
+
+---
+
+_Comment by @Hugo-Polloli on 2026-01-17 23:47_
+
+> I see #22377 has been merged, I will work on starting the rebase work soon :)
+
+Ended up being able to simplify @charliermarsh's `apply_decorator` to always use `try_call`, all mdtests still pass so behavior looks good ;)
+This PR is officially ready for review!
 
 ---

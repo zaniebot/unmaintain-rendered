@@ -2,17 +2,18 @@
 number: 22660
 title: "[ty] Support passing `typename` and `field_names` by keyword argument"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: charlie/kwargs
 created_at: 2026-01-17T19:39:34Z
-updated_at: 2026-01-17T19:42:38Z
+updated_at: 2026-01-18T00:02:36Z
 url: https://github.com/astral-sh/ruff/pull/22660
-synced_at: 2026-01-17T20:10:51Z
+synced_at: 2026-01-18T00:18:13Z
 ```
 
 # [ty] Support passing `typename` and `field_names` by keyword argument
@@ -146,5 +147,23 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-17 19:42_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-17 19:42_
+
+---
+
+_@AlexWaygood approved on 2026-01-17 23:59_
+
+nice
+
+---
+
+_Merged by @charliermarsh on 2026-01-18 00:02_
+
+---
+
+_Closed by @charliermarsh on 2026-01-18 00:02_
+
+---
+
+_Branch deleted on 2026-01-18 00:02_
 
 ---
