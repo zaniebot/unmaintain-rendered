@@ -86,10 +86,77 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="event">Review requested from @MichaReiser by @charliermarsh on 2026-01-18 01:45</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2710 on 2026-01-18 11:58</div>
+            <div class="timeline-body"><p>This method is called <code>is_named_tuple()</code>, but it doesn't just return <code>true</code> if <code>self</code> is a namedtuple class -- it also returns <code>true</code> if <code>self</code> inherits from a namedtuple class. I think this method should be called <code>has_named_tuple_class_in_mro()</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:595 on 2026-01-18 11:59</div>
+            <div class="timeline-body"><p>(same comment here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code>:1471 on 2026-01-18 12:01</div>
+            <div class="timeline-body"><p>I find the parenthetical here slightly confusing, because inheriting from <code>NamedTuple</code> just creates a special <code>tuple</code> subclass at runtime, and so neither a <code>NamedTuple</code> class nor a subclass of a <code>NamedTuple</code> class actually has <code>NamedTuple</code> in its MRO</p>
+<pre><code class="language-suggestion">Classes that inherit from a `NamedTuple` class also cannot be decorated with `@dataclass`:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code>:1480 on 2026-01-18 12:02</div>
+            <div class="timeline-body"><p>maybe the error code should actually be <code>invalid-dataclass</code>? <code>Child</code> here inherits from a <code>NamedTuple</code> class, but it isn't a <code>NamedTuple</code> class itself.</p>
+<p>We could possibly use <code>invalid-dataclass</code> for both the <code>NamedTuple</code> case and the <code>TypedDict</code> case? They both involve invalid applications of the <code>@dataclass</code> decorator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:2382 on 2026-01-18 12:07</div>
+            <div class="timeline-body"><p>I'm not sure it'll lead to an <code>AttributeError</code>, but it can definitely lead to other kinds of errors. Whether it does depends on exactly how you try to instantiate it:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import TypedDict
+&gt;&gt;&gt; from dataclasses import dataclass
+&gt;&gt;&gt; @dataclass
+... class Foo(TypedDict):
+...     x: str
+...     
+&gt;&gt;&gt; Foo(x='x')
+{'x': 'x'}
+&gt;&gt;&gt; Foo('x')
+Traceback (most recent call last):
+  File &quot;&lt;python-input-6&gt;&quot;, line 1, in &lt;module&gt;
+    Foo('x')
+    ~~~^^^^^
+ValueError: dictionary update sequence element #0 has length 1; 2 is required
+</code></pre>
+<p>I think the better rationale when it comes to <code>TypedDict</code>s is possibly just that it's conceptually incoherent to apply <code>@dataclass</code> to a <code>TypedDict</code> class -- <code>TypedDict</code>s are abstract structural types that have no effect on the runtime class (&quot;instantiating&quot; a <code>TypedDict</code> always gives you a <code>dict</code> at runtime), whereas <code>@dataclass</code> is a tool for easily customising the creation of new nominal types/classes at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:701 on 2026-01-18 12:14</div>
+            <div class="timeline-body"><p>you want to use the <code>header_range</code> of the class rather than the full range of the class here -- your diagnostics are currently very verbose if the <code>TypedDict</code> or <code>NamedTuple</code> class definition spans many lines of code 😄</p>
+<p><img width="2390" height="1426" alt="image" src="https://github.com/user-attachments/assets/0276d72e-6036-4ec3-81d7-4c29b8616f59" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:706 on 2026-01-18 12:15</div>
+            <div class="timeline-body"><p>this is quite a long diagnostic message; I'd split the second half into a subdiagnostic</p>
+<pre><code class="language-suggestion">                    let mut diagnostic = builder.into_diagnostic(format_args!(
+                        &quot;Class `{}` inherits from `NamedTuple` and is decorated with `@dataclass`&quot;,
+                        class.name(self.db()),
+                    ));
+                    diagnostic.info(&quot;An exception will be raised when instantiating the class at runtime&quot;);
+</code></pre>
+<p>and similar for the <code>TypedDict</code> case below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 12:18</div>
+            <div class="timeline-body"><p>Nice. I wonder if we should also flag enums and protocols decorated with <code>@dataclass</code>. Those also indicate that the user is probably very confused. And the enum docs explicitly lay out that adding <code>@dataclass</code> to an enum class is <a href="https://docs.python.org/3/howto/enum.html#dataclass-support">not supported</a></p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-18 02:12:13 UTC
+        Synced at 2026-01-18 13:23:47 UTC
     </footer>
 </body>
 </html>

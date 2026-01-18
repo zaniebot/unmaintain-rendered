@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] properly trigger in nested class (`UP008`) - astral-sh/ruff #22677</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] properly trigger in nested class (<code>UP008</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22677">#22677</a>
+        opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a>
+        on 2026-01-18 13:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a></div>
+            <div class="timeline-body"><p>I also tested it in multi-level nested classes and it worked as well.</p>
+<pre><code class="language-console">echo 'class Base:
+      def __init__(self, foo):
+          self.foo = foo
+
+
+  class Outer(Base):
+      def __init__(self, foo):
+          super().__init__(foo)  # Should not trigger UP008
+
+      class Inner(Base):
+          def __init__(self, foo):
+              super().__init__(foo)  # Should not trigger UP008
+
+      class InnerInner(Base):
+          def __init__(self, foo):
+              super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+
+  ' | cargo run -p ruff -- check --select UP008 -
+UP008 Use `super()` instead of `super(__class__, self)`
+  --&gt; -:16:18
+   |
+14 |     class InnerInner(Base):
+15 |         def __init__(self, foo):
+16 |             super(Outer.Inner.InnerInner, self).__init__(foo)  # Should trigger UP008
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+help: Remove `super()` parameters
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Closes #22597</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] properly trigger UP008 in nested class" to "[`pyupgrade`] properly trigger in nested class (`UP008`)" by @leandrobbraga on 2026-01-18 13:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-18 13:23:47 UTC
+    </footer>
+</body>
+</html>
