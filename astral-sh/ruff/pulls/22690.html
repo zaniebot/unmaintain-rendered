@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix narrowing for transparent enums (StrEnum, IntEnum) - astral-sh/ruff #22690</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix narrowing for transparent enums (StrEnum, IntEnum)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22690">#22690</a>
+        opened by <a href="https://github.com/bxff">@bxff</a>
+        on 2026-01-18 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes incorrect type narrowing in <code>match</code> statements for enums with &quot;transparent&quot; equality (<code>StrEnum</code>, <code>IntEnum</code>, etc.) where enum members compare equal to their underlying primitive values.</p>
+<p><strong>Problem</strong>: When matching a primitive literal (e.g., <code>Literal[&quot;g&quot;]</code>) against a transparent enum member (e.g., <code>Color.GREEN</code>), the type checker incorrectly narrowed the type to <code>Never</code> because it treated them as disjoint types. This was reported in issue #1454.</p>
+<p><strong>Root Cause</strong>:</p>
+<ol>
+<li><code>is_disjoint_from</code> treated enum literals and primitive literals as disjoint based solely on type differences</li>
+<li><code>IntersectionBuilder</code> couldn't simplify intersections like <code>Literal[&quot;g&quot;] &amp; ~Color.GREEN</code> correctly</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Added <code>has_transparent_equality()</code> in <code>enums.rs</code> to explicitly detect enums inheriting from both <code>Enum</code> and primitive types (<code>str</code>, <code>int</code>, <code>bytes</code>)</li>
+<li>Modified <code>is_disjoint_from_impl()</code> in <code>relation.rs</code> to compare underlying values when dealing with transparent enums instead of just checking type identity</li>
+<li>Updated <code>add_negative()</code> in <code>builder.rs</code> to correctly simplify <code>PrimitiveLiteral &amp; ~TransparentEnumLiteral</code> to <code>Never</code></li>
+</ol>
+<h2>Test Plan</h2>
+<ul>
+<li><strong>New regression tests</strong>: Created <code>match_enums.md</code> with targeted tests for transparent enum narrowing in match statements</li>
+<li>All tests pass successfully.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @bxff on 2026-01-18 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-18 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @bxff on 2026-01-18 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @bxff on 2026-01-18 21:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-18 21:23:21 UTC
+    </footer>
+</body>
+</html>
