@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-18T03:45:14Z
+updated_at: 2026-01-18T17:11:20Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-18T04:11:15Z
+synced_at: 2026-01-18T17:13:57Z
 ```
 
 # Dependency Dashboard
@@ -91,7 +91,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/windows-0.x -->Update Rust crate windows to 0.62.0
  - [ ] <!-- unschedule-branch=renovate/windows-registry-0.x -->Update Rust crate windows-registry to 0.6.0
  - [ ] <!-- unschedule-branch=renovate/wmi-0.x -->Update Rust crate wmi to 0.18.0
- - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.0
+ - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.1
  - [ ] <!-- unschedule-branch=renovate/fedora-44.x -->Update fedora Docker tag to v44
  - [ ] <!-- unschedule-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
@@ -107,8 +107,9 @@ The following updates have been manually edited so Renovate will no longer make 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
+ - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
- - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.0
+ - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
 ## Open
@@ -235,7 +236,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `target-lexicon 0.13.0` → [Updates: `0.13.0`]
  - `tempfile 3.14.0`
  - `textwrap 0.16.1`
- - `thiserror 2.0.0`
+ - `thiserror 2.0.0` → [Updates: `2.0.0`]
  - `astral-tl 0.7.11`
  - `tokio 1.40.0` → [Updates: `1.40.0`]
  - `tokio-stream 0.1.16` → [Updates: `0.1.16`]
@@ -254,7 +255,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `version-ranges 0.1.3` → [Updates: `0.1.3`]
  - `walkdir 2.5.0`
  - `which 8.0.0`
- - `windows 0.59.0` → [Updates: `0.62.0`]
+ - `windows 0.61.0` → [Updates: `0.62.0`]
  - `windows-registry 0.5.0` → [Updates: `0.6.0`]
  - `wiremock 0.6.4`
  - `wmi 0.16.0` → [Updates: `0.18.0`]
@@ -623,15 +624,15 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/download-artifact v4.1.8@fa0a91b85d4f404e444e00e005971372dc801d16` → [Updates: `v7.0.0`]
  - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
 
 </details>
@@ -832,7 +833,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `crate-ci/typos v1.37.3@64e4db431eb262bb5c6baa19dce280d78532830c` → [Updates: `v1.42.0`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
@@ -858,7 +859,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/check-zizmor.yml (2)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4` → [Updates: `v0.4.0`]
+ - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4` → [Updates: `v0.4.1`]
 
 </details>
 
@@ -1079,7 +1080,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
 
@@ -1091,16 +1092,16 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
