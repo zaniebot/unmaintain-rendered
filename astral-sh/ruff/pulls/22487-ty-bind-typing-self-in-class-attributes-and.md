@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-18T03:08:42Z
+updated_at: 2026-01-18T03:55:24Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-18T03:10:11Z
+synced_at: 2026-01-18T04:11:11Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -155,14 +155,6 @@ parso (https://github.com/davidhalter/parso)
 - parso/python/pep8.py:541:27: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | None | IndentationNode`
 + parso/python/pep8.py:541:27: warning[possibly-missing-attribute] Attribute `indentation` may be missing on object of type `Unknown | IndentationNode | None`
 
-spack (https://github.com/spack/spack)
-- lib/spack/spack/installer.py:1309:27: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
-- lib/spack/spack/installer.py:1322:23: error[invalid-argument-type] Argument to function `rename` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
-- lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `_BufferedReaderStream | Unknown | None`
-+ lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None`
-- Found 4344 diagnostics
-+ Found 4342 diagnostics
-
 pip (https://github.com/pypa/pip)
 - src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `socket | Any`
 + src/pip/_vendor/distlib/util.py:1484:36: warning[possibly-missing-attribute] Attribute `getpeercert` may be missing on object of type `Unknown | socket`
@@ -173,11 +165,40 @@ pip (https://github.com/pypa/pip)
 - Found 594 diagnostics
 + Found 592 diagnostics
 
+spack (https://github.com/spack/spack)
+- lib/spack/spack/installer.py:1309:27: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
+- lib/spack/spack/installer.py:1322:23: error[invalid-argument-type] Argument to function `rename` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
+- lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `_BufferedReaderStream | Unknown | None`
++ lib/spack/spack/util/s3.py:143:16: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None`
+- Found 4344 diagnostics
++ Found 4342 diagnostics
+
 bandersnatch (https://github.com/pypa/bandersnatch)
 - src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 - src/bandersnatch/mirror.py:353:52: error[invalid-argument-type] Argument to bound method `sync_index_page` is incorrect: Expected `int`, found `int | None`
 - Found 78 diagnostics
 + Found 76 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- Found 252 diagnostics
++ Found 249 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
+- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
+- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
+- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
++ src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((CallbackDict[Unknown, Unknown], /) -> None) | None`
+- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
+- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
+- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
+- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
+- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
+- Found 407 diagnostics
++ Found 399 diagnostics
 
 jinja (https://github.com/pallets/jinja)
 - tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | None | Environment`
@@ -211,27 +232,6 @@ jinja (https://github.com/pallets/jinja)
 - tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | None | Environment`
 + tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | Environment | None`
 
-stone (https://github.com/dropbox/stone)
-- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- Found 252 diagnostics
-+ Found 249 diagnostics
-
-werkzeug (https://github.com/pallets/werkzeug)
-- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
-- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
-- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
-- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
-+ src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((CallbackDict[Unknown, Unknown], /) -> None) | None`
-- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
-- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
-- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
-- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
-- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
-- Found 407 diagnostics
-+ Found 399 diagnostics
-
 aiortc (https://github.com/aiortc/aiortc)
 - src/aiortc/rtcpeerconnection.py:571:25: warning[possibly-missing-attribute] Attribute `media` may be missing on object of type `SessionDescription | None | @Todo`
 - src/aiortc/rtcpeerconnection.py:575:21: error[invalid-argument-type] Argument to function `create_media_description_for_transceiver` is incorrect: Expected `RTCRtpTransceiver`, found `RTCRtpTransceiver | None | @Todo`
@@ -263,10 +263,6 @@ aiortc (https://github.com/aiortc/aiortc)
 - Found 194 diagnostics
 + Found 169 diagnostics
 
-scrapy (https://github.com/scrapy/scrapy)
-- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
-+ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
-
 boostedblob (https://github.com/hauntsaninja/boostedblob)
 - boostedblob/boost.py:362:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` has no attribute `append`
 - boostedblob/boost.py:368:16: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]] & ~AlwaysFalsy` has no attribute `popleft`
@@ -291,6 +287,10 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - Found 641 diagnostics
 + Found 633 diagnostics
 
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
++ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
+
 pytest (https://github.com/pytest-dev/pytest)
 - src/_pytest/python.py:1043:34: error[invalid-argument-type] Argument to function `ascii_escaped` is incorrect: Expected `bytes | str`, found `object`
 - src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
@@ -311,17 +311,17 @@ dulwich (https://github.com/dulwich/dulwich)
 - dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
 + dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
 
-poetry (https://github.com/python-poetry/poetry)
-+ src/poetry/console/commands/build.py:242:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ tests/console/commands/test_show.py:42:12: warning[redundant-cast] Value is already of type `F@output_format_parametrize`
-- Found 977 diagnostics
-+ Found 979 diagnostics
-
 PyGithub (https://github.com/PyGithub/PyGithub)
 - tests/Requester.py:216:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
 - tests/Requester.py:263:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
 - Found 299 diagnostics
 + Found 297 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ src/poetry/console/commands/build.py:242:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/console/commands/test_show.py:42:12: warning[redundant-cast] Value is already of type `F@output_format_parametrize`
+- Found 977 diagnostics
++ Found 979 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
 - tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
@@ -374,6 +374,27 @@ tornado (https://github.com/tornadoweb/tornado)
 + tornado/websocket.py:1317:9: warning[possibly-missing-attribute] Attribute `set_nodelay` may be missing on object of type `Unknown | IOStream | None`
 - Found 328 diagnostics
 + Found 318 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
++ expression/collections/block.py:940:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ expression/collections/maptree.py:212:19: error[invalid-assignment] Object of type `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]` is not assignable to `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`
++ expression/collections/maptree.py:212:30: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `(SupportsLessThan, Value@partition_aux, /) -> bool`, found `(Key@partition_aux, Value@partition_aux, /) -> bool`
++ expression/collections/maptree.py:215:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`, found `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]`
++ expression/collections/maptree.py:215:31: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `(SupportsLessThan, Value@partition_aux, /) -> bool`, found `(Key@partition_aux, Value@partition_aux, /) -> bool`
++ expression/collections/maptree.py:215:54: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]`, found `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`
++ expression/collections/maptree.py:223:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[Option[MapTreeLeaf[Key@partition, Value@partition]], Option[MapTreeLeaf[Key@partition, Value@partition]]]`, found `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition]], Option[MapTreeLeaf[SupportsLessThan, Value@partition]]]`
++ expression/collections/maptree.py:223:26: error[invalid-argument-type] Argument to function `partition_aux` is incorrect: Expected `(SupportsLessThan, Value@partition, /) -> bool`, found `(Key@partition, Value@partition, /) -> bool`
++ expression/collections/maptree.py:223:37: error[invalid-argument-type] Argument to function `partition_aux` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@partition]]`, found `Option[MapTreeLeaf[Key@partition, Value@partition]]`
++ expression/collections/maptree.py:241:19: error[invalid-assignment] Object of type `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]` is not assignable to `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`
++ expression/collections/maptree.py:241:27: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `(SupportsLessThan, Value@filter_aux, /) -> bool`, found `(Key@filter_aux, Value@filter_aux, /) -> bool`
++ expression/collections/maptree.py:244:20: error[invalid-return-type] Return type does not match returned value: expected `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`, found `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]`
++ expression/collections/maptree.py:244:28: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `(SupportsLessThan, Value@filter_aux, /) -> bool`, found `(Key@filter_aux, Value@filter_aux, /) -> bool`
++ expression/collections/maptree.py:244:51: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]`, found `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`
++ expression/collections/maptree.py:250:12: error[invalid-return-type] Return type does not match returned value: expected `Option[MapTreeLeaf[Key@filter, Value@filter]]`, found `Option[MapTreeLeaf[SupportsLessThan, Value@filter]]`
++ expression/collections/maptree.py:250:23: error[invalid-argument-type] Argument to function `filter_aux` is incorrect: Expected `(SupportsLessThan, Value@filter, /) -> bool`, found `(Key@filter, Value@filter, /) -> bool`
++ expression/collections/maptree.py:250:26: error[invalid-argument-type] Argument to function `filter_aux` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@filter]]`, found `Option[MapTreeLeaf[Key@filter, Value@filter]]`
+- Found 205 diagnostics
++ Found 222 diagnostics
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - examples/contrib/search.py:68:23: warning[possibly-missing-attribute] Attribute `findall` may be missing on object of type `Unknown | Pattern[str] | None`
@@ -431,34 +452,17 @@ vision (https://github.com/pytorch/vision)
 - Found 1403 diagnostics
 + Found 1398 diagnostics
 
-Expression (https://github.com/cognitedata/Expression)
-+ expression/collections/block.py:940:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ expression/collections/maptree.py:212:19: error[invalid-assignment] Object of type `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]` is not assignable to `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`
-+ expression/collections/maptree.py:212:30: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `(SupportsLessThan, Value@partition_aux, /) -> bool`, found `(Key@partition_aux, Value@partition_aux, /) -> bool`
-+ expression/collections/maptree.py:215:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`, found `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]`
-+ expression/collections/maptree.py:215:31: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `(SupportsLessThan, Value@partition_aux, /) -> bool`, found `(Key@partition_aux, Value@partition_aux, /) -> bool`
-+ expression/collections/maptree.py:215:54: error[invalid-argument-type] Argument to function `partition1` is incorrect: Expected `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]], Option[MapTreeLeaf[SupportsLessThan, Value@partition_aux]]]`, found `tuple[Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]], Option[MapTreeLeaf[Key@partition_aux, Value@partition_aux]]]`
-+ expression/collections/maptree.py:223:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[Option[MapTreeLeaf[Key@partition, Value@partition]], Option[MapTreeLeaf[Key@partition, Value@partition]]]`, found `tuple[Option[MapTreeLeaf[SupportsLessThan, Value@partition]], Option[MapTreeLeaf[SupportsLessThan, Value@partition]]]`
-+ expression/collections/maptree.py:223:26: error[invalid-argument-type] Argument to function `partition_aux` is incorrect: Expected `(SupportsLessThan, Value@partition, /) -> bool`, found `(Key@partition, Value@partition, /) -> bool`
-+ expression/collections/maptree.py:223:37: error[invalid-argument-type] Argument to function `partition_aux` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@partition]]`, found `Option[MapTreeLeaf[Key@partition, Value@partition]]`
-+ expression/collections/maptree.py:241:19: error[invalid-assignment] Object of type `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]` is not assignable to `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`
-+ expression/collections/maptree.py:241:27: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `(SupportsLessThan, Value@filter_aux, /) -> bool`, found `(Key@filter_aux, Value@filter_aux, /) -> bool`
-+ expression/collections/maptree.py:244:20: error[invalid-return-type] Return type does not match returned value: expected `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`, found `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]`
-+ expression/collections/maptree.py:244:28: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `(SupportsLessThan, Value@filter_aux, /) -> bool`, found `(Key@filter_aux, Value@filter_aux, /) -> bool`
-+ expression/collections/maptree.py:244:51: error[invalid-argument-type] Argument to function `filter1` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@filter_aux]]`, found `Option[MapTreeLeaf[Key@filter_aux, Value@filter_aux]]`
-+ expression/collections/maptree.py:250:12: error[invalid-return-type] Return type does not match returned value: expected `Option[MapTreeLeaf[Key@filter, Value@filter]]`, found `Option[MapTreeLeaf[SupportsLessThan, Value@filter]]`
-+ expression/collections/maptree.py:250:23: error[invalid-argument-type] Argument to function `filter_aux` is incorrect: Expected `(SupportsLessThan, Value@filter, /) -> bool`, found `(Key@filter, Value@filter, /) -> bool`
-+ expression/collections/maptree.py:250:26: error[invalid-argument-type] Argument to function `filter_aux` is incorrect: Expected `Option[MapTreeLeaf[SupportsLessThan, Value@filter]]`, found `Option[MapTreeLeaf[Key@filter, Value@filter]]`
-- Found 205 diagnostics
-+ Found 222 diagnostics
+psycopg (https://github.com/psycopg/psycopg)
+- docs/lib/libpq_docs.py:99:16: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 652 diagnostics
++ Found 651 diagnostics
 
 antidote (https://github.com/Finistere/antidote)
 + src/antidote/core/_raw/onion.py:417:9: error[invalid-assignment] Object of type `ReferenceType[Self@add_child]` is not assignable to attribute `__parent_ref` of type `Function[(), CatalogOnionLayerImpl | None]`
 - src/antidote/core/_raw/wrapper.py:102:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> object) | ((...) -> object)`
-- src/antidote/core/_raw/wrapper.py:136:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -> Awaitable[object]) | ((...) -> Awaitable[object])`
-+ src/antidote/core/_raw/wrapper.py:102:13: error[unresolved-attribut
+- src/antidote/core/_raw/wrapper.py:136:13: w
 
-... (truncated 2038 lines) ...
+... (truncated 2039 lines) ...
 ```
 
 </details>
@@ -627,7 +631,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 | `unresolved-attribute` | 954 | 85 | 10 |
 | `possibly-missing-attribute` | 58 | 167 | 88 |
 | `invalid-argument-type` | 50 | 168 | 31 |
-| `invalid-return-type` | 7 | 44 | 45 |
+| `invalid-return-type` | 7 | 46 | 44 |
 | `invalid-assignment` | 8 | 70 | 13 |
 | `unsupported-operator` | 2 | 45 | 9 |
 | `call-non-callable` | 0 | 44 | 0 |
@@ -641,10 +645,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 | `invalid-await` | 2 | 0 | 0 |
 | `parameter-already-assigned` | 0 | 1 | 0 |
 | `redundant-cast` | 1 | 0 | 0 |
-| **Total** | **1,101** | **688** | **200** |
+| **Total** | **1,101** | **690** | **199** |
 
 
-**[Full report with detailed diff](https://3b2578e3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3b2578e3.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://a4b24b52.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://a4b24b52.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -673,7 +677,7 @@ Right, but the type mapping here seems to be mapping `typing.Self` variables wit
 _Comment by @codspeed-hq[bot] on 2026-01-18 02:58_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **degrade performance by 4.3%**
+## Merging this PR will **degrade performance by 5.53%**
 
 
 
@@ -689,10 +693,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-18 02:58_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 238.8 ms | 249.5 ms | -4.3% |
+| ❌ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 238.8 ms | 252.8 ms | -5.53% |
 ---
 
-<sub>Comparing <code>charlie/self</code> (a16d6f9) with <code>main</code> (ac8c85e)</sub>
+<sub>Comparing <code>charlie/self</code> (785744d) with <code>main</code> (ac8c85e)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -705,5 +709,15 @@ _Comment by @codspeed-hq[bot] on 2026-01-18 02:58_
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
+
+---
+
+_@charliermarsh reviewed on 2026-01-18 03:22_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types.rs`:2562 on 2026-01-18 03:22_
+
+(You're right.)
 
 ---

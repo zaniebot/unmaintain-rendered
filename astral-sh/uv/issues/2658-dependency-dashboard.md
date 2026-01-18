@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-17T15:35:09Z
+updated_at: 2026-01-18T03:45:14Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-17T16:15:22Z
+synced_at: 2026-01-18T04:11:15Z
 ```
 
 # Dependency Dashboard
@@ -108,6 +108,7 @@ The following updates await pending status checks. To force their creation now, 
 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
+ - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.0
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
 ## Open
@@ -857,7 +858,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/check-zizmor.yml (2)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4`
+ - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4` → [Updates: `v0.4.0`]
 
 </details>
 
