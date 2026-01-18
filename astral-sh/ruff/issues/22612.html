@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>--exclude glob patterns don't match on Windows in MSYS2 Terminal - astral-sh/ruff #22612</title>
+    <title>--exclude glob patterns don't match on Windows (glob expansion on windows) - astral-sh/ruff #22612</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,10 +11,10 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>--exclude glob patterns don't match on Windows in MSYS2 Terminal</h1>
+    <h1>--exclude glob patterns don't match on Windows (glob expansion on windows)</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ruff/issues/22612">#22612</a>
         opened by <a href="https://github.com/ahochheiden">@ahochheiden</a>
         on 2026-01-15 23:48
@@ -279,14 +279,50 @@ warning: No Python files found under the given path(s)
     &quot;-v&quot;,
 ]
 </code></pre>
-<p>The issue here is that <code>wild</code> expands an argument in a position where we don't want it to expand. It might make more sense to just call <code>glob</code> ourselves for the few positions where we accept file names rather than applying it to all arguments</p>
+<p>When it should not, because the glob is quoted. I'm not sure why it does that, because it has explicit handling for parsing out quoted arguments.</p>
 <p>@BurntSushi does ripgrep support wildcard expansion on Windows? If so, how is it implemented? Ahh, just found https://github.com/BurntSushi/ripgrep/issues/234 It's not implemented 😅</p>
 </div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-18 18:27</div>
+            <div class="timeline-body"><p>Aha, this is a shell issue. I don't think there's anything we can do about this on the Ruff side.</p>
+<p>Using <code>cmd</code>, <code>wild</code> correctly detects the double quotes. But powershell seems to strip them before calling Ruff, so that not even <code>GetCommandLineW</code> allows to retrieve the quotes.</p>
+<p>I added the following code to Ruff's <code>main</code> function to get the raw arguments passed to create the process:</p>
+<pre><code class="language-rust">    use std::os::windows::ffi::OsStringExt;
+
+    #[link(name = &quot;kernel32&quot;)]
+    unsafe extern &quot;system&quot; {
+        fn GetCommandLineW() -&gt; *const u16;
+    }
+
+    let raw = unsafe { GetCommandLineW() };
+    let len = (0..).take_while(|&amp;i| unsafe { *raw.add(i) } != 0).count();
+    let slice = unsafe { std::slice::from_raw_parts(raw, len) };
+    let s = std::ffi::OsString::from_wide(slice);
+    eprintln!(&quot;Raw command line: {:?}&quot;, s);
+</code></pre>
+<p>And, on powershell, the quotes are stripped.</p>
+<pre><code>Raw command line: &quot;\&quot;C:\\Users\\Micha\\astral\\ruff\\target\\debug\\ruff.exe\&quot; format --check --exclude build/moz.configure/*.configure build/moz.configure/bindgen.configure --preview --force-exclude -v&quot;
+</code></pre>
+<p>But they're not when Ruff is called from <code>cmd.exe</code></p>
+<pre><code>Raw command line: &quot;..\\..\\ruff\\target\\debug\\ruff.exe  format --check --exclude \&quot;build/moz.configure/*.configure\&quot; build/moz.configure/bindgen.configure --preview --force-exclude -v&quot;
+</code></pre>
+<p>I don't see what Ruff can do here. Even if we were to do the expansion manually for the path arguments only, Ruff still can't know whether <code>*.py</code> is supposed to be a glob (not quoted) or a file name (quoted) because some programs strip the quotes before calling Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--exclude glob patterns don't match on Windows in MSYS2 Terminal" to "--exclude glob patterns don't match on Windows (glob expansion on windows)" by @MichaReiser on 2026-01-18 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @MichaReiser on 2026-01-18 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-18 18:27</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-18 18:17:33 UTC
+        Synced at 2026-01-18 19:18:56 UTC
     </footer>
 </body>
 </html>

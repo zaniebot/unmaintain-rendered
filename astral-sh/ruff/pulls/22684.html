@@ -118,10 +118,37 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="event">Review requested from @dcreager by @charliermarsh on 2026-01-18 17:29</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:238 on 2026-01-18 18:16</div>
+            <div class="timeline-body"><p>as you say, <code>True.__index__()</code> returns the same thing as <code>(1).__index__()</code> and <code>hash(True)</code> returns the same thing as <code>hash(1)</code>. So maybe we should just treat this exactly the same way as an <code>int</code> subscript?</p>
+<pre><code class="language-suggestion">                        ast::Expr::BooleanLiteral(ast::ExprBooleanLiteral { value, .. }) =&gt; {
+                            let _ = write!(path, &quot;{}&quot;, u8::from(*value) });
+                            segments
+                                .push(SegmentInfo::new(SegmentKind::IntSubscript, start_offset));
+                        }
+</code></pre>
+<p>with this patch applied, both the <code>reveal_type</code> calls here reveal <code>str</code> (on your branch currently, only the first one does):</p>
+<pre><code class="language-py">def f(x: tuple[object, object]):
+    if isinstance(x[True], str):
+        reveal_type(x[True])
+        reveal_type(x[1])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:249 on 2026-01-18 18:19</div>
+            <div class="timeline-body"><p>Should we add a new <code>SegmentKind</code> variant for bytes literals? It feels distinct to string-literal subscriptions. And e.g. I don't think the <code>Display</code> for <code>MemberExpr</code> is going to be accurate if it's a <code>StringSubscript</code> variant that actually represents a bytes subscript:</p>
+<p>https://github.com/astral-sh/ruff/blob/bab571c12c46dd1a8b3070df55b52b718832e17c/crates/ty_python_semantic/src/semantic_index/member.rs#L254-L268</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-18 18:18:34 UTC
+        Synced at 2026-01-18 19:19:59 UTC
     </footer>
 </body>
 </html>
