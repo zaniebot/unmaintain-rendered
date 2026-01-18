@@ -1,0 +1,271 @@
+```yaml
+number: 22682
+title: "[ty] Narrow on negative subscript indexing"
+type: pull_request
+state: open
+author: charliermarsh
+labels:
+  - ty
+assignees: []
+base: charlie/sub
+head: charlie/neg-sub
+created_at: 2026-01-18T15:47:13Z
+updated_at: 2026-01-18T16:04:29Z
+url: https://github.com/astral-sh/ruff/pull/22682
+synced_at: 2026-01-18T16:24:44Z
+```
+
+# [ty] Narrow on negative subscript indexing
+
+---
+
+_@charliermarsh_
+
+## Summary
+
+Negative subscripts are also indicative of a thing being subcriptable:
+
+```python
+class Subscriptable:
+    def __getitem__(self, key: int) -> int:
+        return 42
+
+class NotSubscriptable: ...
+
+def _(x: list[Subscriptable | NotSubscriptable]):
+    if not isinstance(x[-1], NotSubscriptable):
+        # After narrowing, x[-1] excludes NotSubscriptable, which means subscripting works
+        reveal_type(x[-1])  # revealed: Subscriptable & ~NotSubscriptable
+        reveal_type(x[-1][0])  # revealed: int
+```
+
+
+---
+
+_Label `ty` added by @charliermarsh on 2026-01-18 15:47_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-18 15:48_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+
+No changes detected ✅
+
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-18 15:50_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pyp (https://github.com/hauntsaninja/pyp)
++ pyp.py:429:34: error[invalid-argument-type] Argument to function `inner` is incorrect: Expected `list[stmt]`, found `object`
+- pyp.py:429:34: error[unresolved-attribute] Object of type `stmt` has no attribute `body`
+- pyp.py:432:27: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
+- pyp.py:433:26: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
+- pyp.py:439:75: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
+- Found 9 diagnostics
++ Found 6 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/vendor/jinja2/compiler.py:1516:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
++ lib/spack/spack/vendor/jinja2/compiler.py:1516:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `str`
+- lib/spack/spack/version/version_types.py:1269:63: error[invalid-argument-type] Argument to function `_next_version_str_component` is incorrect: Expected `VersionStrComponent`, found `int | VersionStrComponent`
+- lib/spack/spack/version/version_types.py:1271:35: error[unsupported-operator] Operator `+` is not supported between objects of type `int | VersionStrComponent` and `Literal[1]`
+- lib/spack/spack/version/version_types.py:1291:63: error[invalid-argument-type] Argument to function `_prev_version_str_component` is incorrect: Expected `VersionStrComponent`, found `int | VersionStrComponent`
+- lib/spack/spack/version/version_types.py:1293:35: error[unsupported-operator] Operator `-` is not supported between objects of type `int | VersionStrComponent` and `Literal[1]`
+- Found 4347 diagnostics
++ Found 4343 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
++ src/jinja2/compiler.py:1534:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `str`
+
+black (https://github.com/psf/black)
+- src/black/linegen.py:1610:9: error[invalid-assignment] Object of type `Literal[""]` is not assignable to attribute `value` on type `Node | Leaf`
+- src/blib2to3/pgen2/parse.py:367:13: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Node | Leaf] | None`
+- src/blib2to3/pgen2/parse.py:392:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Node | Leaf] | None`
+- Found 53 diagnostics
++ Found 50 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
++ src/check_jsonschema/format_errors.py:41:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 27 diagnostics
++ Found 28 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+mypy (https://github.com/python/mypy)
+- mypy/checker_shared.py:317:20: error[invalid-return-type] Return type does not match returned value: expected `TypeInfo | None`, found `TypeInfo | FuncItem | MypyFile`
+- mypy/partially_defined.py:523:21: warning[possibly-missing-attribute] Attribute `intersection_update` may be missing on object of type `set[str] | None`
+- mypy/semanal.py:4504:24: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `SymbolTable | None`
+- mypy/semanal.py:5613:52: error[unsupported-operator] Operator `in` is not supported between objects of type `str` and `SymbolTable | None`
+- mypy/semanal.py:6943:20: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `SymbolTable | None`
+- mypy/server/astdiff.py:157:67: error[invalid-argument-type] Argument to function `compare_symbol_table_snapshots` is incorrect: Expected `dict[str, tuple[object, ...]]`, found `object`
++ mypy/server/astdiff.py:157:67: error[invalid-argument-type] Argument to function `compare_symbol_table_snapshots` is incorrect: Expected `dict[str, tuple[object, ...]]`, found `Top[dict[Unknown, Unknown]]`
+- mypy/server/astdiff.py:157:78: error[invalid-argument-type] Argument to function `compare_symbol_table_snapshots` is incorrect: Expected `dict[str, tuple[object, ...]]`, found `object`
++ mypy/server/astdiff.py:157:78: error[invalid-argument-type] Argument to function `compare_symbol_table_snapshots` is incorrect: Expected `dict[str, tuple[object, ...]]`, found `Top[dict[Unknown, Unknown]]`
+- mypyc/analysis/dataflow.py:131:17: error[unresolved-attribute] Object of type `Op` has no attribute `label`
+- mypyc/ir/ops.py:118:16: error[invalid-return-type] Return type does not match returned value: expected `ControlOp`, found `Op`
+- mypyc/ir/pprint.py:422:17: error[unresolved-attribute] Object of type `Op` has no attribute `label`
+- Found 1743 diagnostics
++ Found 1735 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/environment/collectors/toctree.py:170:41: error[unresolved-attribute] Object of type `Node` has no attribute `append`
+- Found 346 diagnostics
++ Found 345 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/mformat.py:722:76: warning[possibly-missing-attribute] Attribute `value` may be missing on object of type `WhitespaceNode | None`
+- Found 2166 diagnostics
++ Found 2165 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5424 diagnostics
++ Found 5419 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/pallas/fuser/block_spec.py:1771:21: error[invalid-argument-type] Argument to function `_block_size` is incorrect: Expected `Element | int | None`, found `Element | Squeezed | Blocked | ... omitted 4 union elements`
++ jax/_src/pallas/fuser/block_spec.py:1771:21: error[invalid-argument-type] Argument to function `_block_size` is incorrect: Expected `Element | int | None`, found `int | Blocked`
+- jax/_src/pallas/fuser/block_spec.py:1772:21: error[invalid-argument-type] Argument to function `_block_size` is incorrect: Expected `Element | int | None`, found `Element | Squeezed | Blocked | ... omitted 4 union elements`
++ jax/_src/pallas/fuser/block_spec.py:1772:21: error[invalid-argument-type] Argument to function `_block_size` is incorrect: Expected `Element | int | None`, found `int | Blocked`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1818 diagnostics
++ Found 1819 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- rotkehlchen/db/filtering.py:461:20: error[unresolved-attribute] Object of type `DBFilter` has no attribute `chain_id`
+- Found 2057 diagnostics
++ Found 2055 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
++ tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 4351 diagnostics
++ Found 4353 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/anthropic/ai_task.py:60:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/anthropic/entity.py:656:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/anthropic/entity.py:656:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/anthropic/entity.py:668:64: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/anthropic/entity.py:668:64: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/cloud/ai_task.py:132:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/cloud/entity.py:461:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/cloud/entity.py:461:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/cloud/entity.py:462:64: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/cloud/entity.py:462:64: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/cloud/entity.py:463:31: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
++ homeassistant/components/cloud/entity.py:463:31: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/conversation/chat_log.py:93:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
++ homeassistant/components/conversation/chat_log.py:93:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/google_generative_ai_conversation/ai_task.py:93:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/ollama/ai_task.py:60:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/open_router/ai_task.py:61:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/open_router/entity.py:264:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/open_router/entity.py:264:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/open_router/entity.py:272:49: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/open_router/entity.py:272:49: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/openai_conversation/ai_task.py:81:16: warning[possibly-missing-attribute] Attribute `content` may be missing on object of type `Content`
+- homeassistant/components/openai_conversation/entity.py:602:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/openai_conversation/entity.py:602:44: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/components/openai_conversation/entity.py:605:49: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `Content`
++ homeassistant/components/openai_conversation/entity.py:605:49: warning[possibly-missing-attribute] Attribute `attachments` may be missing on object of type `SystemContent | UserContent | AssistantContent | ToolResultContent`
+- homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14508 diagnostics
++ Found 14501 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_Review requested from @sharkdp by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_Review requested from @dcreager by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/member.rs`:213 on 2026-01-18 16:04_
+
+For completeness (though it's obviously unlikely to come up), shall we also handle unary `+`? `x[+5]`, etc.
+
+---
+
+_@AlexWaygood approved on 2026-01-18 16:04_
+
+I can't believe this went unnoticed for so long 😅 Thank you!
+
+---

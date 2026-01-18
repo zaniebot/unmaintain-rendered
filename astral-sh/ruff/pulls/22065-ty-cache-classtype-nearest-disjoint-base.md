@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: zb/cache-nearest
 created_at: 2025-12-18T22:32:26Z
-updated_at: 2026-01-18T14:42:38Z
+updated_at: 2026-01-18T15:28:50Z
 url: https://github.com/astral-sh/ruff/pull/22065
-synced_at: 2026-01-18T15:23:26Z
+synced_at: 2026-01-18T16:24:44Z
 ```
 
 # [ty] Cache `ClassType::nearest_disjoint_base`
@@ -777,5 +777,11 @@ _Review requested from @dcreager by @zanieb on 2026-01-18 14:29_
 _Comment by @zanieb on 2026-01-18 14:30_
 
 It was just in draft because I wasn't particularly confident it did anything and didn't want to distract ya'll :)
+
+---
+
+_@AlexWaygood approved on 2026-01-18 15:28_
+
+This seems worth it to me given 4-7% speedups locally on pandas with ty_benchmark, no reported regressions locally with ty_benchmark, consistent speedups on most Codspeed benchmarks, and no significant impact on memory usage. But I will defer to @MichaReiser 
 
 ---

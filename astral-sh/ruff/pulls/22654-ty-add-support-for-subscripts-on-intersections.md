@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-18T01:05:20Z
+updated_at: 2026-01-18T16:00:31Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-18T01:20:19Z
+synced_at: 2026-01-18T16:24:44Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -586,5 +587,106 @@ _Marked ready for review by @charliermarsh on 2026-01-18 01:04_
 _Comment by @charliermarsh on 2026-01-18 01:05_
 
 It's a lot of new diagnostics... but my impression from checking around is that this is merely surfacing existing ty behavior in more contexts now. I don't see anything obviously wrong from my spot checks.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 15:31_
+
+This leads to one new false positive on docstring-adder (currently _full_ of intersection-subscript `@Todo` types), which is not emitted by mypy or pyright:
+
+```
+error[not-subscriptable]: Cannot subscript object of type `Else` with no `__getitem__` method
+   --> add_docstrings.py:480:17
+    |
+478 |             and self.if_stack[-1][-1]
+479 |             and not isinstance(self.if_stack[-1][-1], libcst.Else)
+480 |             and self.if_stack[-1][-1][0].orelse is node
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^
+481 |         ):
+482 |             self.if_stack[-1].append((node, parsed_condition))
+    |
+info: rule `not-subscriptable` is enabled by default
+
+Found 1 diagnostic
+```
+
+But I agree that this seems like a pre-existing issue with our narrowing behaviour, not an issue with this PR
+
+---
+
+_Comment by @charliermarsh on 2026-01-18 15:44_
+
+I will fix that in a separate PR.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 15:46_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:14622 on 2026-01-18 15:46_
+
+This works well for most cases, but not for slices on tuple types, because that's a special case that can't be modeled in `try_call_dunder` and is instead handled in `infer_subscript_expression_types`. Here's the types we reveal on your branch:
+
+```py
+from ty_extensions import Intersection
+
+class A: ...
+class B: ...
+class C: ...
+class D: ...
+
+def f(
+    x: tuple[A, B],
+    y: tuple[C, D],
+    z: Intersection[tuple[A, B], tuple[C, D]]
+):
+    reveal_type(x[1:])  # tuple[B]
+    reveal_type(y[1:])  # tuple[D]
+    reveal_type(z[1:])  # tuple[A | B, ...] & tuple[C | D, ...]
+```
+
+Ideally the final type there would be `tuple[B] & tuple[D]` (or `tuple[B & D]`).
+
+Handling this properly would probably require refactoring the `infer_subscript_expression_types` method so that it's a method on `Type` that returns a `Result` (rather than eagerly emitting diagnostics when encountering errors) so that it can be recursively called for each intersection element without necessarily emitting an error on each invalid intersection element
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:14622 on 2026-01-18 15:49_
+
+A similar repro on this branch:
+
+```py
+class A: ...
+class B: ...
+class C: ...
+
+def f(
+    x: tuple[A, B],
+):
+    reveal_type(x[1:])  # tuple[B]
+    if isinstance(x, C):
+        reveal_type(x[1:])  # tuple[A | B, ...]
+```
+
+if we're confident that this isn't causing any false positives in the ecosystem, we could possibly land this PR as-is for now. But I do think we need to do the big refactor of `infer_subscript_expression_types` at _some_ point
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 15:49_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-18 15:59_
+
+---
+
+_@charliermarsh reviewed on 2026-01-18 16:00_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:14622 on 2026-01-18 16:00_
+
+(Marking as draft while I look into it + consider.)
 
 ---
