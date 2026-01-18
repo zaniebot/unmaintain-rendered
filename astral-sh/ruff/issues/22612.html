@@ -245,10 +245,48 @@ unformatted: File would be reformatted
             <div class="timeline-body"><p>I've to add some more debug logging to understand what's happening. I'll try to find sometime soon</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-18 17:23</div>
+            <div class="timeline-body"><p>Hmm, I'm still not able to reproduce this issue. I installed msys2, copied the <code>mozsearch</code> directory (I didn't want to install git).</p>
+<pre><code>/c/Users/Micha/astral/ruff/target/debug/ruff.exe format --check --force-exclude --exclude &quot;build/moz.configure/*.configure&quot; build/moz.configure/bindgen.configure --preview -v
+[2026-01-18][18:16:17][ruff::resolve][DEBUG] Using Ruff default settings
+[2026-01-18][18:16:17][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;C:\\msys64\\home\\Micha\\mozsearch\\build\\moz.configure\\bindgen.configure&quot;
+warning: No Python files found under the given path(s)
+</code></pre>
+<p>works fine. I even built 0.14.9 from source (because no uvx in my MSYS environment), but I got the same result.</p>
+<p>Can you try to remove or rename <code>D:\mozilla-source\firefox\pyproject.toml</code>. I wonder if it's some bad interaction between the config file and the CLI arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-18 17:26</div>
+            <div class="timeline-body"><p>Okay, you need to have at least two files matching <code>&quot;build/moz.configure/*.configure&quot;</code> for it to reproduce.</p>
+<p>Once you have two files, it reproduces both on msys and powershell. Where it correctly excludes the first file, but not any others</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-18 18:01</div>
+            <div class="timeline-body"><p>The issue is that <code>wild</code> expands <code>&quot;build/moz.configure/*.configure&quot;</code> to</p>
+<pre><code>[crates\ruff\src\main.rs:43:5] wild::args_os().into_iter().collect::&lt;Vec&lt;_&gt;&gt;() = [
+    &quot;C:\\Users\\Micha\\astral\\ruff\\target\\debug\\ruff.exe&quot;,
+    &quot;format&quot;,
+    &quot;--check&quot;,
+    &quot;--exclude&quot;,
+    &quot;build\\moz.configure\\bindgen.configure&quot;,
+    &quot;build\\moz.configure\\bindgen2.configure&quot;,
+    &quot;build/moz.configure/bindgen.configure&quot;,
+    &quot;--preview&quot;,
+    &quot;--force-exclude&quot;,
+    &quot;-v&quot;,
+]
+</code></pre>
+<p>The issue here is that <code>wild</code> expands an argument in a position where we don't want it to expand. It might make more sense to just call <code>glob</code> ourselves for the few positions where we accept file names rather than applying it to all arguments</p>
+<p>@BurntSushi does ripgrep support wildcard expansion on Windows? If so, how is it implemented? Ahh, just found https://github.com/BurntSushi/ripgrep/issues/234 It's not implemented 😅</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 17:01:38 UTC
+        Synced at 2026-01-18 18:17:33 UTC
     </footer>
 </body>
 </html>

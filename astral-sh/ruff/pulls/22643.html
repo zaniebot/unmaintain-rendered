@@ -431,10 +431,37 @@ core (https://github.com/home-assistant/core)
 <p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8706 on 2026-01-18 17:58</div>
+            <div class="timeline-body"><p>Is this (only lazily cloning the bindings if it's necessary) the reason for the performance improvement?</p>
+<p>It looks like <code>try_narrow()</code> could be called multiple times, so I wonder if you could do this to micro-optimize it even more:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index 911f9b5253..2063c7a09d 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -8700,9 +8700,12 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+ 
+         // We silence diagnostics until we successfully narrow to a specific type.
+         let was_in_multi_inference = self.context.set_multi_inference(true);
++        let mut speculated_bindings_cache = None;
+ 
+         let mut try_narrow = |narrowed_ty| {
+-            let mut speculated_bindings = bindings.clone();
++            let speculated_bindings =
++                speculated_bindings_cache.get_or_insert_with(|| bindings.clone());
++
+             let narrowed_tcx = TypeContext::new(Some(narrowed_ty));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-18 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-17 05:06:21 UTC
+        Synced at 2026-01-18 18:18:34 UTC
     </footer>
 </body>
 </html>
