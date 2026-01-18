@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-17T12:48:18Z
+updated_at: 2026-01-18T05:39:16Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-17T13:10:43Z
+synced_at: 2026-01-18T06:13:00Z
 ```
 
 # Dependency Dashboard
@@ -1148,7 +1148,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `executablebooks/mdformat 1.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `igorshubovych/markdownlint-cli v0.47.0`
- - `black ==25.12.0`
+ - `black ==25.12.0` → [Updates: `==26.1.0`]
  - `adamchainz/blacken-docs 1.20.0`
  - `rhysd/actionlint v1.7.10`
 

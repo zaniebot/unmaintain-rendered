@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-08-16T18:00:38Z
-updated_at: 2025-11-18T16:23:58Z
+updated_at: 2026-01-18T06:03:31Z
 url: https://github.com/astral-sh/uv/issues/15327
-synced_at: 2026-01-12T16:02:08Z
+synced_at: 2026-01-18T06:13:18Z
 ```
 
 # unknown error (_ssl.c:3103) when using uv
@@ -284,5 +284,11 @@ _Comment by @geofft on 2025-11-18 16:23_
 > `uvx --python 3.13.9 python minrep.py` does not fail
 
 Fedora has Python 3.13.9 as the system Python, so I'm assuming uv is finding that one and not installing our own builds. I expect `uvx --managed-python --python 3.13.9 python minrep.py` would fail on your machine.
+
+---
+
+_Comment by @tenturestept on 2026-01-18 06:03_
+
+Hi folks, checking in to see if there has been any progress on this. Is there a consensus yet on whether the root cause lies within uv or if this is Fedora's "fault"?
 
 ---
