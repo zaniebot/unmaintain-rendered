@@ -9,9 +9,9 @@ labels:
   - enums
 assignees: []
 created_at: 2026-01-17T20:15:58Z
-updated_at: 2026-01-18T01:02:15Z
+updated_at: 2026-01-18T10:54:45Z
 url: https://github.com/astral-sh/ty/issues/2550
-synced_at: 2026-01-18T01:20:01Z
+synced_at: 2026-01-18T11:18:08Z
 ```
 
 # Support `enum.global_enum`
@@ -89,5 +89,11 @@ Thanks, that's helpful context
 ---
 
 _Label `wish` added by @AlexWaygood on 2026-01-18 01:02_
+
+---
+
+_Comment by @MichaReiser on 2026-01-18 10:54_
+
+Related to [this](https://github.com/astral-sh/ruff/issues/7695) Ruff issue
 
 ---

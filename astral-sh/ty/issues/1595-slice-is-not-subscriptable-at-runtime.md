@@ -9,9 +9,9 @@ labels:
   - runtime semantics
 assignees: []
 created_at: 2025-11-19T19:54:51Z
-updated_at: 2026-01-18T10:01:35Z
+updated_at: 2026-01-18T10:17:30Z
 url: https://github.com/astral-sh/ty/issues/1595
-synced_at: 2026-01-18T10:16:25Z
+synced_at: 2026-01-18T11:18:08Z
 ```
 
 # Slice is not subscriptable at runtime
@@ -150,5 +150,11 @@ Oh! I'm sorry, I forgot the definition changed in https://github.com/python/type
 _Comment by @adamjstewart on 2026-01-18 10:01_
 
 Is there an open issue where I can track support for Python 3.15 generic slice support or should I open a new one? I don't see it listed in #1889.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 10:17_
+
+@adamjstewart it doesn't need any special support from us, really; we should already support it. This issue is about the fact that we already consider slice as being generic on all Python versions, because that's what typeshed tells us. That's not quite accurate on Python <=3.14 (which is why this issue is open), but it is accurate on a Python 3.15.
 
 ---

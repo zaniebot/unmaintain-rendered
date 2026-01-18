@@ -4,12 +4,14 @@ title: "Feature Request: Static analysis for pandas DataFrame column schemas"
 type: issue
 state: open
 author: w-martin
-labels: []
+labels:
+  - wish
+  - library
 assignees: []
 created_at: 2026-01-18T10:08:52Z
-updated_at: 2026-01-18T10:08:52Z
+updated_at: 2026-01-18T10:19:01Z
 url: https://github.com/astral-sh/ty/issues/2551
-synced_at: 2026-01-18T10:16:26Z
+synced_at: 2026-01-18T11:18:08Z
 ```
 
 # Feature Request: Static analysis for pandas DataFrame column schemas
@@ -169,5 +171,13 @@ I work on ML infrastructure and have experience with:
 **Is a plugin system on ty's roadmap? Would you be open to collaboration on this feature? Thanks!**
 
 
+
+---
+
+_Label `wish` added by @AlexWaygood on 2026-01-18 10:19_
+
+---
+
+_Label `library` added by @AlexWaygood on 2026-01-18 10:19_
 
 ---

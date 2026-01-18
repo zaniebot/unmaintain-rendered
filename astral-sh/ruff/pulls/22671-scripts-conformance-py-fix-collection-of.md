@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/conformance-exclude-supporting-files
 created_at: 2026-01-18T00:47:10Z
-updated_at: 2026-01-18T00:59:02Z
+updated_at: 2026-01-18T10:47:50Z
 url: https://github.com/astral-sh/ruff/pull/22671
-synced_at: 2026-01-18T01:20:19Z
+synced_at: 2026-01-18T11:18:27Z
 ```
 
 # `scripts/conformance.py`: fix collection of diagnostics
@@ -157,5 +157,27 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 00:59_
 
 
 
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:300 on 2026-01-18 10:45_
+
+I'm surprised that Python's globbing doesn't support multiple extensions, e.g. `.{py,pyi}`
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:303 on 2026-01-18 10:47_
+
+Should we skip files starting with an `_`? I assume it's not strictly necessary, since they never contain any comments matching the error pattern but it feels unnecessary
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:355 on 2026-01-18 10:47_
+
+Should we create a helper method that, given a path, returns whether this is a conformance test file?
+
+---
+
+_@MichaReiser approved on 2026-01-18 10:47_
 
 ---

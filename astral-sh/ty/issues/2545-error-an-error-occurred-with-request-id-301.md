@@ -2,16 +2,16 @@
 number: 2545
 title: "ERROR An error occurred with request ID 301: request handler panicked at ..."
 type: issue
-state: open
+state: closed
 author: IlyaMaksheev
 labels:
   - server
   - fatal
 assignees: []
 created_at: 2026-01-17T11:38:33Z
-updated_at: 2026-01-17T11:40:48Z
+updated_at: 2026-01-18T10:56:35Z
 url: https://github.com/astral-sh/ty/issues/2545
-synced_at: 2026-01-17T12:09:25Z
+synced_at: 2026-01-18T11:18:08Z
 ```
 
 # ERROR An error occurred with request ID 301: request handler panicked at ...
@@ -73,5 +73,9 @@ Thanks very much! This looks similar to https://github.com/astral-sh/ty/issues/2
 ---
 
 _Added to milestone `Pre-stable 1` by @AlexWaygood on 2026-01-17 11:40_
+
+---
+
+_Closed by @MichaReiser on 2026-01-18 10:56_
 
 ---

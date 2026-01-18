@@ -8,9 +8,9 @@ labels:
   - fatal
 assignees: []
 created_at: 2026-01-08T18:09:38Z
-updated_at: 2026-01-09T03:47:55Z
+updated_at: 2026-01-18T11:01:13Z
 url: https://github.com/astral-sh/ty/issues/2401
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-18T11:18:08Z
 ```
 
 # panic for incomplete except block
@@ -47,5 +47,26 @@ _Label `fatal` added by @carljm on 2026-01-08 18:09_
 ---
 
 _Assigned to @Gankra by @Gankra on 2026-01-09 03:47_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 11:01_
+
+Another example from #2545:
+
+```python
+    async def _run(self) -> None:
+        try:
+            ...
+
+        except | # My cursor was here
+
+        except* Exception as exception_group:
+            ...
+
+            raise
+```
+
+With the same panic message 
 
 ---
