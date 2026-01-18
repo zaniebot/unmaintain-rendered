@@ -9,9 +9,9 @@ labels:
   - runtime semantics
 assignees: []
 created_at: 2025-11-19T19:54:51Z
-updated_at: 2025-11-19T21:02:33Z
+updated_at: 2026-01-18T10:01:35Z
 url: https://github.com/astral-sh/ty/issues/1595
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-18T10:16:25Z
 ```
 
 # Slice is not subscriptable at runtime
@@ -144,5 +144,11 @@ _Comment by @AlexWaygood on 2025-11-19 20:55_
 Oh! I'm sorry, I forgot the definition changed in https://github.com/python/typeshed/pull/14583; I had the previous definition still in my head (`Generic` used to just be an instance of `_SpecialForm` in typeshed). The funny dance is because pyright broke in the first version of that PR, when we tried to make `Generic` an actual class.
 
 
+
+---
+
+_Comment by @adamjstewart on 2026-01-18 10:01_
+
+Is there an open issue where I can track support for Python 3.15 generic slice support or should I open a new one? I don't see it listed in #1889.
 
 ---
