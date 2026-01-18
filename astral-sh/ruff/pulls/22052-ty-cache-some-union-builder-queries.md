@@ -2,7 +2,7 @@
 number: 22052
 title: "[ty] Cache some union builder queries"
 type: pull_request
-state: open
+state: closed
 author: zanieb
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: zb/cache-union-builder
 created_at: 2025-12-18T14:27:06Z
-updated_at: 2026-01-16T14:43:58Z
+updated_at: 2026-01-18T14:31:18Z
 url: https://github.com/astral-sh/ruff/pull/22052
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-18T15:23:26Z
 ```
 
 # [ty] Cache some union builder queries
@@ -263,5 +263,9 @@ I feel like it's a bit hard to tell when there are multiple changes bundled toge
 _Comment by @AlexWaygood on 2026-01-16 14:43_
 
 I'm curious to see what the codspeed results look like if this is rebased on `main` -- I suspect that the `is_subtype_of` cache in particular no longer buys us nearly as much following https://github.com/astral-sh/ruff/pull/22337
+
+---
+
+_Closed by @zanieb on 2026-01-18 14:31_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-07-09T11:48:22Z
-updated_at: 2025-12-18T17:42:27Z
+updated_at: 2026-01-18T14:35:18Z
 url: https://github.com/astral-sh/ty/issues/791
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-18T15:23:08Z
 ```
 
 # Solid semantic tokens
@@ -195,5 +195,11 @@ Do you have an estimate for how much larger the response would be? I think only 
 _Comment by @AlexanderHott on 2025-12-18 17:42_
 
 rust-analyzer does it, and I haven't noticed a difference in the highlighting speed. However, I'm not aware of any other LSP that do it. The only other LSP I looked into was typescript-language-server, and they also don't output all the ranges.
+
+---
+
+_Comment by @mlisovyi on 2026-01-18 14:35_
+
+One other semantic token that would be nice-to-have: enum + enumMember that are recognised by Pylance and are used in sone color themes.
 
 ---

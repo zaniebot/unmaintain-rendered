@@ -2,7 +2,7 @@
 number: 22085
 title: "[ty] Fix bug in union builder optimization"
 type: pull_request
-state: open
+state: closed
 author: zanieb
 labels: []
 assignees: []
@@ -10,9 +10,9 @@ draft: true
 base: micha/union-builder-sub-unions
 head: zb/fix-sub-union
 created_at: 2025-12-19T14:56:54Z
-updated_at: 2025-12-27T13:54:23Z
+updated_at: 2026-01-18T14:31:19Z
 url: https://github.com/astral-sh/ruff/pull/22085
-synced_at: 2026-01-12T15:57:41Z
+synced_at: 2026-01-18T15:23:26Z
 ```
 
 # [ty] Fix bug in union builder optimization
@@ -152,5 +152,9 @@ _Comment by @MichaReiser on 2025-12-19 16:16_
 > @MichaReiser CI is green now 🤔
 
 Unfortunately, it doesn't remove the prefect diagnostics anymore.
+
+---
+
+_Closed by @zanieb on 2026-01-18 14:31_
 
 ---
