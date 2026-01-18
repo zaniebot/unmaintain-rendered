@@ -10,9 +10,9 @@ labels:
   - preview
 assignees: []
 created_at: 2026-01-16T20:54:14Z
-updated_at: 2026-01-16T20:54:47Z
+updated_at: 2026-01-18T17:11:10Z
 url: https://github.com/astral-sh/ruff/issues/22631
-synced_at: 2026-01-16T21:04:00Z
+synced_at: 2026-01-18T17:26:19Z
 ```
 
 # Safe fix for `FURB180` can delete comments
@@ -62,5 +62,17 @@ _Label `preview` added by @ntBre on 2026-01-16 20:54_
 ---
 
 _Label `good first issue` added by @ntBre on 2026-01-16 20:54_
+
+---
+
+_Comment by @AndyBodnar on 2026-01-18 17:01_
+
+I'll take this one.
+
+---
+
+_Comment by @ntBre on 2026-01-18 17:11_
+
+Sorry @AndyBodnar, this is already resolved by the linked PR #22234.
 
 ---

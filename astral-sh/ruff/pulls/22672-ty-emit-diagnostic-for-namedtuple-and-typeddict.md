@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/data-decorator
 created_at: 2026-01-18T01:17:41Z
-updated_at: 2026-01-18T15:34:28Z
+updated_at: 2026-01-18T16:13:40Z
 url: https://github.com/astral-sh/ruff/pull/22672
-synced_at: 2026-01-18T16:24:44Z
+synced_at: 2026-01-18T17:26:31Z
 ```
 
 # [ty] Emit diagnostic for `NamedTuple` and `TypedDict` decorated with dataclass
@@ -800,5 +800,122 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/bu
 ---
 
 _@AlexWaygood reviewed on 2026-01-18 14:53_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md`:1852 on 2026-01-18 15:58_
+
+you can rewrite this test without the `[subclass-of-final-class]` error, which is a bit distracting (enum classes are only `final` if they have members):
+
+```suggestion
+class BaseColor(Enum):
+    def fancy_mixin_method(self) -> str:
+        return "hi"
+
+@dataclass
+# error: [invalid-dataclass]
+class Color(BaseColor):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md`:1857 on 2026-01-18 15:58_
+
+```suggestion
+Applying `@dataclass` to a protocol class is invalid because protocols define abstract interfaces and cannot
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md`:1883 on 2026-01-18 16:00_
+
+the prose says "this applies to classes that inherit from `Protocol` indirectly", but that's not what the example shows (`ExtendedProtocol` inherits from `Protocol` directly), and I don't think that should be our behaviour: something like this should be fine:
+
+```py
+from typing import Protocol
+from dataclasses import dataclass
+
+class Foo(Protocol):
+    x: int
+
+@dataclass
+class Bar(Foo):
+    x: int
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:1446 on 2026-01-18 16:01_
+
+```suggestion
+The same error occurs with `dataclasses.dataclass` used with parentheses:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:2383 on 2026-01-18 16:02_
+
+```suggestion
+`@dataclass` is a tool for customising the creation of new nominal types. An exception may be
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:2397 on 2026-01-18 16:02_
+
+```suggestion
+The same error occurs with `dataclasses.dataclass` used with parentheses:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2703 on 2026-01-18 16:10_
+
+should be slightly more efficient:
+
+```suggestion
+    pub(crate) fn has_named_tuple_class_in_mro(self, db: &'db dyn Db) -> bool {
+        self.iter_mro(db, None)
+            .filter_map(ClassBase::into_class)
+            .any(|base| match base.class_literal(db) {
+                ClassLiteral::DynamicNamedTuple(_) => true,
+                ClassLiteral::Dynamic(_) => false,
+                ClassLiteral::Static(class) => class
+                    .explicit_bases(db)
+                    .contains(&Type::SpecialForm(SpecialFormType::NamedTuple)),
+            })
+    }
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:717 on 2026-01-18 16:11_
+
+```suggestion
+                } else if class.is_typed_dict(self.db()) {
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:731 on 2026-01-18 16:12_
+
+```suggestion
+                } else if is_enum_class_by_inheritance(self.db(), class) {
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:744 on 2026-01-18 16:12_
+
+```suggestion
+                } else if is_protocol {
+```
+
+---
+
+_@AlexWaygood approved on 2026-01-18 16:13_
 
 ---

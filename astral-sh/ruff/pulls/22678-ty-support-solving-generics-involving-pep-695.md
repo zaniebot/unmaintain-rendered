@@ -1,6 +1,6 @@
 ```yaml
 number: 22678
-title: "[ty] Support solving generics involving PEP 695 type aliases (#1851)"
+title: "[ty] Support solving generics involving PEP 695 type aliases"
 type: pull_request
 state: open
 author: bxff
@@ -11,12 +11,12 @@ assignees: []
 base: main
 head: fix/pep695-type-alias-solver
 created_at: 2026-01-18T13:12:15Z
-updated_at: 2026-01-18T13:33:32Z
+updated_at: 2026-01-18T16:22:52Z
 url: https://github.com/astral-sh/ruff/pull/22678
-synced_at: 2026-01-18T14:22:04Z
+synced_at: 2026-01-18T17:26:31Z
 ```
 
-# [ty] Support solving generics involving PEP 695 type aliases (#1851)
+# [ty] Support solving generics involving PEP 695 type aliases
 
 ---
 
@@ -528,5 +528,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:33_
 **[Full report with detailed diff](https://4d9dab59.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://4d9dab59.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Renamed from "[ty] Support solving generics involving PEP 695 type aliases (#1851)" to "[ty] Support solving generics involving PEP 695 type aliases" by @AlexWaygood on 2026-01-18 16:22_
 
 ---
