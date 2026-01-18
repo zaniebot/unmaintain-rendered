@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-18T13:06:49Z
+updated_at: 2026-01-18T13:17:55Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-18T13:20:54Z
+synced_at: 2026-01-18T14:22:04Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -60,5 +60,69 @@ Closes #22597
 ---
 
 _Renamed from "[`pyupgrade`] properly trigger UP008 in nested class" to "[`pyupgrade`] properly trigger in nested class (`UP008`)" by @leandrobbraga on 2026-01-18 13:06_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 Use `super()` instead of `super(__class__, self)`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| UP008 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/superset/sql/dialects/pinot.py#L172'>superset/sql/dialects/pinot.py:172:25:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| UP008 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
 
 ---

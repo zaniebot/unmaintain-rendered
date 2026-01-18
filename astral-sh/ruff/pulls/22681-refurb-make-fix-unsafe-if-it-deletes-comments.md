@@ -1,20 +1,20 @@
 ```yaml
-number: 22657
-title: "[`flake8-bugbear`] Make fix unsafe if it deletes comments (`B010`)"
+number: 22681
+title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB116`)"
 type: pull_request
 state: open
 author: chirizxc
 labels: []
 assignees: []
 base: main
-head: B010
-created_at: 2026-01-17T18:21:37Z
-updated_at: 2026-01-18T13:46:23Z
-url: https://github.com/astral-sh/ruff/pull/22657
+head: FURB116
+created_at: 2026-01-18T13:44:58Z
+updated_at: 2026-01-18T13:56:21Z
+url: https://github.com/astral-sh/ruff/pull/22681
 synced_at: 2026-01-18T14:22:04Z
 ```
 
-# [`flake8-bugbear`] Make fix unsafe if it deletes comments (`B010`)
+# [`refurb`] Make fix unsafe if it deletes comments (`FURB116`)
 
 ---
 
@@ -40,17 +40,7 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 
 ---
 
-_Renamed from "[flake8-bugbear] Make fix unsafe if it deletes comments (B010)" to "[`flake8-bugbear`] Make fix unsafe if it deletes comments (`B010`)" by @chirizxc on 2026-01-17 18:21_
-
----
-
-_Comment by @chirizxc on 2026-01-17 18:22_
-
-I think the test from https://github.com/astral-sh/ruff/pull/22656 should be sufficient, as the rules are the same.
-
----
-
-_Comment by @astral-sh-bot[bot] on 2026-01-17 18:33_
+_Comment by @astral-sh-bot[bot] on 2026-01-18 13:56_
 
 
 <!-- generated-comment ecosystem -->
@@ -67,13 +57,5 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 18:33_
 
 
 
-
----
-
-_Closed by @chirizxc on 2026-01-18 13:17_
-
----
-
-_Reopened by @chirizxc on 2026-01-18 13:17_
 
 ---
