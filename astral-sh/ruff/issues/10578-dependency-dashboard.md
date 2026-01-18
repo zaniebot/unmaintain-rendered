@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-18T11:43:54Z
+updated_at: 2026-01-18T17:13:50Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-18T12:19:27Z
+synced_at: 2026-01-18T18:15:28Z
 ```
 
 # Dependency Dashboard
@@ -92,6 +92,7 @@ The following updates await pending status checks. To force their creation now, 
 
  - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
  - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
+ - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
@@ -222,7 +223,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `syn 2.0.55` → [Updates: `2.0.55`]
  - `tempfile 3.9.0`
  - `test-case 3.3.1`
- - `thiserror 2.0.0`
+ - `thiserror 2.0.0` → [Updates: `2.0.0`]
  - `tikv-jemallocator 0.6.0`
  - `toml 0.9.0` → [Updates: `0.9.0`]
  - `tracing 0.1.40`

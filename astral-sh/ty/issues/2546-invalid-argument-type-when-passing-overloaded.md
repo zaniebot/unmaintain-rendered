@@ -4,12 +4,13 @@ title: "`invalid-argument-type` when passing overloaded function to `map`"
 type: issue
 state: open
 author: auscompgeek
-labels: []
+labels:
+  - generics
 assignees: []
 created_at: 2026-01-17T12:39:07Z
-updated_at: 2026-01-17T12:39:07Z
+updated_at: 2026-01-18T17:47:06Z
 url: https://github.com/astral-sh/ty/issues/2546
-synced_at: 2026-01-17T13:10:38Z
+synced_at: 2026-01-18T18:15:23Z
 ```
 
 # `invalid-argument-type` when passing overloaded function to `map`
@@ -106,5 +107,9 @@ Possibly related issues, albeit closed:
 ### Version
 
 ty 0.0.12
+
+---
+
+_Label `generics` added by @AlexWaygood on 2026-01-18 17:47_
 
 ---

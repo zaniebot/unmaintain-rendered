@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2026-01-15T23:48:03Z
-updated_at: 2026-01-16T16:33:16Z
+updated_at: 2026-01-18T18:02:11Z
 url: https://github.com/astral-sh/ruff/issues/22612
-synced_at: 2026-01-16T16:59:33Z
+synced_at: 2026-01-18T18:15:29Z
 ```
 
 # --exclude glob patterns don't match on Windows in MSYS2 Terminal
@@ -289,5 +289,55 @@ _Renamed from "--exclude glob patterns don't match on Windows" to "--exclude glo
 _Comment by @MichaReiser on 2026-01-16 16:33_
 
 I've to add some more debug logging to understand what's happening. I'll try to find sometime soon
+
+---
+
+_Comment by @MichaReiser on 2026-01-18 17:23_
+
+Hmm, I'm still not able to reproduce this issue. I installed msys2, copied the `mozsearch` directory (I didn't want to install git).
+
+```
+/c/Users/Micha/astral/ruff/target/debug/ruff.exe format --check --force-exclude --exclude "build/moz.configure/*.configure" build/moz.configure/bindgen.configure --preview -v
+[2026-01-18][18:16:17][ruff::resolve][DEBUG] Using Ruff default settings
+[2026-01-18][18:16:17][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: "C:\\msys64\\home\\Micha\\mozsearch\\build\\moz.configure\\bindgen.configure"
+warning: No Python files found under the given path(s)
+```
+
+works fine. I even built 0.14.9 from source (because no uvx in my MSYS environment), but I got the same result.
+
+Can you try to remove or rename `D:\mozilla-source\firefox\pyproject.toml`. I wonder if it's some bad interaction between the config file and the CLI arguments.
+
+---
+
+_Comment by @MichaReiser on 2026-01-18 17:26_
+
+Okay, you need to have at least two files matching `"build/moz.configure/*.configure"` for it to reproduce. 
+
+Once you have two files, it reproduces both on msys and powershell. Where it correctly excludes the first file, but not any others
+
+---
+
+_Comment by @MichaReiser on 2026-01-18 18:01_
+
+The issue is that `wild` expands `"build/moz.configure/*.configure"` to 
+
+```
+[crates\ruff\src\main.rs:43:5] wild::args_os().into_iter().collect::<Vec<_>>() = [
+    "C:\\Users\\Micha\\astral\\ruff\\target\\debug\\ruff.exe",
+    "format",
+    "--check",
+    "--exclude",
+    "build\\moz.configure\\bindgen.configure",
+    "build\\moz.configure\\bindgen2.configure",
+    "build/moz.configure/bindgen.configure",
+    "--preview",
+    "--force-exclude",
+    "-v",
+]
+```
+
+The issue here is that `wild` expands an argument in a position where we don't want it to expand. It might make more sense to just call `glob` ourselves for the few positions where we accept file names rather than applying it to all arguments
+
+@BurntSushi does ripgrep support wildcard expansion on Windows? If so, how is it implemented? Ahh, just found https://github.com/BurntSushi/ripgrep/issues/234 It's not implemented 😅 
 
 ---

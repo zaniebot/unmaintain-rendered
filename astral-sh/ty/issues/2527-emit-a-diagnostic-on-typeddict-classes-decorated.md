@@ -2,16 +2,16 @@
 number: 2527
 title: "Emit a diagnostic on `TypedDict` classes decorated with `@dataclass`"
 type: issue
-state: open
+state: closed
 author: MeGaGiGaGon
 labels:
   - dataclasses
   - typeddict
 assignees: []
 created_at: 2026-01-16T02:02:56Z
-updated_at: 2026-01-17T20:07:26Z
+updated_at: 2026-01-18T17:20:11Z
 url: https://github.com/astral-sh/ty/issues/2527
-synced_at: 2026-01-17T20:10:32Z
+synced_at: 2026-01-18T18:15:23Z
 ```
 
 # Emit a diagnostic on `TypedDict` classes decorated with `@dataclass`
@@ -44,5 +44,9 @@ _Label `typeddict` added by @AlexWaygood on 2026-01-16 08:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-17 20:07_
+
+---
+
+_Closed by @charliermarsh on 2026-01-18 17:20_
 
 ---

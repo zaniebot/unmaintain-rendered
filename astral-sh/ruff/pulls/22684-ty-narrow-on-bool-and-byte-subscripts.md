@@ -6,14 +6,14 @@ state: open
 author: charliermarsh
 labels:
   - ty
+  - ecosystem-analyzer
 assignees: []
-draft: true
 base: charlie/neg-sub
 head: charlie/bool-sub
 created_at: 2026-01-18T16:54:00Z
-updated_at: 2026-01-18T16:57:26Z
+updated_at: 2026-01-18T17:29:29Z
 url: https://github.com/astral-sh/ruff/pull/22684
-synced_at: 2026-01-18T17:26:31Z
+synced_at: 2026-01-18T18:15:41Z
 ```
 
 # [ty] Narrow on bool and byte subscripts
@@ -103,5 +103,52 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Label `ecosystem-analyzer` added by @charliermarsh on 2026-01-18 17:24_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-18 17:29_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-return-type` | 2 | 0 | 6 |
+| `invalid-assignment` | 0 | 0 | 5 |
+| `invalid-argument-type` | 0 | 0 | 4 |
+| **Total** | **2** | **0** | **15** |
+
+
+**[Full report with detailed diff](https://7dcdc777.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://7dcdc777.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-18 17:29_
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2026-01-18 17:29_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-18 17:29_
+
+---
+
+_Review requested from @sharkdp by @charliermarsh on 2026-01-18 17:29_
+
+---
+
+_Review requested from @dcreager by @charliermarsh on 2026-01-18 17:29_
 
 ---

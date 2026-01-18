@@ -2,16 +2,16 @@
 number: 2539
 title: T-string interpolation expressions are higlighted as string parts
 type: issue
-state: open
+state: closed
 author: chry-santhemum
 labels:
   - bug
   - server
 assignees: []
 created_at: 2026-01-16T23:12:33Z
-updated_at: 2026-01-18T11:17:41Z
+updated_at: 2026-01-18T17:25:50Z
 url: https://github.com/astral-sh/ty/issues/2539
-synced_at: 2026-01-18T12:19:22Z
+synced_at: 2026-01-18T18:15:23Z
 ```
 
 # T-string interpolation expressions are higlighted as string parts
@@ -58,5 +58,21 @@ _Renamed from "F/T-string interpolation expressions are higlighted as string par
 _Comment by @MichaReiser on 2026-01-18 11:17_
 
 I'm unable to reproduce the f-string highlighting. ty correctly highlights the name expression. What editor are you using?
+
+---
+
+_Comment by @chry-santhemum on 2026-01-18 17:24_
+
+Sorry, I meant to say T-strings in my original ask. Thanks!
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 17:25_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 17:25_
+
+(Fixed in https://github.com/astral-sh/ruff/pull/22674)
 
 ---

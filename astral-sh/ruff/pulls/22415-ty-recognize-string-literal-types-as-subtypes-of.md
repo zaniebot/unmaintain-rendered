@@ -2,19 +2,19 @@
 number: 22415
 title: "[ty] Recognize string-literal types as subtypes of `Sequence[Literal[chars]]`"
 type: pull_request
-state: open
+state: merged
 author: jhartum
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
+merged: true
 base: main
 head: feat/string-literal-sequence-subtype-v2
 created_at: 2026-01-06T09:34:15Z
-updated_at: 2026-01-18T17:13:05Z
+updated_at: 2026-01-18T17:43:44Z
 url: https://github.com/astral-sh/ruff/pull/22415
-synced_at: 2026-01-18T17:13:53Z
+synced_at: 2026-01-18T18:15:41Z
 ```
 
 # [ty] Recognize string-literal types as subtypes of `Sequence[Literal[chars]]`
@@ -116,42 +116,19 @@ _Comment by @astral-sh-bot[bot] on 2026-01-06 09:38_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
 - static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
 + static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 + static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
-- Found 1822 diagnostics
-+ Found 1825 diagnostics
 
 core (https://github.com/home-assistant/core)
 + homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
@@ -197,14 +174,14 @@ _Comment by @astral-sh-bot[bot] on 2026-01-06 10:18_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 0 | 0 | 8 |
-| `invalid-argument-type` | 1 | 2 | 3 |
-| `invalid-assignment` | 0 | 0 | 5 |
-| `unused-ignore-comment` | 2 | 0 | 0 |
-| **Total** | **3** | **2** | **16** |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-return-type` | 2 | 0 | 4 |
+| `invalid-argument-type` | 2 | 1 | 2 |
+| `unused-ignore-comment` | 0 | 2 | 0 |
+| **Total** | **4** | **3** | **13** |
 
 
-**[Full report with detailed diff](https://b4f09dbe.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://b4f09dbe.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://26b7efd1.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://26b7efd1.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -237,12 +214,10 @@ Thanks!
 _Comment by @codspeed-hq[bot] on 2026-01-06 14:56_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-### Merging this PR will **not alter performance**
+## Merging this PR will **not alter performance**
 
 
 
-
-### Summary
 
 `✅ 23` untouched benchmarks  
 `⏩ 30` skipped benchmarks[^skipped]  
@@ -251,7 +226,7 @@ _Comment by @codspeed-hq[bot] on 2026-01-06 14:56_
 
 ---
 
-<sub>Comparing <code>jhartum:feat/string-literal-sequence-subtype-v2</code> (787fec8) with <code>main</code> (1f49e8e)</sub>
+<sub>Comparing <code>jhartum:feat/string-literal-sequence-subtype-v2</code> (528ded0) with <code>main</code> (57c98a1)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/jhartum%3Afeat%2Fstring-literal-sequence-subtype-v2?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -460,5 +435,27 @@ This cuts the memory overhead dramatically by only doing character interning whe
 ---
 
 _Converted to draft by @AlexWaygood on 2026-01-18 16:33_
+
+---
+
+_Marked ready for review by @AlexWaygood on 2026-01-18 17:40_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 17:42_
+
+Thanks @bxff! I applied a variant of that and it did indeed solve the memory-usage regression.
+
+This PR now applies consistent rules for assignability/subtyping/redundancy, does not add any new Salsa caching, does not have any reported memory-usage regressions, and does not have any reported performance regressions. So I think it's good to go.
+
+Thanks @jhartum!! Sorry that this one turned out to be a bit more complicated than we initially expected.
+
+---
+
+_Merged by @AlexWaygood on 2026-01-18 17:43_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 17:43_
 
 ---

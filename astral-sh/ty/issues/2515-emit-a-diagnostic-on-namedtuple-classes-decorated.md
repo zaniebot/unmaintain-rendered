@@ -2,7 +2,7 @@
 number: 2515
 title: "Emit a diagnostic on `NamedTuple` classes decorated with `@dataclass`"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - dataclasses
@@ -11,9 +11,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:40:59Z
-updated_at: 2026-01-15T16:41:40Z
+updated_at: 2026-01-18T17:20:11Z
 url: https://github.com/astral-sh/ty/issues/2515
-synced_at: 2026-01-15T16:50:04Z
+synced_at: 2026-01-18T18:15:23Z
 ```
 
 # Emit a diagnostic on `NamedTuple` classes decorated with `@dataclass`
@@ -61,5 +61,9 @@ _Label `namedtuples` added by @AlexWaygood on 2026-01-15 12:41_
 ---
 
 _Label `dataclasses` added by @AlexWaygood on 2026-01-15 16:41_
+
+---
+
+_Closed by @charliermarsh on 2026-01-18 17:20_
 
 ---

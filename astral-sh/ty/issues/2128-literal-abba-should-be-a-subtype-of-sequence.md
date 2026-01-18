@@ -2,16 +2,16 @@
 number: 2128
 title: "`Literal[\"abba\"]` should be a subtype of `Sequence[Literal[\"a\", \"b\"]]`"
 type: issue
-state: open
+state: closed
 author: carljm
 labels:
   - good first issue
   - type properties
 assignees: []
 created_at: 2025-12-20T02:07:10Z
-updated_at: 2025-12-20T16:34:29Z
+updated_at: 2026-01-18T17:43:45Z
 url: https://github.com/astral-sh/ty/issues/2128
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-18T18:15:23Z
 ```
 
 # `Literal["abba"]` should be a subtype of `Sequence[Literal["a", "b"]]`
@@ -60,5 +60,9 @@ _Comment by @carljm on 2025-12-20 16:34_
 Sounds great! Yes I think this can be handled as a special match branch in `Type::has_relation_to_impl`.
 
 Probably rather than special-casing the RHS type, it will be simpler and more general to just attempt a fallback from LHS type of `Literal["whatever"]` to `Sequence[Literal["w", "h", "a", "t", "e", "v", "r"]]` and re-try the `has_relation_to_impl` with that as LHS type.
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 17:43_
 
 ---

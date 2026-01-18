@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/bidi-diagnostics
 created_at: 2026-01-17T03:51:36Z
-updated_at: 2026-01-17T04:08:45Z
+updated_at: 2026-01-18T18:02:36Z
 url: https://github.com/astral-sh/ruff/pull/22643
-synced_at: 2026-01-17T05:15:41Z
+synced_at: 2026-01-18T18:15:41Z
 ```
 
 # [ty] Improve invalid assignment diagnostics with type context
@@ -480,5 +480,36 @@ _Comment by @codspeed-hq[bot] on 2026-01-17 04:08_
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:8706 on 2026-01-18 17:58_
+
+Is this (only lazily cloning the bindings if it's necessary) the reason for the performance improvement?
+
+It looks like `try_narrow()` could be called multiple times, so I wonder if you could do this to micro-optimize it even more:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index 911f9b5253..2063c7a09d 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -8700,9 +8700,12 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+ 
+         // We silence diagnostics until we successfully narrow to a specific type.
+         let was_in_multi_inference = self.context.set_multi_inference(true);
++        let mut speculated_bindings_cache = None;
+ 
+         let mut try_narrow = |narrowed_ty| {
+-            let mut speculated_bindings = bindings.clone();
++            let speculated_bindings =
++                speculated_bindings_cache.get_or_insert_with(|| bindings.clone());
++
+             let narrowed_tcx = TypeContext::new(Some(narrowed_ty));
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 18:02_
 
 ---
