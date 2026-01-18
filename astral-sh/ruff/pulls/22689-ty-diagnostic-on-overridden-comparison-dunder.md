@@ -4,15 +4,16 @@ title: "[ty] diagnostic on overridden comparison dunder methods on `order=True` 
 type: pull_request
 state: open
 author: thejchap
-labels: []
+labels:
+  - ty
 assignees: []
 draft: true
 base: main
 head: thejchap/ordering2
 created_at: 2026-01-18T21:09:31Z
-updated_at: 2026-01-18T21:12:29Z
+updated_at: 2026-01-18T21:23:43Z
 url: https://github.com/astral-sh/ruff/pull/22689
-synced_at: 2026-01-18T21:20:25Z
+synced_at: 2026-01-18T22:21:55Z
 ```
 
 # [ty] diagnostic on overridden comparison dunder methods on `order=True` dataclasses
@@ -127,5 +128,9 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-18 21:23_
 
 ---

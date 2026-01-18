@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/bidi-diagnostics
 created_at: 2026-01-17T03:51:36Z
-updated_at: 2026-01-18T18:02:36Z
+updated_at: 2026-01-18T21:31:08Z
 url: https://github.com/astral-sh/ruff/pull/22643
-synced_at: 2026-01-18T18:15:41Z
+synced_at: 2026-01-18T22:21:55Z
 ```
 
 # [ty] Improve invalid assignment diagnostics with type context
@@ -511,5 +511,17 @@ index 911f9b5253..2063c7a09d 100644
 ---
 
 _@AlexWaygood reviewed on 2026-01-18 18:02_
+
+---
+
+_@ibraheemdev reviewed on 2026-01-18 21:31_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:8706 on 2026-01-18 21:31_
+
+This was actually a bug. We should be creating a fresh `Bindings` every time, because the speculative calls to `check_types` mutate internal state. This led to a few bugs after the changes (I'm not sure why we didn't notice before).
+
+As a performance consideration, it is probably possible to reset the fields that were mutated instead of cloning, but I'm not sure it matters. 
 
 ---

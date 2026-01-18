@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
-updated_at: 2026-01-18T21:13:58Z
+updated_at: 2026-01-18T21:56:23Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-18T21:20:25Z
+synced_at: 2026-01-18T22:21:55Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
@@ -303,5 +303,37 @@ _@danjones1618 reviewed on 2026-01-18 21:13_
 _Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:40 on 2026-01-18 21:13_
 
 Indeed, changing
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 21:43_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:67 on 2026-01-18 21:43_
+
+Found `match_typing_qualified_name` which allows me to simplify this section of the code! Thanks
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 21:51_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:57 on 2026-01-18 21:51_
+
+This is a small indirection to `sematnic.resolve_qualified_name` to allow for unit testing of `get_annotation_complexity` of individual annotation expressions without the need to build a checker over an entire python module.
+
+I've refactored this trait to be simpler as I was originally expecting to need to handle `Union`s too and I've also found a helper function that already handles the  `typing` vs `typing_extensions` resolution.
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 21:56_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:54 on 2026-01-18 21:56_
+
+Nice idea!
 
 ---

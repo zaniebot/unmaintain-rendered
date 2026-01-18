@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-18T17:11:20Z
+updated_at: 2026-01-18T21:18:43Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-18T17:13:57Z
+synced_at: 2026-01-18T22:21:58Z
 ```
 
 # Dependency Dashboard
@@ -106,6 +106,7 @@ The following updates have been manually edited so Renovate will no longer make 
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
+ - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
@@ -265,7 +266,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `assert_cmd 2.0.16` → [Updates: `2.0.16`]
  - `assert_fs 1.1.2`
  - `byteorder 1.5.0`
- - `filetime 0.2.25`
+ - `filetime 0.2.25` → [Updates: `0.2.25`]
  - `http-body-util 0.1.2`
  - `hyper 1.4.1`
  - `hyper-util 0.1.8`

@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: charlie/success
 head: charlie/data-decorator
 created_at: 2026-01-18T19:34:12Z
-updated_at: 2026-01-18T21:09:34Z
+updated_at: 2026-01-18T21:40:47Z
 url: https://github.com/astral-sh/ruff/pull/22687
-synced_at: 2026-01-18T21:20:25Z
+synced_at: 2026-01-18T22:21:55Z
 ```
 
 # [ty] Avoid overload errors when detecting dataclass-on-tuple
@@ -245,5 +244,25 @@ I am going to see if I can fix that separately [here](https://github.com/astral-
 _Comment by @charliermarsh on 2026-01-18 21:00_
 
 I moved that change into https://github.com/astral-sh/ruff/pull/22688.
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-18 21:40_
+
+---
+
+_Review requested from @carljm by @charliermarsh on 2026-01-18 21:40_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-18 21:40_
+
+---
+
+_Review requested from @sharkdp by @charliermarsh on 2026-01-18 21:40_
+
+---
+
+_Review requested from @dcreager by @charliermarsh on 2026-01-18 21:40_
 
 ---
