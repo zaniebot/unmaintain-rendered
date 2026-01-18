@@ -7,9 +7,9 @@ author: mlisovyi
 labels: []
 assignees: []
 created_at: 2026-01-18T14:33:47Z
-updated_at: 2026-01-18T17:40:03Z
+updated_at: 2026-01-18T19:45:11Z
 url: https://github.com/astral-sh/ty/issues/2555
-synced_at: 2026-01-18T18:15:23Z
+synced_at: 2026-01-18T20:18:22Z
 ```
 
 # Semantic token recognition for pandas.read_parquet
@@ -65,5 +65,11 @@ _Closed by @AlexWaygood on 2026-01-18 17:39_
 ---
 
 _Label `server` removed by @AlexWaygood on 2026-01-18 17:40_
+
+---
+
+_Comment by @mlisovyi on 2026-01-18 19:45_
+
+Thanks @AlexWaygood !
 
 ---

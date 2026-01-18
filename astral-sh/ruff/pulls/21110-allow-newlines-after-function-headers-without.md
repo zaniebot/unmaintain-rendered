@@ -12,9 +12,9 @@ merged: true
 base: main
 head: brent/newline-after-function-header
 created_at: 2025-10-28T16:51:12Z
-updated_at: 2025-11-26T17:13:10Z
+updated_at: 2026-01-18T19:29:15Z
 url: https://github.com/astral-sh/ruff/pull/21110
-synced_at: 2026-01-12T15:57:16Z
+synced_at: 2026-01-18T20:18:39Z
 ```
 
 # Allow newlines after function headers without docstrings
@@ -2164,5 +2164,15 @@ Thank you for making this change! I see that this feature is only available in p
 _Comment by @MichaReiser on 2025-11-26 17:13_
 
 You can set `format.preview` which enables all preview formatting changes. There's no feature-specific flag. You'll have to wait for our next minor where we plan on stabilizing this feature.
+
+---
+
+_Comment by @edu-nixon on 2026-01-18 19:29_
+
+> You can set `format.preview` which enables all preview formatting changes. There's no feature-specific flag. You'll have to wait for our next minor where we plan on stabilizing this feature.
+
+Hi @MichaReiser, thanks for approving this rule. Quick question, does the flag exist now? I tried to search it myself with no luck
+
+Thank you!
 
 ---

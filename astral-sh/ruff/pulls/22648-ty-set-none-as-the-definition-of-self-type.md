@@ -12,9 +12,9 @@ merged: true
 base: main
 head: alex/typevar-definition
 created_at: 2026-01-17T12:50:14Z
-updated_at: 2026-01-18T19:04:42Z
+updated_at: 2026-01-18T19:17:35Z
 url: https://github.com/astral-sh/ruff/pull/22648
-synced_at: 2026-01-18T19:17:01Z
+synced_at: 2026-01-18T20:18:40Z
 ```
 
 # [ty] Set `None` as the `definition` of `Self` type variables
@@ -319,5 +319,15 @@ _Closed by @AlexWaygood on 2026-01-18 19:04_
 ---
 
 _Branch deleted on 2026-01-18 19:04_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 19:17_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-18 19:17_
+
+https://github.com/astral-sh/ty/issues/2557 is the followup issue
 
 ---
