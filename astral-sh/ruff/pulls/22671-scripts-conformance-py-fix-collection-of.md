@@ -2,18 +2,19 @@
 number: 22671
 title: "`scripts/conformance.py`: fix collection of diagnostics"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/conformance-exclude-supporting-files
 created_at: 2026-01-18T00:47:10Z
-updated_at: 2026-01-18T10:47:50Z
+updated_at: 2026-01-18T11:52:39Z
 url: https://github.com/astral-sh/ruff/pull/22671
-synced_at: 2026-01-18T11:18:27Z
+synced_at: 2026-01-18T12:19:40Z
 ```
 
 # `scripts/conformance.py`: fix collection of diagnostics
@@ -179,5 +180,23 @@ Should we create a helper method that, given a path, returns whether this is a c
 ---
 
 _@MichaReiser approved on 2026-01-18 10:47_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 11:47_
+
+I've added helper functions that use the same logic as in the upstream `python/typing` repo to determine whether a file is a test file or not. I've also added a `--force-summary-table` CLI option so that it's easier to test and debug changes like this in the future (or to see where our latest conformance results are at, outside of the context of a PR that attempts to improve those results).
+
+---
+
+_Merged by @AlexWaygood on 2026-01-18 11:52_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 11:52_
+
+---
+
+_Branch deleted on 2026-01-18 11:52_
 
 ---

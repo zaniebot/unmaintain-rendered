@@ -10,9 +10,9 @@ labels:
   - style
 assignees: []
 created_at: 2025-09-19T13:37:01Z
-updated_at: 2026-01-10T15:01:47Z
+updated_at: 2026-01-18T11:25:52Z
 url: https://github.com/astral-sh/ruff/issues/20482
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-18T12:19:28Z
 ```
 
 # Ruff 2026 Style Guide
@@ -301,5 +301,13 @@ Removing unnecessary parentheses around `(b)` might be slightly trickier. I do a
 _Comment by @MichaReiser on 2025-12-09 08:34_
 
 Regarding: `(c, *_) = a()`. We intentionally preserve tuple parentheses in more places than black because it can be very easy to miss that something's a tuple if the parentheses are missing. I don't remember the exact details but we should ensure we preserve parentheses in assignment targets the same as we do in assignment values.
+
+---
+
+_Comment by @hugovk on 2026-01-18 11:25_
+
+Black 26.1.0 is now out with their new 2026 style:
+
+https://github.com/psf/black/releases/tag/26.1.0
 
 ---
