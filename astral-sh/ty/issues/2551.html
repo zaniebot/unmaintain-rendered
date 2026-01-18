@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Static analysis for pandas DataFrame column schemas - astral-sh/ty #2551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Static analysis for pandas DataFrame column schemas</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2551">#2551</a>
+        opened by <a href="https://github.com/w-martin">@w-martin</a>
+        on 2026-01-18 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/w-martin">@w-martin</a></div>
+            <div class="timeline-body"><h1>Feature Request: Static Analysis for pandas DataFrame Column Schemas</h1>
+<h2>Problem Statement</h2>
+<p>Python ML/data science projects using pandas/polars lack static analysis for DataFrame column schemas. This leads to runtime errors from column mismatches that could be caught at lint-time.</p>
+<p><strong>Current situation:</strong></p>
+<ul>
+<li><code>pandas-stubs</code> provides API types but no column-level tracking</li>
+<li><code>pandera</code> adds static analysis via mypy plugin but misses cases due to DataFrame mutability handling</li>
+</ul>
+<p>No tool catches this error statically:</p>
+<pre><code class="language-python"># example.py
+# Highlights lint checks missing with mypy/pandera
+
+import pandera as pa
+from pandera.typing import DataFrame, Series
+
+
+class UserSchema(pa.DataFrameModel):
+    &quot;&quot;&quot;Schema defining user data structure&quot;&quot;&quot;
+
+    user_id: Series[int]
+    email: Series[str]
+
+
+class OrderSchema(pa.DataFrameModel):
+    &quot;&quot;&quot;Schema defining order data structure&quot;&quot;&quot;
+
+    order_id: Series[int]
+    amount: Series[float]
+
+
+def load_users() -&gt; DataFrame[UserSchema]:
+    return DataFrame[UserSchema](  # must instantiate pandera DataFrame with schema
+        {&quot;user_id&quot;: [&quot;foo&quot;, &quot;bar&quot;], &quot;email&quot;: [&quot;foo@baz.com&quot;, &quot;bar@qux.com&quot;]},
+    )
+
+
+def process_orders(df: DataFrame[OrderSchema]) -&gt; None:
+    &quot;&quot;&quot;Process orders - expects OrderSchema&quot;&quot;&quot;
+    # This should work
+    print(df[&quot;order_id&quot;].sum())
+    print(df[&quot;amount&quot;].mean())
+
+
+def main() -&gt; None:
+    # Passing wrong schema to function
+    # We load users (UserSchema) but pass to function expecting orders (OrderSchema)
+    users = load_users()
+    process_orders(users)  # mypy catches this as DataFrame type mismatch, but NOT because of column schemas
+
+    # Issue 1: Accessing non-existent column
+    users = load_users()
+    # 'name' column doesn't exist in UserSchema
+    print(users[&quot;name&quot;])  # mypy SHOULD error here but doesn't
+
+    # Issue 2: Mutation breaks tracking
+    users = load_users()  # Has UserSchema
+    users[&quot;new_column&quot;] = 123  # Now has extra column
+    # mypy has no idea about the mutation
+
+    # Issue 3: Column name typo
+    users = load_users()
+    print(users[&quot;emai&quot;])  # Typo: 'emai' instead of 'email' - not caught
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+
+# All 3 issues are NOT caught by static analysis.
+# Pandera only validates at runtime when you explicitly call .validate()
+# or use @pa.check_types decorator (which is runtime checking, not static)
+#
+## Expected Behavior
+#    
+#    Running `ty check example.py` should report:
+#    - Line X: Column 'name' does not exist in UserSchema
+#    - Line Y: Column 'emai' does not exist in UserSchema (did you mean 'email'?)
+#    - Mutation tracking: Warning about untracked schema changes
+</code></pre>
+<h2>Proposed Solution</h2>
+<p>Enable <code>ty</code> to understand DataFrame column schemas through either:</p>
+<ol>
+<li><strong>Plugin/Extension API</strong> that allows domain-specific type checking</li>
+<li><strong>Built-in support</strong> for <code>DataFrame[SchemaType]</code> generic syntax</li>
+<li><strong>Advanced stub interpretation</strong> that encodes column information</li>
+</ol>
+<p><strong>Desired syntax:</strong></p>
+<pre><code class="language-python">from pandas import DataFrame
+from typing import TypedDict
+
+class UserSchema(TypedDict):
+    user_id: int
+    email: str
+
+def load_users() -&gt; DataFrame[UserSchema]:
+    ...
+
+def process(df: DataFrame[UserSchema]) -&gt; None:
+    df['name']  # ty error: Column 'name' not in UserSchema
+    df['user_id']  # OK
+</code></pre>
+<h2>Why This Matters</h2>
+<ul>
+<li><strong>Impact:</strong> Affects every data science/ML team using Python</li>
+<li><strong>Current pain:</strong> Bugs only caught through extensive testing, takes time to dig into where the issue is introduced</li>
+<li><strong>Performance:</strong> Static checking is orders of magnitude faster than runtime validation</li>
+<li><strong>ty's strength:</strong> Rust-based speed makes this practical for large codebases</li>
+</ul>
+<h2>Implementation Considerations</h2>
+<p><strong>Option A: Plugin System</strong></p>
+<ul>
+<li>Mypy has a plugin API (<code>mypy.plugin</code>) that pandera attempted to use</li>
+<li>A ty plugin API could enable this and many other domain-specific analyses</li>
+<li>Could benefit entire ecosystem (SQLAlchemy, Pydantic, etc.)</li>
+</ul>
+<p><strong>Option B: Direct Integration</strong></p>
+<ul>
+<li>DataFrame column tracking could be built into ty's core</li>
+<li>Rust implementation would be extremely fast</li>
+<li>Could become a killer feature for ty</li>
+</ul>
+<p><strong>Option C: Enhanced Stub Support</strong></p>
+<ul>
+<li>If stubs could express &quot;this DataFrame has these columns&quot;</li>
+<li>ty's existing generic type support might be sufficient?</li>
+<li>Lowest barrier to entry</li>
+</ul>
+<h2>I Can Help</h2>
+<p>I'm willing to:</p>
+<ul>
+<li>Contribute to design discussions</li>
+<li>Help implement this feature (Rust novice)</li>
+<li>Test and provide feedback</li>
+<li>Document for the community</li>
+</ul>
+<h2>Context</h2>
+<p>I work on ML infrastructure and have experience with:</p>
+<ul>
+<li>Pandas/numpy codebases at scale</li>
+<li>Previously built <code>pandandic</code> for DataFrame validation</li>
+<li>Familiar with type checking concepts, new to ty internals</li>
+</ul>
+<hr />
+<p><strong>Is a plugin system on ty's roadmap? Would you be open to collaboration on this feature? Thanks!</strong></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-18 10:20:13 UTC
+    </footer>
+</body>
+</html>
