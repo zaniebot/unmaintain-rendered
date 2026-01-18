@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
-updated_at: 2026-01-17T00:01:26Z
+updated_at: 2026-01-18T21:13:58Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-17T00:08:11Z
+synced_at: 2026-01-18T21:20:25Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
@@ -293,5 +293,15 @@ Thanks for working on this! I had a few comments in addition to Amy's.
 ---
 
 _Label `preview` added by @ntBre on 2026-01-17 00:01_
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 21:13_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:40 on 2026-01-18 21:13_
+
+Indeed, changing
 
 ---

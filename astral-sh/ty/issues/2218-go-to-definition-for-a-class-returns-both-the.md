@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-25T06:59:57Z
-updated_at: 2026-01-10T08:51:56Z
+updated_at: 2026-01-18T20:36:07Z
 url: https://github.com/astral-sh/ty/issues/2218
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-18T21:20:07Z
 ```
 
 # Go-to-definition for a class returns both the `__init__` definition and the class itself
@@ -137,5 +137,11 @@ _Removed from milestone `Stable` by @MichaReiser on 2026-01-10 08:51_
 ---
 
 _Added to milestone `Pre-stable 1` by @MichaReiser on 2026-01-10 08:51_
+
+---
+
+_Comment by @kaddkaka on 2026-01-18 20:36_
+
+Getting both locations seems like the better outcome, at least I would prefer that. That way I'm immediately moved to the first location (line with `class`) and can go to the next location (the `__init__()`) if I want to.
 
 ---
