@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2026-01-12T18:52:24Z
+updated_at: 2026-01-18T08:27:42Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-12T19:26:23Z
+synced_at: 2026-01-18T09:15:46Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -474,5 +474,11 @@ Could you confirm the below table matches your experience and I'll update the is
 _Comment by @K900 on 2026-01-12 08:17_
 
 This seems accurate yeah. I hate how the table just keeps growing... 
+
+---
+
+_Comment by @K900 on 2026-01-18 08:27_
+
+So folks, should we make some kind of call here? I'm still leaning towards just removing the check and documenting it better that cursed filesystem setups are the end user's problem.
 
 ---
