@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-18T17:13:50Z
+updated_at: 2026-01-18T22:35:24Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-18T18:15:28Z
+synced_at: 2026-01-18T23:38:56Z
 ```
 
 # Dependency Dashboard
@@ -91,6 +91,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
+ - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
  - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
@@ -154,7 +155,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `dunce 1.0.5`
  - `etcetera 0.11.0`
  - `fern 0.7.0`
- - `filetime 0.2.23`
+ - `filetime 0.2.23` → [Updates: `0.2.23`]
  - `get-size2 0.7.3`
  - `getrandom 0.3.1`
  - `glob 0.3.1`

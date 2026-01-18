@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/bidi-diagnostics
 created_at: 2026-01-17T03:51:36Z
-updated_at: 2026-01-18T21:31:08Z
+updated_at: 2026-01-18T23:13:03Z
 url: https://github.com/astral-sh/ruff/pull/22643
-synced_at: 2026-01-18T22:21:55Z
+synced_at: 2026-01-18T23:41:47Z
 ```
 
 # [ty] Improve invalid assignment diagnostics with type context
@@ -523,5 +523,19 @@ _Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/bu
 This was actually a bug. We should be creating a fresh `Bindings` every time, because the speculative calls to `check_types` mutate internal state. This led to a few bugs after the changes (I'm not sure why we didn't notice before).
 
 As a performance consideration, it is probably possible to reset the fields that were mutated instead of cloning, but I'm not sure it matters. 
+
+---
+
+_@electronick1 reviewed on 2026-01-18 23:13_
+
+---
+
+_Review comment by @electronick1 on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:408 on 2026-01-18 23:13_
+
+Hi @ibraheemdev,
+
+I was interested to check this to understand how things works inside and documentated some findings in the fork PR https://github.com/electronick1/ruff/pull/1. Maybe it will help to find some answers on this one.
+
+It looks like that in some cases `builder.infer_map` skips checks for assignment and `assignable_to_declared_type` using it's default `true` stmt (see PR description). The easiest fix for this case, but not sure if it's correct one, is to reverse default value for `assignable_to_declared_type`. The other option could be to flag that `infer_argument_types` function didn't actually verified assignment and then (potentialy) check TypeContext [in here](https://github.com/astral-sh/ruff/pull/22643/files#diff-89ab607f2738327350b89c4bf98de6e4af15eb4cfdf55d3afc1cb71499928f88R3118). I also wondered if there is a bigger problem with how Generic classes with __new__ handled, but didnt dive to this part yet.
 
 ---

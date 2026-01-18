@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
-updated_at: 2026-01-18T21:56:23Z
+updated_at: 2026-01-18T23:07:28Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-18T22:21:55Z
+synced_at: 2026-01-18T23:41:46Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
@@ -234,13 +234,13 @@ Let's move this function and the assignment version closer to the top of the fil
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:54 on 2026-01-16 21:57_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:63 on 2026-01-16 21:57_
 
 I think it would make sense to implement a `fix_title` function too (even if we can't provide an actual fix). That will attach a `help` sub-diagnostic to the end of the main diagnostic, where we could put a message like `consider using a type alias` or something. Just an idea.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:99 on 2026-01-16 21:59_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:170 on 2026-01-16 21:59_
 
 I haven't really looked closely enough to see if this is a drop-in replacement, but this function reminds me of an existing helper:
 
@@ -332,8 +332,50 @@ _@danjones1618 reviewed on 2026-01-18 21:56_
 
 ---
 
-_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:54 on 2026-01-18 21:56_
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:63 on 2026-01-18 21:56_
 
 Nice idea!
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 23:00_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:119 on 2026-01-18 23:00_
+
+From a quick check, commenting out the `expr.as_string_literal_expr` results in tests failing.
+
+Looking around in the code for expression, we could move the calls to calculate the annotation complexity into this function under a `checker.semantic.in_annotation()` guard. 
+
+Regarding the self visiting of deferred string type definitions, this might work if we add the check function inside the aforementioned visitor function. Do you know if this will consider the entire annotation as deferred if a nested item is deferred such as `list[dict[str, "DeferredDefinition"]]`. Will this call at the `list` node or only from the string node?
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 23:02_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:192 on 2026-01-18 23:02_
+
+Unfortunately, this is the only location it's static as there's no argument name here. We could do a format string for it to become `<function_name>'s return type` if you think that's nicer?
+
+---
+
+_@danjones1618 reviewed on 2026-01-18 23:05_
+
+---
+
+_Review comment by @danjones1618 on `crates/ruff_linter/src/rules/flake8_annotation_complexity/rules/complex_annotation.rs`:170 on 2026-01-18 23:05_
+
+Looks like the `traverse_union` could be a viable alternative - I can try refactor it later in the week
+
+---
+
+_Comment by @danjones1618 on 2026-01-18 23:07_
+
+Thanks both @amyreese and @ntBre for the reviews. I've resolved your comments or responded to them. 
+
+I can refactor to use the `traverse_union` and adjust the call sites of entering the check later in the week if they're still desired.
 
 ---
