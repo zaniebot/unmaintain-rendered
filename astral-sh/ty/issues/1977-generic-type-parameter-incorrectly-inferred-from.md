@@ -2,15 +2,15 @@
 number: 1977
 title: "Generic type parameter incorrectly inferred from `Callable[[S], T | None]` as `T | None` instead of `T`"
 type: issue
-state: open
+state: closed
 author: fadedDexofan
 labels:
   - generics
 assignees: []
 created_at: 2025-12-17T05:47:08Z
-updated_at: 2025-12-17T07:45:03Z
+updated_at: 2026-01-18T12:33:37Z
 url: https://github.com/astral-sh/ty/issues/1977
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-18T13:20:36Z
 ```
 
 # Generic type parameter incorrectly inferred from `Callable[[S], T | None]` as `T | None` instead of `T`
@@ -140,5 +140,15 @@ _Label `generics` added by @AlexWaygood on 2025-12-17 07:44_
 ---
 
 _Added to milestone `Stable` by @AlexWaygood on 2025-12-17 07:45_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 12:33_
+
+Fixed in https://github.com/astral-sh/ruff/pull/22495
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 12:33_
 
 ---

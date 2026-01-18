@@ -2,19 +2,20 @@
 number: 22675
 title: "[ty] Fix missing syntax highlighting for aliased import names"
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - bug
   - server
   - ty
 assignees: []
+merged: true
 base: main
 head: claude/fix-issue-2547-FX1de
 created_at: 2026-01-18T11:45:34Z
-updated_at: 2026-01-18T12:04:08Z
+updated_at: 2026-01-18T12:14:44Z
 url: https://github.com/astral-sh/ruff/pull/22675
-synced_at: 2026-01-18T12:19:40Z
+synced_at: 2026-01-18T13:20:54Z
 ```
 
 # [ty] Fix missing syntax highlighting for aliased import names
@@ -98,5 +99,17 @@ assuming that this is a reference to the convention enforced by https://docs.ast
 ---
 
 _@AlexWaygood approved on 2026-01-18 11:51_
+
+---
+
+_Merged by @MichaReiser on 2026-01-18 12:14_
+
+---
+
+_Closed by @MichaReiser on 2026-01-18 12:14_
+
+---
+
+_Branch deleted on 2026-01-18 12:14_
 
 ---

@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: FURB145
 created_at: 2026-01-17T21:56:31Z
-updated_at: 2026-01-18T10:53:00Z
+updated_at: 2026-01-18T13:11:43Z
 url: https://github.com/astral-sh/ruff/pull/22670
-synced_at: 2026-01-18T11:18:27Z
+synced_at: 2026-01-18T13:20:54Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB145`)
@@ -67,5 +67,17 @@ Thank you.
 We should also update the documentation to mention that the fix is unsafe if there's a comment (I don't think it's necessary to add a code example, a short sentence should be sufficient)
 
 https://github.com/astral-sh/ruff/blob/b4b8299d6cc3db6fd6125a30d58d58ef3d3069bf/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_dict_comprehension_for_iterable.rs#L36-L38
+
+---
+
+_Comment by @chirizxc on 2026-01-18 13:11_
+
+> Thank you.
+> 
+> We should also update the documentation to mention that the fix is unsafe if there's a comment (I don't think it's necessary to add a code example, a short sentence should be sufficient)
+> 
+> https://github.com/astral-sh/ruff/blob/b4b8299d6cc3db6fd6125a30d58d58ef3d3069bf/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_dict_comprehension_for_iterable.rs#L36-L38
+
+I think it's ready, the rest of the PRs have also changed.
 
 ---

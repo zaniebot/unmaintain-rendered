@@ -12,9 +12,9 @@ merged: true
 base: main
 head: alex/conformance-exclude-supporting-files
 created_at: 2026-01-18T00:47:10Z
-updated_at: 2026-01-18T11:52:39Z
+updated_at: 2026-01-18T12:43:14Z
 url: https://github.com/astral-sh/ruff/pull/22671
-synced_at: 2026-01-18T12:19:40Z
+synced_at: 2026-01-18T13:20:54Z
 ```
 
 # `scripts/conformance.py`: fix collection of diagnostics
@@ -198,5 +198,11 @@ _Closed by @AlexWaygood on 2026-01-18 11:52_
 ---
 
 _Branch deleted on 2026-01-18 11:52_
+
+---
+
+_Comment by @WillDuke on 2026-01-18 12:43_
+
+Nice catch, sorry I'm late to the party here! 
 
 ---

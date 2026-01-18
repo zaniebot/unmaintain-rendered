@@ -2,16 +2,16 @@
 number: 2547
 title: "name not colored in \"from module import name as alias\""
 type: issue
-state: open
+state: closed
 author: hamdanal
 labels:
   - bug
   - server
 assignees: []
 created_at: 2026-01-17T14:34:24Z
-updated_at: 2026-01-18T10:55:31Z
+updated_at: 2026-01-18T12:14:43Z
 url: https://github.com/astral-sh/ty/issues/2547
-synced_at: 2026-01-18T11:18:08Z
+synced_at: 2026-01-18T13:20:36Z
 ```
 
 # name not colored in "from module import name as alias"
@@ -41,5 +41,9 @@ _Label `bug` added by @MichaReiser on 2026-01-18 10:55_
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2026-01-18 10:55_
+
+---
+
+_Closed by @MichaReiser on 2026-01-18 12:14_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - fatal
 assignees: []
 created_at: 2026-01-08T18:09:38Z
-updated_at: 2026-01-18T11:01:13Z
+updated_at: 2026-01-18T12:54:47Z
 url: https://github.com/astral-sh/ty/issues/2401
-synced_at: 2026-01-18T11:18:08Z
+synced_at: 2026-01-18T13:20:36Z
 ```
 
 # panic for incomplete except block
@@ -68,5 +68,15 @@ Another example from #2545:
 ```
 
 With the same panic message 
+
+---
+
+_Comment by @MichaReiser on 2026-01-18 12:13_
+
+The issue here is that `HasDefinition` assumes that nodes implementing it always have a `Definition`. However, this is not the case for `ExceptHandlerExceptHandler`. It only has a `Definition` if it has a `name`. 
+
+We should change `HasDefinition` to return an `Option<Definition>` instead, to reflect this fact. 
+
+Edit: Or reconsider implementing `HasDefinition` and `HasType` for `ExceptHandlerExceptHandler`. Maybe it's better to change the call sites to call the same methods on the `name` instead
 
 ---
