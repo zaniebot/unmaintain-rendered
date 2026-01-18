@@ -2,18 +2,19 @@
 number: 22648
 title: "[ty] Set `None` as the `definition` of `Self` type variables"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - internal
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/typevar-definition
 created_at: 2026-01-17T12:50:14Z
-updated_at: 2026-01-17T14:13:09Z
+updated_at: 2026-01-18T19:04:42Z
 url: https://github.com/astral-sh/ruff/pull/22648
-synced_at: 2026-01-17T15:13:10Z
+synced_at: 2026-01-18T19:17:01Z
 ```
 
 # [ty] Set `None` as the `definition` of `Self` type variables
@@ -250,5 +251,73 @@ I've found it useful in the past that `r-a` allows me to jump to the class defin
 `Self` is inherently awkward in the LSP case because its a bound type var and using it in a method binds it. 
 
 I'm leaning towards not changing this, as the new behavior isn't clearly an improvement. If we decide that jumping nowhere is the desired behavior, then we should add LSP tests for all features that demonstrate that (e.g. does this break semantic tokens?)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 18:34_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-18 18:34_
+
+I agree that we definitely need to add language-server snapshots for our behaviour around `Self`; I'm surprised that none needed to be updated as a result of this PR.
+
+I still think that I wouldn't personally expect cmd-clicking on `Self` to take me to the class definition in an IDE, but I see your point that it might be nice for documentation about the class (rather than documentation about `Self` types in general) to show up when you hover over `Self` in the context of a method annotation. (There is a cost to that, though -- it means that users will rarely see [the documentation for the `Self` type itself](https://github.com/astral-sh/ruff/blob/bab571c12c46dd1a8b3070df55b52b718832e17c/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi#L566-L581) that's in `typing.pyi`.)
+
+But none of this solves the original issue that I was trying to solve, which is that if you're attaching a subdiagnostic that points to the definition of a type variable (so that the user can see what the bounds, constraints or defaults of that variable are), you never really want to attach that subdiagnostic if the type variable happens to be `Self`. Whether we call `.full_range()` or `.focus_range()` on the definition is irrelevant; for diagnostics like the one being highlighted in https://github.com/astral-sh/ty/issues/2514, we just don't want to add a subdiagnostic highlighting the class definition at all, because it's not helpful information for the user in that context. Even if we stipulate that for some language-server purposes, it's useful for the `definition` field of `Self` type variables to point to the class's definition, it's still a very different kind of definition to the kind of definition that most type variables have, and that's a footgun for us in `ty_python_semantic` when we're creating subdiagnostics.
+
+If we want go-to definition, on-hover, etc. to treat `Self` as if it's the class, then I wonder if it might be cleaner for that to be implemented as a special case in the `ty_ide` crate rather than having the `definition` field here point to the class definition. (I'm happy to implement that.) Another strategy might be to have a separate `definition_for_subdiagnostics()` method that we could use from `ty_python_semantic`, but I don't really feel like this would get rid of the footgun because we'd still have to remember to use it whenever we create subdiagnostics.
+
+---
+
+_@MichaReiser reviewed on 2026-01-18 18:55_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-18 18:55_
+
+> If we want go-to definition, on-hover, etc. to treat Self as if it's the class, then I wonder if it might be cleaner for that to be implemented as a special case in the ty_ide crate rather than having the definition field here point to the class definition.
+
+I'm not sure but this might require special casing in multiple places. 
+
+Ultimately, I feel like it's important do decide what we expect `Type::definition` to return to decide on what the right behavior here is, because this is very much an API that could also be used by a linter in the future. 
+
+In that context, I feel like there's no right answer:
+
+* Returning the class feels wrong because it's not where the `TypeVar`'s defined
+* Returning `typing.Self` feels correct as it's where the symbol's defined. But it's not how the type var is bound.
+
+I guess returning `None` is fine for now, but let's create an issue to follow up on what behavior we want (and add tests)
+
+
+
+
+---
+
+_@MichaReiser approved on 2026-01-18 18:55_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 19:03_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/generics.rs`:106 on 2026-01-18 19:03_
+
+> I guess returning `None` is fine for now, but let's create an issue to follow up on what behavior we want (and add tests)
+
+Sounds good.
+
+---
+
+_Merged by @AlexWaygood on 2026-01-18 19:04_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-18 19:04_
+
+---
+
+_Branch deleted on 2026-01-18 19:04_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: charlie/neg-sub
 head: charlie/bool-sub
 created_at: 2026-01-18T16:54:00Z
-updated_at: 2026-01-18T17:29:29Z
+updated_at: 2026-01-18T18:20:05Z
 url: https://github.com/astral-sh/ruff/pull/22684
-synced_at: 2026-01-18T18:15:41Z
+synced_at: 2026-01-18T19:17:01Z
 ```
 
 # [ty] Narrow on bool and byte subscripts
@@ -150,5 +150,40 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-18 17:29_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-18 17:29_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/member.rs`:238 on 2026-01-18 18:16_
+
+as you say, `True.__index__()` returns the same thing as `(1).__index__()` and `hash(True)` returns the same thing as `hash(1)`. So maybe we should just treat this exactly the same way as an `int` subscript?
+
+```suggestion
+                        ast::Expr::BooleanLiteral(ast::ExprBooleanLiteral { value, .. }) => {
+                            let _ = write!(path, "{}", u8::from(*value) });
+                            segments
+                                .push(SegmentInfo::new(SegmentKind::IntSubscript, start_offset));
+                        }
+```
+
+with this patch applied, both the `reveal_type` calls here reveal `str` (on your branch currently, only the first one does):
+
+```py
+def f(x: tuple[object, object]):
+    if isinstance(x[True], str):
+        reveal_type(x[True])
+        reveal_type(x[1])
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/member.rs`:249 on 2026-01-18 18:19_
+
+Should we add a new `SegmentKind` variant for bytes literals? It feels distinct to string-literal subscriptions. And e.g. I don't think the `Display` for `MemberExpr` is going to be accurate if it's a `StringSubscript` variant that actually represents a bytes subscript:
+
+https://github.com/astral-sh/ruff/blob/bab571c12c46dd1a8b3070df55b52b718832e17c/crates/ty_python_semantic/src/semantic_index/member.rs#L254-L268
+
+---
+
+_@AlexWaygood reviewed on 2026-01-18 18:20_
 
 ---
