@@ -5,12 +5,13 @@ type: issue
 state: open
 author: dscorbett
 labels:
+  - wish
   - enums
 assignees: []
 created_at: 2026-01-17T20:15:58Z
-updated_at: 2026-01-18T00:05:43Z
+updated_at: 2026-01-18T01:02:15Z
 url: https://github.com/astral-sh/ty/issues/2550
-synced_at: 2026-01-18T00:17:55Z
+synced_at: 2026-01-18T01:20:01Z
 ```
 
 # Support `enum.global_enum`
@@ -54,5 +55,39 @@ _Label `enums` added by @AlexWaygood on 2026-01-17 23:50_
 _Comment by @AlexWaygood on 2026-01-18 00:05_
 
 Thanks! I'd love to support this at some point, but (to help with our prioritisation here): do any other type checkers support this feature currently?
+
+---
+
+_Comment by @dscorbett on 2026-01-18 01:01_
+
+I don’t know of any.
+```console
+$ mypy main.py module.py
+main.py:1: error: Module "module" has no attribute "X"  [attr-defined]
+Found 1 error in 1 file (checked 2 source files)
+
+$ pyrefly check --output-format min-text main.py module.py
+ERROR main.py:1:20-21: Could not import `X` from `module` [missing-module-attribute]
+ INFO 1 error
+
+$ pyright main.py module.py | sed 's:/.*/\([^/]*\.py\):\1:'
+main.py
+  main.py:1:20 - error: "X" is unknown import symbol (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations
+
+$ zuban check main.py module.py
+main.py:1: error: Module "module" has no attribute "X"  [attr-defined]
+Found 1 error in 1 file (checked 2 source files)
+```
+
+---
+
+_Comment by @AlexWaygood on 2026-01-18 01:02_
+
+Thanks, that's helpful context
+
+---
+
+_Label `wish` added by @AlexWaygood on 2026-01-18 01:02_
 
 ---

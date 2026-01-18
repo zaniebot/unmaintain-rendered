@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-17T22:28:56Z
+updated_at: 2026-01-18T01:05:20Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-17T23:15:40Z
+synced_at: 2026-01-18T01:20:19Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -559,5 +558,33 @@ _Converted to draft by @charliermarsh on 2026-01-17 22:28_
 _Comment by @charliermarsh on 2026-01-17 22:28_
 
 I’d like to do more investigation of the ecosystem changes (unless this is obviously correct).
+
+---
+
+_Comment by @charliermarsh on 2026-01-18 00:52_
+
+I think the `paasta_tools/tron_tools.py` diagnostic is correct.
+
+---
+
+_Comment by @charliermarsh on 2026-01-18 00:53_
+
+I think this spack diagnostic is correct, with: `Cannot subscript object of type ~AlwaysFalsy with no __getitem__ method`?
+
+```python
+# fetch from first entry in urls to save time
+if hasattr(self, "urls") and self.urls:
+    urls.append(self.urls[0])
+```
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-18 01:04_
+
+---
+
+_Comment by @charliermarsh on 2026-01-18 01:05_
+
+It's a lot of new diagnostics... but my impression from checking around is that this is merely surfacing existing ty behavior in more contexts now. I don't see anything obviously wrong from my spot checks.
 
 ---
