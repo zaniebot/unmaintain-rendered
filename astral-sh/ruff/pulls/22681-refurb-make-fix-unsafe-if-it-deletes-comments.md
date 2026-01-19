@@ -2,17 +2,18 @@
 number: 22681
 title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB116`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
 labels:
   - fixes
 assignees: []
+merged: true
 base: main
 head: FURB116
 created_at: 2026-01-18T13:44:58Z
-updated_at: 2026-01-19T15:06:48Z
+updated_at: 2026-01-19T17:00:50Z
 url: https://github.com/astral-sh/ruff/pull/22681
-synced_at: 2026-01-19T15:25:06Z
+synced_at: 2026-01-19T17:26:16Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB116`)
@@ -95,5 +96,23 @@ Thanks! Just a couple of nits
 ---
 
 _Label `fixes` added by @ntBre on 2026-01-19 15:06_
+
+---
+
+_@ntBre approved on 2026-01-19 16:55_
+
+Thank you!
+
+---
+
+_Merged by @ntBre on 2026-01-19 16:56_
+
+---
+
+_Closed by @ntBre on 2026-01-19 16:56_
+
+---
+
+_Branch deleted on 2026-01-19 17:00_
 
 ---

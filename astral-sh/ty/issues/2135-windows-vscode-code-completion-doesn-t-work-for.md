@@ -2,7 +2,7 @@
 number: 2135
 title: "Windows | VSCode | Code completion doesn't work for local variables"
 type: issue
-state: open
+state: closed
 author: LittleLittleCloud
 labels:
   - needs-mre
@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2025-12-20T20:16:23Z
-updated_at: 2026-01-19T08:50:00Z
+updated_at: 2026-01-19T17:15:48Z
 url: https://github.com/astral-sh/ty/issues/2135
-synced_at: 2026-01-19T09:26:44Z
+synced_at: 2026-01-19T17:25:58Z
 ```
 
 # Windows | VSCode | Code completion doesn't work for local variables
@@ -150,5 +150,15 @@ That would be great, thank you!
 _Comment by @MichaReiser on 2026-01-19 08:50_
 
 @LittleLittleCloud have you been able to reproduce this again?
+
+---
+
+_Comment by @LittleLittleCloud on 2026-01-19 17:13_
+
+@MichaReiser No not able to,, feel free to close this issue, I'll reopen it when having more details
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 17:15_
 
 ---
