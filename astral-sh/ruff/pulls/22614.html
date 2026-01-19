@@ -346,8 +346,8 @@ core (https://github.com/home-assistant/core)
             <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 
 <h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging this PR will <strong>improve performance by 4.21%</strong></h3>
-<p><sub>Comparing <code>dcreager/distributed-ops</code> (06cdf67) with <code>main</code> (3c32355)</sub></p>
+<h3>Merging this PR will <strong>improve performance by 7.41%</strong></h3>
+<p><sub>Comparing <code>dcreager/distributed-ops</code> (7cf9fe2) with <code>main</code> (10fd3b2)</sub></p>
 <h3>Summary</h3>
 <p><code>⚡ 1</code> improved benchmark<br />
 <code>✅ 22</code> untouched benchmarks<br />
@@ -355,7 +355,7 @@ core (https://github.com/home-assistant/core)
 <h3>Performance Changes</h3>
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>pydantic</code></a> | 10.3 s | 9.9 s | +4.21% |</p>
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>pydantic</code></a> | 10.4 s | 9.7 s | +7.41% |</p>
 <p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
 </div>
         </div>
@@ -419,10 +419,32 @@ core (https://github.com/home-assistant/core)
             <div class="timeline-body"><p>This seems to work well! Pushed up some documentation of the approach.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:150 on 2026-01-19 09:16</div>
+            <div class="timeline-body"><p>This PR does improve the performance by a fair bit but it also regresses performance by about 1-2 on most other projects.</p>
+<p>It would be lovely if we could use specialization to specialize <code>when_any</code> and <code>when_all</code> for <code>ExactSizeIterator</code> so that we could use the old implementation if there are only very few items. But, that's unlikely an option any time soon unless we migrate to nightly Rust.</p>
+<p>I went through some <code>when_any</code> usages and:</p>
+<ul>
+<li>We could implement <code>when_any</code> for <code>&amp;[T]</code> and <code>&amp;FxOrderSet</code></li>
+<li>We could add a <code>when_any_exact</code> method (or rename <code>when_any</code> to <code>when_any_iter</code> to advertise the <code>ExactSizeIterator</code> version)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:722 on 2026-01-19 09:17</div>
+            <div class="timeline-body"><p>Should we do this in a separate PR so that we better understand where the performance improvements are coming from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-19 09:22</div>
+            <div class="timeline-body"><p>Nice.</p>
+<p>It might make sense to specialize <code>distribute_or</code> and <code>distribute_and</code> (or <code>when_any</code>) for <code>&amp;[T]</code> and <code>ExactSizeIterator</code> as we see a perf regression on many projects (while small). Unless the perf regression is related to the <code>ordering</code> change. I suggest splitting that change into its own PR so that we have a better understanding where the regression is coming from.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 15:01:02 UTC
+        Synced at 2026-01-19 10:31:33 UTC
     </footer>
 </body>
 </html>
