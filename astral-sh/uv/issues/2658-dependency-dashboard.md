@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T02:24:04Z
+updated_at: 2026-01-19T04:59:48Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T03:27:22Z
+synced_at: 2026-01-19T05:31:52Z
 ```
 
 # Dependency Dashboard
@@ -20,12 +20,6 @@ synced_at: 2026-01-19T03:27:22Z
 _@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/uv).
-
-## Repository Problems
-
-These problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/astral-sh/uv).
-
- - ⚠️ WARN: Detected empty commit - aborting git push
 
 > [!NOTE]
 These dependencies have not received updates for an extended period and may be unmaintained:
@@ -42,6 +36,14 @@ These dependencies have not received updates for an extended period and may be u
 Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release.
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
+
+## Awaiting Schedule
+
+The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
+
+ - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
+ - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
+ - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
 ## PR Edited (Blocked)
 
@@ -60,13 +62,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
-
-## Other Branches
-
-The following updates are pending. To force the creation of a PR, click on a checkbox below.
-
- - [ ] <!-- other-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
- - [ ] <!-- other-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
 
 ## Open
 

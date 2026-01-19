@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/success
 created_at: 2026-01-18T20:28:22Z
-updated_at: 2026-01-18T21:03:34Z
+updated_at: 2026-01-19T05:14:08Z
 url: https://github.com/astral-sh/ruff/pull/22688
-synced_at: 2026-01-18T21:20:25Z
+synced_at: 2026-01-19T05:31:49Z
 ```
 
 # [ty] Avoid reporting overload errors for successful union variants
@@ -280,5 +280,29 @@ _Review requested from @dcreager by @charliermarsh on 2026-01-18 20:56_
 ---
 
 _Review requested from @dhruvmanila by @charliermarsh on 2026-01-18 20:56_
+
+---
+
+_@dhruvmanila reviewed on 2026-01-19 05:13_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:332 on 2026-01-19 05:13_
+
+Should this be moved inside `CallableBinding::report_diagnostics` so that the other call (right above this) can also benefit?
+
+---
+
+_@dhruvmanila reviewed on 2026-01-19 05:14_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:332 on 2026-01-19 05:14_
+
+Hmm, actually, that's not required because for a single binding (non-union type), the `Bindings::report_diagnostics` will only be called when there's actually an error. So, for a successful overload matching, this method won't be called in the first place.
+
+---
+
+_@dhruvmanila approved on 2026-01-19 05:14_
 
 ---
