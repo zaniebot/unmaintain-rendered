@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-19T11:53:04Z
+updated_at: 2026-01-19T19:00:58Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-19T12:32:36Z
+synced_at: 2026-01-19T19:29:31Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -271,5 +271,25 @@ _@MichaReiser reviewed on 2026-01-19 11:53_
 _Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 11:53_
 
 Should we error / early return if we see any unsupported/unknown format specifiers?
+
+---
+
+_@sakgoyal reviewed on 2026-01-19 18:49_
+
+---
+
+_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 18:49_
+
+I suppose it could. But I would leave that to a separate PR I think. 
+
+---
+
+_@MichaReiser reviewed on 2026-01-19 19:00_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 19:00_
+
+I'm not suggesting that we should emit a diagnostic, but that we should return `Type::Unknown` (or whatever the fallback is) if that's the case.
 
 ---

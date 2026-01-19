@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-08-08T11:00:55Z
-updated_at: 2026-01-05T02:08:40Z
+updated_at: 2026-01-19T19:05:11Z
 url: https://github.com/astral-sh/uv/issues/5903
-synced_at: 2026-01-12T15:58:59Z
+synced_at: 2026-01-19T19:29:34Z
 ```
 
 # Using `uv run` as a task runner
@@ -4153,5 +4153,11 @@ Caveat: You have to use `./justfile <args>` instead of `just <args>`. (`alias ju
 _Comment by @haydenk on 2026-01-05 02:08_
 
 I wanted this initially so it could match pdm since both tools use `pyproject.toml` but I have since gotten mise tasks to work really well with uv, so I'm good for now.
+
+---
+
+_Comment by @Yasin197 on 2026-01-19 18:47_
+
+this depends on if uv is at least downloaded on the actual system right? otherwise the command: uv run poe .. will not work because it cant get uv or poe? what if the usecase was to add a uv bootstrap setup command but stick to project.toml?
 
 ---

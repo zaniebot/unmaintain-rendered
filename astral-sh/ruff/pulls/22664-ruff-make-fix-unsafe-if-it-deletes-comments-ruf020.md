@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: RUF020
 created_at: 2026-01-17T20:59:42Z
-updated_at: 2026-01-19T18:23:54Z
+updated_at: 2026-01-19T18:54:02Z
 url: https://github.com/astral-sh/ruff/pull/22664
-synced_at: 2026-01-19T18:27:46Z
+synced_at: 2026-01-19T19:29:31Z
 ```
 
 # [`ruff`] Make fix unsafe if it deletes comments (`RUF020`)
@@ -70,5 +70,19 @@ _Review requested from @ntBre by @amyreese on 2026-01-19 18:22_
 ---
 
 _@amyreese approved on 2026-01-19 18:23_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/never_union.rs`:103 on 2026-01-19 18:53_
+
+Is `expr` the same in each of these cases? I would be tempted to compute the `applicability` once outside of the `match` and then reuse it in each of these places if so.
+
+---
+
+_@ntBre approved on 2026-01-19 18:54_
+
+Thank you! This looks fine to me, just one suggestion about sharing the applicability check.
+
+(I almost wonder if this could warrant a helper method on `Checker` since this is such a common pattern, but I couldn't think of a great name/API for it earlier)
 
 ---

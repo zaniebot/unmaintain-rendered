@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T16:08:37Z
+updated_at: 2026-01-19T18:50:50Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T16:27:10Z
+synced_at: 2026-01-19T19:29:34Z
 ```
 
 # Dependency Dashboard
@@ -71,6 +71,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/crate-ci-typos-1.x -->Update crate-ci/typos action to v1.42.1
  - [ ] <!-- approvePr-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
  - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
+ - [ ] <!-- approvePr-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.7
  - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.14
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.7
@@ -250,7 +251,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `ignore 0.4.23`
  - `insta 1.40.0` → [Updates: `1.40.0`]
  - `predicates 3.1.2`
- - `rcgen 0.14.5`
+ - `rcgen 0.14.5` → [Updates: `0.14.5`]
  - `rustls 0.23.29` → [Updates: `0.23.29`]
  - `similar 2.6.0`
  - `temp-env 0.3.6`

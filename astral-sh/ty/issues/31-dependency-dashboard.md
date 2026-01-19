@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-19T13:12:54Z
+updated_at: 2026-01-19T19:26:07Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-19T13:34:12Z
+synced_at: 2026-01-19T19:29:12Z
 ```
 
 # Dependency Dashboard
@@ -21,8 +21,12 @@ _@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/ty).
 
+## Abandoned Dependencies
+
 > [!NOTE]
-These dependencies have not received updates for an extended period and may be unmaintained:
+Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release. Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
+> 
+> These dependencies have not received updates for an extended period and may be unmaintained:
 
 <details>
 <summary>View abandoned dependencies (1)</summary>
@@ -32,9 +36,6 @@ These dependencies have not received updates for an extended period and may be u
 | github-actions | `addnab/docker-run-action` | `2021-03-17` |
 
 </details>
-
-Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release.
-Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
 ## Awaiting Schedule
@@ -189,7 +190,7 @@ The following updates await pending status checks. To force their creation now, 
 <details><summary>pre-commit (1)</summary>
 <blockquote>
 
-<details><summary>.pre-commit-config.yaml (13)</summary>
+<details><summary>.pre-commit-config.yaml (14)</summary>
 
  - `astral-sh/uv-pre-commit 0.9.24` → [Updates: `0.9.26`]
  - `pre-commit/pre-commit-hooks v6.0.0`
@@ -199,10 +200,11 @@ The following updates await pending status checks. To force their creation now, 
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`
- - `crate-ci/typos v1.42.0`
+ - `crate-ci/typos v1.42.0` → [Updates: `v1.42.1`]
  - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
  - `zizmorcore/zizmor-pre-commit v1.20.0` → [Updates: `v1.22.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
+ - `github.com/wasilibs/go-shellcheck/cmd/shellcheck v0.11.1`
  - `rhysd/actionlint v1.7.10`
 
 </details>

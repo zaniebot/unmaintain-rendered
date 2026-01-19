@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-base: main
+draft: true
+base: charlie/int-method
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-19T18:19:08Z
+updated_at: 2026-01-19T19:07:30Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-19T18:27:46Z
+synced_at: 2026-01-19T19:29:31Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -69,12 +70,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 17:53_
 
 ```diff
 pyp (https://github.com/hauntsaninja/pyp)
-+ pyp.py:429:34: error[unresolved-attribute] Object of type `stmt` has no attribute `body`
-+ pyp.py:432:27: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
-+ pyp.py:433:26: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
-+ pyp.py:439:75: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
++ pyp.py:429:34: error[invalid-argument-type] Argument to function `inner` is incorrect: Expected `list[stmt]`, found `object`
 - Found 5 diagnostics
-+ Found 9 diagnostics
++ Found 6 diagnostics
 
 bidict (https://github.com/jab/bidict)
 + bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Maplike[KT@iteritems, VT@iteritems].__getitem__(__key: KT@iteritems, /) -> VT@iteritems` cannot be called with key of type `object` on object of type `Maplike[KT@iteritems, VT@iteritems]`
@@ -100,12 +98,12 @@ parso (https://github.com/davidhalter/parso)
 spack (https://github.com/spack/spack)
 - lib/spack/spack/mirrors/mirror.py:301:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `@Todo | str`
 + lib/spack/spack/mirrors/mirror.py:301:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str`
-+ lib/spack/spack/solver/asp.py:3269:21: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitVersion | StandardVersion, list[Provenance]].__getitem__(key: GitVersion | StandardVersion, /) -> list[Provenance]` cannot be called with key of type `ConcreteVersion` on object of type `dict[GitVersion | StandardVersion, list[Provenance]]`
++ lib/spack/spack/solver/asp.py:3275:21: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[GitVersion | StandardVersion, list[Provenance]].__getitem__(key: GitVersion | StandardVersion, /) -> list[Provenance]` cannot be called with key of type `ConcreteVersion` on object of type `dict[GitVersion | StandardVersion, list[Provenance]]`
 - lib/spack/spack/solver/requirements.py:251:49: error[invalid-argument-type] Argument to function `parse_spec_from_yaml_string` is incorrect: Expected `str`, found `@Todo | list[Unknown]`
 + lib/spack/spack/solver/requirements.py:251:49: error[invalid-argument-type] Argument to function `parse_spec_from_yaml_string` is incorrect: Expected `str`, found `Unknown | list[Unknown]`
-+ lib/spack/spack/vendor/jinja2/compiler.py:1516:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
-- Found 4344 diagnostics
-+ Found 4346 diagnostics
++ lib/spack/spack/vendor/jinja2/compiler.py:1516:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `str`
+- Found 4337 diagnostics
++ Found 4339 diagnostics
 
 pip (https://github.com/pypa/pip)
 + src/pip/_vendor/msgpack/fallback.py:426:13: error[invalid-assignment] Not enough values to unpack: Expected 3
@@ -126,6 +124,11 @@ beartype (https://github.com/beartype/beartype)
 - Found 495 diagnostics
 + Found 497 diagnostics
 
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/compiler.py:1534:33: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `str`
+- Found 180 diagnostics
++ Found 181 diagnostics
+
 werkzeug (https://github.com/pallets/werkzeug)
 + src/werkzeug/sansio/response.py:608:50: error[unresolved-attribute] Object of type `object` has no attribute `to_header`
 + src/werkzeug/sansio/response.py:610:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Top[list[Unknown]]`
@@ -134,27 +137,11 @@ werkzeug (https://github.com/pallets/werkzeug)
 - Found 407 diagnostics
 + Found 411 diagnostics
 
-jinja (https://github.com/pallets/jinja)
-+ src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
-- Found 180 diagnostics
-+ Found 181 diagnostics
-
 black (https://github.com/psf/black)
 + src/black/ranges.py:404:28: error[invalid-argument-type] Argument to function `first_leaf` is incorrect: Expected `Leaf | Node`, found `object`
 + src/black/ranges.py:405:26: error[invalid-argument-type] Argument to function `last_leaf` is incorrect: Expected `Leaf | Node`, found `object`
-+ src/blib2to3/pgen2/parse.py:392:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Node | Leaf] | None`
-- Found 50 diagnostics
-+ Found 53 diagnostics
-
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | @Todo`
-+ paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | Unknown`
-+ paasta_tools/paastaapi/api_client.py:720:21: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | dict[Unknown, Unknown] | list[Unknown]`
-+ paasta_tools/paastaapi/api_client.py:722:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `None`
-+ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
-+ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
-- Found 1103 diagnostics
-+ Found 1107 diagnostics
+- Found 48 diagnostics
++ Found 50 diagnostics
 
 graphql-core (https://github.com/graphql-python/graphql-core)
 - tests/pyutils/test_ref_map.py:35:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -168,6 +155,29 @@ pytest (https://github.com/pytest-dev/pytest)
 - Found 413 diagnostics
 + Found 414 diagnostics
 
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/boost.py:366:35: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
+- Found 21 diagnostics
++ Found 22 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/ignore.py:150:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
+- dulwich/ignore.py:153:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
+- dulwich/ignore.py:173:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
++ dulwich/object_store.py:2923:29: error[not-subscriptable] Cannot subscript object of type `() -> dict[ObjectID, ObjectID]` with no `__getitem__` method
+- Found 229 diagnostics
++ Found 227 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | @Todo`
++ paasta_tools/cli/cmds/get_image_version.py:132:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `None | Unknown`
++ paasta_tools/paastaapi/api_client.py:720:21: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None | dict[Unknown, Unknown] | list[Unknown]`
++ paasta_tools/paastaapi/api_client.py:722:21: error[invalid-assignment] Cannot assign to a subscript on an object of type `None`
++ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1114 diagnostics
++ Found 1118 diagnostics
+
 kopf (https://github.com/nolar/kopf)
 + kopf/_cogs/structs/dicts.py:65:30: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Mapping[Unknown, object]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[Mapping[Unknown, object]]`
 + kopf/_cogs/structs/dicts.py:65:30: error[not-subscriptable] Cannot subscript object of type `KubernetesModel` with no `__getitem__` method
@@ -180,8 +190,8 @@ kopf (https://github.com/nolar/kopf)
 + kopf/_kits/hierarchies.py:182:28: error[unsupported-operator] Operator `in` is not supported between objects of type `Literal["generateName"]` and `object`
 + kopf/_kits/hierarchies.py:182:46: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["metadata"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + kopf/_kits/hierarchies.py:182:46: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["metadata"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
-+ kopf/_kits/hierarchies.py:182:46: error[not-subscriptable] Cannot subscript object of type `_dummy` with no `__getitem__` method
 + kopf/_kits/hierarchies.py:182:46: error[not-subscriptable] Cannot subscript object of type `KubernetesModel` with no `__getitem__` method
++ kopf/_kits/hierarchies.py:182:46: error[not-subscriptable] Cannot subscript object of type `_dummy` with no `__getitem__` method
 + kopf/_kits/hierarchies.py:183:33: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["metadata"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + kopf/_kits/hierarchies.py:183:33: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["metadata"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + kopf/_kits/hierarchies.py:183:33: error[not-subscriptable] Cannot subscript object of type `_dummy` with no `__getitem__` method
@@ -197,21 +207,8 @@ kopf (https://github.com/nolar/kopf)
 + kopf/_kits/hierarchies.py:187:33: error[not-subscriptable] Cannot subscript object of type `_dummy` with no `__getitem__` method
 + kopf/_kits/hierarchies.py:187:33: error[not-subscriptable] Cannot subscript object of type `KubernetesModel` with no `__getitem__` method
 + kopf/_kits/hierarchies.py:187:33: error[not-subscriptable] Cannot delete subscript on object of type `object` with no `__delitem__` method
-- Found 268 diagnostics
-+ Found 294 diagnostics
-
-boostedblob (https://github.com/hauntsaninja/boostedblob)
-+ boostedblob/boost.py:366:35: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
-- Found 21 diagnostics
-+ Found 22 diagnostics
-
-dulwich (https://github.com/dulwich/dulwich)
-- dulwich/ignore.py:150:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-- dulwich/ignore.py:153:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-- dulwich/ignore.py:173:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-+ dulwich/object_store.py:2923:29: error[not-subscriptable] Cannot subscript object of type `() -> dict[ObjectID, ObjectID]` with no `__getitem__` method
-- Found 229 diagnostics
-+ Found 227 diagnostics
+- Found 260 diagnostics
++ Found 286 diagnostics
 
 ignite (https://github.com/pytorch/ignite)
 + tests/ignite/distributed/utils/__init__.py:484:24: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
@@ -221,8 +218,8 @@ ignite (https://github.com/pytorch/ignite)
 + tests/ignite/test_utils.py:49:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Unknown, (index: slice[Any, Any, Any]) -> Sequence[Unknown]]` cannot be called with key of type `Literal["a"]` on object of type `Sequence[Unknown]`
 + tests/ignite/test_utils.py:50:28: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["b"]` on object of type `Top[dict[Unknown, Unknown]]`
 + tests/ignite/test_utils.py:50:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Unknown, (index: slice[Any, Any, Any]) -> Sequence[Unknown]]` cannot be called with key of type `Literal["b"]` on object of type `Sequence[Unknown]`
-- Found 2033 diagnostics
-+ Found 2040 diagnostics
+- Found 2034 diagnostics
++ Found 2041 diagnostics
 
 PyGithub (https://github.com/PyGithub/PyGithub)
 + github/AdvisoryCredit.py:97:31: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["login"]` on object of type `Top[dict[Unknown, Unknown]]`
@@ -291,21 +288,13 @@ schemathesis (https://github.com/schemathesis/schemathesis)
 - Found 282 diagnostics
 + Found 283 diagnostics
 
-mitmproxy (https://github.com/mitmproxy/mitmproxy)
-- mitmproxy/proxy/tunnel.py:195:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- mitmproxy/proxy/tunnel.py:199:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2143 diagnostics
-+ Found 2141 diagnostics
-
 tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 + tornado/routing.py:355:56: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Top[list[Unknown]]`
 + tornado/routing.py:355:56: error[not-subscriptable] Cannot subscript object of type `Rule` with no `__getitem__` method
-- Found 328 diagnostics
-+ Found 330 diagnostics
-
-pandera (https://github.com/pandera-dev/pandera)
-- pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `@Todo | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
-+ pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `Any | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
+- Found 327 diagnostics
++ Found 329 diagnostics
 
 schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/avro/schema.py:801:34: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["names"]` on object of type `Top[dict[Unknown, Unknown]]`
@@ -356,8 +345,8 @@ schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/metaschema.py:1033:23: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["$base"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + schema_salad/metaschema.py:1033:23: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Any, (index: slice[Any, Any, Any]) -> MutableSequence[Any]]` cannot be called with key of type `Literal["$base"]` on object of type `MutableSequence[Any]`
 + schema_salad/metaschema.py:1033:23: error[invalid-assignment] Object of type `object` is not assignable to `str`
-+ schema_salad/metaschema.py:1053:29: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Any, (index: slice[Any, Any, Any]) -> MutableSequence[Any]]` cannot be called with key of type `Literal["$graph"]` on object of type `MutableSequence[Any]`
 + schema_salad/metaschema.py:1053:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["$graph"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/metaschema.py:1053:29: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Any, (index: slice[Any, Any, Any]) -> MutableSequence[Any]]` cannot be called with key of type `Literal["$graph"]` on object of type `MutableSequence[Any]`
 + schema_salad/python_codegen_support.py:1026:41: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + schema_salad/python_codegen_support.py:1026:41: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Any, (index: slice[Any, Any, Any]) -> MutableSequence[Any]]` cannot be called with key of type `str` on object of type `MutableSequence[Any]`
 + schema_salad/python_codegen_support.py:1030:23: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["$base"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
@@ -394,9 +383,12 @@ schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/ref_resolver.py:1135:61: error[not-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
 + schema_salad/ref_resolver.py:1135:61: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
 + schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
-+ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on ob
++ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `str` on object of type `str`
++ schema_salad/ref_resolver.p
 
-... (truncated 1056 lines) ...
+... (truncated 1044 lines) ...
 ```
 
 </details>
@@ -511,23 +503,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 578 | 0 | 33 |
+| `invalid-argument-type` | 581 | 0 | 34 |
 | `not-subscriptable` | 235 | 0 | 0 |
 | `invalid-assignment` | 34 | 3 | 11 |
-| `possibly-missing-attribute` | 21 | 0 | 12 |
+| `possibly-missing-attribute` | 17 | 0 | 12 |
 | `unused-ignore-comment` | 0 | 25 | 0 |
-| `invalid-return-type` | 7 | 2 | 9 |
+| `invalid-return-type` | 6 | 2 | 11 |
 | `unsupported-operator` | 4 | 3 | 9 |
-| `unresolved-attribute` | 15 | 0 | 0 |
+| `unresolved-attribute` | 10 | 0 | 0 |
 | `call-non-callable` | 9 | 0 | 0 |
 | `no-matching-overload` | 5 | 0 | 0 |
 | `not-iterable` | 5 | 0 | 0 |
 | `type-assertion-failure` | 0 | 1 | 1 |
 | `invalid-key` | 1 | 0 | 0 |
-| **Total** | **914** | **34** | **75** |
+| **Total** | **907** | **34** | **78** |
 
 
-**[Full report with detailed diff](https://214ce04a.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://214ce04a.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://67a483e1.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://67a483e1.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -689,5 +681,21 @@ _Marked ready for review by @charliermarsh on 2026-01-19 00:52_
 _Comment by @AlexWaygood on 2026-01-19 18:19_
 
 looks like the number of diagnostics went up by around 500 when you did the refactor to make it a method on `Type` -- is that expected? (I haven't looked through them at all myself yet, just wondered if you had)
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 18:50_
+
+Let me pull that into its own PR...
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-19 18:52_
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 19:05_
+
+Okay, makes this a little easier to review 😅 Though still need to look into the increased ecosystem hits.
 
 ---

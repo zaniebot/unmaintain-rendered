@@ -8,9 +8,9 @@ labels:
   - generics
 assignees: []
 created_at: 2025-10-27T16:06:02Z
-updated_at: 2025-12-19T23:32:09Z
+updated_at: 2026-01-19T18:48:11Z
 url: https://github.com/astral-sh/ty/issues/1446
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-19T19:29:12Z
 ```
 
 # Support `cached_property`
@@ -21,7 +21,7 @@ _@graipher_
 
 ### Summary
 
-Currently the type of a `functools.cached_property` is `Unknown`, as the standardlibrary `functools` does not have type annotations.
+Currently the type of a `functools.cached_property` is `Unknown`, ~as the standardlibrary `functools` does not have type annotations~.
 
 ```python
 from functools import cached_property
