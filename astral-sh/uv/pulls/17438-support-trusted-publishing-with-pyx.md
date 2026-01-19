@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-16T03:17:15Z
+updated_at: 2026-01-19T11:19:48Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-16T04:05:43Z
+synced_at: 2026-01-19T11:30:41Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -96,5 +96,15 @@ _Review requested from @konstin by @woodruffw on 2026-01-16 03:16_
 ---
 
 _Label `registry` added by @woodruffw on 2026-01-16 03:17_
+
+---
+
+_Review comment by @konstin on `scripts/publish/test_publish.py`:436 on 2026-01-19 11:05_
+
+Do we still need the `fresh_version_strategy` flag? It's not used anymore 
+
+---
+
+_@konstin reviewed on 2026-01-19 11:05_
 
 ---

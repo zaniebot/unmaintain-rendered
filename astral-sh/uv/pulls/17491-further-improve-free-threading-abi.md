@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: zb/abi-ft-ii
 created_at: 2026-01-15T18:02:57Z
-updated_at: 2026-01-16T14:12:10Z
+updated_at: 2026-01-19T10:49:37Z
 url: https://github.com/astral-sh/uv/pull/17491
-synced_at: 2026-01-16T14:58:08Z
+synced_at: 2026-01-19T11:30:41Z
 ```
 
 # Further improve free-threading ABI incompatibility errors
@@ -50,5 +50,9 @@ _Marked ready for review by @zanieb on 2026-01-16 14:05_
 ---
 
 _Review requested from @konstin by @zanieb on 2026-01-16 14:12_
+
+---
+
+_@konstin approved on 2026-01-19 10:49_
 
 ---

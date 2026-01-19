@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: claude/separate-disjoint-target-hint-GzPck
 created_at: 2026-01-16T20:20:09Z
-updated_at: 2026-01-16T20:48:05Z
+updated_at: 2026-01-19T10:39:22Z
 url: https://github.com/astral-sh/uv/pull/17540
-synced_at: 2026-01-16T21:04:25Z
+synced_at: 2026-01-19T11:30:41Z
 ```
 
 # Consolidate the disjoint target hints
@@ -36,5 +36,9 @@ _Marked ready for review by @zanieb on 2026-01-16 20:35_
 ---
 
 _Review requested from @konstin by @zanieb on 2026-01-16 20:48_
+
+---
+
+_@konstin approved on 2026-01-19 10:39_
 
 ---

@@ -4,14 +4,15 @@ title: Isolate test environment from user configuration and remove redundant env
 type: pull_request
 state: open
 author: gaborbernat
-labels: []
+labels:
+  - internal
 assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-16T15:08:21Z
+updated_at: 2026-01-19T10:40:19Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-16T15:58:35Z
+synced_at: 2026-01-19T11:30:41Z
 ```
 
 # Isolate test environment from user configuration and remove redundant env_remove calls
@@ -231,5 +232,13 @@ _Review requested from @konstin by @gaborbernat on 2026-01-16 15:08_
 ---
 
 _Review requested from @EliteTK by @gaborbernat on 2026-01-16 15:08_
+
+---
+
+_Label `internal` added by @konstin on 2026-01-19 10:39_
+
+---
+
+_Review request for @konstin removed by @konstin on 2026-01-19 10:40_
 
 ---
