@@ -2,14 +2,14 @@
 number: 2560
 title: ty has poor type support for pydantic.
 type: issue
-state: open
+state: closed
 author: Airpy
 labels: []
 assignees: []
 created_at: 2026-01-19T09:15:40Z
-updated_at: 2026-01-19T09:19:34Z
+updated_at: 2026-01-19T09:33:42Z
 url: https://github.com/astral-sh/ty/issues/2560
-synced_at: 2026-01-19T09:26:44Z
+synced_at: 2026-01-19T10:28:24Z
 ```
 
 # ty has poor type support for pydantic.
@@ -63,5 +63,15 @@ info: rule `unknown-argument` is enabled by default
 ### Version
 
 "ty==0.0.12",
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 09:33_
+
+We plan to add dedicated pydantic support in the near future. See https://github.com/astral-sh/ty/issues/2403
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 09:33_
 
 ---

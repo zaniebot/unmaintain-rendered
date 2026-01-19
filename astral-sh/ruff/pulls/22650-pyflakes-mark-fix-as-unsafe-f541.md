@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: feat/f541-unsafe-fix
 created_at: 2026-01-17T13:26:32Z
-updated_at: 2026-01-17T13:36:20Z
+updated_at: 2026-01-19T09:35:58Z
 url: https://github.com/astral-sh/ruff/pull/22650
-synced_at: 2026-01-17T14:11:29Z
+synced_at: 2026-01-19T10:28:42Z
 ```
 
 # [`pyflakes`] mark fix as unsafe (`F541`)
@@ -303,6 +303,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 13:36_
 
 
 
+
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 09:29_
+
+Sorry that I didn't comment on the issue before you put up the PR but I don't think we should make this change, see https://github.com/astral-sh/ruff/issues/22620#issuecomment-3760168368 
+
+---
+
+_Comment by @leandrobbraga on 2026-01-19 09:35_
+
+> Sorry that I didn't comment on the issue before you put up the PR but I don't think we should make this change, see https://github.com/astral-sh/ruff/issues/22620#issuecomment-3760168368 
+
+That's OK! I thought the decision was already settled. 
 
 
 ---

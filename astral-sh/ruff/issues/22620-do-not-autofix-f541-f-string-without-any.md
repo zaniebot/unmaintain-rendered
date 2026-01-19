@@ -8,9 +8,9 @@ labels:
   - fixes
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-16T14:02:58Z
+updated_at: 2026-01-19T09:32:36Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-16T14:57:43Z
+synced_at: 2026-01-19T10:28:30Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -201,5 +201,15 @@ Thanks for the report! Yeah, I think this should probably be an unsafe fix by de
 ---
 
 _Label `fixes` added by @ntBre on 2026-01-16 14:02_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 09:29_
+
+I'm not sure we should make this change. `F541` is a stylistic rule. It's not a correctness rule. 
+
+Given that the rule doesn't judge the code's correctness and is only enforcing a specific style, applying that stylistic change doesn't make the code any more or less correct. But it does make the code more consistent with the style that the project wants to enforce. In that sense, it's very clear what the users' intentions are; strings without placeholders should not use f-strings. Making the fix unsafe also makes it less useful overall, since it now requires explicit opt-in, which many users are unlikely to do.
+
+
 
 ---

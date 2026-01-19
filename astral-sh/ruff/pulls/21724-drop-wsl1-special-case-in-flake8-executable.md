@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2026-01-18T10:50:26Z
+updated_at: 2026-01-19T10:19:34Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-18T11:18:26Z
+synced_at: 2026-01-19T10:28:42Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -490,5 +490,19 @@ _Comment by @MichaReiser on 2026-01-18 10:50_
 I don't feel a strong need to make a change here, especially since this has a very high chance of breaking someone's setup. 
 
 I'd be open to adding a config option that allows opting in on WSL, and extending the documentaiton
+
+---
+
+_Comment by @K900 on 2026-01-19 10:11_
+
+The other issue, and the one that actually led me to discovering this behavior, is that running `cargo test` on Ruff itself breaks on WSL, because it makes this assumption and the tests aren't designed for it. This could be fixed by skipping the tests on WSL, I guess?
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 10:19_
+
+> The other issue, and the one that actually led me to discovering this behavior, is that running cargo test on Ruff itself breaks on WSL, because it makes this assumption and the tests aren't designed for it. This could be fixed by skipping the tests on WSL, I guess?
+
+Yes, I consider this to be a separate issue from changing the rule's behavior. Skipping it on WSL seems fine and something we can do in a seperate PR
 
 ---

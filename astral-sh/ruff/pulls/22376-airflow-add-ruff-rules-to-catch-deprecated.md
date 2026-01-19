@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-19T09:18:41Z
+updated_at: 2026-01-19T09:27:49Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-19T09:27:02Z
+synced_at: 2026-01-19T10:28:42Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -598,5 +598,11 @@ Checked: https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c067325
 
 1. [https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c0673251b0124829d/[…]ruff_linter__rules__airflow__tests__AIR321_AIR321_names.py.snap](https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c0673251b0124829d/crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR321_AIR321_names.py.snap#L298) (why the 1.1.6?)
 2. I do not love the: airflow.sdk.execution_time.macros. Better to have it be: airflow.sdk.macros yes? (this one's on me though)
+
+---
+
+_Comment by @Lee-W on 2026-01-19 09:27_
+
+Some of the suggested versions here are incorrect. We'll need to check again
 
 ---

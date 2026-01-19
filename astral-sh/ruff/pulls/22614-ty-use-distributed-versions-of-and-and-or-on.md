@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-16T14:51:15Z
+updated_at: 2026-01-19T09:22:39Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-16T14:57:55Z
+synced_at: 2026-01-19T10:28:42Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -377,9 +377,9 @@ _Comment by @codspeed-hq[bot] on 2026-01-16 10:30_
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?utm_source=github&utm_medium=comment&utm_content=header)
 
-### Merging this PR will **improve performance by 4.21%**
+### Merging this PR will **improve performance by 7.41%**
 
-<sub>Comparing <code>dcreager/distributed-ops</code> (06cdf67) with <code>main</code> (3c32355)</sub>
+<sub>Comparing <code>dcreager/distributed-ops</code> (7cf9fe2) with <code>main</code> (10fd3b2)</sub>
 
 
 
@@ -395,7 +395,7 @@ _Comment by @codspeed-hq[bot] on 2026-01-16 10:30_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 10.3 s | 9.9 s | +4.21% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 10.4 s | 9.7 s | +7.41% |
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdistributed-ops?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
@@ -468,5 +468,33 @@ _@dcreager reviewed on 2026-01-16 14:51_
 _Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:149 on 2026-01-16 14:51_
 
 This seems to work well! Pushed up some documentation of the approach.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:150 on 2026-01-19 09:16_
+
+This PR does improve the performance by a fair bit but it also regresses performance by about 1-2 on most other projects. 
+
+It would be lovely if we could use specialization to specialize `when_any` and `when_all` for `ExactSizeIterator` so that we could use the old implementation if there are only very few items. But, that's unlikely an option any time soon unless we migrate to nightly Rust.
+
+I went through some `when_any` usages and:
+
+* We could implement `when_any` for `&[T]` and `&FxOrderSet`
+* We could add a `when_any_exact` method (or rename `when_any` to `when_any_iter` to advertise the `ExactSizeIterator` version)
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:722 on 2026-01-19 09:17_
+
+Should we do this in a separate PR so that we better understand where the performance improvements are coming from?
+
+---
+
+_@MichaReiser approved on 2026-01-19 09:22_
+
+Nice. 
+
+It might make sense to specialize `distribute_or` and `distribute_and` (or `when_any`) for `&[T]` and `ExactSizeIterator` as we see a perf regression on many projects (while small). Unless the perf regression is related to the `ordering` change. I suggest splitting that change into its own PR so that we have a better understanding where the regression is coming from.
 
 ---
