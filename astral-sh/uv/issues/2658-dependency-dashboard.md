@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T02:02:11Z
+updated_at: 2026-01-19T02:24:04Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T02:24:48Z
+synced_at: 2026-01-19T03:27:22Z
 ```
 
 # Dependency Dashboard
@@ -56,6 +56,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
+ - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.7
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
@@ -78,11 +79,8 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/embarkstudios-cargo-deny-action-2.x -->[Update EmbarkStudios/cargo-deny-action action to v2.0.15](../pull/17556)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
  - [ ] <!-- rebase-branch=renovate/clap-4.x-lockfile -->[Update Rust crate clap to v4.5.54](../pull/17557)
- - [ ] <!-- rebase-branch=renovate/console-0.x-lockfile -->[Update Rust crate console to v0.16.2](../pull/17558)
  - [ ] <!-- rebase-branch=renovate/jiff-0.x-lockfile -->[Update Rust crate jiff to v0.2.18](../pull/17559)
- - [ ] <!-- rebase-branch=renovate/rcgen-0.x-lockfile -->[Update Rust crate rcgen to v0.14.6](../pull/17562)
  - [ ] <!-- rebase-branch=renovate/rkyv-0.x-lockfile -->[Update Rust crate rkyv to v0.8.13](../pull/17563)
- - [ ] <!-- rebase-branch=renovate/rmp-serde-1.x-lockfile -->[Update Rust crate rmp-serde to v1.3.1](../pull/17564)
  - [ ] <!-- rebase-branch=renovate/rustls-0.x-lockfile -->[Update Rust crate rustls to v0.23.36](../pull/17565)
  - [ ] <!-- rebase-branch=renovate/serde_json-1.x-lockfile -->[Update Rust crate serde_json to v1.0.149](../pull/17566)
  - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
@@ -102,7 +100,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/crate-ci-typos-1.x -->[Update crate-ci/typos action to v1.42.0](../pull/17581)
  - [ ] <!-- rebase-branch=renovate/python-3.x -->[Update dependency python to v3.14.2](../pull/17582)
  - [ ] <!-- rebase-branch=renovate/pre-commit-dependencies -->[Update pre-commit dependencies](../pull/17583) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
- - [ ] <!-- rebase-branch=renovate/assert_cmd-2.x-lockfile -->[Update Rust crate assert_cmd to v2.1.2](../pull/17584)
  - [ ] <!-- rebase-branch=renovate/criterion-4.x-lockfile -->[Update Rust crate criterion to v4.2.1](../pull/17587)
  - [ ] <!-- rebase-branch=renovate/csv-1.x-lockfile -->[Update Rust crate csv to v1.4.0](../pull/17588)
  - [ ] <!-- rebase-branch=renovate/data-encoding-2.x-lockfile -->[Update Rust crate data-encoding to v2.10.0](../pull/17589)
@@ -120,7 +117,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
  - [ ] <!-- rebase-branch=renovate/windows-registry-0.x -->[Update Rust crate windows-registry to 0.6.0](../pull/17601)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
- - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.66.1](../pull/17603)
  - [ ] <!-- rebase-branch=renovate/fedora-44.x -->[Update fedora Docker tag to v44](../pull/17604)
  - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
@@ -153,7 +149,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `clap 4.5.17` → [Updates: `4.5.17`]
  - `clap_complete_command 0.6.1`
  - `configparser 3.1.0`
- - `console 0.16.0` → [Updates: `0.16.0`]
+ - `console 0.16.0`
  - `csv 1.3.0` → [Updates: `1.3.0`]
  - `ctrlc 3.4.5`
  - `cyclonedx-bom 0.8.0`
@@ -211,7 +207,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `reqwest-middleware 0.4.2`
  - `reqwest-retry 0.8.0`
  - `rkyv 0.8.8` → [Updates: `0.8.8`]
- - `rmp-serde 1.3.0` → [Updates: `1.3.0`]
+ - `rmp-serde 1.3.0`
  - `rust-netrc 0.1.2`
  - `rustc-hash 2.0.0`
  - `rustix 1.0.0`
@@ -259,7 +255,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `xz2 0.1.7`
  - `zeroize 1.8.1`
  - `zstd 0.13.3`
- - `assert_cmd 2.0.16` → [Updates: `2.0.16`]
+ - `assert_cmd 2.0.16`
  - `assert_fs 1.1.2`
  - `byteorder 1.5.0`
  - `filetime 0.2.25` → [Updates: `0.2.25`]
@@ -269,7 +265,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `ignore 0.4.23`
  - `insta 1.40.0` → [Updates: `1.40.0`]
  - `predicates 3.1.2`
- - `rcgen 0.14.5` → [Updates: `0.14.5`]
+ - `rcgen 0.14.5`
  - `rustls 0.23.29` → [Updates: `0.23.29`]
  - `similar 2.6.0`
  - `temp-env 0.3.6`
@@ -621,15 +617,15 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/download-artifact v4.1.8@fa0a91b85d4f404e444e00e005971372dc801d16` → [Updates: `v7.0.0`]
  - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
 
 </details>
@@ -830,7 +826,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `crate-ci/typos v1.37.3@64e4db431eb262bb5c6baa19dce280d78532830c` → [Updates: `v1.42.0`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
@@ -1077,7 +1073,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
 
@@ -1089,16 +1085,16 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
  - `astral-sh/uv 0.9.24` → [Updates: `0.9.26`]
