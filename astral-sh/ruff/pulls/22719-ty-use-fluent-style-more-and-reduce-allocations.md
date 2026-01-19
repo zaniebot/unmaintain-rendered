@@ -2,18 +2,19 @@
 number: 22719
 title: "[ty] Use fluent style more, and reduce allocations, when constructing `Parameters` instances"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - internal
   - ty
 assignees: []
+merged: true
 base: main
 head: alex/parameter-fluent-style
 created_at: 2026-01-19T13:14:08Z
-updated_at: 2026-01-19T13:17:52Z
+updated_at: 2026-01-19T13:23:30Z
 url: https://github.com/astral-sh/ruff/pull/22719
-synced_at: 2026-01-19T13:34:31Z
+synced_at: 2026-01-19T14:36:03Z
 ```
 
 # [ty] Use fluent style more, and reduce allocations, when constructing `Parameters` instances
@@ -126,5 +127,21 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-19 13:22_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-19 13:23_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-19 13:23_
+
+---
+
+_Branch deleted on 2026-01-19 13:23_
 
 ---

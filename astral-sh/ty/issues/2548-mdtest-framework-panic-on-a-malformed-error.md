@@ -10,9 +10,9 @@ labels:
   - testing
 assignees: []
 created_at: 2026-01-17T15:05:53Z
-updated_at: 2026-01-17T15:06:44Z
+updated_at: 2026-01-19T14:19:13Z
 url: https://github.com/astral-sh/ty/issues/2548
-synced_at: 2026-01-17T16:15:01Z
+synced_at: 2026-01-19T14:35:45Z
 ```
 
 # Mdtest framework panic on a malformed `# error` assertion
@@ -45,5 +45,18 @@ _Label `help wanted` added by @AlexWaygood on 2026-01-17 15:05_
 ---
 
 _Label `testing` added by @AlexWaygood on 2026-01-17 15:05_
+
+---
+
+_Comment by @Hugo-Polloli on 2026-01-19 14:10_
+
+Hi, this turned out to be a very quick fix, so I just went ahead and opened a PR while I was poking around :)
+Hope that's alright
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 14:19_
+
+Very much so, thank you!!
 
 ---

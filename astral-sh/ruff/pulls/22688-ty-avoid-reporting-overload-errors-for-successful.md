@@ -2,18 +2,19 @@
 number: 22688
 title: "[ty] Avoid reporting overload errors for successful union variants"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: charlie/success
 created_at: 2026-01-18T20:28:22Z
-updated_at: 2026-01-19T08:09:15Z
+updated_at: 2026-01-19T13:40:33Z
 url: https://github.com/astral-sh/ruff/pull/22688
-synced_at: 2026-01-19T08:25:13Z
+synced_at: 2026-01-19T14:36:03Z
 ```
 
 # [ty] Avoid reporting overload errors for successful union variants
@@ -335,5 +336,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 08:01_
 **[Full report with detailed diff](https://28e81978.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://28e81978.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 13:40_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 13:40_
+
+---
+
+_Branch deleted on 2026-01-19 13:40_
 
 ---

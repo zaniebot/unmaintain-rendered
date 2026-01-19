@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/functional-dict
 created_at: 2026-01-14T22:20:58Z
-updated_at: 2026-01-16T20:00:38Z
+updated_at: 2026-01-19T13:41:33Z
 url: https://github.com/astral-sh/ruff/pull/22586
-synced_at: 2026-01-16T21:04:12Z
+synced_at: 2026-01-19T14:36:03Z
 ```
 
 # [ty] Add support for dynamic dataclasses via `make_dataclass`
@@ -426,5 +427,15 @@ _@AlexWaygood reviewed on 2026-01-16 16:31_
 _Comment by @charliermarsh on 2026-01-16 20:00_
 
 Can probably hold off on further review until https://github.com/astral-sh/ruff/pull/22627 is resolved, since it will have implications for this PR.
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-19 13:41_
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 13:41_
+
+(Marking as draft while we finish the recursive definition work upstream.)
 
 ---

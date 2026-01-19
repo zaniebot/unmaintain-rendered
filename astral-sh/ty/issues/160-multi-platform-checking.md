@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-03-26T13:31:28Z
-updated_at: 2025-11-18T16:10:28Z
+updated_at: 2026-01-19T13:27:26Z
 url: https://github.com/astral-sh/ty/issues/160
-synced_at: 2026-01-12T15:54:22Z
+synced_at: 2026-01-19T14:35:44Z
 ```
 
 # Multi-platform checking
@@ -164,5 +164,13 @@ _Added to milestone `Z post-stable` by @carljm on 2025-11-15 01:58_
 ---
 
 _Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
+
+---
+
+_Comment by @Clarkery on 2026-01-19 13:27_
+
+I'd like to +1 the `os.name` support request. I have some code that was using `os.name == "nt"` and `os.name != "nt"` that pyright correctly handles, but ty gives unresolved-attribute errors on. 
+On finding this thread I've changed it to `sys.platform` checks instead, which works correctly.
+If its difficult to support at this time maybe adding a mention to the docs and type system feature overview would be helpful?
 
 ---

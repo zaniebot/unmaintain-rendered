@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-19T12:52:14Z
+updated_at: 2026-01-19T14:19:40Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-19T13:34:18Z
+synced_at: 2026-01-19T14:35:51Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -258,5 +258,40 @@ _Comment by @MichaReiser on 2026-01-19 12:52_
 The diff in [#22650](https://github.com/astral-sh/ruff/pull/22650) suggests to me that it's more common than one might think.
 
 
+
+---
+
+_Comment by @k0pernikus on 2026-01-19 13:42_
+
+> I agree that there will be instances where the fix is undesired. But I don't think always making the fix as unsafe is the right approach here. Instead, we could consider to be clever about when the fix is likely unsafe. E.g, can we split the string by whitespace and are there any symbols in scope that match a word in the string? If so, mark the fix as unsafe.
+
+I understand this argument as well.
+
+Your proposed solution would also be better than using ARG001 / ARG002 as those generate way too many false positives during inherited methods. In the aftermath of this issue, I enabled them and realized quickly where they aren't recommended. So your proposed is the ideal version, even if it would not catch:
+
+```
+class Greeter:
+    def hello(self, name: str) -> str:
+        return f"Hello naem!"
+```
+
+Yet of course, one can have only so much tooling help.
+
+Basically, there is a strong disagreement what risky should mean:
+
+- does not change the code as is => this fix is save
+- does not apply fixes that may be potential bugs => this fix really isn't save at all
+
+I use this tooling esp. for catching bugs. I don't really care about a developer using f-strings where they aren't needed. Though it is nice side-effect for me that this tool ensures that code is written in way that reduces as much diffing noise as possible. Yet that is a nice to have for me, though for other that is the entire point.
+
+Maybe one could have two rules for this so the developer can pick and chose? (Basically, either treating this as a potential bug or as a plain formatting issue and if the bug-rule is choosen, it should take precedence if --fix is applied)
+
+---
+
+_Comment by @ntBre on 2026-01-19 14:19_
+
+Sorry, I didn't expect this to be so controversial! The reasoning above makes sense to me, but I was also thinking of this as a correctness rule. The `f` prefix is unused at best, and my impression was that it's very uncommon to use it intentionally without placeholders, so I assumed this was almost always a likely mistake. I also thought the problem here was analogous to #22318 and its linked issues. For what it's worth, clippy's [`useless_format`](https://rust-lang.github.io/rust-clippy/master/index.html?search=format#useless_format) is a complexity lint.
+
+Anyway, I don't feel strongly that the fix should be unsafe, and it sounds good to try being more clever.
 
 ---

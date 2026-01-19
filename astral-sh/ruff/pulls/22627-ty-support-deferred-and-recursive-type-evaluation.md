@@ -2,7 +2,7 @@
 number: 22627
 title: "[ty] Support deferred and recursive type evaluation in `NamedTuple(...)`"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/defer
 created_at: 2026-01-16T18:27:15Z
-updated_at: 2026-01-19T12:28:17Z
+updated_at: 2026-01-19T13:37:39Z
 url: https://github.com/astral-sh/ruff/pull/22627
-synced_at: 2026-01-19T13:34:31Z
+synced_at: 2026-01-19T14:36:03Z
 ```
 
 # [ty] Support deferred and recursive type evaluation in `NamedTuple(...)`
@@ -215,5 +215,15 @@ I'm not _yet_ sure how to fix that...
 _Comment by @AlexWaygood on 2026-01-19 12:28_
 
 (I did just copy-and-paste some of your tests and code straight from this PR into my PR, so I'll definitely list you as a co-author!)
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 13:37_
+
+No worries, we can continue the conversation over there.
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 13:37_
 
 ---
