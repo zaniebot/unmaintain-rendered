@@ -137,10 +137,40 @@ static-frame (https://github.com/static-frame/static-frame)
         <div class="timeline-entry">
             <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-18 23:51</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 12:26</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh ❤️</p>
+<p>There's a lot to like about this PR... but there's also quite a few things I'd do differently. In particular, I don't think it's necessary to defer inference of <code>NamedTuple</code> specs for &quot;dangling&quot; calls -- while it's true that something like this can have a recursive reference in it:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class Foo(NamedTuple(&quot;F&quot;, [(&quot;x&quot;, &quot;Foo | None&quot;)]):
+    pass
+</code></pre>
+<p>... that's already dealt with by our existing logic on <code>main</code> that defers <em>everything</em> inside a class's bases list:</p>
+<p>https://github.com/astral-sh/ruff/blob/55a174ed95c757a88199fdc1b15e51fd9041b4fa/crates/ty_python_semantic/src/types/infer/builder.rs#L3191-L3201</p>
+<p>I've taken a stab at solving this problem myself in https://github.com/astral-sh/ruff/pull/22718, though I want to pull some parts of that PR into standalone changes, since there's some refactoring in there that makes the overall diff a bit confusing at the moment. Overall it ends up being a slightly &quot;messier&quot; diff (there's more code being removed/rewritten rather than simply being added) but it ends up being quite a few LOC less than this PR overall.</p>
+<p>One problem that both our PRs have, however, is that they both currently have stack overflows on this test case:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+A = NamedTuple(&quot;A&quot;, [(&quot;x&quot;, &quot;B | None&quot;)])
+B = NamedTuple(&quot;B&quot;, [(&quot;x&quot;, &quot;C&quot;)])
+C = NamedTuple(&quot;C&quot;, [(&quot;x&quot;, A)])
+
+A(x=C())
+</code></pre>
+<p>(your PR only seems to overflow on that snippet after <code>main</code> has been merged in, which is interesting)</p>
+<p>I'm not <em>yet</em> sure how to fix that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 12:28</div>
+            <div class="timeline-body"><p>(I did just copy-and-paste some of your tests and code straight from this PR into my PR, so I'll definitely list you as a co-author!)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-19 00:24:23 UTC
+        Synced at 2026-01-19 13:25:01 UTC
     </footer>
 </body>
 </html>
