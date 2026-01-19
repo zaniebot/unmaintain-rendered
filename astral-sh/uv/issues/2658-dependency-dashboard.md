@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T07:39:45Z
+updated_at: 2026-01-19T14:10:22Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T08:25:16Z
+synced_at: 2026-01-19T14:23:27Z
 ```
 
 # Dependency Dashboard
@@ -42,6 +42,7 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
  - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
+ - [ ] <!-- unschedule-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
@@ -64,7 +65,6 @@ The following updates await pending status checks. To force their creation now, 
 
  - [ ] <!-- approvePr-branch=renovate/pre-commit-dependencies -->Update pre-commit hook astral-sh/ruff-pre-commit to v0.14.13
  - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
- - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
  - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.7
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0

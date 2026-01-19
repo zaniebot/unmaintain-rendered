@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/windows-special-filename-cache-clean
 created_at: 2025-12-26T18:49:00Z
-updated_at: 2026-01-13T21:37:05Z
+updated_at: 2026-01-19T14:00:45Z
 url: https://github.com/astral-sh/uv/pull/17241
-synced_at: 2026-01-13T22:36:21Z
+synced_at: 2026-01-19T14:23:37Z
 ```
 
 # fix: handle Windows special filenames in cache clean
@@ -272,5 +272,18 @@ _Assigned to @samypr100 by @zanieb on 2026-01-13 21:37_
 ---
 
 _Assigned to @konstin by @zanieb on 2026-01-13 21:37_
+
+---
+
+_Comment by @blueberrycongee on 2026-01-19 14:00_
+
+Update summary:
+
+- On Windows, `rm_rf` now converts to a verbatim path (`\\?\`) at the entry point, so traversal and deletion use the verbatim path throughout and avoid Win32 normalization issues with special filenames (e.g., trailing dots).
+- Removed the retry/fallback logic inside `remove_file`/`remove_dir`/`remove_dir_all` since the verbatim conversion is handled once up front.
+- Added a Windows-only integration test in `cache_clean` that creates a trailing-dot filename and verifies `uv cache clean` succeeds (matches issue 16586).
+
+If you’d prefer to move the helper into `uv-fs` or adjust the approach, let me know and I can follow up.
+
 
 ---
