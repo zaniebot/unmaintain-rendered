@@ -10,9 +10,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-12-10T12:25:56Z
-updated_at: 2025-12-10T12:49:19Z
+updated_at: 2026-01-18T23:32:44Z
 url: https://github.com/astral-sh/ty/issues/1838
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-19T00:21:01Z
 ```
 
 # Resolve `ParamSpec` with the matching overload
@@ -113,5 +113,11 @@ _Added to milestone `Stable` by @dhruvmanila on 2025-12-10 12:48_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2025-12-10 12:49_
+
+---
+
+_Comment by @leddy231 on 2026-01-18 23:32_
+
+Any updates to share here? Would love to upgrade from 0.0.1a26 to the latest beta 😄 
 
 ---

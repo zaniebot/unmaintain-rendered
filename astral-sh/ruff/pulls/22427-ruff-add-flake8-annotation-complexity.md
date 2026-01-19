@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat-rule-flake8-annoation-complexity
 created_at: 2026-01-06T22:57:30Z
-updated_at: 2026-01-18T23:07:28Z
+updated_at: 2026-01-18T23:38:51Z
 url: https://github.com/astral-sh/ruff/pull/22427
-synced_at: 2026-01-18T23:41:46Z
+synced_at: 2026-01-19T00:21:19Z
 ```
 
 # [ruff]: add flake8-annotation-complexity
@@ -377,5 +377,229 @@ _Comment by @danjones1618 on 2026-01-18 23:07_
 Thanks both @amyreese and @ntBre for the reviews. I've resolved your comments or responded to them. 
 
 I can refactor to use the `traverse_union` and adjust the call sites of entering the check later in the week if they're still desired.
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-18 23:35_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+60365 -1 violations, +0 -0 fixes in 9 projects; 46 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+5680 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__main__.py#L15'>disnake/__main__.py:15:14:</a> TAE002 Type annotation for `entries` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__main__.py#L234'>disnake/__main__.py:234:27:</a> TAE002 Type annotation for `name` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/__main__.py#L401'>disnake/__main__.py:401:21:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/_version.pyi#L11'>disnake/_version.pyi:11:19:</a> TAE002 Type annotation for `releaselevel` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1043'>disnake/abc.py:1043:21:</a> TAE002 Type annotation for `base_attrs` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1045'>disnake/abc.py:1045:15:</a> TAE002 Type annotation for `name` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1046'>disnake/abc.py:1046:19:</a> TAE002 Type annotation for `category` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1047'>disnake/abc.py:1047:21:</a> TAE002 Type annotation for `overwrites` is too complex (2 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1048'>disnake/abc.py:1048:17:</a> TAE002 Type annotation for `reason` is too complex (1 > 0)
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/abc.py#L1052'>disnake/abc.py:1052:29:</a> TAE002 Type annotation for `overwrites_payload` is too complex (1 > 0)
+... 5670 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+23183 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/docs/conf.py#L136'>airflow-core/docs/conf.py:136:51:</a> TAE002 Type annotation for `UTIL_MODULES_THAT_SHOULD_BE_INCLUDED_IN_API_DOCS` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/docs/conf.py#L140'>airflow-core/docs/conf.py:140:45:</a> TAE002 Type annotation for `MODELS_THAT_SHOULD_BE_INCLUDED_IN_API_DOCS` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/docs/conf.py#L146'>airflow-core/docs/conf.py:146:67:</a> TAE002 Type annotation for `exclude_patterns` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/docs/conf.py#L229'>airflow-core/docs/conf.py:229:21:</a> TAE002 Type annotation for `html_theme_options` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/docs/conf.py#L67'>airflow-core/docs/conf.py:67:19:</a> TAE002 Type annotation for `SYSTEM_TESTS_DIR` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/hatch_build.py#L49'>airflow-core/hatch_build.py:49:47:</a> TAE002 Type annotation for `versions` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/hatch_build.py#L60'>airflow-core/hatch_build.py:60:34:</a> TAE002 Type annotation for `return type` is too complex (2 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/__init__.py#L84'>airflow-core/src/airflow/__init__.py:84:17:</a> TAE002 Type annotation for `__lazy_imports` is too complex (2 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/client/local_client.py#L33'>airflow-core/src/airflow/api/client/local_client.py:33:44:</a> TAE002 Type annotation for `session` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/client/local_client.py#L46'>airflow-core/src/airflow/api/client/local_client.py:46:10:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/airflow_health.py#L29'>airflow-core/src/airflow/api/common/airflow_health.py:29:29:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/airflow_health.py#L37'>airflow-core/src/airflow/api/common/airflow_health.py:37:23:</a> TAE002 Type annotation for `triggerer_status` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/airflow_health.py#L38'>airflow-core/src/airflow/api/common/airflow_health.py:38:27:</a> TAE002 Type annotation for `dag_processor_status` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L108'>airflow-core/src/airflow/api/common/mark_tasks.py:108:15:</a> TAE002 Type annotation for `task_ids` is too complex (3 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L109'>airflow-core/src/airflow/api/common/mark_tasks.py:109:14:</a> TAE002 Type annotation for `run_ids` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L125'>airflow-core/src/airflow/api/common/mark_tasks.py:125:12:</a> TAE002 Type annotation for `tasks` is too complex (3 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L126'>airflow-core/src/airflow/api/common/mark_tasks.py:126:6:</a> TAE002 Type annotation for `return type` is too complex (3 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L212'>airflow-core/src/airflow/api/common/mark_tasks.py:212:13:</a> TAE002 Type annotation for `run_id` is too complex (1 > 0)
++ <a href='https://github.com/apache/airflow/blob/477d53a53a9f86e5410f90ff0cb198d46a43efba/airflow-core/src/airflow/api/common/mark_tasks.py#L215'>airflow-core/src/airflow/api/common/mark_tasks.py:215:6:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
+... 23164 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+5715 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L106'>RELEASING/changelog.py:106:53:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L130'>RELEASING/changelog.py:130:61:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L160'>RELEASING/changelog.py:160:45:</a> TAE002 Type annotation for `labels` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L178'>RELEASING/changelog.py:178:20:</a> TAE002 Type annotation for `changelog` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L179'>RELEASING/changelog.py:179:18:</a> TAE002 Type annotation for `pr_info` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L231'>RELEASING/changelog.py:231:27:</a> TAE002 Type annotation for `return type` is too complex (2 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L253'>RELEASING/changelog.py:253:21:</a> TAE002 Type annotation for `` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L260'>RELEASING/changelog.py:260:23:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L266'>RELEASING/changelog.py:266:44:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/apache/superset/blob/f984dca5cc46c3badb2badcaa6b2893d5aa15d1d/RELEASING/changelog.py#L287'>RELEASING/changelog.py:287:28:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
+... 5705 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2024 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/js_on_event.py#L15'>examples/interaction/js_callbacks/js_on_event.py:15:41:</a> TAE002 Type annotation for `attributes` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/gauges.py#L48'>examples/models/gauges.py:48:74:</a> TAE002 Type annotation for `direction` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/geo/tile_demo.py#L9'>examples/topics/geo/tile_demo.py:9:60:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L35'>release/action.py:35:47:</a> TAE002 Type annotation for `details` is too complex (2 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L134'>release/build.py:134:38:</a> TAE002 Type annotation for `content` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L137'>release/build.py:137:43:</a> TAE002 Type annotation for `content` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L144'>release/build.py:144:12:</a> TAE002 Type annotation for `files` is too complex (2 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/config.py#L37'>release/config.py:37:34:</a> TAE002 Type annotation for `` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/config.py#L38'>release/config.py:38:19:</a> TAE002 Type annotation for `` is too complex (1 > 0)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/config.py#L43'>release/config.py:43:24:</a> TAE002 Type annotation for `` is too complex (1 > 0)
+... 2014 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+9818 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/cli.py#L65'>libs/cli/langchain_cli/cli.py:65:11:</a> TAE002 Type annotation for `port` is too complex (1 > 0)
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/cli.py#L69'>libs/cli/langchain_cli/cli.py:69:11:</a> TAE002 Type annotation for `host` is too complex (1 > 0)
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/dev_scripts.py#L14'>libs/cli/langchain_cli/dev_scripts.py:14:18:</a> TAE002 Type annotation for `config_keys` is too complex (1 > 0)
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/dev_scripts.py#L15'>libs/cli/langchain_cli/dev_scripts.py:15:22:</a> TAE002 Type annotation for `playground_type` is too complex (1 > 0)
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/app.py#L129'>libs/cli/langchain_cli/namespaces/app.py:129:19:</a> TAE002 Type annotation for `dependencies` is too complex (2 > 0)
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/cli/langchain_cli/namespaces/app.py#L134'>libs/cli/langchain_cli/namespaces/app.py:134:15:</a> TAE002 Type annotation for `api_path` is too complex (2 > 0)
+... 9812 additional changes omitted for rule TAE002
++ <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/partners/qdrant/langchain_qdrant/vectorstores.py#L89'>libs/partners/qdrant/langchain_qdrant/vectorstores.py:89:9:</a> DOC501 Raised exception `ValueError` missing from docstring
+- <a href='https://github.com/langchain-ai/langchain/blob/a6e8c8387882005081716821e0b55e53ed390cbf/libs/partners/qdrant/langchain_qdrant/vectorstores.py#L89'>libs/partners/qdrant/langchain_qdrant/vectorstores.py:89:9:</a> DOC501 Raised exception `ValueError` missing from docstring
+... 9811 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+4659 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/__init__.py#L348'>reflex/__init__.py:348:14:</a> TAE002 Type annotation for `_SUBMODULES` is too complex (1 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/admin.py#L18'>reflex/admin.py:18:12:</a> TAE002 Type annotation for `admin` is too complex (1 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1026'>reflex/app.py:1026:39:</a> TAE002 Type annotation for `app_wrappers` is too complex (2 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1032'>reflex/app.py:1032:45:</a> TAE002 Type annotation for `key` is too complex (1 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1109'>reflex/app.py:1109:49:</a> TAE002 Type annotation for `state` is too complex (2 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1189'>reflex/app.py:1189:23:</a> TAE002 Type annotation for `app_wrappers` is too complex (2 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1244'>reflex/app.py:1244:34:</a> TAE002 Type annotation for `performance_metrics` is too complex (2 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1285'>reflex/app.py:1285:26:</a> TAE002 Type annotation for `compile_results` is too complex (2 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1388'>reflex/app.py:1388:29:</a> TAE002 Type annotation for `modify_files_tasks` is too complex (3 > 0)
++ <a href='https://github.com/reflex-dev/reflex/blob/2545378b984ea0a278bf642a96084563b0e9d31a/reflex/app.py#L1391'>reflex/app.py:1391:29:</a> TAE002 Type annotation for `result_futures` is too complex (5 > 0)
+... 4649 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+684 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/docs/conf.py#L181'>docs/conf.py:181:41:</a> TAE002 Type annotation for `info` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/docs/conf.py#L181'>docs/conf.py:181:60:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/docs/ext/conftabs.py#L16'>docs/ext/conftabs.py:16:22:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/docs/ext/conftabs.py#L86'>docs/ext/conftabs.py:86:24:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/noxfile.py#L68'>noxfile.py:68:19:</a> TAE002 Type annotation for `install_args` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/noxfile.py#L69'>noxfile.py:69:15:</a> TAE002 Type annotation for `run_args` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/noxfile.py#L70'>noxfile.py:70:13:</a> TAE002 Type annotation for `extras` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/src/scikit_build_core/__main__.py#L8'>src/scikit_build_core/__main__.py:8:18:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/src/scikit_build_core/_compat/__init__.py#L3'>src/scikit_build_core/_compat/__init__.py:3:10:</a> TAE002 Type annotation for `__all__` is too complex (1 > 0)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/41056e7b9aac3721994aa684de3314aa04c17dc9/src/scikit_build_core/_compat/builtins.py#L13'>src/scikit_build_core/_compat/builtins.py:13:18:</a> TAE002 Type annotation for `return type` is too complex (1 > 0)
+... 674 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+8057 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L110'>analytics/lib/counts.py:110:53:</a> TAE002 Type annotation for `output_table` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L120'>analytics/lib/counts.py:120:19:</a> TAE002 Type annotation for `interval` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L121'>analytics/lib/counts.py:121:23:</a> TAE002 Type annotation for `dependencies` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L130'>analytics/lib/counts.py:130:23:</a> TAE002 Type annotation for `output_table` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L131'>analytics/lib/counts.py:131:24:</a> TAE002 Type annotation for `pull_function` is too complex (2 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L143'>analytics/lib/counts.py:143:72:</a> TAE002 Type annotation for `realm` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L206'>analytics/lib/counts.py:206:49:</a> TAE002 Type annotation for `realm` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L235'>analytics/lib/counts.py:235:49:</a> TAE002 Type annotation for `realm` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L327'>analytics/lib/counts.py:327:30:</a> TAE002 Type annotation for `model_object_for_bucket` is too complex (1 > 0)
++ <a href='https://github.com/zulip/zulip/blob/cb4c27d1afdfcbe3bb7b3a8860097522f3a5c17b/analytics/lib/counts.py#L329'>analytics/lib/counts.py:329:15:</a> TAE002 Type annotation for `subgroup` is too complex (1 > 0)
+... 8047 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TAE002 | 60364 | 60364 | 0 | 0 | 0 |
+| DOC501 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+
+---
+
+_Comment by @danjones1618 on 2026-01-18 23:38_
+
+Uh oh looks like a default value is missing. I'll fix tomorrow evening
 
 ---

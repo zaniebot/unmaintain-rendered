@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/defer
 created_at: 2026-01-16T18:27:15Z
-updated_at: 2026-01-16T20:04:12Z
+updated_at: 2026-01-18T23:51:49Z
 url: https://github.com/astral-sh/ruff/pull/22627
-synced_at: 2026-01-16T21:04:12Z
+synced_at: 2026-01-19T00:21:19Z
 ```
 
 # [ty] Support deferred and recursive type evaluation in `NamedTuple(...)`
@@ -168,5 +168,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:04_
 **[Full report with detailed diff](https://1ce19951.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://1ce19951.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-18 23:51_
 
 ---
