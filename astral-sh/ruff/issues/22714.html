@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: docstring-code-line-length does not work. - astral-sh/ruff #22714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: docstring-code-line-length does not work.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22714">#22714</a>
+        opened by <a href="https://github.com/vaibhavmano">@vaibhavmano</a>
+        on 2026-01-19 08:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vaibhavmano">@vaibhavmano</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>docstring-code-line-length</code> is not working as intended even after enabling <code>docstring-code-format</code></p>
+<h3>Existing ruff configuration</h3>
+<p>This is my current ruff configuration mentioned in the root <code>pyproject.toml</code> file.</p>
+<pre><code>[tool.ruff]
+line-length = 120
+extend-exclude = [&quot;*/constants/api.py&quot;]
+exclude = [&quot;test&quot;, &quot;tests&quot;]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 120
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+# Ruff Rules - https://docs.astral.sh/ruff/rules/#legend
+select = [&quot;E&quot;, &quot;W&quot;, &quot;F&quot;, &quot;S&quot;, &quot;I&quot;]
+ignore = [&quot;F401&quot;, &quot;W605&quot;, &quot;W191&quot;]
+unfixable = [&quot;F401&quot;, &quot;S&quot;, &quot;W605&quot;]
+
+[tool.ruff.lint.isort.sections]
+kf-base = [&quot;base&quot;]  # base should always be on top
+kf-libraries = [
+    &quot;analyticscore&quot;,
+    &quot;axiom&quot;,
+    &quot;botbase&quot;,
+    &quot;connectionbase&quot;,
+    &quot;core&quot;,
+    &quot;platformbase&quot;,
+    &quot;reportcore&quot;,
+    &quot;aibase&quot;,
+]
+kf-modules = [
+    &quot;constant&quot;,
+    &quot;constants&quot;,
+    &quot;engine&quot;,
+    &quot;error&quot;,
+    &quot;job&quot;,
+    &quot;main&quot;,
+    &quot;migration&quot;,
+    &quot;preview&quot;,
+    &quot;querybuilder&quot;,
+    &quot;route&quot;,
+    &quot;schema&quot;,
+    &quot;schemas&quot;,
+    &quot;server&quot;,
+    &quot;service_config&quot;,
+    &quot;services&quot;,
+    &quot;service&quot;,
+    &quot;util&quot;,
+    &quot;utils&quot;,
+    &quot;config&quot;
+]
+kf-test-modules = [&quot;tests&quot;, &quot;test&quot;]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+section-order = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;third-party&quot;,
+    &quot;first-party&quot;,
+    &quot;kf-base&quot;,
+    &quot;kf-libraries&quot;,
+    &quot;kf-modules&quot;,
+    &quot;kf-test-modules&quot;,
+    &quot;local-folder&quot;,
+]
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
+</code></pre>
+<p>As specified, I have mentioned both <code>docstring-code-format</code> as <code>true</code> and <code>docstring-code-line-length = 120</code>. The expectation is for the contents of the docstring to be wrapped within the line length.</p>
+<p>Before formatting</p>
+<pre><code>    def validate_csv(
+            self, form_id: str, payload: dict, max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,
+    ):
+        &quot;&quot;&quot;
+        Something about `f`. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+        &quot;&quot;&quot;
+</code></pre>
+<p>Preview while running <code>uv run ruff format import_csv.py --diff</code></p>
+<pre><code>     def validate_child_table_csv(
+-            self, form_id: str, payload: dict, max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,
++        self,                                                                                                                              
++        form_id: str,                                                                                                                      
++        payload: dict,                                                                                                                     
++        max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,                                                                       
+     ):   
+</code></pre>
+<p>I understand this formatting is due to the rule <code>skip-magic-trailing-comma</code> but I also assumed that the docstring formatting will show up.</p>
+<h3>Version</h3>
+<p>ruff 0.14.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2026-01-19 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-19 08:44</div>
+            <div class="timeline-body"><p>Can you say more about how you would expect</p>
+<pre><code class="language-py">    def validate_csv(
+            self, form_id: str, payload: dict, max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,
+    ):
+        &quot;&quot;&quot;
+        Something about `f`. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+        &quot;&quot;&quot;
+</code></pre>
+<p>to be formatted? Ruff's <code>docstring-code-format</code> option enables formatting of code snippets within docstrings. It doesn't enable automatically breaking your docstring to fit into the line length.</p>
+<p>For example:</p>
+<pre><code class="language-py">def test():
+    &quot;&quot;&quot;
+    Something about `f`. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+
+    ```
+    class Test:
+        def validate_csv(
+            self, form_id: str, payload: dict, 
+            max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,
+        ): ...
+    ```
+    &quot;&quot;&quot;
+</code></pre>
+<p>gets formatted as</p>
+<pre><code class="language-py">def test():
+    &quot;&quot;&quot;
+    Something about `f`. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+
+    ```
+    class Test:
+        def validate_csv(
+            self,
+            form_id: str,
+            payload: dict,
+            max_limit: int = ChildTableImportConstants.MAX_RECORD_LIMIT,
+        ): ...
+    ```
+    &quot;&quot;&quot;
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 09:29:07 UTC
+    </footer>
+</body>
+</html>
