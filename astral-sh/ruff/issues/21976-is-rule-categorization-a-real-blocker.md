@@ -2,15 +2,15 @@
 number: 21976
 title: Is rule categorization a real blocker?
 type: issue
-state: open
+state: closed
 author: worldmind
 labels:
   - question
 assignees: []
 created_at: 2025-12-14T09:34:17Z
-updated_at: 2025-12-15T10:11:38Z
+updated_at: 2026-01-19T08:54:24Z
 url: https://github.com/astral-sh/ruff/issues/21976
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Is rule categorization a real blocker?
@@ -63,5 +63,9 @@ _Comment by @worldmind on 2025-12-15 10:11_
 
 Thank you for detailed answer! Of course it would be cool in all senses to have categories for rules and plugins, just wasn't clear will it happen. And of course you shouldn't support rules which you are not interested in, but if you will not be able to find a good for you approach for plugins, you can still add those rules, just mark them as unsupported (still some effort for review of course).
 Maybe it's also some rule's category, similar to preview rules now.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:54_
 
 ---

@@ -2,16 +2,16 @@
 number: 21995
 title: I suggest creating a metacode-compatible parser
 type: issue
-state: open
+state: closed
 author: pomponchik
 labels:
   - question
   - needs-info
 assignees: []
 created_at: 2025-12-16T03:10:46Z
-updated_at: 2025-12-18T22:35:52Z
+updated_at: 2026-01-19T08:52:37Z
 url: https://github.com/astral-sh/ruff/issues/21995
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # I suggest creating a metacode-compatible parser
@@ -45,5 +45,13 @@ Can you say more about what the benefits are for ruff? We don't need a "can pars
 ---
 
 _Label `needs-info` added by @AlexWaygood on 2025-12-18 22:35_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:52_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:52_
 
 ---

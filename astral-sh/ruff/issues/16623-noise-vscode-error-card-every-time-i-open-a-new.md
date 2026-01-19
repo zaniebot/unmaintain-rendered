@@ -2,15 +2,15 @@
 number: 16623
 title: Noise vscode error card every time I open a new window
 type: issue
-state: open
+state: closed
 author: jpambrun
 labels:
   - needs-info
 assignees: []
 created_at: 2025-03-11T12:25:45Z
-updated_at: 2025-03-11T17:11:06Z
+updated_at: 2026-01-19T08:57:30Z
 url: https://github.com/astral-sh/ruff/issues/16623
-synced_at: 2026-01-12T15:54:55Z
+synced_at: 2026-01-19T09:26:49Z
 ```
 
 # Noise vscode error card every time I open a new window
@@ -76,5 +76,9 @@ did make the error go away. Now the logs are
 2025-03-11 13:07:03.717 [info] Server run command: /home/jpambrun/.vscode-server/extensions/charliermarsh.ruff-2025.14.0-linux-x64/bundled/libs/bin/ruff server
 2025-03-11 13:07:03.718 [info] Server: Start requested.
 ```
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:57_
 
 ---

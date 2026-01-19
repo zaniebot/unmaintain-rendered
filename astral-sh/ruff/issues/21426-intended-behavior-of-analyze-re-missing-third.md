@@ -2,15 +2,15 @@
 number: 21426
 title: "Intended behavior of `analyze` re missing third party dependencies"
 type: issue
-state: open
+state: closed
 author: gwdekker
 labels:
   - question
 assignees: []
 created_at: 2025-11-13T12:25:38Z
-updated_at: 2025-11-13T14:21:37Z
+updated_at: 2026-01-19T08:51:02Z
 url: https://github.com/astral-sh/ruff/issues/21426
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Intended behavior of `analyze` re missing third party dependencies
@@ -72,5 +72,9 @@ _Comment by @MichaReiser on 2025-11-13 14:21_
 > I was indeed exploring combining with ty already to see if that would be a solution. On that note, is there a way for me to run ty only for one rule (so ignore all rules except the ones I select)?
 
 There's no easy way to do this today other than deselecting (`--ignore`) every single rule that's enabled by default.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:51_
 
 ---

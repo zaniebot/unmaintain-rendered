@@ -2,7 +2,7 @@
 number: 2032
 title: "Feature: Support for setting virtual environment path in LSP settings"
 type: issue
-state: open
+state: closed
 author: joshzcold
 labels:
   - question
@@ -10,9 +10,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-17T19:55:39Z
-updated_at: 2025-12-31T15:43:54Z
+updated_at: 2026-01-19T08:46:40Z
 url: https://github.com/astral-sh/ty/issues/2032
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # Feature: Support for setting virtual environment path in LSP settings
@@ -144,5 +144,15 @@ I don't think so. We still need the "hack" because an explicitly configured virt
 ---
 
 _Added to milestone `Pre-stable 1` by @MichaReiser on 2025-12-31 15:43_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:46_
+
+I'll close this. Support for `didChangeConfiguration` is tracked in https://github.com/astral-sh/ty/issues/953 and the LSP now supports a `ty.configuration` option where users can set any configuration also supported in a `ty.toml`
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:46_
 
 ---

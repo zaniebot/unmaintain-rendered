@@ -2,15 +2,15 @@
 number: 21932
 title: Ruff jetbrains plugin incompatible
 type: issue
-state: open
+state: closed
 author: Airpy
 labels:
   - question
 assignees: []
 created_at: 2025-12-12T06:16:51Z
-updated_at: 2025-12-12T08:39:18Z
+updated_at: 2026-01-19T08:51:24Z
 url: https://github.com/astral-sh/ruff/issues/21932
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Ruff jetbrains plugin incompatible
@@ -38,5 +38,9 @@ You'll have to update Ruff to a more recent version (0.0.50 is somewhat old now)
 ---
 
 _Label `question` added by @MichaReiser on 2025-12-12 08:38_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:51_
 
 ---

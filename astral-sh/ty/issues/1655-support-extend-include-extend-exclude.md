@@ -2,16 +2,16 @@
 number: 1655
 title: "Support `extend-include`, `extend-exclude`"
 type: issue
-state: open
+state: closed
 author: alexei
 labels:
   - question
   - configuration
 assignees: []
 created_at: 2025-11-27T12:49:41Z
-updated_at: 2025-11-29T14:57:28Z
+updated_at: 2026-01-19T08:46:56Z
 url: https://github.com/astral-sh/ty/issues/1655
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # Support `extend-include`, `extend-exclude`
@@ -79,5 +79,13 @@ _Comment by @MichaReiser on 2025-11-29 14:57_
 The new semantics are documented, but happy to make any changes if you can suggest a specific improvement.
 
 We didn't change this just for fun ;).  Ruff's behavior has consistently been confusing to users, and the new behavior is much closer to uv's include/exclude semantics. 
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:46_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:46_
 
 ---

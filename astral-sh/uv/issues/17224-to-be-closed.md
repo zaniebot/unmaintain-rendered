@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-23T07:34:56Z
-updated_at: 2026-01-19T06:08:14Z
+updated_at: 2026-01-19T08:32:57Z
 url: https://github.com/astral-sh/uv/issues/17224
-synced_at: 2026-01-19T06:21:29Z
+synced_at: 2026-01-19T09:27:08Z
 ```
 
 # To Be Closed
@@ -42,16 +42,6 @@ Furthermore, you’ve opened four issues for this. Please refrain from spamming.
 * https://github.com/astral-sh/uv/issues/17208
 * https://github.com/astral-sh/uv/issues/17168
 * https://github.com/astral-sh/uv/issues/14436
-
----
-
-_Comment by @mourad-ghafiri on 2025-12-27 09:01_
-
-@FishAlchemist your influence threshold is 1, you will need 10 years to understand it.
-The extension starts to have more attention with more than 30 installs a day, Im not promoting, Im contributing! the extension is open source and in MIT license. 
-UV does not have an email to contact or a space for proposals.
-
-issue closed and case closed.
 
 ---
 

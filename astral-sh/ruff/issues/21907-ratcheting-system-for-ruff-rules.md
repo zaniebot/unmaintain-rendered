@@ -2,15 +2,15 @@
 number: 21907
 title: Ratcheting system for ruff rules
 type: issue
-state: open
+state: closed
 author: siscia
 labels:
   - question
 assignees: []
 created_at: 2025-12-10T22:21:56Z
-updated_at: 2025-12-12T00:00:23Z
+updated_at: 2026-01-19T08:54:46Z
 url: https://github.com/astral-sh/ruff/issues/21907
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Ratcheting system for ruff rules
@@ -62,5 +62,9 @@ _Comment by @siscia on 2025-12-12 00:00_
 That would work as well for us.
 
 I am glad that this was already asked and already some brain power was used on it. If you need any use case example, I will be more than happy to help.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:54_
 
 ---

@@ -2,15 +2,15 @@
 number: 21855
 title: "Clash between `FURB120` and `B905`"
 type: issue
-state: open
+state: closed
 author: jamesbraza
 labels:
   - question
 assignees: []
 created_at: 2025-12-09T00:10:06Z
-updated_at: 2025-12-09T08:06:00Z
+updated_at: 2026-01-19T08:55:31Z
 url: https://github.com/astral-sh/ruff/issues/21855
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Clash between `FURB120` and `B905`
@@ -57,5 +57,9 @@ _Label `question` added by @ntBre on 2025-12-09 00:35_
 _Comment by @MichaReiser on 2025-12-09 08:06_
 
 If those were both Ruff rules, I'd change `FURB120` to not flag `strict=False`. I don't think we want to make any assumption about other linter and the solution here is to manually disable `B905` (or `FURB120`, depending on what is more importnt to you)
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:55_
 
 ---

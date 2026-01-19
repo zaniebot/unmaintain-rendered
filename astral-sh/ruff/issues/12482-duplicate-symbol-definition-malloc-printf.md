@@ -2,16 +2,16 @@
 number: 12482
 title: "duplicate symbol definition: _malloc_printf"
 type: issue
-state: open
+state: closed
 author: serjflint
 labels:
   - question
   - needs-mre
 assignees: []
 created_at: 2024-07-24T00:54:49Z
-updated_at: 2025-01-15T07:43:54Z
+updated_at: 2026-01-19T08:58:11Z
 url: https://github.com/astral-sh/ruff/issues/12482
-synced_at: 2026-01-12T15:54:51Z
+synced_at: 2026-01-19T09:26:49Z
 ```
 
 # duplicate symbol definition: _malloc_printf
@@ -88,5 +88,15 @@ _Closed by @MichaReiser on 2025-01-15 07:43_
 ---
 
 _Reopened by @MichaReiser on 2025-01-15 07:43_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:58_
+
+Closing as I'm unable to reproduce this. Please feel free to open a new issue if you run into this again
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:58_
 
 ---

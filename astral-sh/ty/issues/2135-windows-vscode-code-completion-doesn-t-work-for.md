@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2025-12-20T20:16:23Z
-updated_at: 2025-12-24T06:54:32Z
+updated_at: 2026-01-19T08:50:00Z
 url: https://github.com/astral-sh/ty/issues/2135
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # Windows | VSCode | Code completion doesn't work for local variables
@@ -144,5 +144,11 @@ _Comment by @dhruvmanila on 2025-12-24 06:54_
 > Let me try creating a minimal reproducable example for you.
 
 That would be great, thank you!
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:50_
+
+@LittleLittleCloud have you been able to reproduce this again?
 
 ---

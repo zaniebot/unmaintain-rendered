@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-19T04:30:03Z
+updated_at: 2026-01-19T09:18:41Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-19T05:31:49Z
+synced_at: 2026-01-19T09:27:02Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -573,5 +573,30 @@ I also included the fix for https://github.com/apache/airflow/issues/52962
 ---
 
 _Marked ready for review by @sjyangkevin on 2026-01-19 04:30_
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs`:698 on 2026-01-19 08:46_
+
+```suggestion
+                message: "Import `BaseHook` from `airflow.hooks.base` is suggested in Airflow 3.0, but it is deprecated in Airflow 3.1. Follow the instructions of AIR321 if you're using 3.1+.",
+```
+
+We can improve the message to something like this
+
+---
+
+_@Lee-W reviewed on 2026-01-19 08:55_
+
+most good, one nit
+
+---
+
+_Comment by @amoghrajesh on 2026-01-19 09:18_
+
+Checked: https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c0673251b0124829d/crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR321_AIR321_names.py.snap#L298 and I have no objections, just two qns:
+
+1. [https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c0673251b0124829d/[…]ruff_linter__rules__airflow__tests__AIR321_AIR321_names.py.snap](https://github.com/sjyangkevin/ruff/blob/b1141bd88163d629c8022c9c0673251b0124829d/crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR321_AIR321_names.py.snap#L298) (why the 1.1.6?)
+2. I do not love the: airflow.sdk.execution_time.macros. Better to have it be: airflow.sdk.macros yes? (this one's on me though)
 
 ---

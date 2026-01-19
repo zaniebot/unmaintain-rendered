@@ -2,15 +2,15 @@
 number: 21959
 title: Slow startup
 type: issue
-state: open
+state: closed
 author: lkpzxc
 labels:
   - question
 assignees: []
 created_at: 2025-12-13T08:12:27Z
-updated_at: 2025-12-15T07:11:20Z
+updated_at: 2026-01-19T08:52:48Z
 url: https://github.com/astral-sh/ruff/issues/21959
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Slow startup
@@ -43,5 +43,9 @@ Hmm, curious. Can you say a little more about your setup:
 * What specific command takes 2s to start up? 
 * Can you try running with the verbose flag `ruff check -v` 
 * Do you use any antivirus software that might take a long time to scan ruff?
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:52_
 
 ---

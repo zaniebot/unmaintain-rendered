@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: dcreager/lazy-sequent-map
 created_at: 2026-01-14T18:04:45Z
-updated_at: 2026-01-17T20:00:29Z
+updated_at: 2026-01-19T08:39:07Z
 url: https://github.com/astral-sh/ruff/pull/22577
-synced_at: 2026-01-17T20:10:51Z
+synced_at: 2026-01-19T09:27:02Z
 ```
 
 # [ty] Build constraint set sequent maps lazily
@@ -134,7 +134,7 @@ _Label `internal` added by @dcreager on 2026-01-14 18:14_
 _Comment by @codspeed-hq[bot] on 2026-01-14 18:26_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **improve performance by 4.98%**
+## Merging this PR will **improve performance by 4.65%**
 
 
 
@@ -149,10 +149,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-14 18:26_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8.2 s | 7.8 s | +4.98% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8.2 s | 7.9 s | +4.65% |
 ---
 
-<sub>Comparing <code>dcreager/lazy-sequent-map</code> (6555491) with <code>main</code> (3608c62)</sub>
+<sub>Comparing <code>dcreager/lazy-sequent-map</code> (2d07e1b) with <code>main</code> (3608c62)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -350,5 +350,27 @@ _@dcreager reviewed on 2026-01-17 19:12_
 _Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:3304 on 2026-01-17 19:12_
 
 I found a different way to do this that keeps the performance win but doesn't require interior mutability
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:2177 on 2026-01-19 08:31_
+
+Nit: Maybe for a separate PR: Would it make sense to maybe use `SmallVec` here? (what's a "typcial" size of `constraints?)
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:2219 on 2026-01-19 08:34_
+
+The old `sequent_map` query had cycle handling, but not all queries calling `path_assignments` have. Was it only the `SequentMap::add` call that could result in cycles? If so, are there any queries where we need to add cycle handling, now that the cycle is no longer "contained" by the `sequent_map` query?
+
+---
+
+_@MichaReiser approved on 2026-01-19 08:37_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:39_
+
+Nice. I don't have a lot of context on the BDD work but the cachng makes sense to me. Probably something that would also benefit from within-same-revision LRU caching, to cap the memory usage (see prefect). 
 
 ---

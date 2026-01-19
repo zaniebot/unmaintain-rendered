@@ -2,15 +2,15 @@
 number: 17376
 title: "uv sync --no-install-workspace fails on 'invalid' workspaces"
 type: issue
-state: open
+state: closed
 author: kurtsys-vintecc
 labels:
   - question
 assignees: []
 created_at: 2026-01-09T13:24:46Z
-updated_at: 2026-01-09T14:07:03Z
+updated_at: 2026-01-19T08:32:51Z
 url: https://github.com/astral-sh/uv/issues/17376
-synced_at: 2026-01-12T16:02:49Z
+synced_at: 2026-01-19T09:27:08Z
 ```
 
 # uv sync --no-install-workspace fails on 'invalid' workspaces
@@ -120,5 +120,15 @@ _Comment by @zanieb on 2026-01-09 14:07_
 The workspace members can affect the resolution.
 
 We don't support partial locks, e.g., we also solve for all dependency groups even if you are only installing one of them. That's just a design constraint of the lockfile.
+
+---
+
+_Comment by @kurtsys-vintecc on 2026-01-19 08:32_
+
+ok, thx.
+
+---
+
+_Closed by @kurtsys-vintecc on 2026-01-19 08:32_
 
 ---

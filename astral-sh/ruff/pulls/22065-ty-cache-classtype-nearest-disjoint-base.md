@@ -2,18 +2,19 @@
 number: 22065
 title: "[ty] Cache `ClassType::nearest_disjoint_base`"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - performance
   - ty
 assignees: []
+merged: true
 base: main
 head: zb/cache-nearest
 created_at: 2025-12-18T22:32:26Z
-updated_at: 2026-01-18T15:28:50Z
+updated_at: 2026-01-19T08:22:55Z
 url: https://github.com/astral-sh/ruff/pull/22065
-synced_at: 2026-01-18T16:24:44Z
+synced_at: 2026-01-19T09:27:02Z
 ```
 
 # [ty] Cache `ClassType::nearest_disjoint_base`
@@ -783,5 +784,23 @@ It was just in draft because I wasn't particularly confident it did anything and
 _@AlexWaygood approved on 2026-01-18 15:28_
 
 This seems worth it to me given 4-7% speedups locally on pandas with ty_benchmark, no reported regressions locally with ty_benchmark, consistent speedups on most Codspeed benchmarks, and no significant impact on memory usage. But I will defer to @MichaReiser 
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:22_
+
+I ran `ty_benchmark` and the numbers are mostly neutral with the exception of pandas, where we see a 5-10% perf improvement
+
+---
+
+_Merged by @MichaReiser on 2026-01-19 08:22_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:22_
+
+---
+
+_Branch deleted on 2026-01-19 08:22_
 
 ---

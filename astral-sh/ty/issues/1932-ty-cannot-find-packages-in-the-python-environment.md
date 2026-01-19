@@ -2,7 +2,7 @@
 number: 1932
 title: ty cannot find packages in the python environment lib subfolder when l is lowercase
 type: issue
-state: open
+state: closed
 author: martinResearch
 labels:
   - needs-mre
@@ -10,9 +10,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-12-16T14:01:40Z
-updated_at: 2025-12-16T15:38:54Z
+updated_at: 2026-01-19T08:50:31Z
 url: https://github.com/astral-sh/ty/issues/1932
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # ty cannot find packages in the python environment lib subfolder when l is lowercase
@@ -76,5 +76,15 @@ I just tried to reproduce with a minimal conda environment and I am not getting 
 ---
 
 _Label `needs-mre` added by @MichaReiser on 2025-12-16 15:38_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:50_
+
+I'll close this for now. Feel free to open a new issue or comment here if you run into this again.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:50_
 
 ---

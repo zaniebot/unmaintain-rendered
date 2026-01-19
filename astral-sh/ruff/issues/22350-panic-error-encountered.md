@@ -2,15 +2,15 @@
 number: 22350
 title: "[Panic] - Error Encountered"
 type: issue
-state: open
+state: closed
 author: orrdjoshua
 labels:
   - question
 assignees: []
 created_at: 2026-01-03T03:04:25Z
-updated_at: 2026-01-07T09:34:54Z
+updated_at: 2026-01-19T08:51:41Z
 url: https://github.com/astral-sh/ruff/issues/22350
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # [Panic] - Error Encountered
@@ -135,5 +135,9 @@ but that doesn't really explain the ruff errors seemingly since that would have 
 _Comment by @MichaReiser on 2026-01-07 09:34_
 
 This sounds to me like your system run out of file handles or memory, so that the OS failed to spawn new threads. Which also explains why restarting your computer or restarting whatever program is responsible for the high resource usage resolved the issue. There isn't anything we can do here on the Ruff side other than catching the error more gracefully, but that would require upstream changes in rayon.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:51_
 
 ---

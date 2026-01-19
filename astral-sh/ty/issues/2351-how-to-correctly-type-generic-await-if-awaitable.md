@@ -2,15 +2,15 @@
 number: 2351
 title: How to correctly type generic await_if_awaitable
 type: issue
-state: open
+state: closed
 author: ThomasPinna
 labels:
   - question
 assignees: []
 created_at: 2026-01-05T17:30:21Z
-updated_at: 2026-01-06T09:48:25Z
+updated_at: 2026-01-19T08:45:05Z
 url: https://github.com/astral-sh/ty/issues/2351
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # How to correctly type generic await_if_awaitable
@@ -124,5 +124,9 @@ async def await_if_awaitable[T](
     else:
         return maybe_awaitable
 ```
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:45_
 
 ---

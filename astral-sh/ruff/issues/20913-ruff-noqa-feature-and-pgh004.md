@@ -2,15 +2,15 @@
 number: 20913
 title: Ruff noqa feature and PGH004
 type: issue
-state: open
+state: closed
 author: Morgadoooo
 labels:
   - question
 assignees: []
 created_at: 2025-10-16T08:44:32Z
-updated_at: 2025-12-06T14:56:33Z
+updated_at: 2026-01-19T08:55:43Z
 url: https://github.com/astral-sh/ruff/issues/20913
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Ruff noqa feature and PGH004
@@ -122,5 +122,9 @@ You can do the following if you want to suppress `PGH004` in that file too:
 ```
 
 Note that Ruff will still show syntax errors even when disabling all rules. The only way to make Ruff skip a file entirely is to exclude it.
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:55_
 
 ---

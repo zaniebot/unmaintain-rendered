@@ -2,16 +2,16 @@
 number: 21863
 title: Disagreement with isort
 type: issue
-state: open
+state: closed
 author: thmo
 labels:
   - question
   - isort
 assignees: []
 created_at: 2025-12-09T12:07:53Z
-updated_at: 2025-12-09T13:06:21Z
+updated_at: 2026-01-19T08:55:10Z
 url: https://github.com/astral-sh/ruff/issues/21863
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Disagreement with isort
@@ -75,5 +75,9 @@ _Label `question` added by @MichaReiser on 2025-12-09 13:06_
 ---
 
 _Label `isort` added by @MichaReiser on 2025-12-09 13:06_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:55_
 
 ---

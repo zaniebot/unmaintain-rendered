@@ -2,16 +2,16 @@
 number: 1823
 title: await in jupyter notebooks marked as invalid-syntax
 type: issue
-state: open
+state: closed
 author: bvolkmer
 labels:
   - needs-info
   - notebook
 assignees: []
 created_at: 2025-12-09T11:31:07Z
-updated_at: 2025-12-14T16:00:24Z
+updated_at: 2026-01-19T08:47:31Z
 url: https://github.com/astral-sh/ty/issues/1823
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # await in jupyter notebooks marked as invalid-syntax
@@ -118,5 +118,9 @@ Found 1 diagnostic
 ---
 
 _Label `needs-info` added by @AlexWaygood on 2025-12-14 16:00_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:47_
 
 ---

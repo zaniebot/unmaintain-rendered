@@ -2,15 +2,15 @@
 number: 22563
 title: "Rule Request: Require importing common library a certain way"
 type: issue
-state: open
+state: closed
 author: DeflateAwning
 labels:
   - question
 assignees: []
 created_at: 2026-01-14T00:05:32Z
-updated_at: 2026-01-14T08:57:39Z
+updated_at: 2026-01-19T08:52:00Z
 url: https://github.com/astral-sh/ruff/issues/22563
-synced_at: 2026-01-14T09:34:58Z
+synced_at: 2026-01-19T09:26:50Z
 ```
 
 # Rule Request: Require importing common library a certain way
@@ -63,5 +63,9 @@ Do you know what libraries it currently applies to?
 _Comment by @MichaReiser on 2026-01-14 08:57_
 
 See https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:52_
 
 ---

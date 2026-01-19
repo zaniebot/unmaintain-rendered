@@ -10,9 +10,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2025-12-22T18:54:10Z
-updated_at: 2026-01-15T16:09:48Z
+updated_at: 2026-01-19T08:49:09Z
 url: https://github.com/astral-sh/ty/issues/2169
-synced_at: 2026-01-15T16:50:04Z
+synced_at: 2026-01-19T09:26:44Z
 ```
 
 # Add ability to hide all warnings
@@ -101,5 +101,11 @@ _Comment by @tino on 2026-01-15 16:09_
 @MichaReiser my use case is the same, to use during CI/pre-commit. Seeing warnings in the editor is fine for me. We can already silence rules that we don't want, wether that's a warning or an error.
 
 Regarding the implementation, we'd start with the default config. So I'd rather have a single flag than having to compile some profile in which I determine what's a warning or not. `--errors-only` sounds reasonable.
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:49_
+
+I personally prefer clippy's approach or `--min-severity`. `--errors-only` is too specific. E.g. `--min-severity` could also be used to show info level diagnostic. 
 
 ---
