@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-16T20:29:38Z
+updated_at: 2026-01-19T23:28:36Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-16T21:04:12Z
+synced_at: 2026-01-19T23:36:38Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -74,7 +74,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 01:50_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/)
 
 No changes detected ✅
 
@@ -495,13 +495,13 @@ Similar to the SemanticModel comment, it might be useful to have a helper that d
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8895 on 2026-01-16 20:27_
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:10233 on 2026-01-16 20:27_
 
 In order to handle some of the other comments about "external" `infer_scope_types` requests for comprehension scopes, we might need to do a full extend here (incl expression and definition types, not just diagnostics)
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8938 on 2026-01-16 20:28_
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:10276 on 2026-01-16 20:28_
 
 This is still a fair bit to duplicate for all comprehension kinds... seems like `KnownClass::Set` is the only set-distinct thing in here?
 

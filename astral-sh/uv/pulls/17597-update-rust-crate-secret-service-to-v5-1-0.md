@@ -2,18 +2,19 @@
 number: 17597
 title: Update Rust crate secret-service to v5.1.0
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/secret-service-5.x-lockfile
 created_at: 2026-01-19T01:34:57Z
-updated_at: 2026-01-19T19:14:44Z
+updated_at: 2026-01-19T23:10:04Z
 url: https://github.com/astral-sh/uv/pull/17597
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-19T23:36:51Z
 ```
 
 # Update Rust crate secret-service to v5.1.0
@@ -82,5 +83,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:34_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @zanieb on 2026-01-19 23:10_
+
+---
+
+_Closed by @zanieb on 2026-01-19 23:10_
+
+---
+
+_Branch deleted on 2026-01-19 23:10_
 
 ---

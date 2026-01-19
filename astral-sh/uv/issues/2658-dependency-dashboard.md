@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T19:35:27Z
+updated_at: 2026-01-19T23:16:36Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T20:31:05Z
+synced_at: 2026-01-19T23:36:41Z
 ```
 
 # Dependency Dashboard
@@ -56,10 +56,8 @@ The following updates have been manually edited so Renovate will no longer make 
  - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
  - [ ] <!-- rebase-branch=renovate/tokio-stream-0.x-lockfile -->[Update Rust crate tokio-stream to v0.1.18](../pull/17572)
  - [ ] <!-- rebase-branch=renovate/url-2.x-lockfile -->[Update Rust crate url to v2.5.8](../pull/17575)
- - [ ] <!-- rebase-branch=renovate/fs-err-3.x-lockfile -->[Update Rust crate fs-err to v3.2.2](../pull/17590)
  - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/17591)
  - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
- - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
  - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
@@ -92,11 +90,9 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/tokio-util-0.x-lockfile -->[Update Rust crate tokio-util to v0.7.18](../pull/17573)
  - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
  - [ ] <!-- rebase-branch=renovate/tokio-tracing-monorepo -->[Update tokio-tracing monorepo](../pull/17577) (`tracing`, `tracing-subscriber`)
- - [ ] <!-- rebase-branch=renovate/criterion-4.x-lockfile -->[Update Rust crate criterion to v4.2.1](../pull/17587)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
  - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
- - [ ] <!-- rebase-branch=renovate/secret-service-5.x-lockfile -->[Update Rust crate secret-service to v5.1.0](../pull/17597)
- - [ ] <!-- rebase-branch=renovate/security-framework-3.x-lockfile -->[Update Rust crate security-framework to v3.5.1](../pull/17598)
+ - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
 ## PR Closed (Blocked)
@@ -150,7 +146,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `etcetera 0.11.0`
  - `fastrand 2.3.0`
  - `flate2 1.0.33` → [Updates: `1.0.33`]
- - `fs-err 3.0.0` → [Updates: `3.0.0`]
+ - `fs-err 3.0.0`
  - `futures 0.3.30`
  - `glob 0.3.1`
  - `globset 0.4.15`
@@ -200,8 +196,8 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `same-file 1.0.6`
  - `schemars 1.0.0`
  - `seahash 4.1.0`
- - `secret-service 5.0.0` → [Updates: `5.0.0`]
- - `security-framework 3` → [Updates: `3`]
+ - `secret-service 5.0.0`
+ - `security-framework 3`
  - `self-replace 1.5.0`
  - `serde 1.0.210`
  - `serde-untagged 0.1.6`
@@ -269,7 +265,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>crates/uv-bench/Cargo.toml (1)</summary>
 
- - `criterion 4.0.3` → [Updates: `4.0.3`]
+ - `criterion 4.0.3`
 
 </details>
 

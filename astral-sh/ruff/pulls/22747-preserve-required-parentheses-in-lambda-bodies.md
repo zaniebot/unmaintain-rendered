@@ -9,13 +9,12 @@ labels:
   - formatter
   - preview
 assignees: []
-draft: true
 base: main
 head: brent/lambda-walrus
 created_at: 2026-01-19T21:38:34Z
-updated_at: 2026-01-19T22:28:13Z
+updated_at: 2026-01-19T22:38:01Z
 url: https://github.com/astral-sh/ruff/pull/22747
-synced_at: 2026-01-19T22:35:17Z
+synced_at: 2026-01-19T23:36:38Z
 ```
 
 # Preserve required parentheses in lambda bodies
@@ -70,5 +69,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 22:28_
 
 
 
+
+---
+
+_Marked ready for review by @ntBre on 2026-01-19 22:28_
+
+---
+
+_Review requested from @MichaReiser by @ntBre on 2026-01-19 22:28_
+
+---
+
+_Review requested from @dylwil3 by @ntBre on 2026-01-19 22:29_
+
+---
+
+_@dylwil3 approved on 2026-01-19 22:36_
+
+Looks good to me! Strange we missed what appears to be exactly one case from PEP 572 in `needs_parentheses`, but I just checked again and it seems like they're all there now.
+
+---
+
+_Comment by @ntBre on 2026-01-19 22:38_
+
+Oh good idea to double-check that, thank you!
 
 ---

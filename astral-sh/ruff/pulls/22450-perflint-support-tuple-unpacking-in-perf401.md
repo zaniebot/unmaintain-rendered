@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-12T21:03:06Z
+updated_at: 2026-01-19T23:17:03Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-12T21:25:53Z
+synced_at: 2026-01-19T23:36:38Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -676,5 +676,15 @@ I included this in the patch above, but if we keep a reference to the whole `Exp
 _@ntBre reviewed on 2026-01-12 21:03_
 
 Thank you! This looks reasonable to me overall, I Just had a few minor suggestions, mostly around avoiding allocating a `Vec` for the loop targets.
+
+---
+
+_Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:260 on 2026-01-19 23:17_
+
+I will work on this later today.  For some reason I didn't get an email notification when you left these comments (on the 12th), which is strange.  Because it says I should be receiving notifications from this page.  Otherwise I would have had these updates done sooner.  Oh well.  Thank you for all the feedback.
+
+---
+
+_@Jkhall81 reviewed on 2026-01-19 23:17_
 
 ---

@@ -2,18 +2,19 @@
 number: 17598
 title: Update Rust crate security-framework to v3.5.1
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/security-framework-3.x-lockfile
 created_at: 2026-01-19T01:35:06Z
-updated_at: 2026-01-19T19:14:47Z
+updated_at: 2026-01-19T23:14:56Z
 url: https://github.com/astral-sh/uv/pull/17598
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-19T23:36:51Z
 ```
 
 # Update Rust crate security-framework to v3.5.1
@@ -94,5 +95,17 @@ Yeah I reviewed this as well, looks fine
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @zanieb on 2026-01-19 23:14_
+
+---
+
+_Closed by @zanieb on 2026-01-19 23:14_
+
+---
+
+_Branch deleted on 2026-01-19 23:14_
 
 ---

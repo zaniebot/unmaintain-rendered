@@ -2,18 +2,19 @@
 number: 17587
 title: Update Rust crate criterion to v4.2.1
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/criterion-4.x-lockfile
 created_at: 2026-01-19T01:33:19Z
-updated_at: 2026-01-19T19:14:40Z
+updated_at: 2026-01-19T23:14:35Z
 url: https://github.com/astral-sh/uv/pull/17587
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-19T23:36:51Z
 ```
 
 # Update Rust crate criterion to v4.2.1
@@ -106,5 +107,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:33_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @zanieb on 2026-01-19 23:14_
+
+---
+
+_Closed by @zanieb on 2026-01-19 23:14_
+
+---
+
+_Branch deleted on 2026-01-19 23:14_
 
 ---

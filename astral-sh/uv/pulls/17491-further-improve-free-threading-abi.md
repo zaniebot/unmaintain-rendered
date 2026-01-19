@@ -2,18 +2,19 @@
 number: 17491
 title: Further improve free-threading ABI incompatibility errors
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - error messages
   - "test:macos"
 assignees: []
+merged: true
 base: main
 head: zb/abi-ft-ii
 created_at: 2026-01-15T18:02:57Z
-updated_at: 2026-01-19T10:49:37Z
+updated_at: 2026-01-19T23:08:42Z
 url: https://github.com/astral-sh/uv/pull/17491
-synced_at: 2026-01-19T11:30:41Z
+synced_at: 2026-01-19T23:36:51Z
 ```
 
 # Further improve free-threading ABI incompatibility errors
@@ -54,5 +55,17 @@ _Review requested from @konstin by @zanieb on 2026-01-16 14:12_
 ---
 
 _@konstin approved on 2026-01-19 10:49_
+
+---
+
+_Merged by @zanieb on 2026-01-19 23:08_
+
+---
+
+_Closed by @zanieb on 2026-01-19 23:08_
+
+---
+
+_Branch deleted on 2026-01-19 23:08_
 
 ---

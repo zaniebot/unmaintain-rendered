@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: renovate/container-image-digests
 created_at: 2026-01-19T01:27:49Z
-updated_at: 2026-01-19T19:35:19Z
+updated_at: 2026-01-19T23:14:00Z
 url: https://github.com/astral-sh/uv/pull/17554
-synced_at: 2026-01-19T20:31:15Z
+synced_at: 2026-01-19T23:36:51Z
 ```
 
 # Update dependencies
@@ -64,5 +64,11 @@ _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
 ---
 
 _Renamed from "Pin dependencies" to "Update dependencies" by @renovate[bot] on 2026-01-19 19:35_
+
+---
+
+_Comment by @zanieb on 2026-01-19 23:14_
+
+Ugh the battle continues here
 
 ---
