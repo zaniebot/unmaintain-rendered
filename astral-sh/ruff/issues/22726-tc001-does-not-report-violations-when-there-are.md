@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-19T15:59:06Z
-updated_at: 2026-01-19T16:15:08Z
+updated_at: 2026-01-19T21:17:40Z
 url: https://github.com/astral-sh/ruff/issues/22726
-synced_at: 2026-01-19T16:26:54Z
+synced_at: 2026-01-19T21:32:54Z
 ```
 
 # TC001 does not report violations when there are other modules from the same package not violating
@@ -102,5 +102,13 @@ Thanks for the report! I think this may be a duplicate of #15723, but I'm not to
 ---
 
 _Label `bug` added by @ntBre on 2026-01-19 16:15_
+
+---
+
+_Comment by @Daverball on 2026-01-19 21:17_
+
+This is working as designed. This behavior can be changed by setting [`lint.flake8-type-checking.strict`](https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_strict) to `true`.
+
+The reason it doesn't report these by default, is because there's usually no performance benefit. Since for non-module imports (which are the common case for `from` imports) the module is only imported once either way, so emitting an error for this would be causing unnecessary churn. But since some people prefer consistency, there is a setting that allows you to override this decision.
 
 ---

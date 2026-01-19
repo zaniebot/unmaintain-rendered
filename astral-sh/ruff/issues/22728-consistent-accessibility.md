@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-19T17:23:50Z
-updated_at: 2026-01-19T18:01:46Z
+updated_at: 2026-01-19T21:15:06Z
 url: https://github.com/astral-sh/ruff/issues/22728
-synced_at: 2026-01-19T18:27:34Z
+synced_at: 2026-01-19T21:32:54Z
 ```
 
 # Consistent accessibility
@@ -79,5 +79,26 @@ For me:
 - If a file has an underscore, all inside is private.
 
 It's easier to think about it as the `internal` modifier of C# instead of `private`: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
+
+---
+
+_Comment by @flying-sheep on 2026-01-19 21:15_
+
+We also have a lot of instances where we do
+
+```python
+# reused private aliases
+type _Foo = Literal["a", "b"]
+type _Bar = int | str
+
+# a public function
+def do_it(foo: _Foo) -> _Bar: ...
+```
+
+which then renders in our docs as intended:
+
+> **do_it**(foo: Literal["a", "b"]) -> int | str
+
+So while it would make sense to avoid exposing private *classes*, types starting with an underscore aren’t all that private in many cases.
 
 ---

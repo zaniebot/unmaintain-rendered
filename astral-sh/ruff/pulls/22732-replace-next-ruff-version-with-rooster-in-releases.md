@@ -7,13 +7,12 @@ author: ntBre
 labels:
   - release
 assignees: []
-draft: true
 base: main
 head: brent/rooster-rule-versions
 created_at: 2026-01-19T19:43:33Z
-updated_at: 2026-01-19T20:22:11Z
+updated_at: 2026-01-19T20:45:16Z
 url: https://github.com/astral-sh/ruff/pull/22732
-synced_at: 2026-01-19T20:31:01Z
+synced_at: 2026-01-19T21:33:07Z
 ```
 
 # Replace `NEXT_RUFF_VERSION` with rooster in releases
@@ -164,5 +163,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 20:22_
 
 
 
+
+---
+
+_Marked ready for review by @ntBre on 2026-01-19 20:28_
+
+---
+
+_@amyreese approved on 2026-01-19 20:45_
 
 ---

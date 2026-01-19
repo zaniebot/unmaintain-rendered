@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-19T19:00:58Z
+updated_at: 2026-01-19T20:31:07Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-19T19:29:31Z
+synced_at: 2026-01-19T21:33:07Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -196,7 +196,7 @@ _@oconnor663 reviewed on 2026-01-16 19:02_
 
 ---
 
-_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2026-01-16 19:02_
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/call/bind.rs`:1264 on 2026-01-16 19:02_
 
 This loop should probably be bounded to some reasonable limit, and beyond that we should fall back to some other type? Currently I can exhaust all the memory on my machine and get `ty` OOM killed by checking this :)
 
@@ -213,7 +213,7 @@ _@sakgoyal reviewed on 2026-01-16 23:18_
 
 ---
 
-_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2026-01-16 23:18_
+_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1264 on 2026-01-16 23:18_
 
 thats a good point. maybe we put a limit at say 2^16? if it exceeds that, set the type to `Unknown`? 
 
@@ -232,7 +232,7 @@ _@dscorbett reviewed on 2026-01-17 00:17_
 
 ---
 
-_Review comment by @dscorbett on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2026-01-17 00:17_
+_Review comment by @dscorbett on `crates/ty_python_semantic/src/types/call/bind.rs`:1264 on 2026-01-17 00:17_
 
 It could also be a `tuple[bytes, ...]`, ignoring the count but keeping the type. Similarly, `struct.unpack("18446744073709551616c?", buf)` could be a `tuple[bytes | bool, ...]`.
 
@@ -242,7 +242,7 @@ _@carljm reviewed on 2026-01-17 01:51_
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2026-01-17 01:51_
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:1264 on 2026-01-17 01:51_
 
 I think it is not super important how precise the fallback type is in this edge case. Feel free to use the most precise fallback type that is definitely correct and doesn't require a lot of additional work to implement.
 
@@ -252,7 +252,7 @@ _@sakgoyal reviewed on 2026-01-17 08:01_
 
 ---
 
-_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1260 on 2026-01-17 08:01_
+_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1264 on 2026-01-17 08:01_
 
 I did a quick and dirty fix. I think it's probably fine, but I dont know rust well enough to know how to do this properly. 
 
@@ -291,5 +291,15 @@ _@MichaReiser reviewed on 2026-01-19 19:00_
 _Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 19:00_
 
 I'm not suggesting that we should emit a diagnostic, but that we should return `Type::Unknown` (or whatever the fallback is) if that's the case.
+
+---
+
+_@sakgoyal reviewed on 2026-01-19 20:31_
+
+---
+
+_Review comment by @sakgoyal on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 20:31_
+
+oh I see. that makes sense. 
 
 ---

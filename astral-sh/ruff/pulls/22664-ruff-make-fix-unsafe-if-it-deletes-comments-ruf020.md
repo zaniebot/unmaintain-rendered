@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: RUF020
 created_at: 2026-01-17T20:59:42Z
-updated_at: 2026-01-19T19:41:26Z
+updated_at: 2026-01-19T20:34:20Z
 url: https://github.com/astral-sh/ruff/pull/22664
-synced_at: 2026-01-19T20:31:01Z
+synced_at: 2026-01-19T21:33:07Z
 ```
 
 # [`ruff`] Make fix unsafe if it deletes comments (`RUF020`)
@@ -93,5 +93,17 @@ _Comment by @amyreese on 2026-01-19 19:41_
 
 I kind of agree after seeing all these PRs. Perhaps something like `checker.contains_comments(expr)` ?
 
+
+---
+
+_Comment by @ntBre on 2026-01-19 20:34_
+
+Yeah I just couldn't decide how magical it should be. Something like:
+
+```rust
+diagnostic.set_applicable_fix(checker.comment_ranges(), edit);
+```
+
+could also be nice. I don't think `checker.contains_comments(ranged)` returning a bool is _that_ much of an improvement over the status quo, so I wanted it to return or even set the applicability too.
 
 ---

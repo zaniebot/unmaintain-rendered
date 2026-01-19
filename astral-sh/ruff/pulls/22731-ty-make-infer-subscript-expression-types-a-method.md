@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: charlie/int-method
 created_at: 2026-01-19T18:58:41Z
-updated_at: 2026-01-19T20:26:46Z
+updated_at: 2026-01-19T20:31:23Z
 url: https://github.com/astral-sh/ruff/pull/22731
-synced_at: 2026-01-19T20:31:01Z
+synced_at: 2026-01-19T21:33:07Z
 ```
 
 # [ty] Make `infer_subscript_expression_types` a method on `Type`
@@ -315,5 +315,11 @@ I say let's pull it all out of `types.rs`! Both `types.rs` and `infer/builder.rs
 ---
 
 _Review requested from @AlexWaygood by @charliermarsh on 2026-01-19 20:26_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 20:31_
+
+(will review tomorrow morning -- thank you!)
 
 ---
