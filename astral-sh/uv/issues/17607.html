@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv `dependency-metadata` seems to override `dependency-groups` - astral-sh/uv #17607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv <code>dependency-metadata</code> seems to override <code>dependency-groups</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17607">#17607</a>
+        opened by <a href="https://github.com/KolinGuo">@KolinGuo</a>
+        on 2026-01-19 06:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/KolinGuo">@KolinGuo</a></div>
+            <div class="timeline-body"><h3>Question</h3>
+<h3>Problem</h3>
+<p>I sometimes will encounter packages with C++/libtorch extensions that are built with <code>scikit-build-core</code> and has dynamic version metadata. These packages often requires <code>--no-build-isolation</code> to build and link against the <code>libtorch.so</code> provided by the runtime venv's torch.</p>
+<p>This is a similar situation as https://github.com/astral-sh/uv/issues/14940, just with dynamic metadata.</p>
+<p>From the docs, one of the recommended approach is to use <code>tool.uv.dependency-metadata</code>. However, in my tests of adding <code>scikit_build_core</code> to <code>dependency-groups.dev</code>, I found that <code>tool.uv.dependency-metadata</code> seems to override the <code>dependency-groups</code> settings. Even so, the defined <code>dependency-groups</code> are reported as not defined by <code>uv sync --group &lt;group&gt;</code>.</p>
+<p>Is this the expected behavior?</p>
+<h3>Miminal Example</h3>
+<pre><code>[build-system]
+requires = [&quot;scikit-build-core&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+
+[project]
+name = &quot;dummy-pkg&quot;
+dynamic = [&quot;version&quot;]                  # Dynamic metadata for version
+description = &quot;A dummy Python package&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;torch&quot;]
+
+[dependency-groups]
+dev = [&quot;scikit_build_core&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;dummy-pkg&quot;]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;dummy-pkg&quot;
+version = &quot;0.0.1&quot;
+requires-dist = [&quot;torch&quot;]
+</code></pre>
+<p>Running <code>uv sync --group dev</code> with this <code>pyproject.toml</code> will results in</p>
+<pre><code class="language-bash">Resolved 28 packages in 0.47ms
+error: Group `dev` is not defined in the project's `dependency-groups` table
+</code></pre>
+<h3>Similar scenario with static metadata</h3>
+<pre><code>[build-system]
+requires = [&quot;scikit-build-core&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+
+[project]
+name = &quot;dummy-pkg&quot;
+version = &quot;0.0.1&quot;
+description = &quot;A dummy Python package&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;torch&quot;]
+
+[dependency-groups]
+dev = [&quot;scikit_build_core&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;dummy-pkg&quot;]
+</code></pre>
+<p>Using this <code>pyproject.toml</code>, running <code>uv sync</code> will install <code>torch</code> and <code>scikit-build-core</code> from <code>dev</code> group first, and then successfully build and install the <code>dummy-pkg</code> in non-isolated environment.</p>
+<p>I expect similar config will work with dynamic metadata, but seems like I was wrong.</p>
+<p>Thanks a lot for your help!</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.9.26</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @KolinGuo on 2026-01-19 06:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 07:27:54 UTC
+    </footer>
+</body>
+</html>
