@@ -12,12 +12,12 @@ GitHub issues and pull requests rendered as markdown.
 ### [astral-sh/ruff](https://github.com/astral-sh/ruff)
 
 - [Issues](astral-sh/ruff/issues/) (15331)
-- [Pull Requests](astral-sh/ruff/pulls/) (28712)
+- [Pull Requests](astral-sh/ruff/pulls/) (28754)
 
 ### [astral-sh/ty](https://github.com/astral-sh/ty)
 
 - [Issues](astral-sh/ty/issues/) (4321)
-- [Pull Requests](astral-sh/ty/pulls/) (798)
+- [Pull Requests](astral-sh/ty/pulls/) (800)
 
 ### [astral-sh/uv](https://github.com/astral-sh/uv)
 
@@ -39,4 +39,4 @@ GitHub issues and pull requests rendered as markdown.
 - [Issues](zanieb/unmaintain-test/issues/) (4)
 
 ---
-_Last updated: 2026-01-19 01:11:22 UTC_
+_Last updated: 2026-01-19 01:23:51 UTC_

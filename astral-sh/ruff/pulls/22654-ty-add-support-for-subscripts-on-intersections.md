@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-19T00:15:26Z
+updated_at: 2026-01-19T00:52:55Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-19T00:21:19Z
+synced_at: 2026-01-19T01:23:17Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -69,13 +68,6 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 17:53_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-bidict (https://github.com/jab/bidict)
-+ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Maplike[KT@iteritems, VT@iteritems].__getitem__(__key: KT@iteritems, /) -> VT@iteritems` cannot be called with key of type `object` on object of type `Maplike[KT@iteritems, VT@iteritems]`
-+ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Maplike[Unknown, object]].__getitem__(__key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[Maplike[Unknown, object]]`
-+ bidict/_iter.py:28:25: error[not-subscriptable] Cannot subscript object of type `Iterable[tuple[KT@iteritems, VT@iteritems]]` with no `__getitem__` method
-- Found 16 diagnostics
-+ Found 19 diagnostics
-
 pyp (https://github.com/hauntsaninja/pyp)
 + pyp.py:429:34: error[unresolved-attribute] Object of type `stmt` has no attribute `body`
 + pyp.py:432:27: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
@@ -83,6 +75,13 @@ pyp (https://github.com/hauntsaninja/pyp)
 + pyp.py:439:75: error[unresolved-attribute] Object of type `stmt` has no attribute `value`
 - Found 5 diagnostics
 + Found 9 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Maplike[KT@iteritems, VT@iteritems].__getitem__(__key: KT@iteritems, /) -> VT@iteritems` cannot be called with key of type `object` on object of type `Maplike[KT@iteritems, VT@iteritems]`
++ bidict/_iter.py:28:25: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Maplike[Unknown, object]].__getitem__(__key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[Maplike[Unknown, object]]`
++ bidict/_iter.py:28:25: error[not-subscriptable] Cannot subscript object of type `Iterable[tuple[KT@iteritems, VT@iteritems]]` with no `__getitem__` method
+- Found 16 diagnostics
++ Found 19 diagnostics
 
 aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/connection.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `bytes | memoryview[int] | str | ... omitted 4 union elements`, found `(@Todo & ~bytes) | int | list[bytes | memoryview[int] | str | ... omitted 5 union elements] | ... omitted 4 union elements`
@@ -127,11 +126,6 @@ beartype (https://github.com/beartype/beartype)
 - Found 495 diagnostics
 + Found 497 diagnostics
 
-jinja (https://github.com/pallets/jinja)
-+ src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
-- Found 180 diagnostics
-+ Found 181 diagnostics
-
 werkzeug (https://github.com/pallets/werkzeug)
 + src/werkzeug/sansio/response.py:608:50: error[unresolved-attribute] Object of type `object` has no attribute `to_header`
 + src/werkzeug/sansio/response.py:610:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Top[list[Unknown]]`
@@ -139,6 +133,11 @@ werkzeug (https://github.com/pallets/werkzeug)
 + src/werkzeug/test.py:361:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | None] | None`, found `dict[str, object]`
 - Found 407 diagnostics
 + Found 411 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/compiler.py:1534:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `list[Any] | Expr`
+- Found 180 diagnostics
++ Found 181 diagnostics
 
 black (https://github.com/psf/black)
 + src/black/ranges.py:404:28: error[invalid-argument-type] Argument to function `first_leaf` is incorrect: Expected `Leaf | Node`, found `object`
@@ -156,6 +155,18 @@ paasta (https://github.com/yelp/paasta)
 + paasta_tools/tron_tools.py:192:24: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
 - Found 1103 diagnostics
 + Found 1107 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/pyutils/test_ref_map.py:35:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pyutils/test_ref_map.py:52:19: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pyutils/test_ref_map.py:72:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 641 diagnostics
++ Found 638 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/runner.py:551:43: error[not-subscriptable] Cannot subscript object of type `Item` with no `__getitem__` method
+- Found 413 diagnostics
++ Found 414 diagnostics
 
 kopf (https://github.com/nolar/kopf)
 + kopf/_cogs/structs/dicts.py:65:30: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Mapping[Unknown, object]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[Mapping[Unknown, object]]`
@@ -189,22 +200,18 @@ kopf (https://github.com/nolar/kopf)
 - Found 268 diagnostics
 + Found 294 diagnostics
 
-pytest (https://github.com/pytest-dev/pytest)
-+ src/_pytest/runner.py:551:43: error[not-subscriptable] Cannot subscript object of type `Item` with no `__getitem__` method
-- Found 413 diagnostics
-+ Found 414 diagnostics
-
-graphql-core (https://github.com/graphql-python/graphql-core)
-- tests/pyutils/test_ref_map.py:35:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pyutils/test_ref_map.py:52:19: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- tests/pyutils/test_ref_map.py:72:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 641 diagnostics
-+ Found 638 diagnostics
-
 boostedblob (https://github.com/hauntsaninja/boostedblob)
 + boostedblob/boost.py:366:35: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
 - Found 21 diagnostics
 + Found 22 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/ignore.py:150:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
+- dulwich/ignore.py:153:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
+- dulwich/ignore.py:173:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
++ dulwich/object_store.py:2923:29: error[not-subscriptable] Cannot subscript object of type `() -> dict[ObjectID, ObjectID]` with no `__getitem__` method
+- Found 229 diagnostics
++ Found 227 diagnostics
 
 ignite (https://github.com/pytorch/ignite)
 + tests/ignite/distributed/utils/__init__.py:484:24: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
@@ -216,18 +223,6 @@ ignite (https://github.com/pytorch/ignite)
 + tests/ignite/test_utils.py:50:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> Unknown, (index: slice[Any, Any, Any]) -> Sequence[Unknown]]` cannot be called with key of type `Literal["b"]` on object of type `Sequence[Unknown]`
 - Found 2033 diagnostics
 + Found 2040 diagnostics
-
-dulwich (https://github.com/dulwich/dulwich)
-- dulwich/ignore.py:150:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-- dulwich/ignore.py:153:17: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-- dulwich/ignore.py:173:13: error[unsupported-operator] Operator `+=` is not supported between objects of type `Literal[b""]` and `str`
-+ dulwich/object_store.py:2923:29: error[not-subscriptable] Cannot subscript object of type `() -> dict[ObjectID, ObjectID]` with no `__getitem__` method
-- Found 229 diagnostics
-+ Found 227 diagnostics
-
-porcupine (https://github.com/Akuli/porcupine)
-- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
-+ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
 
 PyGithub (https://github.com/PyGithub/PyGithub)
 + github/AdvisoryCredit.py:97:31: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["login"]` on object of type `Top[dict[Unknown, Unknown]]`
@@ -277,6 +272,10 @@ PyGithub (https://github.com/PyGithub/PyGithub)
 - Found 299 diagnostics
 + Found 343 diagnostics
 
+porcupine (https://github.com/Akuli/porcupine)
+- porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `@Todo | bool`
++ porcupine/plugins/restart.py:64:15: warning[possibly-missing-attribute] Attribute `from_state` may be missing on object of type `Any | bool`
+
 ppb-vector (https://github.com/ppb/ppb-vector)
 + ppb_vector/__init__.py:189:26: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[Mapping[Unknown, object]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["x"]` on object of type `Top[Mapping[Unknown, object]]`
 + ppb_vector/__init__.py:189:26: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: int) -> SupportsFloat, (index: slice[Any, Any, Any]) -> Sequence[SupportsFloat]]` cannot be called with key of type `Literal["x"]` on object of type `Sequence[SupportsFloat]`
@@ -287,44 +286,26 @@ ppb-vector (https://github.com/ppb/ppb-vector)
 - Found 21 diagnostics
 + Found 27 diagnostics
 
-tornado (https://github.com/tornadoweb/tornado)
-+ tornado/routing.py:355:56: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Top[list[Unknown]]`
-+ tornado/routing.py:355:56: error[not-subscriptable] Cannot subscript object of type `Rule` with no `__getitem__` method
-- Found 328 diagnostics
-+ Found 330 diagnostics
-
 schemathesis (https://github.com/schemathesis/schemathesis)
 + src/schemathesis/config/_diff_base.py:44:39: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[dict[Unknown, Unknown]]`
 - Found 282 diagnostics
 + Found 283 diagnostics
-
-pandera (https://github.com/pandera-dev/pandera)
-- pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `@Todo | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
-+ pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `Any | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
-
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - mitmproxy/proxy/tunnel.py:195:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - mitmproxy/proxy/tunnel.py:199:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 2143 diagnostics
 + Found 2141 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/routing.py:355:56: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[Literal[1], None, None]` on object of type `Top[list[Unknown]]`
++ tornado/routing.py:355:56: error[not-subscriptable] Cannot subscript object of type `Rule` with no `__getitem__` method
+- Found 328 diagnostics
++ Found 330 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `@Todo | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
++ pandera/typing/common.py:236:35: error[invalid-argument-type] Argument to function `signature` is incorrect: Expected `(...) -> Any`, found `Any | (tuple[Any, ...] & ~AlwaysFalsy & ~AlwaysTruthy) | None`
 
 schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/avro/schema.py:801:34: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["names"]` on object of type `Top[dict[Unknown, Unknown]]`
@@ -394,9 +375,28 @@ schema_salad (https://github.com/common-workflow-language/schema_salad)
 + schema_salad/ref_resolver.py:394:39: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["mapSubject"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
 + schema_salad/ref_resolver.py:394:39: error[not-subscriptable] Cannot subscript object of type `Iterable[str]` with no `__getitem__` method
 + schema_salad/ref_resolver.py:397:21: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `object` on object of type `dict[str, str]`
-+ schema_salad/ref_resolver.py:397:46: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["mapPredicate"]` on object of type `Top[Mu
++ schema_salad/ref_resolver.py:397:46: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["mapPredicate"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:397:46: error[not-subscriptable] Cannot subscript object of type `Iterable[str]` with no `__getitem__` method
++ schema_salad/ref_resolver.py:400:21: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `object` on object of type `dict[str, str]`
++ schema_salad/ref_resolver.py:400:39: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["@id"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:400:39: error[not-subscriptable] Cannot subscript object of type `Iterable[str]` with no `__getitem__` method
++ schema_salad/ref_resolver.py:403:21: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `object` on object of type `dict[str, str]`
++ schema_salad/ref_resolver.py:403:43: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["subscope"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:403:43: error[not-subscriptable] Cannot subscript object of type `Iterable[str]` with no `__getitem__` method
++ schema_salad/ref_resolver.py:496:32: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["$graph"]` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:496:32: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["$graph"]` on object of type `str`
++ schema_salad/ref_resolver.py:496:32: error[invalid-return-type] Return type does not match returned value: expected `tuple[int | float | str | ... omitted 3 union elements, CommentedMap]`, found `tuple[object, CommentedMap]`
++ schema_salad/ref_resolver.py:1135:61: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1135:61: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1135:61: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `str` on object of type `str`
++ schema_salad/ref_resolver.py:1135:61: error[invalid-argument-type] Argument to bound method `validate_link` is incorrect: Expected `str | CommentedSeq | CommentedMap`, found `object`
++ schema_salad/ref_resolver.py:1135:61: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1135:61: error[not-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
++ schema_salad/ref_resolver.py:1135:61: error[not-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on object of type `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/ref_resolver.py:1154:29: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[MutableMapping[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `str` on ob
 
-... (truncated 1066 lines) ...
+... (truncated 1056 lines) ...
 ```
 
 </details>
@@ -511,12 +511,12 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 579 | 2 | 34 |
+| `invalid-argument-type` | 578 | 0 | 33 |
 | `not-subscriptable` | 235 | 0 | 0 |
 | `invalid-assignment` | 34 | 3 | 11 |
 | `possibly-missing-attribute` | 21 | 0 | 12 |
-| `unused-ignore-comment` | 2 | 25 | 0 |
-| `invalid-return-type` | 11 | 1 | 10 |
+| `unused-ignore-comment` | 0 | 25 | 0 |
+| `invalid-return-type` | 7 | 2 | 9 |
 | `unsupported-operator` | 4 | 3 | 9 |
 | `unresolved-attribute` | 15 | 0 | 0 |
 | `call-non-callable` | 9 | 0 | 0 |
@@ -524,10 +524,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
 | `not-iterable` | 5 | 0 | 0 |
 | `type-assertion-failure` | 0 | 1 | 1 |
 | `invalid-key` | 1 | 0 | 0 |
-| **Total** | **921** | **35** | **77** |
+| **Total** | **914** | **34** | **75** |
 
 
-**[Full report with detailed diff](https://19d06918.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://19d06918.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://214ce04a.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://214ce04a.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -679,5 +679,9 @@ _@charliermarsh reviewed on 2026-01-19 00:14_
 _Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:14622 on 2026-01-19 00:14_
 
 Gave this a try.
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-19 00:52_
 
 ---

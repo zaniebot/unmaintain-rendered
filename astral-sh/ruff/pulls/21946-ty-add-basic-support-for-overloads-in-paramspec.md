@@ -12,9 +12,9 @@ draft: true
 base: main
 head: dhruv/paramspec-overload-1
 created_at: 2025-12-12T13:21:14Z
-updated_at: 2025-12-26T09:05:58Z
+updated_at: 2026-01-19T00:57:51Z
 url: https://github.com/astral-sh/ruff/pull/21946
-synced_at: 2026-01-12T15:57:37Z
+synced_at: 2026-01-19T01:23:17Z
 ```
 
 # [ty] Add basic support for overloads in `ParamSpec`
@@ -182,5 +182,15 @@ Panda3D also naturally includes many overloaded methods for an unrelated reason.
 <img width="1130" height="105" alt="image" src="https://github.com/user-attachments/assets/f112d726-a7d6-4126-b971-2f4780d53530" />
 
 
+
+---
+
+_@charliermarsh approved on 2026-01-19 00:57_
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 00:57_
+
+This looks reasonable to me. (I also tried to fix this at https://github.com/astral-sh/ruff/pull/22692 before seeing this PR.)
 
 ---

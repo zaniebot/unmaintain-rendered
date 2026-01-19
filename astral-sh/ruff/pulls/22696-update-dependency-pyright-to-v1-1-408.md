@@ -1,0 +1,145 @@
+```yaml
+number: 22696
+title: Update dependency pyright to v1.1.408
+type: pull_request
+state: open
+author: renovate
+labels:
+  - internal
+assignees: []
+base: main
+head: renovate/pyright-1.x-lockfile
+created_at: 2026-01-19T00:58:16Z
+updated_at: 2026-01-19T01:10:03Z
+url: https://github.com/astral-sh/ruff/pull/22696
+synced_at: 2026-01-19T01:23:17Z
+```
+
+# Update dependency pyright to v1.1.408
+
+---
+
+_@renovate_
+
+This PR contains the following updates:
+
+| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) |
+|---|---|---|---|
+| [pyright](https://redirect.github.com/Microsoft/pyright) ([source](https://redirect.github.com/Microsoft/pyright/tree/HEAD/packages/pyright)) | [`1.1.407` → `1.1.408`](https://renovatebot.com/diffs/npm/pyright/1.1.407/1.1.408) | ![age](https://developer.mend.io/api/mc/badges/age/npm/pyright/1.1.408?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/pyright/1.1.407/1.1.408?slim=true) |
+
+---
+
+### Release Notes
+
+<details>
+<summary>Microsoft/pyright (pyright)</summary>
+
+### [`v1.1.408`](https://redirect.github.com/microsoft/pyright/releases/tag/1.1.408): Published 1.1.408
+
+[Compare Source](https://redirect.github.com/Microsoft/pyright/compare/1.1.407...1.1.408)
+
+#### Changes:
+
+- [`ad444cc`](https://redirect.github.com/Microsoft/pyright/commit/ad444cc7a0923cb6127279fb95fe0b576d96d0d7) Publish 1.1.408
+- [`cba32ea`](https://redirect.github.com/Microsoft/pyright/commit/cba32ea0b6f34f58e18348b2dba8b5155cc6eb0c) Update typeshed to latest ([#&#8203;11211](https://redirect.github.com/Microsoft/pyright/issues/11211))
+- [`1576956`](https://redirect.github.com/Microsoft/pyright/commit/1576956c32c8b75f3202203f3cdedd21c8d3f9f7) Fix completions for typeddicts with errors ([#&#8203;11177](https://redirect.github.com/Microsoft/pyright/issues/11177))
+- [`45159a9`](https://redirect.github.com/Microsoft/pyright/commit/45159a96da28cb48539c8c0e45d358339a7e3916) Update installation.md ([#&#8203;11175](https://redirect.github.com/Microsoft/pyright/issues/11175))
+- [`5f7ce34`](https://redirect.github.com/Microsoft/pyright/commit/5f7ce347e8fbf80c826870b4a95395916cce3454) Update PyCharm setup documentation ([#&#8203;11105](https://redirect.github.com/Microsoft/pyright/issues/11105))
+- [`6f3b72c`](https://redirect.github.com/Microsoft/pyright/commit/6f3b72c148dc9db557e133b84e0f9a962e31a9b1) Fixed bug in type narrowing logic for sequence pattern matching. This addresses [#&#8203;11056](https://redirect.github.com/Microsoft/pyright/issues/11056). ([#&#8203;11085](https://redirect.github.com/Microsoft/pyright/issues/11085))
+- [`89825e1`](https://redirect.github.com/Microsoft/pyright/commit/89825e1c4e1a37653772b1e93b70a29a77cf85b4) Fixed regression that results in a false positive when using the `pydantic.dataclasses.dataclass` decorator. This addresses [#&#8203;11060](https://redirect.github.com/Microsoft/pyright/issues/11060). ([#&#8203;11084](https://redirect.github.com/Microsoft/pyright/issues/11084))
+- [`8d9df83`](https://redirect.github.com/Microsoft/pyright/commit/8d9df830e04b4ab1db0734abd53512fd6e298782) Fixed issue that prevents typeshed from eliminating `typing._TypedDict`. This addresses [#&#8203;11081](https://redirect.github.com/Microsoft/pyright/issues/11081). ([#&#8203;11083](https://redirect.github.com/Microsoft/pyright/issues/11083))
+- [`906e40a`](https://redirect.github.com/Microsoft/pyright/commit/906e40aadd920ef1702f858479ac75daa1d87798) pull-pylance-with-pyright-1.1.407-20251029-180818 ([#&#8203;11072](https://redirect.github.com/Microsoft/pyright/issues/11072))
+- [`d2a4d57`](https://redirect.github.com/Microsoft/pyright/commit/d2a4d578454f86de1e8612811746748454f95066) pull-pylance-with-pyright-1.1.407-20251024-224406 ([#&#8203;11059](https://redirect.github.com/Microsoft/pyright/issues/11059))
+
+<details><summary><b>See More</b></summary>
+
+- [`de80320`](https://redirect.github.com/Microsoft/pyright/commit/de803205421a78bb83d1c2e4015582fe13c6f281) Update azure-pipelines-release.yml for Azure Pipelines
+- [`e32067c`](https://redirect.github.com/Microsoft/pyright/commit/e32067c4a203d2106ae0fb2333fb7482e6f15f66) Update azure-pipelines-release.yml for Azure Pipelines
+
+This list of changes was [auto generated](https://devdiv.visualstudio.com/DevDiv/_build/results?buildId=13055644\&view=logs).</details>
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0Mi43NC41IiwidXBkYXRlZEluVmVyIjoiNDIuNzQuNSIsInRhcmdldEJyYW5jaCI6Im1haW4iLCJsYWJlbHMiOlsiaW50ZXJuYWwiXX0=-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Review requested from @carljm by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Review requested from @MichaReiser by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Review requested from @AlexWaygood by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Review requested from @sharkdp by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Review requested from @dcreager by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Label `internal` added by @renovate[bot] on 2026-01-19 00:58_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 01:05_
+
+@MichaReiser do we want renovate bumping this?
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:10_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---

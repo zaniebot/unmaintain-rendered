@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-16T20:26:05Z
+updated_at: 2026-01-19T01:06:50Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-16T21:03:53Z
+synced_at: 2026-01-19T01:22:59Z
 ```
 
 # Dependency Dashboard
@@ -37,17 +37,12 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Awaiting Schedule
-
-The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
-
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `astral-sh/uv-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
-
 ## Pending Status Checks
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
+ - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `astral-sh/uv-pre-commit`, `mdformat-mkdocs`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 
@@ -191,17 +186,17 @@ The following updates await pending status checks. To force their creation now, 
 
 <details><summary>.pre-commit-config.yaml (13)</summary>
 
- - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.23`]
+ - `astral-sh/uv-pre-commit 0.9.24` → [Updates: `0.9.26`]
  - `pre-commit/pre-commit-hooks v6.0.0`
- - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
+ - `astral-sh/ruff-pre-commit v0.14.11` → [Updates: `v0.14.13`]
  - `abravalheri/validate-pyproject v0.24.1`
- - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.2`]
+ - `mdformat-mkdocs ==5.1.2` → [Updates: `==5.1.3`]
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`
- - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
+ - `crate-ci/typos v1.42.0`
  - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
- - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
+ - `zizmorcore/zizmor-pre-commit v1.20.0` → [Updates: `v1.22.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
  - `rhysd/actionlint v1.7.10`
 

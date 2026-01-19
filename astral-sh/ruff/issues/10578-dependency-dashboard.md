@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-18T22:35:24Z
+updated_at: 2026-01-19T01:11:08Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-18T23:38:56Z
+synced_at: 2026-01-19T01:23:04Z
 ```
 
 # Dependency Dashboard
@@ -20,6 +20,12 @@ synced_at: 2026-01-18T23:38:56Z
 _@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/ruff).
+
+## Repository Problems
+
+These problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/astral-sh/ruff).
+
+ - ⚠️ WARN: Detected empty commit - aborting git push
 
 ## Deprecations / Replacements
 > [!WARNING]
@@ -57,35 +63,6 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Awaiting Schedule
-
-The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
-
- - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
- - [ ] <!-- unschedule-branch=renovate/salsa-digest -->Update salsa digest to c49e550
- - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
- - [ ] <!-- unschedule-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
- - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.13
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
- - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
- - [ ] <!-- unschedule-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
- - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
- - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
- - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
- - [ ] <!-- unschedule-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
- - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
- - [ ] <!-- unschedule-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
- - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
- - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
- - [ ] <!-- unschedule-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
- - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
- - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
- - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
- - [ ] <!-- unschedule-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
- - [ ] <!-- unschedule-branch=renovate/ordermap-1.x-lockfile -->Update Rust crate ordermap to v1.1.0
- - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.1
- - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
-
 ## Pending Status Checks
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
@@ -98,11 +75,36 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
 
+## Other Branches
+
+The following updates are pending. To force the creation of a PR, click on a checkbox below.
+
+ - [ ] <!-- other-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- other-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
+ - [ ] <!-- other-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
+
 ## Open
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
+ - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22693)
+ - [ ] <!-- rebase-branch=renovate/salsa-digest -->[Update salsa digest to c49e550](../pull/22694)
+ - [ ] <!-- rebase-branch=renovate/mdformat-mkdocs-5.x -->[Update dependency mdformat-mkdocs to v5.1.2](../pull/22695)
+ - [ ] <!-- rebase-branch=renovate/pyright-1.x-lockfile -->[Update dependency pyright to v1.1.408](../pull/22696)
+ - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22698) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
+ - [ ] <!-- rebase-branch=renovate/jiff-0.x-lockfile -->[Update Rust crate jiff to v0.2.18](../pull/22699)
+ - [ ] <!-- rebase-branch=renovate/proc-macro2-1.x-lockfile -->[Update Rust crate proc-macro2 to v1.0.105](../pull/22701)
+ - [ ] <!-- rebase-branch=renovate/quote-1.x-lockfile -->[Update Rust crate quote to v1.0.43](../pull/22702)
+ - [ ] <!-- rebase-branch=renovate/snapbox-0.x-lockfile -->[Update Rust crate snapbox to v0.6.24](../pull/22704)
+ - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/22705)
+ - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/22706)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
+ - [ ] <!-- rebase-branch=renovate/url-2.x-lockfile -->[Update Rust crate url to v2.5.8](../pull/22707)
+ - [ ] <!-- rebase-branch=renovate/tomli-2.x -->[Update dependency tomli to v2.4.0](../pull/22708)
+ - [ ] <!-- rebase-branch=renovate/npm-development-dependencies -->[Update NPM Development dependencies](../pull/22709) (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
+ - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/22710)
+ - [ ] <!-- rebase-branch=renovate/ordermap-1.x-lockfile -->[Update Rust crate ordermap to v1.1.0](../pull/22711)
+ - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.66.1](../pull/22712)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
@@ -177,7 +179,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `jiff 0.2.0` → [Updates: `0.2.0`]
  - `jod-thread 1.0.0`
  - `js-sys 0.3.69` → [Updates: `0.3.69`]
- - `libc 0.2.153` → [Updates: `0.2.153`]
+ - `libc 0.2.153`
  - `libcst 1.8.4`
  - `log 0.4.17`
  - `lsp-server 0.7.6`
@@ -210,7 +212,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `seahash 4.1.0`
  - `serde 1.0.197`
  - `serde-wasm-bindgen 0.6.4`
- - `serde_json 1.0.113` → [Updates: `1.0.113`]
+ - `serde_json 1.0.113`
  - `serde_test 1.0.152`
  - `serde_with 3.6.0`
  - `shellexpand 3.0.0`
@@ -1120,7 +1122,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>docs/requirements.txt (8)</summary>
 
  - `PyYAML ==6.0.3`
- - `ruff ==0.14.11` → [Updates: `==0.14.13`]
+ - `ruff ==0.14.13`
  - `mkdocs ==1.6.1`
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`
