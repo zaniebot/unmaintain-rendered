@@ -11,9 +11,9 @@ assignees: []
 base: ibraheem/comprehension-tcx
 head: ibraheem/lambda-tcx
 created_at: 2026-01-16T22:48:02Z
-updated_at: 2026-01-16T23:26:39Z
+updated_at: 2026-01-19T08:06:46Z
 url: https://github.com/astral-sh/ruff/pull/22633
-synced_at: 2026-01-17T00:08:11Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # [ty] Infer lambda expressions with `Callable` type context
@@ -527,5 +527,11 @@ _Comment by @AlexWaygood on 2026-01-16 23:26_
 > This PR is stacked on #22564.
 
 The weird typing- conformance comment should be fixed if you rebase that PR on main, and then this PR on that PR (sorry for the teething problems there with the new workflow...)
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 08:06_
+
+There seems to be a new fuzzer panic 
 
 ---

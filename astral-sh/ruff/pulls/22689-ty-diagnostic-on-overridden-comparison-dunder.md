@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: thejchap/ordering2
 created_at: 2026-01-18T21:09:31Z
-updated_at: 2026-01-19T01:16:43Z
+updated_at: 2026-01-19T08:03:31Z
 url: https://github.com/astral-sh/ruff/pull/22689
-synced_at: 2026-01-19T02:24:45Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # [ty] diagnostic on overridden comparison dunder methods on `order=True` dataclasses
@@ -151,5 +151,32 @@ _Review requested from @sharkdp by @thejchap on 2026-01-19 01:16_
 ---
 
 _Review requested from @dcreager by @thejchap on 2026-01-19 01:16_
+
+---
+
+_@MichaReiser reviewed on 2026-01-19 08:03_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:3973 on 2026-01-19 08:03_
+
+Nit: Use `else if` as the two arms are exclusive to each other or use a match
+```suggestion
+            else if matches!(name.as_str(), "__lt__" | "__le__" | "__gt__" | "__ge__") {
+```
+
+or 
+
+```rust
+match name.as_str() {
+	"__setattr__" | "__delattr__" => {
+	}
+	"__lt__" | "__le__" | "__gt__" | "__ge__" => {
+		...
+	}
+	_ => {}
+}
+	
+```
 
 ---

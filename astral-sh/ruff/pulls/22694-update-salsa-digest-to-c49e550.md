@@ -2,7 +2,7 @@
 number: 22694
 title: Update salsa digest to c49e550
 type: pull_request
-state: open
+state: closed
 author: renovate
 labels:
   - internal
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/salsa-digest
 created_at: 2026-01-19T00:57:56Z
-updated_at: 2026-01-19T01:10:03Z
+updated_at: 2026-01-19T07:44:40Z
 url: https://github.com/astral-sh/ruff/pull/22694
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # Update salsa digest to c49e550
@@ -166,5 +166,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 01:10_
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 07:43_
+
+Those were documentation only changes, not worth bumping
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 07:43_
+
+---
+
+_Comment by @renovate[bot] on 2026-01-19 07:44_
+
+### Renovate Ignore Notification
+
+Because you closed this PR without merging, Renovate will ignore this update. You will not get PRs for the `salsa` `c49e550` update again.
+
+If you accidentally closed this PR, or if you changed your mind: rename this PR to get a fresh replacement PR.
+
+---
+
+_Branch deleted on 2026-01-19 07:44_
 
 ---

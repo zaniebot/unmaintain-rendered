@@ -2,16 +2,16 @@
 number: 2530
 title: "Support `respect-type-ignore-comments` in file overrides"
 type: issue
-state: open
+state: closed
 author: strokirk
 labels:
   - configuration
   - suppression
 assignees: []
 created_at: 2026-01-16T08:45:32Z
-updated_at: 2026-01-16T08:51:57Z
+updated_at: 2026-01-19T08:09:44Z
 url: https://github.com/astral-sh/ty/issues/2530
-synced_at: 2026-01-16T08:55:00Z
+synced_at: 2026-01-19T08:24:55Z
 ```
 
 # Support `respect-type-ignore-comments` in file overrides
@@ -59,5 +59,9 @@ Thanks for opening this issue. This shouldn't be too hard to add. We only waited
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2026-01-16 08:51_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 08:09_
 
 ---

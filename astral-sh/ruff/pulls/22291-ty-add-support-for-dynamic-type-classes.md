@@ -12,9 +12,9 @@ merged: true
 base: main
 head: charlie/dyn
 created_at: 2025-12-29T21:45:15Z
-updated_at: 2026-01-12T20:20:46Z
+updated_at: 2026-01-19T08:16:34Z
 url: https://github.com/astral-sh/ruff/pull/22291
-synced_at: 2026-01-12T21:25:53Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # [ty] Add support for dynamic `type()` classes
@@ -3689,5 +3689,9 @@ _Closed by @charliermarsh on 2026-01-12 20:20_
 ---
 
 _Branch deleted on 2026-01-12 20:20_
+
+---
+
+_@MichaReiser reviewed on 2026-01-19 08:16_
 
 ---

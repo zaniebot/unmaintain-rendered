@@ -6,13 +6,14 @@ state: open
 author: charliermarsh
 labels:
   - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: charlie/success
 created_at: 2026-01-18T20:28:22Z
-updated_at: 2026-01-19T05:14:08Z
+updated_at: 2026-01-19T08:09:15Z
 url: https://github.com/astral-sh/ruff/pull/22688
-synced_at: 2026-01-19T05:31:49Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # [ty] Avoid reporting overload errors for successful union variants
@@ -304,5 +305,35 @@ Hmm, actually, that's not required because for a single binding (non-union type)
 ---
 
 _@dhruvmanila approved on 2026-01-19 05:14_
+
+---
+
+_Label `ecosystem-analyzer` added by @MichaReiser on 2026-01-19 07:56_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 08:01_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `no-matching-overload` | 0 | 16 | 0 |
+| `invalid-argument-type` | 2 | 1 | 5 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-assignment` | 0 | 0 | 5 |
+| `invalid-return-type` | 0 | 0 | 4 |
+| `unused-ignore-comment` | 0 | 2 | 0 |
+| **Total** | **2** | **19** | **21** |
+
+
+**[Full report with detailed diff](https://28e81978.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://28e81978.ty-ecosystem-ext.pages.dev/timing))
+
+
 
 ---

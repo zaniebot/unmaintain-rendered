@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-19T06:15:37Z
+updated_at: 2026-01-19T08:00:43Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-19T06:21:09Z
+synced_at: 2026-01-19T08:25:00Z
 ```
 
 # Dependency Dashboard
@@ -66,12 +66,6 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
-## PR Edited (Blocked)
-
-The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
-
- - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22698) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
-
 ## Pending Status Checks
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
@@ -86,14 +80,12 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `prettier`, `typescript-eslint`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
+ - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `black`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
 
 ## Open
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22693)
- - [ ] <!-- rebase-branch=renovate/salsa-digest -->[Update salsa digest to c49e550](../pull/22694)
- - [ ] <!-- rebase-branch=renovate/pyright-1.x-lockfile -->[Update dependency pyright to v1.1.408](../pull/22696)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
@@ -102,7 +94,9 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
 The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
 
+ - [ ] <!-- recreate-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22693)
  - [ ] <!-- recreate-branch=renovate/lsp-types-digest -->[Update lsp-types digest to ddc7dc8](../pull/20618)
+ - [ ] <!-- recreate-branch=renovate/salsa-digest -->[Update salsa digest to c49e550](../pull/22694)
  - [ ] <!-- recreate-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
  - [ ] <!-- recreate-branch=renovate/python-3.x -->[Update dependency python to 3.14](../pull/21237)
  - [ ] <!-- recreate-branch=renovate/imara-diff-0.x -->[Update Rust crate imara-diff to 0.2.0](../pull/19039)
@@ -885,7 +879,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>scripts/ty_benchmark/package.json (1)</summary>
 
- - `pyright ^1.1.407` → [Updates: `^1.1.407`]
+ - `pyright ^1.1.407`
 
 </details>
 
@@ -1132,15 +1126,15 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `abravalheri/validate-pyproject v0.24.1`
- - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
+ - `crate-ci/typos v1.42.0`
  - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
- - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
+ - `zizmorcore/zizmor-pre-commit v1.20.0` → [Updates: `v1.22.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
  - `shellcheck-py/shellcheck-py v0.11.0.1`
- - `mdformat-mkdocs ==5.0.0` → [Updates: `==5.1.2`]
+ - `mdformat-mkdocs ==5.1.3`
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
- - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
+ - `astral-sh/ruff-pre-commit v0.14.11` → [Updates: `v0.14.13`]
  - `igorshubovych/markdownlint-cli v0.47.0`
  - `black ==25.12.0` → [Updates: `==26.1.0`]
  - `adamchainz/blacken-docs 1.20.0`

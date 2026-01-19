@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: sq-S1244
 created_at: 2025-09-25T21:12:22Z
-updated_at: 2026-01-09T17:36:22Z
+updated_at: 2026-01-19T08:07:17Z
 url: https://github.com/astral-sh/ruff/pull/20585
-synced_at: 2026-01-12T15:57:05Z
+synced_at: 2026-01-19T08:25:12Z
 ```
 
 # [`ruff`] New rule float-comparison (`RUF070`)
@@ -533,5 +533,9 @@ _Comment by @MichaReiser on 2026-01-09 16:39_
 > @ntBre Are there any restrictions on the length of documentation for the rule🤔? It has become longer in this commit.
 
 Not really. It should be concise, but there's no upper limit on how long the documentation is allowed to be
+
+---
+
+_Review requested from @ntBre by @MichaReiser on 2026-01-19 08:07_
 
 ---

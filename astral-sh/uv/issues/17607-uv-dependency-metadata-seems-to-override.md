@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-19T06:43:03Z
-updated_at: 2026-01-19T06:44:52Z
+updated_at: 2026-01-19T07:36:22Z
 url: https://github.com/astral-sh/uv/issues/17607
-synced_at: 2026-01-19T07:23:51Z
+synced_at: 2026-01-19T08:25:19Z
 ```
 
 # uv `dependency-metadata` seems to override `dependency-groups`
@@ -96,5 +96,41 @@ uv 0.9.26
 ---
 
 _Label `question` added by @KolinGuo on 2026-01-19 06:43_
+
+---
+
+_Comment by @KolinGuo on 2026-01-19 07:35_
+
+For the minimal example. `uv sync` can work if the `scikit_build_core` is also listed in the `tool.uv.dependency-metadata`:
+```
+[build-system]
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "dummy-pkg"
+dynamic = ["version"]                  # Dynamic metadata for version
+description = "A dummy Python package"
+requires-python = ">=3.10"
+dependencies = ["torch"]
+
+[dependency-groups]
+dev = ["scikit_build_core"]
+
+[tool.uv]
+no-build-isolation-package = ["dummy-pkg"]
+
+[[tool.uv.dependency-metadata]]
+name = "dummy-pkg"
+version = "0.0.1"
+requires-dist = ["torch", "scikit_build_core"]
+```
+However, doing so makes it impossible to add any group dependency or project extra dependency afterwards via the `uv` cli.
+```bash
+$ uv add --optional build pytest
+Resolved 33 packages in 0.44ms
+error: Extra `build` is not defined in the project's `optional-dependencies` table
+```
+
 
 ---

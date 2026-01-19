@@ -2,17 +2,18 @@
 number: 22696
 title: Update dependency pyright to v1.1.408
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/pyright-1.x-lockfile
 created_at: 2026-01-19T00:58:16Z
-updated_at: 2026-01-19T01:10:03Z
+updated_at: 2026-01-19T07:59:39Z
 url: https://github.com/astral-sh/ruff/pull/22696
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T08:25:13Z
 ```
 
 # Update dependency pyright to v1.1.408
@@ -141,5 +142,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 01:10_
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 07:46_
+
+I don't mind either way. But it does require some manual testing that it doesn't break the benchmark setup
+
+---
+
+_Merged by @MichaReiser on 2026-01-19 07:59_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 07:59_
+
+---
+
+_Branch deleted on 2026-01-19 07:59_
 
 ---
