@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Nix installation instructions to documentation - astral-sh/uv #17611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add Nix installation instructions to documentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17611">#17611</a>
+        opened by <a href="https://github.com/WeepingDogel">@WeepingDogel</a>
+        on 2026-01-19 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/WeepingDogel">@WeepingDogel</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a new section covering installation of uv via Nix/NixOS, including:</p>
+<ul>
+<li>Instructions for adding uv to system packages</li>
+<li>Common error troubleshooting for dynamically linked executables</li>
+<li>Solution using nix-ld to fix compatibility issues</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WeepingDogel">@WeepingDogel</a> on 2026-01-19 14:48</div>
+            <div class="timeline-body"><h3>Nix</h3>
+<p>uv is available via <a href="https://search.nixos.org/packages?channel=25.11&amp;show=uv&amp;query=uv">nix packages</a>.</p>
+<p>You add <code>uv</code> to your system packages in <code>/etc/nixos/configuration.nix</code>.</p>
+<pre><code class="language-nix">environment.systemPackages = with pkgs; [
+  uv
+];
+</code></pre>
+<p>Then rebuild:</p>
+<pre><code class="language-console">$ sudo nixos-rebuild switch
+</code></pre>
+<h4>Common Error</h4>
+<p>On NixOS, you may see this error:</p>
+<pre><code class="language-console">error: Querying Python at `/home/&lt;user&gt;/.local/share/uv/python/cpython-3.13.5-linux-x86_64-gnu/bin/python3.13` failed with exit status exit status: 127
+
+[stderr]
+Could not start dynamically linked executable: /home/&lt;user&gt;/.local/share/uv/python/cpython-3.13.5-linux-x86_64-gnu/bin/python3.13
+NixOS cannot run dynamically linked executables intended for generic
+linux environments out of the box. For more information, see:
+https://nix.dev/permalink/stub-ld
+</code></pre>
+<p>This happens because <a href="https://nix.dev/guides/faq#how-to-run-non-nix-executables">&quot;NixOS cannot run dynamically linked executables intended for generic Linux environments out of the box.&quot;</a></p>
+<p><a href="https://wiki.nixos.org/wiki/Python_quickstart_using_uv#Fix_with_nix-ld">To fix this</a>, you need to enable <a href="https://wiki.nixos.org/wiki/Nix-ld">nix-ld</a> In your <code>/etc/nixos/configuration.nix</code>:</p>
+<pre><code class="language-nix">programs.nix-ld.enable = true;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 15:30:06 UTC
+    </footer>
+</body>
+</html>
