@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-19T14:19:40Z
+updated_at: 2026-01-19T14:45:00Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-19T14:35:51Z
+synced_at: 2026-01-19T15:24:54Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -293,5 +293,23 @@ _Comment by @ntBre on 2026-01-19 14:19_
 Sorry, I didn't expect this to be so controversial! The reasoning above makes sense to me, but I was also thinking of this as a correctness rule. The `f` prefix is unused at best, and my impression was that it's very uncommon to use it intentionally without placeholders, so I assumed this was almost always a likely mistake. I also thought the problem here was analogous to #22318 and its linked issues. For what it's worth, clippy's [`useless_format`](https://rust-lang.github.io/rust-clippy/master/index.html?search=format#useless_format) is a complexity lint.
 
 Anyway, I don't feel strongly that the fix should be unsafe, and it sounds good to try being more clever.
+
+---
+
+_Comment by @k0pernikus on 2026-01-19 14:36_
+
+> Anyway, I don't feel strongly that the fix should be unsafe, and it sounds good to try being more clever.
+
+I propose for this to remain unsafe until the more clever check arrives.
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 14:45_
+
+Complexity does make sense to me
+
+> I propose for this to remain unsafe until the more clever check arrives.
+
+I'd rather make a single change or users will add the rule to allow unsafe fixes because they care about the fix, but that fix later becomes indeed more unsafe, but they are unlikely to remove it from unsafe fixes
 
 ---

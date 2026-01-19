@@ -4,12 +4,13 @@ title: "[PT011] Support pytest 8.4.0 `check` parameter"
 type: issue
 state: open
 author: harupy
-labels: []
+labels:
+  - rule
 assignees: []
 created_at: 2026-01-18T10:24:03Z
-updated_at: 2026-01-18T10:24:15Z
+updated_at: 2026-01-19T14:50:02Z
 url: https://github.com/astral-sh/ruff/issues/22673
-synced_at: 2026-01-18T11:18:14Z
+synced_at: 2026-01-19T15:24:54Z
 ```
 
 # [PT011] Support pytest 8.4.0 `check` parameter
@@ -40,5 +41,15 @@ References: https://github.com/pytest-dev/pytest/releases/tag/8.4.0
 ---
 
 _Renamed from "[PT011] Support pytest 8.4.0 check parameter" to "[PT011] Support pytest 8.4.0 `check` parameter" by @harupy on 2026-01-18 10:24_
+
+---
+
+_Comment by @ntBre on 2026-01-19 14:49_
+
+Makes sense to me!
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-19 14:50_
 
 ---

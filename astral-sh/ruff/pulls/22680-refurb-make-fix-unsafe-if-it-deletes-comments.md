@@ -2,16 +2,18 @@
 number: 22680
 title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB136`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: FURB136
 created_at: 2026-01-18T13:33:51Z
-updated_at: 2026-01-18T13:48:06Z
+updated_at: 2026-01-19T15:17:24Z
 url: https://github.com/astral-sh/ruff/pull/22680
-synced_at: 2026-01-18T14:22:04Z
+synced_at: 2026-01-19T15:25:06Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB136`)
@@ -57,5 +59,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:48_
 
 
 
+
+---
+
+_@ntBre approved on 2026-01-19 15:17_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-19 15:17_
+
+---
+
+_Merged by @ntBre on 2026-01-19 15:17_
+
+---
+
+_Closed by @ntBre on 2026-01-19 15:17_
 
 ---

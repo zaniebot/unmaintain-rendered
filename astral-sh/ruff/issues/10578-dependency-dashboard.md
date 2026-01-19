@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-19T13:24:52Z
+updated_at: 2026-01-19T14:37:17Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-19T14:35:50Z
+synced_at: 2026-01-19T15:24:53Z
 ```
 
 # Dependency Dashboard
@@ -30,8 +30,12 @@ These dependencies are either deprecated or have replacements available:
 | npm | `@miniflare/kv` | ![Unavailable](https://img.shields.io/badge/unavailable-orange?style=flat-square) |
 | npm | `@miniflare/storage-memory` | ![Unavailable](https://img.shields.io/badge/unavailable-orange?style=flat-square) |
 
+## Abandoned Dependencies
+
 > [!NOTE]
-These dependencies have not received updates for an extended period and may be unmaintained:
+Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release. Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
+> 
+> These dependencies have not received updates for an extended period and may be unmaintained:
 
 <details>
 <summary>View abandoned dependencies (19)</summary>
@@ -53,14 +57,12 @@ These dependencies have not received updates for an extended period and may be u
 
 </details>
 
-Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release.
-Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
-
 
 ## Awaiting Schedule
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
+ - [ ] <!-- unschedule-branch=renovate/salsa-digest -->Update salsa digest to de22550
  - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.3
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
@@ -81,7 +83,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `prettier`, `typescript-eslint`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
- - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `black`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
+ - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `black`, `crate-ci/typos`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
 
 ## Open
 
@@ -97,7 +99,6 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - [ ] <!-- recreate-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22693)
  - [ ] <!-- recreate-branch=renovate/lsp-types-digest -->[Update lsp-types digest to ddc7dc8](../pull/20618)
- - [ ] <!-- recreate-branch=renovate/salsa-digest -->[Update salsa digest to c49e550](../pull/22694)
  - [ ] <!-- recreate-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
  - [ ] <!-- recreate-branch=renovate/python-3.x -->[Update dependency python to 3.14](../pull/21237)
  - [ ] <!-- recreate-branch=renovate/imara-diff-0.x -->[Update Rust crate imara-diff to 0.2.0](../pull/19039)
@@ -1123,11 +1124,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>pre-commit (1)</summary>
 <blockquote>
 
-<details><summary>.pre-commit-config.yaml (15)</summary>
+<details><summary>.pre-commit-config.yaml (16)</summary>
 
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `abravalheri/validate-pyproject v0.24.1`
- - `crate-ci/typos v1.42.0`
+ - `crate-ci/typos v1.42.0` → [Updates: `v1.42.1`]
  - `rbubley/mirrors-prettier v3.7.4` → [Updates: `v3.8.0`]
  - `zizmorcore/zizmor-pre-commit v1.20.0` → [Updates: `v1.22.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
@@ -1139,6 +1140,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `igorshubovych/markdownlint-cli v0.47.0`
  - `black ==25.12.0` → [Updates: `==26.1.0`]
  - `adamchainz/blacken-docs 1.20.0`
+ - `github.com/wasilibs/go-shellcheck/cmd/shellcheck v0.11.1`
  - `rhysd/actionlint v1.7.10`
 
 </details>

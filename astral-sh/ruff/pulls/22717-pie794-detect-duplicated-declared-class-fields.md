@@ -2,18 +2,19 @@
 number: 22717
 title: "`PIE794`: Detect duplicated declared class fields"
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - bug
   - rule
 assignees: []
+merged: true
 base: main
 head: micha/fix-PIE794-annotated-assignments
 created_at: 2026-01-19T11:12:03Z
-updated_at: 2026-01-19T11:35:43Z
+updated_at: 2026-01-19T14:36:00Z
 url: https://github.com/astral-sh/ruff/pull/22717
-synced_at: 2026-01-19T12:32:36Z
+synced_at: 2026-01-19T15:25:06Z
 ```
 
 # `PIE794`: Detect duplicated declared class fields
@@ -150,5 +151,21 @@ _Comment by @MichaReiser on 2026-01-19 11:35_
 
 
 I thought about that too but this seems like a separate change to the rule
+
+---
+
+_@ntBre approved on 2026-01-19 14:26_
+
+---
+
+_Merged by @MichaReiser on 2026-01-19 14:35_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 14:35_
+
+---
+
+_Branch deleted on 2026-01-19 14:36_
 
 ---

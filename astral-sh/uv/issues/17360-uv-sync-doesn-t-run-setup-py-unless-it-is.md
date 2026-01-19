@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-08T14:20:29Z
-updated_at: 2026-01-14T09:31:23Z
+updated_at: 2026-01-19T15:05:11Z
 url: https://github.com/astral-sh/uv/issues/17360
-synced_at: 2026-01-14T10:34:33Z
+synced_at: 2026-01-19T15:25:12Z
 ```
 
 # `uv sync` doesn't run setup.py unless it is manually touched/modified
@@ -167,5 +167,11 @@ k@machine:~/test_uv$ uv sync # no error in ~0.1ms
 Resolved 1 package in 1ms
 Audited 1 package in 0.13ms
 ```
+
+---
+
+_Comment by @kunaltyagi on 2026-01-19 15:05_
+
+I think this should be marked as a "bug" now, and not a question?
 
 ---

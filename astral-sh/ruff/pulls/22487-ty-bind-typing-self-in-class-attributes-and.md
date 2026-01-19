@@ -12,9 +12,9 @@ draft: true
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-19T14:22:47Z
+updated_at: 2026-01-19T15:12:58Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-19T14:23:24Z
+synced_at: 2026-01-19T15:25:06Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -177,6 +177,27 @@ bandersnatch (https://github.com/pypa/bandersnatch)
 - Found 78 diagnostics
 + Found 76 diagnostics
 
+stone (https://github.com/dropbox/stone)
+- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
+- Found 252 diagnostics
++ Found 249 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
+- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
+- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
+- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
++ src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((CallbackDict[Unknown, Unknown], /) -> None) | None`
+- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
+- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
+- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
+- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
+- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
+- Found 407 diagnostics
++ Found 399 diagnostics
+
 jinja (https://github.com/pallets/jinja)
 - tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | None | Environment`
 + tests/test_loader.py:240:17: warning[possibly-missing-attribute] Attribute `get_template` may be missing on object of type `Unknown | Environment | None`
@@ -209,37 +230,6 @@ jinja (https://github.com/pallets/jinja)
 - tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | None | Environment`
 + tests/test_loader.py:315:20: warning[possibly-missing-attribute] Attribute `loader` may be missing on object of type `Unknown | Environment | None`
 
-werkzeug (https://github.com/pallets/werkzeug)
-- src/werkzeug/datastructures/mixins.py:238:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `UpdateDictMixin[Any, Any]`
-- src/werkzeug/datastructures/mixins.py:262:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@setdefault`
-- src/werkzeug/datastructures/mixins.py:282:28: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'typing.Self'>`, found `Self@pop`
-- src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((<special-form 'typing.Self'>, /) -> None) | None`
-+ src/werkzeug/datastructures/structures.py:1053:9: error[invalid-assignment] Object of type `((Self@__init__, /) -> None) | None` is not assignable to attribute `on_update` of type `((CallbackDict[Unknown, Unknown], /) -> None) | None`
-- src/werkzeug/datastructures/structures.py:1104:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@remove`
-- src/werkzeug/datastructures/structures.py:1119:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@update`
-- src/werkzeug/datastructures/structures.py:1159:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@clear`
-- src/werkzeug/datastructures/structures.py:1185:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__delitem__`
-- src/werkzeug/datastructures/structures.py:1193:28: error[invalid-argument-type] Argument is incorrect: Expected `Self@__init__`, found `Self@__setitem__`
-- Found 407 diagnostics
-+ Found 399 diagnostics
-
-stone (https://github.com/dropbox/stone)
-- stone/backends/js_client.py:167:27: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/js_client.py:170:29: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- stone/backends/python_types.py:210:24: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Unknown | None`
-- Found 252 diagnostics
-+ Found 249 diagnostics
-
-boostedblob (https://github.com/hauntsaninja/boostedblob)
-- boostedblob/boost.py:362:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` has no attribute `append`
-- boostedblob/boost.py:368:16: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]] & ~AlwaysFalsy` has no attribute `popleft`
-- boostedblob/boost.py:382:19: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
-- boostedblob/boost.py:402:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `add`
-- boostedblob/boost.py:413:55: error[unresolved-attribute] Object of type `Awaitable[T@UnorderedMappingBoostable]` has no attribute `done`
-- boostedblob/boost.py:416:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `remove`
-- Found 21 diagnostics
-+ Found 15 diagnostics
-
 aiortc (https://github.com/aiortc/aiortc)
 - src/aiortc/rtcpeerconnection.py:571:25: warning[possibly-missing-attribute] Attribute `media` may be missing on object of type `SessionDescription | None | @Todo`
 - src/aiortc/rtcpeerconnection.py:575:21: error[invalid-argument-type] Argument to function `create_media_description_for_transceiver` is incorrect: Expected `RTCRtpTransceiver`, found `RTCRtpTransceiver | None | @Todo`
@@ -271,6 +261,32 @@ aiortc (https://github.com/aiortc/aiortc)
 - Found 194 diagnostics
 + Found 169 diagnostics
 
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
++ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/boost.py:362:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` has no attribute `append`
+- boostedblob/boost.py:368:16: error[unresolved-attribute] Object of type `Collection[Awaitable[T@OrderedMappingBoostable]] & ~AlwaysFalsy` has no attribute `popleft`
+- boostedblob/boost.py:382:19: error[not-subscriptable] Cannot subscript object of type `Collection[Awaitable[T@OrderedMappingBoostable]]` with no `__getitem__` method
+- boostedblob/boost.py:402:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `add`
+- boostedblob/boost.py:413:55: error[unresolved-attribute] Object of type `Awaitable[T@UnorderedMappingBoostable]` has no attribute `done`
+- boostedblob/boost.py:416:9: error[unresolved-attribute] Object of type `Collection[Awaitable[T@UnorderedMappingBoostable]]` has no attribute `remove`
+- Found 21 diagnostics
++ Found 15 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
++ dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
+- dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
++ dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/python.py:1043:34: error[invalid-argument-type] Argument to function `ascii_escaped` is incorrect: Expected `bytes | str`, found `object`
+- src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
+- Found 413 diagnostics
++ Found 411 diagnostics
+
 graphql-core (https://github.com/graphql-python/graphql-core)
 - src/graphql/execution/incremental_graph.py:349:27: error[invalid-argument-type] Argument to bound method `_enqueue` is incorrect: Expected `ReconcilableDeferredGroupedFieldSetResult | NonReconcilableDeferredGroupedFieldSetResult | StreamItemsResult`, found `object`
 - src/graphql/execution/incremental_graph.py:383:16: error[unresolved-attribute] Object of type `object` has no attribute `item`
@@ -285,22 +301,6 @@ graphql-core (https://github.com/graphql-python/graphql-core)
 - Found 641 diagnostics
 + Found 633 diagnostics
 
-pytest (https://github.com/pytest-dev/pytest)
-- src/_pytest/python.py:1043:34: error[invalid-argument-type] Argument to function `ascii_escaped` is incorrect: Expected `bytes | str`, found `object`
-- src/_pytest/subtests.py:85:24: error[not-iterable] Object of type `None` is not iterable
-- Found 413 diagnostics
-+ Found 411 diagnostics
-
-scrapy (https://github.com/scrapy/scrapy)
-- tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | None | str`
-+ tests/test_scheduler.py:180:23: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `Unknown | str | None`
-
-dulwich (https://github.com/dulwich/dulwich)
-- dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
-+ dulwich/server.py:604:13: error[invalid-argument-type] Argument to bound method `find_missing_objects` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
-- dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `(bound method Self@handle.progress(message: bytes) -> None) | (def progress(self, message: bytes) -> None)`
-+ dulwich/server.py:649:21: error[invalid-argument-type] Argument to function `filter_pack_objects_with_paths` is incorrect: Expected `((bytes, /) -> None) | None`, found `def progress(self, message: bytes) -> None`
-
 PyGithub (https://github.com/PyGithub/PyGithub)
 - tests/Requester.py:216:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
 - tests/Requester.py:263:9: warning[possibly-missing-attribute] Attribute `info` may be missing on object of type `Unknown | None | MagicMock`
@@ -313,9 +313,22 @@ poetry (https://github.com/python-poetry/poetry)
 - Found 977 diagnostics
 + Found 979 diagnostics
 
+vision (https://github.com/pytorch/vision)
+- torchvision/models/densenet.py:62:37: error[invalid-argument-type] Argument to bound method `bn_function` is incorrect: Expected `list[Unknown]`, found `tuple[Unknown, ...]`
++ torchvision/prototype/datasets/_builtin/caltech.py:84:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ torchvision/prototype/datasets/_builtin/caltech.py:95:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ torchvision/prototype/datasets/_builtin/imagenet.py:141:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int]`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float]`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `InterpolationMode`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
+- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
+- Found 1403 diagnostics
++ Found 1398 diagnostics
+
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 - tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | None | socket`
 + tornado/iostream.py:1343:13: warning[possibly-missing-attribute] Attribute `getpeername` may be missing on object of type `Unknown | socket | None`
 - tornado/iostream.py:1363:13: warning[possibly-missing-attribute] Attribute `do_handshake` may be missing on object of type `Unknown | None | socket`
@@ -381,21 +394,6 @@ mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - Found 2143 diagnostics
 + Found 2141 diagnostics
 
-vision (https://github.com/pytorch/vision)
-- torchvision/models/densenet.py:62:37: error[invalid-argument-type] Argument to bound method `bn_function` is incorrect: Expected `list[Unknown]`, found `tuple[Unknown, ...]`
-+ torchvision/prototype/datasets/_builtin/caltech.py:84:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ torchvision/prototype/datasets/_builtin/caltech.py:95:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ torchvision/prototype/datasets/_builtin/imagenet.py:141:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int]`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `int | float`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float]`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `InterpolationMode`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int | float] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
-- torchvision/transforms/transforms.py:1537:30: error[invalid-argument-type] Argument to function `affine` is incorrect: Expected `list[int] | None`, found `int | float | tuple[int | float, int | float] | @Todo`
-- Found 1403 diagnostics
-+ Found 1398 diagnostics
-
 urllib3 (https://github.com/urllib3/urllib3)
 - src/urllib3/connection.py:560:9: warning[possibly-missing-attribute] Attribute `settimeout` may be missing on object of type `socket | Any | None`
 + src/urllib3/connection.py:560:9: warning[possibly-missing-attribute] Attribute `settimeout` may be missing on object of type `Unknown | socket | None`
@@ -432,6 +430,45 @@ psycopg (https://github.com/psycopg/psycopg)
 - Found 652 diagnostics
 + Found 651 diagnostics
 
+manticore (https://github.com/trailofbits/manticore)
+- manticore/core/smtlib/constraints.py:81:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `_parent` on type `Unknown | None | Self@__enter__`
++ manticore/core/smtlib/constraints.py:81:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `_parent` on type `Unknown | None | Self@__exit__`
++ manticore/native/cpu/abstractcpu.py:350:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/native/test_armv7unicorn.py:1518:9: warning[possibly-missing-attribute] Attribute `STACK` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1520:15: warning[possibly-missing-attribute] Attribute `symbolicate_buffer` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1521:9: warning[possibly-missing-attribute] Attribute `write_bytes` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1527:9: warning[possibly-missing-attribute] Attribute `STACK` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1529:15: warning[possibly-missing-attribute] Attribute `symbolicate_buffer` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1531:9: warning[possibly-missing-attribute] Attribute `write_bytes` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1542:15: warning[possibly-missing-attribute] Attribute `new_symbolic_value` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1576:15: warning[possibly-missing-attribute] Attribute `new_symbolic_value` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:13: warning[possibly-missing-attribute] Attribute `emulate` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:30: warning[possibly-missing-attribute] Attribute `decode_instruction` may be missing on object of type `Unknown | None`
+- tests/native/test_armv7unicorn.py:1580:58: warning[possibly-missing-attribute] Attribute `PC` may be missing on object of type `Unknown | None`
+- Found 11070 diagnostics
++ Found 11060 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- apprise/asset.py:498:16: error[invalid-return-type] Return type does not match returned value: expected `PersistentStoreMode`, found `Unknown | PersistentStoreMode | (NotifyFormat & ~AlwaysFalsy)`
++ apprise/asset.py:498:16: error[invalid-return-type] Return type does not match returned value: expected `PersistentStoreMode`, found `Unknown | (NotifyFormat & ~AlwaysFalsy) | PersistentStoreMode`
+- apprise/asset.py:514:16: error[invalid-return-type] Return type does not match returned value: expected `tzinfo`, found `Unknown | None | tzinfo`
++ apprise/asset.py:514:16: error[invalid-return-type] Return type does not match returned value: expected `tzinfo`, found `Unknown | tzinfo | None`
+- apprise/plugins/aprs.py:293:9: error[unsupported-operator] Operator `+=` is not supported between objects of type `float` and `Unknown | str | int | float | dict[Unknown | str, Unknown | str]`
+- apprise/plugins/fcm/__init__.py:417:51: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `(bound method Self@send.color(notify_type: NotifyType, color_type: type | None = None) -> str | int | tuple[int, int, int]) | (Unknown & ~AlwaysFalsy) | (FCMColorManager & ~AlwaysFalsy)`
+- apprise/plugins/fcm/__init__.py:451:25: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `(bound method Self@send.color(notify_type: NotifyType, color_type: type | None = None) -> str | int | tuple[int, int, int]) | (Unknown & ~AlwaysFalsy) | (FCMColorManager & ~AlwaysFalsy)`
+- apprise/plugins/xbmc.py:320:17: error[unsupported-operator] Operator `<=` is not supported between objects of type `Unknown | tuple[Literal["xbmc"], Literal["kodi"]]` and `Unknown | Literal[2]`
+- apprise/plugins/xbmc.py:368:17: error[unsupported-operator] Operator `<=` is not supported between objects of type `Unknown | tuple[Literal["xbmc"], Literal["kodi"]]` and `Unknown | Literal[2]`
+- tests/test_attach_http.py:173:24: warning[possibly-missing-attribute] Attribute `read` may be missing on object of type `Unknown | None | BufferedReader[_BufferedReaderStream]`
+- tests/test_attach_http.py:186:13: warning[possibly-missing-attribute] Attribute `close` may be missing on object of type `Unknown | None | BufferedReader[_BufferedReaderStream]`
+- Found 2648 diagnostics
++ Found 2641 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/tests/test_interface.py:2117:20: error[unsupported-operator] Operator `<` is not supported between two objects of type `Unknown | Attribute`
+- src/zope/interface/tests/test_verify.py:37:16: error[call-non-callable] Object of type `None` is not callable
+- Found 421 diagnostics
++ Found 419 diagnostics
+
 discord.py (https://github.com/Rapptz/discord.py)
 - discord/app_commands/errors.py:453:95: error[unresolved-attribute] Object of type `Top[(...) -> Coroutine[object, Never, object]]` has no attribute `__qualname__`
 + discord/app_commands/errors.py:453:95: warning[possibly-missing-attribute] Attribute `__qualname__` may be missing on object of type `Unknown | ((...) -> Coroutine[Any, Any, Unknown])`
@@ -439,35 +476,9 @@ discord.py (https://github.com/Rapptz/discord.py)
 - discord/asset.py:490:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client] | _WebhookState`, found `Any | None | ConnectionState[Client] | _WebhookState`
 - discord/asset.py:525:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client] | _WebhookState`, found `Any | None | ConnectionState[Client] | _WebhookState`
 - discord/emoji.py:131:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/emoji.py:186:16: warning[possibly-missing-attribute] Attribute `_get_guild` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:225:30: warning[possibly-missing-attribute] Attribute `application_id` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:229:19: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:232:15: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:282:30: warning[possibly-missing-attribute] Attribute `application_id` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:287:26: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/emoji.py:292:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/emoji.py:294:22: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
-- discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
-- discord/ext/tasks/__init__.py:304:9: error[invalid-assignment] Object of type `(bound method Self@__get__._error(*args: Any) -> CoroutineType[Any, Any, None]) | (def _error(self, *args: Any) -> CoroutineType[Any, Any, None])` is not assignable to attribute `_error` of type `def _error(self, *args: Any) -> CoroutineType[Any, Any, None]`
-- discord/soundboard.py:232:20: warning[possibly-missing-attribute] Attribute `get_user` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/soundboard.py:233:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/soundboard.py:301:22: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/soundboard.py:302:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/soundboard.py:325:15: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:230:38: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:232:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/sticker.py:369:22: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:370:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/sticker.py:420:37: warning[possibly-missing-attribute] Attribute `store_user` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:434:16: warning[possibly-missing-attribute] Attribute `_get_guild` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:489:43: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/sticker.py:490:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ConnectionState[Client]`, found `Any | None | ConnectionState[Client]`
-- discord/sticker.py:511:15: warning[possibly-missing-attribute] Attribute `http` may be missing on object of type `Any | None | ConnectionState[Client]`
-- discord/ui/action_row.py:122:67: error[invalid-type-arguments] Type `<special-form 'typing.Self'>` is not assignable to upper bound `BaseView | ActionRow[Unknown] | Container[Unknown]` of type variable `C@ContainedItemCallbackType`
-+ discord/ui/action_r
+- discord/emoji.py:186:16: warning[possibly-missing-attribute] Attribute `
 
-... (truncated 1976 lines) ...
+... (truncated 1996 lines) ...
 ```
 
 </details>
@@ -634,9 +645,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `unresolved-attribute` | 950 | 86 | 8 |
-| `invalid-argument-type` | 10 | 278 | 31 |
-| `possibly-missing-attribute` | 59 | 169 | 88 |
-| `invalid-return-type` | 6 | 41 | 45 |
+| `possibly-missing-attribute` | 59 | 163 | 86 |
+| `invalid-argument-type` | 10 | 217 | 31 |
+| `invalid-return-type` | 2 | 45 | 45 |
 | `invalid-assignment` | 2 | 72 | 14 |
 | `unsupported-operator` | 0 | 45 | 9 |
 | `call-non-callable` | 0 | 44 | 0 |
@@ -646,15 +657,14 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 15:52_
 | `type-assertion-failure` | 0 | 6 | 4 |
 | `no-matching-overload` | 2 | 6 | 0 |
 | `not-iterable` | 0 | 8 | 0 |
-| `invalid-await` | 0 | 7 | 0 |
 | `invalid-parameter-default` | 0 | 0 | 7 |
 | `invalid-raise` | 0 | 4 | 0 |
 | `parameter-already-assigned` | 0 | 1 | 0 |
 | `redundant-cast` | 1 | 0 | 0 |
-| **Total** | **1,042** | **805** | **206** |
+| **Total** | **1,038** | **735** | **204** |
 
 
-**[Full report with detailed diff](https://ae66729b.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://ae66729b.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://3be8f988.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3be8f988.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -683,7 +693,7 @@ Right, but the type mapping here seems to be mapping `typing.Self` variables wit
 _Comment by @codspeed-hq[bot] on 2026-01-18 02:58_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **degrade performance by 7.69%**
+## Merging this PR will **degrade performance by 7.61%**
 
 
 
@@ -699,10 +709,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-18 02:58_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 236.8 ms | 256.5 ms | -7.69% |
+| ❌ | Simulation | [`` DateType ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&runnerMode=Instrumentation&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 236.8 ms | 256.3 ms | -7.61% |
 ---
 
-<sub>Comparing <code>charlie/self</code> (b459a1a) with <code>main</code> (5949fa0)</sub>
+<sub>Comparing <code>charlie/self</code> (2446f16) with <code>main</code> (5949fa0)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fself?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>

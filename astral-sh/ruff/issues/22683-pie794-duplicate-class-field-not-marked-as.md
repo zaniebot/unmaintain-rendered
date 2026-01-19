@@ -2,14 +2,16 @@
 number: 22683
 title: PIE794 Duplicate class field not marked as duplicate
 type: issue
-state: open
+state: closed
 author: bhirsz
-labels: []
+labels:
+  - bug
+  - rule
 assignees: []
 created_at: 2026-01-18T16:16:26Z
-updated_at: 2026-01-19T11:06:52Z
+updated_at: 2026-01-19T14:35:59Z
 url: https://github.com/astral-sh/ruff/issues/22683
-synced_at: 2026-01-19T11:30:15Z
+synced_at: 2026-01-19T15:24:54Z
 ```
 
 # PIE794 Duplicate class field not marked as duplicate
@@ -61,5 +63,17 @@ Potentially we could catch it before _ => continue:
 ```
 
 But I don't know Rust.
+
+---
+
+_Label `bug` added by @ntBre on 2026-01-19 14:26_
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-19 14:26_
+
+---
+
+_Closed by @MichaReiser on 2026-01-19 14:36_
 
 ---

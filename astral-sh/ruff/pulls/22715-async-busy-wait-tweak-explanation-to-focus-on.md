@@ -4,14 +4,15 @@ title: "async-busy-wait: tweak explanation to focus on latency/efficiency tradeo
 type: pull_request
 state: open
 author: zsol
-labels: []
+labels:
+  - documentation
 assignees: []
 base: main
 head: claude/fix-async-busy-wait-docs-lyHe6
 created_at: 2026-01-19T10:08:52Z
-updated_at: 2026-01-19T10:20:32Z
+updated_at: 2026-01-19T14:27:47Z
 url: https://github.com/astral-sh/ruff/pull/22715
-synced_at: 2026-01-19T10:28:42Z
+synced_at: 2026-01-19T15:25:06Z
 ```
 
 # async-busy-wait: tweak explanation to focus on latency/efficiency tradeoff
@@ -42,5 +43,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 10:20_
 
 
 
+
+---
+
+_@ntBre approved on 2026-01-19 14:27_
+
+Thank you!
+
+---
+
+_Label `documentation` added by @ntBre on 2026-01-19 14:27_
 
 ---

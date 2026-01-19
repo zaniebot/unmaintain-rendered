@@ -9,9 +9,9 @@ labels:
   - cli
 assignees: []
 created_at: 2026-01-19T11:05:50Z
-updated_at: 2026-01-19T11:23:59Z
+updated_at: 2026-01-19T15:21:13Z
 url: https://github.com/astral-sh/ruff/issues/22716
-synced_at: 2026-01-19T12:32:24Z
+synced_at: 2026-01-19T15:24:54Z
 ```
 
 # Add a cli option to force colored output
@@ -39,5 +39,11 @@ _Label `good first issue` added by @MichaReiser on 2026-01-19 11:23_
 ---
 
 _Label `cli` added by @MichaReiser on 2026-01-19 11:23_
+
+---
+
+_Comment by @cwkang1998 on 2026-01-19 15:21_
+
+Would like to try my hand at this
 
 ---
