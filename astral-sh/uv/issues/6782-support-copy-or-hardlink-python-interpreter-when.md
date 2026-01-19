@@ -9,9 +9,9 @@ labels:
   - cli
 assignees: []
 created_at: 2024-08-29T00:08:45Z
-updated_at: 2026-01-05T16:10:45Z
+updated_at: 2026-01-19T07:08:16Z
 url: https://github.com/astral-sh/uv/issues/6782
-synced_at: 2026-01-12T15:59:07Z
+synced_at: 2026-01-19T07:23:49Z
 ```
 
 # Support copy or hardlink python interpreter when creating venv
@@ -229,5 +229,11 @@ _Comment by @theis188 on 2026-01-05 16:10_
 +1 to this request. I'm managing a persistent venv system for ML engineers, and broken symlinks are a problem. It would be awesome to have functionality that replicates --copies from venv so that venvs don't rely on central Python interpreters.
 
 @cyber-barrista, tried the above and looks like `lib/libpython3.11.dylib` was missing.
+
+---
+
+_Comment by @bakkiaraj on 2026-01-19 07:08_
+
++1 , I do need a real , redistributeable VENV 
 
 ---
