@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic if a self-referential base is passed to a three-argument `type()` call - astral-sh/ty #2564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic if a self-referential base is passed to a three-argument <code>type()</code> call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2564">#2564</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-19 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
+            <div class="timeline-body"><p>ty currently panics on this:</p>
+<pre><code class="language-py">X = type(&quot;X&quot;, (tuple[&quot;X | None&quot;],), {})
+</code></pre>
+<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/9860ff6/src/function/execute.rs:743:9 when checking `/Users/alexw/dev/ruff/foo.py`: `infer_definition_types(Id(1400)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: ruff/0.14.13+65 (bffc95873 2026-01-19)
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;foo.py&quot;, &quot;--python-version=3.14&quot;, &quot;--ignore=undefined-reveal&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:70
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:554
+</code></pre>
+<p>After https://github.com/astral-sh/ruff/pull/22718 has landed, things like this will also panic:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+X = type(&quot;X&quot;, (NamedTuple(&quot;NT&quot;, [(&quot;field&quot;, &quot;X | int&quot;)]),), {})
+</code></pre>
+<p>The fix is probably to defer inference of the <code>bases</code> argument in &quot;non-dangling&quot; three-argument <code>type()</code> calls, the same way as we defer inference of the bases list in regular <code>class</code> statements. &quot;Non-dangling&quot; means three-argument <code>type()</code> calls where the call is immediately assigned to a value, such as the above assignment to <code>X</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2026-01-19 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2026-01-19 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2026-01-19 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-19 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 16:30:46 UTC
+    </footer>
+</body>
+</html>

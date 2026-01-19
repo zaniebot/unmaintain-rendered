@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC001 does not report violations when there are other modules from the same package not violating - astral-sh/ruff #22726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TC001 does not report violations when there are other modules from the same package not violating</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22726">#22726</a>
+        opened by <a href="https://github.com/samueljsb">@samueljsb</a>
+        on 2026-01-19 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samueljsb">@samueljsb</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is best described with an example. Consider a module (<code>t.py</code>) that imports both <code>my_pkg.a</code> and <code>my_pkg.b</code> and uses one in an annotation and another in runtime code:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from my_pkg import a
+from my_pkg import b
+
+def f(obj: a.A | b.B) -&gt; bool:
+    b.B()
+</code></pre>
+<p>This will not report any errors:</p>
+<pre><code class="language-console">$ ruff check --select=TC t.py
+All checks passed!
+</code></pre>
+<p>However, if we change the module so it no longer uses <code>my_pkg.b</code> at runtime:</p>
+<pre><code class="language-diff">  from __future__ import annotations
+
+  from my_pkg import a
+  from my_pkg import b
+
+  def f(obj: a.A | b.B) -&gt; bool:
+-     b.B()
++     pass
+</code></pre>
+<p>We now get an error for <em>both</em> imports:</p>
+<pre><code class="language-console">$ ruff check --select=TC t.py
+TC001 Move application import `my_pkg.a` into a type-checking block
+ --&gt; t.py:3:20
+  |
+1 | from __future__ import annotations
+2 |
+3 | from my_pkg import a
+  |                    ^
+4 | from my_pkg import b
+  |
+help: Move into type-checking block
+
+TC001 Move application import `my_pkg.b` into a type-checking block
+ --&gt; t.py:4:20
+  |
+3 | from my_pkg import a
+4 | from my_pkg import b
+  |                    ^
+5 |
+6 | def f(obj: a.A | b.B) -&gt; bool:
+  |
+help: Move into type-checking block
+
+Found 2 errors.
+No fixes available (2 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>I would expect the import of <code>my_pkg.a</code> to have caused an error for both examples, with <code>my_pkg.b</code> also becoming an error when it was no longer used.</p>
+<h3>Version</h3>
+<p>ruff 0.14.13 (b4b8299d6 2026-01-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TC001 does not report violations when there are other modules from the same package no violating" to "TC001 does not report violations when there are other modules from the same package not violating" by @samueljsb on 2026-01-19 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-19 16:15</div>
+            <div class="timeline-body"><p>Thanks for the report! I think this may be a duplicate of #15723, but I'm not totally sure. The underlying cause sounds similar, but the specific example is a bit different. @Daverball may know better than me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2026-01-19 16:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 16:29:12 UTC
+    </footer>
+</body>
+</html>

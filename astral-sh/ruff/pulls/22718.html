@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/2528, fixes https://github.com/astral-sh/ty/issues/2529.</p>
-<p>In order to support <code>typing.NamedTuple</code>s with recursive or stringified types in their field specs, we must defer inference of the second argument to <code>typing.NamedTuple()</code> calls. However, we don't need to defer inference of <code>collections.namedtuple()</code> calls (those calls don't expect type expressions), and nor do we need to defer inference of &quot;dangling&quot; <code>NamedTuple</code> calls. Dangling <code>NamedTuple</code> classes can be recursive, but only in the context of when they appear inside a class's bases list, and we already defer inference of all expressions inside a class's bases list.</p>
+<p>In order to support <code>typing.NamedTuple</code>s with recursive or stringified types in their field specs, we must defer inference of the second argument to <code>typing.NamedTuple()</code> calls. However, we don't need to defer inference of <code>collections.namedtuple()</code> calls (those calls don't expect type expressions -- they just expect a string literal or a sequence of string literals), and nor do we need to defer inference of &quot;dangling&quot; <code>NamedTuple</code> calls. Dangling <code>NamedTuple</code> classes can be recursive, but only in the context of when they appear inside a class's bases list, and we already defer inference of all expressions inside a class's bases list.</p>
 <h2>Test plan</h2>
 <p>Mdtests updated and extended</p>
 <p>Co-authored-by @charliermarsh (picking up from #22627)</p>
@@ -238,10 +238,41 @@ X = type(&quot;X&quot;, (NamedTuple(&quot;NT&quot;, [(&quot;field&quot;, &quot;X
 <p>I would add an x-failing mdtest with the <code>&lt;!-- expect-panic --&gt;</code> HTML comment, but it looks like the mdtest would be really slow, so I don't think it's worth it.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 15:27</div>
+            <div class="timeline-body"><p>And the panic isn't new -- it's a pre-existing issue. I can trigger it on <code>main</code> with:</p>
+<pre><code class="language-py">X = type(&quot;X&quot;, (tuple[&quot;X | None&quot;],), {})
+</code></pre>
+<p>So we do just need to defer inference of the bases tuple passed to <code>type()</code>. I opened https://github.com/astral-sh/ty/issues/2564.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-19 15:33</div>
+            <div class="timeline-body"><p>Sounds good 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-19 15:33</div>
+            <div class="timeline-body"><p>I suspect I can fix that panic once this merges given the patterns established here (unless you're on it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect I can fix that panic once this merges given the patterns established here (unless you're on it).</p>
+</blockquote>
+<p>yeah, that would be great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 15:35</div>
+            <div class="timeline-body"><p>(this PR <em>is</em> one that I'd love @carljm and/or @dcreager to take a quick look at 😅)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-19 15:28:20 UTC
+        Synced at 2026-01-19 16:30:18 UTC
     </footer>
 </body>
 </html>
