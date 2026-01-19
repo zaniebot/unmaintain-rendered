@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-19T11:50:51Z
+updated_at: 2026-01-19T12:52:14Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-19T12:32:24Z
+synced_at: 2026-01-19T13:34:18Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -248,5 +248,15 @@ Hmm, maybe. I don't think that's how most Python users conventionally use f-stri
 > I don't think always making the fix as unsafe is the right approach here. Instead, we could consider to be clever about when the fix is likely unsafe. E.g, can we split the string by whitespace and are there any symbols in scope that match a word in the string? If so, mark the fix as unsafe.
 
 Yeah, that would indeed be very cool, and probably a better solution to just marking the fix as unsafe -- agreed!
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 12:52_
+
+> Hmm, maybe. I don't think that's how most Python users conventionally use f-strings, however
+
+The diff in [#22650](https://github.com/astral-sh/ruff/pull/22650) suggests to me that it's more common than one might think.
+
+
 
 ---

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-19T01:06:50Z
+updated_at: 2026-01-19T13:12:54Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-19T01:22:59Z
+synced_at: 2026-01-19T13:34:12Z
 ```
 
 # Dependency Dashboard
@@ -37,12 +37,17 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
+## Awaiting Schedule
+
+The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
+
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook mdformat-mkdocs to v5.1.3
+
 ## Pending Status Checks
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
- - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `astral-sh/uv-pre-commit`, `mdformat-mkdocs`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 

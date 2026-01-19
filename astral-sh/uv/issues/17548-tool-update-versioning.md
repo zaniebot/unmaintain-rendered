@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-17T13:41:52Z
-updated_at: 2026-01-17T17:27:23Z
+updated_at: 2026-01-19T12:44:23Z
 url: https://github.com/astral-sh/uv/issues/17548
-synced_at: 2026-01-17T18:19:20Z
+synced_at: 2026-01-19T13:34:36Z
 ```
 
 # Tool update versioning
@@ -59,5 +59,13 @@ I think this is a bug, I'll look into it.
 ---
 
 _Label `bug` added by @zanieb on 2026-01-17 17:27_
+
+---
+
+_Comment by @FishAlchemist on 2026-01-19 12:44_
+
+This has actually been an issue for a long time. I previously opened a ticket (#8528) but decided to close it since so much time had passed. I figured closing the old one would give others a better reason to create a fresh, updated version of the issue.
+
+Personally, I expect that if the installation fails, the package version should not be updated. This ensures that the next upgrade attempt can still function correctly. The installation process should be atomic: it should only be considered a success if everything completes sucessfully; otherwise, it should be treated as a failure.
 
 ---

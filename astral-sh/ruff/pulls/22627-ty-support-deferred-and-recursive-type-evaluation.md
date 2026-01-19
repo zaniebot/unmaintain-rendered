@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/defer
 created_at: 2026-01-16T18:27:15Z
-updated_at: 2026-01-18T23:51:49Z
+updated_at: 2026-01-19T12:28:17Z
 url: https://github.com/astral-sh/ruff/pull/22627
-synced_at: 2026-01-19T00:21:19Z
+synced_at: 2026-01-19T13:34:31Z
 ```
 
 # [ty] Support deferred and recursive type evaluation in `NamedTuple(...)`
@@ -172,5 +172,48 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:04_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2026-01-18 23:51_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 12:26_
+
+Thanks @charliermarsh ❤️
+
+There's a lot to like about this PR... but there's also quite a few things I'd do differently. In particular, I don't think it's necessary to defer inference of `NamedTuple` specs for "dangling" calls -- while it's true that something like this can have a recursive reference in it:
+
+```py
+from typing import NamedTuple
+
+class Foo(NamedTuple("F", [("x", "Foo | None")]):
+    pass
+```
+
+... that's already dealt with by our existing logic on `main` that defers _everything_ inside a class's bases list:
+
+https://github.com/astral-sh/ruff/blob/55a174ed95c757a88199fdc1b15e51fd9041b4fa/crates/ty_python_semantic/src/types/infer/builder.rs#L3191-L3201
+
+I've taken a stab at solving this problem myself in https://github.com/astral-sh/ruff/pull/22718, though I want to pull some parts of that PR into standalone changes, since there's some refactoring in there that makes the overall diff a bit confusing at the moment. Overall it ends up being a slightly "messier" diff (there's more code being removed/rewritten rather than simply being added) but it ends up being quite a few LOC less than this PR overall.
+
+One problem that both our PRs have, however, is that they both currently have stack overflows on this test case:
+
+```py
+from typing import NamedTuple
+
+A = NamedTuple("A", [("x", "B | None")])
+B = NamedTuple("B", [("x", "C")])
+C = NamedTuple("C", [("x", A)])
+
+A(x=C())
+```
+
+(your PR only seems to overflow on that snippet after `main` has been merged in, which is interesting)
+
+I'm not _yet_ sure how to fix that...
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 12:28_
+
+(I did just copy-and-paste some of your tests and code straight from this PR into my PR, so I'll definitely list you as a co-author!)
 
 ---
