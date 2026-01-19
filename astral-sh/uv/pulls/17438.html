@@ -96,10 +96,73 @@
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-19 11:05</div>
             <div class="timeline-body"></div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing/pyx.rs</code>:89 on 2026-01-19 11:19</div>
+            <div class="timeline-body"><p>Note that <code>path_segments</code> is sensitive to trailing slashes:</p>
+<pre><code class="language-rust">use std::str::FromStr;
+use url::Url;
+
+fn main() -&gt; Result&lt;(), ()&gt; {
+    dbg!(
+        Url::from_str(&quot;https://pyx.dev/v1/upload/workspace_name/registry_name&quot;)
+            .unwrap()
+            .path_segments()
+            .map_or(Vec::new(), Iterator::collect)
+    );
+    dbg!(
+        Url::from_str(&quot;https://pyx.dev/v1/upload/workspace_name/registry_name/&quot;)
+            .unwrap()
+            .path_segments()
+            .map_or(Vec::new(), Iterator::collect)
+    );
+    Ok(())
+}
+</code></pre>
+<pre><code>[src/main.rs:5:5] Url::from_str(&quot;https://pyx.dev/v1/upload/workspace_name/registry_name&quot;).unwrap().path_segments().map_or(Vec::new(),
+Iterator::collect) = [
+    &quot;v1&quot;,
+    &quot;upload&quot;,
+    &quot;workspace_name&quot;,
+    &quot;registry_name&quot;,
+]
+[src/main.rs:11:5] Url::from_str(&quot;https://pyx.dev/v1/upload/workspace_name/registry_name/&quot;).unwrap().path_segments().map_or(Vec::new(),
+Iterator::collect) = [
+    &quot;v1&quot;,
+    &quot;upload&quot;,
+    &quot;workspace_name&quot;,
+    &quot;registry_name&quot;,
+    &quot;&quot;,
+]
+</code></pre>
+<p>If pyx doesn't allow trailing slashes, the URL is invalid, though maybe we want a separate error for this, it sounds easy to get wrong? We had those cases with trailing slashes for PyPI too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/lib.rs</code>:467 on 2026-01-19 11:43</div>
+            <div class="timeline-body"><p>nit: If we make <code>get_token</code> as method on the trait with default implementation, we can skip the async-traint-in-box and do:</p>
+<pre><code class="language-rust">                PyxPublishingService::new(registry, client)
+                    .get_token()
+                    .await
+                    .map_err(Box::new)?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-publish/src/trusted_publishing.rs</code>:88 on 2026-01-19 11:47</div>
+            <div class="timeline-body"><p>This sounds totally fine to me in the error path, it might even help in some fringe token mixup scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2026-01-19 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2026-01-19 11:49</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-19 11:22:51 UTC
+        Synced at 2026-01-19 12:24:54 UTC
     </footer>
 </body>
 </html>
