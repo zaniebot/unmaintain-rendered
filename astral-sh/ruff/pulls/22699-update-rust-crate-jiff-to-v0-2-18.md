@@ -2,17 +2,18 @@
 number: 22699
 title: Update Rust crate jiff to v0.2.18
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/jiff-0.x-lockfile
 created_at: 2026-01-19T00:58:40Z
-updated_at: 2026-01-19T01:01:39Z
+updated_at: 2026-01-19T01:53:53Z
 url: https://github.com/astral-sh/ruff/pull/22699
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate jiff to v0.2.18
@@ -197,5 +198,17 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Branch deleted on 2026-01-19 01:53_
 
 ---

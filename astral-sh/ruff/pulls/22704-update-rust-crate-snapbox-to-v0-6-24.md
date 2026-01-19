@@ -2,17 +2,18 @@
 number: 22704
 title: Update Rust crate snapbox to v0.6.24
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/snapbox-0.x-lockfile
 created_at: 2026-01-19T00:59:34Z
-updated_at: 2026-01-19T01:02:22Z
+updated_at: 2026-01-19T01:53:16Z
 url: https://github.com/astral-sh/ruff/pull/22704
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate snapbox to v0.6.24
@@ -139,5 +140,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:32_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Branch deleted on 2026-01-19 01:53_
 
 ---

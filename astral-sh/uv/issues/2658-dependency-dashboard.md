@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-18T21:18:43Z
+updated_at: 2026-01-19T02:02:11Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-18T22:21:58Z
+synced_at: 2026-01-19T02:24:48Z
 ```
 
 # Dependency Dashboard
@@ -20,6 +20,12 @@ synced_at: 2026-01-18T22:21:58Z
 _@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/uv).
+
+## Repository Problems
+
+These problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/astral-sh/uv).
+
+ - ⚠️ WARN: Detected empty commit - aborting git push
 
 > [!NOTE]
 These dependencies have not received updates for an extended period and may be unmaintained:
@@ -36,65 +42,6 @@ These dependencies have not received updates for an extended period and may be u
 Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](https://docs.renovatebot.com/configuration-options/#abandonmentthreshold) since their last release.
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
-
-## Awaiting Schedule
-
-The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
-
- - [ ] <!-- unschedule-branch=renovate/container-image-digests -->Pin dependencies (`alpine`, `amazonlinux`, `debian`, `fedora`, `pyston/pyston`)
- - [ ] <!-- unschedule-branch=renovate/astral-sh-uv-0.x -->Update dependency astral-sh/uv to v0.9.26
- - [ ] <!-- unschedule-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
- - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
- - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
- - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
- - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
- - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
- - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
- - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
- - [ ] <!-- unschedule-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.13
- - [ ] <!-- unschedule-branch=renovate/rmp-serde-1.x-lockfile -->Update Rust crate rmp-serde to v1.3.1
- - [ ] <!-- unschedule-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
- - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
- - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
- - [ ] <!-- unschedule-branch=renovate/target-lexicon-0.x-lockfile -->Update Rust crate target-lexicon to v0.13.4
- - [ ] <!-- unschedule-branch=renovate/test-log-0.x-lockfile -->Update Rust crate test-log to v0.2.19
- - [ ] <!-- unschedule-branch=renovate/tikv-jemallocator-0.x-lockfile -->Update Rust crate tikv-jemallocator to v0.6.1
- - [ ] <!-- unschedule-branch=renovate/tokio-rustls-0.x-lockfile -->Update Rust crate tokio-rustls to v0.26.4
- - [ ] <!-- unschedule-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
- - [ ] <!-- unschedule-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
- - [ ] <!-- unschedule-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
- - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
- - [ ] <!-- unschedule-branch=renovate/pubgrub -->Update Rust crate version-ranges to v0.1.4
- - [ ] <!-- unschedule-branch=renovate/tokio-tracing-monorepo -->Update tokio-tracing monorepo (`tracing`, `tracing-subscriber`)
- - [ ] <!-- unschedule-branch=renovate/acj-freebsd-firecracker-action-0.x -->Update acj/freebsd-firecracker-action action to v0.8.0
- - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
- - [ ] <!-- unschedule-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.5.2
- - [ ] <!-- unschedule-branch=renovate/crate-ci-typos-1.x -->Update crate-ci/typos action to v1.42.0
- - [ ] <!-- unschedule-branch=renovate/python-3.x -->Update dependency python to v3.14.2
- - [ ] <!-- unschedule-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
- - [ ] <!-- unschedule-branch=renovate/assert_cmd-2.x-lockfile -->Update Rust crate assert_cmd to v2.1.2
- - [ ] <!-- unschedule-branch=renovate/backon-1.x-lockfile -->Update Rust crate backon to v1.6.0
- - [ ] <!-- unschedule-branch=renovate/bitflags-2.x-lockfile -->Update Rust crate bitflags to v2.10.0
- - [ ] <!-- unschedule-branch=renovate/criterion-4.x-lockfile -->Update Rust crate criterion to v4.2.1
- - [ ] <!-- unschedule-branch=renovate/csv-1.x-lockfile -->Update Rust crate csv to v1.4.0
- - [ ] <!-- unschedule-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
- - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
- - [ ] <!-- unschedule-branch=renovate/fs-err-3.x-lockfile -->Update Rust crate fs-err to v3.2.2
- - [ ] <!-- unschedule-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
- - [ ] <!-- unschedule-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.0
- - [ ] <!-- unschedule-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.3.0
- - [ ] <!-- unschedule-branch=renovate/reqwest-0.x -->Update Rust crate reqwest to 0.13.0
- - [ ] <!-- unschedule-branch=renovate/schemars-1.x-lockfile -->Update Rust crate schemars to v1.2.0
- - [ ] <!-- unschedule-branch=renovate/secret-service-5.x-lockfile -->Update Rust crate secret-service to v5.1.0
- - [ ] <!-- unschedule-branch=renovate/security-framework-3.x-lockfile -->Update Rust crate security-framework to v3.5.1
- - [ ] <!-- unschedule-branch=renovate/tokio-1.x-lockfile -->Update Rust crate tokio to v1.49.0
- - [ ] <!-- unschedule-branch=renovate/windows-0.x -->Update Rust crate windows to 0.62.0
- - [ ] <!-- unschedule-branch=renovate/windows-registry-0.x -->Update Rust crate windows-registry to 0.6.0
- - [ ] <!-- unschedule-branch=renovate/wmi-0.x -->Update Rust crate wmi to 0.18.0
- - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.1
- - [ ] <!-- unschedule-branch=renovate/fedora-44.x -->Update fedora Docker tag to v44
- - [ ] <!-- unschedule-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2
- - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
 ## PR Edited (Blocked)
 
@@ -113,21 +60,70 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
+## Other Branches
+
+The following updates are pending. To force the creation of a PR, click on a checkbox below.
+
+ - [ ] <!-- other-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
+ - [ ] <!-- other-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
+
 ## Open
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
+ - [ ] <!-- rebase-branch=renovate/container-image-digests -->[Pin dependencies](../pull/17554) (`alpine`, `amazonlinux`, `debian`, `fedora`, `pyston/pyston`)
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 6865550](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
+ - [ ] <!-- rebase-branch=renovate/astral-sh-uv-0.x -->[Update dependency astral-sh/uv to v0.9.26](../pull/17555)
+ - [ ] <!-- rebase-branch=renovate/embarkstudios-cargo-deny-action-2.x -->[Update EmbarkStudios/cargo-deny-action action to v2.0.15](../pull/17556)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
+ - [ ] <!-- rebase-branch=renovate/clap-4.x-lockfile -->[Update Rust crate clap to v4.5.54](../pull/17557)
+ - [ ] <!-- rebase-branch=renovate/console-0.x-lockfile -->[Update Rust crate console to v0.16.2](../pull/17558)
+ - [ ] <!-- rebase-branch=renovate/jiff-0.x-lockfile -->[Update Rust crate jiff to v0.2.18](../pull/17559)
+ - [ ] <!-- rebase-branch=renovate/rcgen-0.x-lockfile -->[Update Rust crate rcgen to v0.14.6](../pull/17562)
+ - [ ] <!-- rebase-branch=renovate/rkyv-0.x-lockfile -->[Update Rust crate rkyv to v0.8.13](../pull/17563)
+ - [ ] <!-- rebase-branch=renovate/rmp-serde-1.x-lockfile -->[Update Rust crate rmp-serde to v1.3.1](../pull/17564)
+ - [ ] <!-- rebase-branch=renovate/rustls-0.x-lockfile -->[Update Rust crate rustls to v0.23.36](../pull/17565)
+ - [ ] <!-- rebase-branch=renovate/serde_json-1.x-lockfile -->[Update Rust crate serde_json to v1.0.149](../pull/17566)
+ - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
+ - [ ] <!-- rebase-branch=renovate/target-lexicon-0.x-lockfile -->[Update Rust crate target-lexicon to v0.13.4](../pull/17568)
+ - [ ] <!-- rebase-branch=renovate/test-log-0.x-lockfile -->[Update Rust crate test-log to v0.2.19](../pull/17569)
+ - [ ] <!-- rebase-branch=renovate/tikv-jemallocator-0.x-lockfile -->[Update Rust crate tikv-jemallocator to v0.6.1](../pull/17570)
+ - [ ] <!-- rebase-branch=renovate/tokio-rustls-0.x-lockfile -->[Update Rust crate tokio-rustls to v0.26.4](../pull/17571)
+ - [ ] <!-- rebase-branch=renovate/tokio-stream-0.x-lockfile -->[Update Rust crate tokio-stream to v0.1.18](../pull/17572)
+ - [ ] <!-- rebase-branch=renovate/tokio-util-0.x-lockfile -->[Update Rust crate tokio-util to v0.7.18](../pull/17573)
+ - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
+ - [ ] <!-- rebase-branch=renovate/url-2.x-lockfile -->[Update Rust crate url to v2.5.8](../pull/17575)
+ - [ ] <!-- rebase-branch=renovate/pubgrub -->[Update Rust crate version-ranges to v0.1.4](../pull/17576)
+ - [ ] <!-- rebase-branch=renovate/tokio-tracing-monorepo -->[Update tokio-tracing monorepo](../pull/17577) (`tracing`, `tracing-subscriber`)
+ - [ ] <!-- rebase-branch=renovate/acj-freebsd-firecracker-action-0.x -->[Update acj/freebsd-firecracker-action action to v0.8.0](../pull/17578)
+ - [ ] <!-- rebase-branch=renovate/astral-sh-setup-uv-7.x -->[Update astral-sh/setup-uv action to v7.2.0](../pull/17579)
+ - [ ] <!-- rebase-branch=renovate/codspeedhq-action-4.x -->[Update CodSpeedHQ/action action to v4.5.2](../pull/17580)
+ - [ ] <!-- rebase-branch=renovate/crate-ci-typos-1.x -->[Update crate-ci/typos action to v1.42.0](../pull/17581)
+ - [ ] <!-- rebase-branch=renovate/python-3.x -->[Update dependency python to v3.14.2](../pull/17582)
+ - [ ] <!-- rebase-branch=renovate/pre-commit-dependencies -->[Update pre-commit dependencies](../pull/17583) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
+ - [ ] <!-- rebase-branch=renovate/assert_cmd-2.x-lockfile -->[Update Rust crate assert_cmd to v2.1.2](../pull/17584)
+ - [ ] <!-- rebase-branch=renovate/criterion-4.x-lockfile -->[Update Rust crate criterion to v4.2.1](../pull/17587)
+ - [ ] <!-- rebase-branch=renovate/csv-1.x-lockfile -->[Update Rust crate csv to v1.4.0](../pull/17588)
+ - [ ] <!-- rebase-branch=renovate/data-encoding-2.x-lockfile -->[Update Rust crate data-encoding to v2.10.0](../pull/17589)
+ - [ ] <!-- rebase-branch=renovate/fs-err-3.x-lockfile -->[Update Rust crate fs-err to v3.2.2](../pull/17590)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
+ - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/17591)
+ - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
+ - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
+ - [ ] <!-- rebase-branch=renovate/reqwest-0.x -->[Update Rust crate reqwest to 0.13.0](../pull/17594)
+ - [ ] <!-- rebase-branch=renovate/resvg-0.x -->[Update Rust crate resvg to 0.46.0](../pull/17595)
+ - [ ] <!-- rebase-branch=renovate/schemars-1.x-lockfile -->[Update Rust crate schemars to v1.2.0](../pull/17596)
+ - [ ] <!-- rebase-branch=renovate/secret-service-5.x-lockfile -->[Update Rust crate secret-service to v5.1.0](../pull/17597)
+ - [ ] <!-- rebase-branch=renovate/security-framework-3.x-lockfile -->[Update Rust crate security-framework to v3.5.1](../pull/17598)
+ - [ ] <!-- rebase-branch=renovate/tokio-1.x-lockfile -->[Update Rust crate tokio to v1.49.0](../pull/17599)
+ - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
+ - [ ] <!-- rebase-branch=renovate/windows-registry-0.x -->[Update Rust crate windows-registry to 0.6.0](../pull/17601)
+ - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
+ - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.66.1](../pull/17603)
+ - [ ] <!-- rebase-branch=renovate/fedora-44.x -->[Update fedora Docker tag to v44](../pull/17604)
+ - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
-
-## PR Closed (Blocked)
-
-The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
-
- - [ ] <!-- recreate-branch=renovate/resvg-0.x -->[Update Rust crate resvg to 0.45.0](../pull/11919)
 
 ## Detected Dependencies
 
@@ -147,9 +143,9 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `async-trait 0.1.82`
  - `async_http_range_reader 0.9.1`
  - `axoupdater 0.9.0`
- - `backon 1.3.0` → [Updates: `1.3.0`]
+ - `backon 1.3.0`
  - `base64 0.22.1`
- - `bitflags 2.6.0` → [Updates: `2.6.0`]
+ - `bitflags 2.6.0`
  - `blake2 0.10.6`
  - `boxcar 0.2.5`
  - `bytecheck 0.8.0`
@@ -201,10 +197,10 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `pathdiff 0.2.1`
  - `percent-encoding 2.3.1`
  - `petgraph 0.8.0`
- - `proc-macro2 1.0.86` → [Updates: `1.0.86`]
+ - `proc-macro2 1.0.86`
  - `procfs 0.18.0`
  - `pubgrub 0.3.3`
- - `quote 1.0.37` → [Updates: `1.0.37`]
+ - `quote 1.0.37`
  - `rayon 1.10.0`
  - `ref-cast 1.0.24`
  - `reflink-copy 0.1.19`
@@ -355,7 +351,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `markdown 1.0.0`
  - `poloto 19.1.2`
  - `pretty_assertions 1.4.1`
- - `resvg 0.29.0` → [Updates: `0.45.0`]
+ - `resvg 0.29.0` → [Updates: `0.46.0`]
  - `serde_yaml 0.9.34`
  - `tagu 0.1.6`
 

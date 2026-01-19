@@ -2,17 +2,18 @@
 number: 22707
 title: Update Rust crate url to v2.5.8
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/url-2.x-lockfile
 created_at: 2026-01-19T01:00:04Z
-updated_at: 2026-01-19T01:02:48Z
+updated_at: 2026-01-19T01:53:06Z
 url: https://github.com/astral-sh/ruff/pull/22707
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate url to v2.5.8
@@ -243,5 +244,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:43_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Branch deleted on 2026-01-19 01:53_
 
 ---

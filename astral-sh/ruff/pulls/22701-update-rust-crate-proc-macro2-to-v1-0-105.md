@@ -2,17 +2,18 @@
 number: 22701
 title: Update Rust crate proc-macro2 to v1.0.105
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/proc-macro2-1.x-lockfile
 created_at: 2026-01-19T00:59:01Z
-updated_at: 2026-01-19T01:01:55Z
+updated_at: 2026-01-19T01:52:33Z
 url: https://github.com/astral-sh/ruff/pull/22701
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate proc-macro2 to v1.0.105
@@ -200,5 +201,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:21_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Branch deleted on 2026-01-19 01:52_
 
 ---

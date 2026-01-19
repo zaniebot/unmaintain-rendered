@@ -2,17 +2,18 @@
 number: 22706
 title: Update Rust crate toml to v0.9.11
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/toml-0.x-lockfile
 created_at: 2026-01-19T00:59:54Z
-updated_at: 2026-01-19T01:02:53Z
+updated_at: 2026-01-19T01:53:39Z
 url: https://github.com/astral-sh/ruff/pull/22706
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate toml to v0.9.11
@@ -159,5 +160,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:24_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:53_
+
+---
+
+_Branch deleted on 2026-01-19 01:53_
 
 ---

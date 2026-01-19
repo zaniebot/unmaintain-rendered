@@ -2,17 +2,18 @@
 number: 22702
 title: Update Rust crate quote to v1.0.43
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/quote-1.x-lockfile
 created_at: 2026-01-19T00:59:12Z
-updated_at: 2026-01-19T01:02:31Z
+updated_at: 2026-01-19T01:52:37Z
 url: https://github.com/astral-sh/ruff/pull/22702
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate quote to v1.0.43
@@ -152,5 +153,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:17_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Branch deleted on 2026-01-19 01:52_
 
 ---

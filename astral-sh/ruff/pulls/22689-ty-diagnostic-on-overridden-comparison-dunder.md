@@ -7,13 +7,12 @@ author: thejchap
 labels:
   - ty
 assignees: []
-draft: true
 base: main
 head: thejchap/ordering2
 created_at: 2026-01-18T21:09:31Z
-updated_at: 2026-01-18T21:23:43Z
+updated_at: 2026-01-19T01:16:43Z
 url: https://github.com/astral-sh/ruff/pull/22689
-synced_at: 2026-01-18T22:21:55Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # [ty] diagnostic on overridden comparison dunder methods on `order=True` dataclasses
@@ -132,5 +131,25 @@ No memory usage changes detected ✅
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-18 21:23_
+
+---
+
+_Marked ready for review by @thejchap on 2026-01-19 01:16_
+
+---
+
+_Review requested from @carljm by @thejchap on 2026-01-19 01:16_
+
+---
+
+_Review requested from @AlexWaygood by @thejchap on 2026-01-19 01:16_
+
+---
+
+_Review requested from @sharkdp by @thejchap on 2026-01-19 01:16_
+
+---
+
+_Review requested from @dcreager by @thejchap on 2026-01-19 01:16_
 
 ---

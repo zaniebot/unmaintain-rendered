@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-19T01:11:08Z
+updated_at: 2026-01-19T01:59:09Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-19T01:23:04Z
+synced_at: 2026-01-19T02:24:32Z
 ```
 
 # Dependency Dashboard
@@ -63,16 +63,25 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
+## PR Edited (Blocked)
+
+The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
+
+ - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22698) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
+
 ## Pending Status Checks
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
  - [ ] <!-- approvePr-branch=renovate/actions-cache-5.x -->Update actions/cache action to v5.0.2
+ - [ ] <!-- approvePr-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.3
  - [ ] <!-- approvePr-branch=renovate/filetime-0.x-lockfile -->Update Rust crate filetime to v0.2.27
  - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
+ - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.7
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
+ - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `prettier`, `typescript-eslint`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
 
 ## Other Branches
@@ -89,22 +98,8 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22693)
  - [ ] <!-- rebase-branch=renovate/salsa-digest -->[Update salsa digest to c49e550](../pull/22694)
- - [ ] <!-- rebase-branch=renovate/mdformat-mkdocs-5.x -->[Update dependency mdformat-mkdocs to v5.1.2](../pull/22695)
  - [ ] <!-- rebase-branch=renovate/pyright-1.x-lockfile -->[Update dependency pyright to v1.1.408](../pull/22696)
- - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22698) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
- - [ ] <!-- rebase-branch=renovate/jiff-0.x-lockfile -->[Update Rust crate jiff to v0.2.18](../pull/22699)
- - [ ] <!-- rebase-branch=renovate/proc-macro2-1.x-lockfile -->[Update Rust crate proc-macro2 to v1.0.105](../pull/22701)
- - [ ] <!-- rebase-branch=renovate/quote-1.x-lockfile -->[Update Rust crate quote to v1.0.43](../pull/22702)
- - [ ] <!-- rebase-branch=renovate/snapbox-0.x-lockfile -->[Update Rust crate snapbox to v0.6.24](../pull/22704)
- - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/22705)
- - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/22706)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
- - [ ] <!-- rebase-branch=renovate/url-2.x-lockfile -->[Update Rust crate url to v2.5.8](../pull/22707)
- - [ ] <!-- rebase-branch=renovate/tomli-2.x -->[Update dependency tomli to v2.4.0](../pull/22708)
- - [ ] <!-- rebase-branch=renovate/npm-development-dependencies -->[Update NPM Development dependencies](../pull/22709) (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
- - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/22710)
- - [ ] <!-- rebase-branch=renovate/ordermap-1.x-lockfile -->[Update Rust crate ordermap to v1.1.0](../pull/22711)
- - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.66.1](../pull/22712)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
@@ -168,7 +163,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `ignore 0.4.24`
  - `imara-diff 0.1.5` → [Updates: `0.2.0`]
  - `imperative 1.0.4`
- - `indexmap 2.6.0` → [Updates: `2.6.0`]
+ - `indexmap 2.6.0`
  - `indicatif 0.18.0`
  - `indoc 2.0.4`
  - `insta 1.35.1` → [Updates: `1.35.1`]
@@ -176,7 +171,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `is-macro 0.3.5`
  - `is-wsl 0.4.0`
  - `itertools 0.14.0`
- - `jiff 0.2.0` → [Updates: `0.2.0`]
+ - `jiff 0.2.0`
  - `jod-thread 1.0.0`
  - `js-sys 0.3.69` → [Updates: `0.3.69`]
  - `libc 0.2.153`
@@ -189,18 +184,18 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `mimalloc 0.1.39`
  - `natord 1.0.9`
  - `notify 8.0.0`
- - `ordermap 1.0.0` → [Updates: `1.0.0`]
+ - `ordermap 1.0.0`
  - `path-absolutize 3.1.1`
  - `path-slash 0.2.1`
  - `pathdiff 0.2.1`
  - `pep440_rs 0.7.1`
  - `pretty_assertions 1.3.0`
- - `proc-macro2 1.0.79` → [Updates: `1.0.79`]
+ - `proc-macro2 1.0.79`
  - `pyproject-toml 0.13.4`
  - `quick-junit 0.5.0`
  - `quickcheck 1.0.3`
  - `quickcheck_macros 1.0.0`
- - `quote 1.0.23` → [Updates: `1.0.23`]
+ - `quote 1.0.23`
  - `rand 0.9.0`
  - `rayon 1.10.0`
  - `regex 1.10.2`
@@ -218,17 +213,17 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `shellexpand 3.0.0`
  - `similar 2.4.0`
  - `smallvec 1.13.2`
- - `snapbox 0.6.0` → [Updates: `0.6.0`]
+ - `snapbox 0.6.0`
  - `static_assertions 1.1.0`
  - `strum 0.27.0`
  - `strum_macros 0.27.0`
  - `supports-hyperlinks 3.1.0`
- - `syn 2.0.55` → [Updates: `2.0.55`]
+ - `syn 2.0.55`
  - `tempfile 3.9.0`
  - `test-case 3.3.1`
  - `thiserror 2.0.0` → [Updates: `2.0.0`]
  - `tikv-jemallocator 0.6.0`
- - `toml 0.9.0` → [Updates: `0.9.0`]
+ - `toml 0.9.0`
  - `tracing 0.1.40`
  - `tracing-flame 0.2.0`
  - `tracing-indicatif 0.3.11`
@@ -241,7 +236,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `unicode-normalization 0.1.23` → [Updates: `0.1.23`]
  - `unicode-width 0.2.0`
  - `unicode_names2 1.2.2` → [Updates: `2.0.0`]
- - `url 2.5.0` → [Updates: `2.5.0`]
+ - `url 2.5.0`
  - `uuid 1.6.1`
  - `walkdir 2.3.2`
  - `wasm-bindgen 0.2.92` → [Updates: `0.2.92`]
@@ -581,17 +576,17 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
@@ -652,25 +647,25 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `node 24`
@@ -840,7 +835,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `@eslint/js ^9.21.0`
  - `@tailwindcss/vite ^4.0.14`
- - `@types/react ^19.0.11` → [Updates: `^19.0.11`]
+ - `@types/react ^19.0.11`
  - `@types/react-dom ^19.0.0`
  - `@vitejs/plugin-react-swc ^4.0.0`
  - `eslint ^9.22.0`
@@ -851,7 +846,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `tailwindcss ^4.0.14`
  - `typescript ^5.8.2`
  - `typescript-eslint ^8.26.1` → [Updates: `^8.26.1`]
- - `vite ^7.0.0` → [Updates: `^7.0.0`]
+ - `vite ^7.0.0`
  - `wasm-pack ^0.13.1`
 
 </details>
@@ -1086,7 +1081,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `python >=3.11`
  - `unidiff ==0.7.5`
  - `tomli_w ==1.2.0`
- - `tomli ==2.3.0` → [Updates: `==2.4.0`]
+ - `tomli ==2.4.0`
 
 </details>
 
@@ -1127,7 +1122,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`
  - `mdformat ==1.0.0`
- - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.2`]
+ - `mdformat-mkdocs ==5.1.2` → [Updates: `==5.1.3`]
  - `mkdocs-llmstxt ==0.2.0` → [Updates: `==0.5.0`]
 
 </details>

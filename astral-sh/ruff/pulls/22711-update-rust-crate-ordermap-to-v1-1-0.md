@@ -2,17 +2,18 @@
 number: 22711
 title: Update Rust crate ordermap to v1.1.0
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/ordermap-1.x-lockfile
 created_at: 2026-01-19T01:01:05Z
-updated_at: 2026-01-19T01:03:57Z
+updated_at: 2026-01-19T01:52:21Z
 url: https://github.com/astral-sh/ruff/pull/22711
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T02:24:45Z
 ```
 
 # Update Rust crate ordermap to v1.1.0
@@ -246,5 +247,43 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 01:51_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Closed by @charliermarsh on 2026-01-19 01:52_
+
+---
+
+_Branch deleted on 2026-01-19 01:52_
 
 ---
