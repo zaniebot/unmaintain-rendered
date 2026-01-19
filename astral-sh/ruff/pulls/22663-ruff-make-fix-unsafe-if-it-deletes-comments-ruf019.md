@@ -2,16 +2,18 @@
 number: 22663
 title: "[`ruff`] Make fix unsafe if it deletes comments (`RUF019`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: RUF019
 created_at: 2026-01-17T20:50:03Z
-updated_at: 2026-01-17T20:59:16Z
+updated_at: 2026-01-19T18:21:09Z
 url: https://github.com/astral-sh/ruff/pull/22663
-synced_at: 2026-01-17T21:12:36Z
+synced_at: 2026-01-19T18:27:46Z
 ```
 
 # [`ruff`] Make fix unsafe if it deletes comments (`RUF019`)
@@ -57,5 +59,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 20:59_
 
 
 
+
+---
+
+_@amyreese approved on 2026-01-19 18:20_
+
+---
+
+_Label `fixes` added by @amyreese on 2026-01-19 18:21_
+
+---
+
+_Merged by @amyreese on 2026-01-19 18:21_
+
+---
+
+_Closed by @amyreese on 2026-01-19 18:21_
 
 ---

@@ -3,23 +3,23 @@ number: 22600
 title: "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments"
 type: pull_request
 state: open
-author: leonace924
+author: eureka928
 labels:
   - fixes
 assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-15T18:39:08Z
+updated_at: 2026-01-19T18:02:47Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-15T18:49:33Z
+synced_at: 2026-01-19T18:27:46Z
 ```
 
 # [flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments
 
 ---
 
-_@leonace924_
+_@eureka928_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
@@ -72,7 +72,7 @@ Contribution by Gittensor, see my contribution statistics at https://gittensor.i
 
 ---
 
-_Comment by @leonace924 on 2026-01-15 13:57_
+_Comment by @eureka928 on 2026-01-15 13:57_
 
 @BurntSushi @MichaReiser would you approve testing and review this PR?
 Thank you for your time
@@ -109,13 +109,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 15:15_
 
 ---
 
-_Comment by @leonace924 on 2026-01-15 15:17_
+_Comment by @eureka928 on 2026-01-15 15:17_
 
 All testing passed!
 
 ---
 
-_Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…" to "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments" by @leonace924 on 2026-01-15 16:25_
+_Renamed from "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…" to "[flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comments" by @eureka928 on 2026-01-15 16:25_
 
 ---
 
@@ -123,13 +123,13 @@ _Label `fixes` added by @ntBre on 2026-01-15 18:25_
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs`:315 on 2026-01-15 18:34_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_expr.rs`:318 on 2026-01-15 18:34_
 
 I think we need to add a `## Fix safety` section to the docs now saying that the fix is unsafe when it would delete comments in the replacement range.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:127 on 2026-01-15 18:35_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:130 on 2026-01-15 18:35_
 
 Same here, I think we'll need a new `## Fix safety` section since the fix was previously always safe.
 
@@ -138,5 +138,25 @@ Same here, I think we'll need a new `## Fix safety` section since the fix was pr
 _@ntBre requested changes on 2026-01-15 18:39_
 
 Thank you! This looks great, we just need to update the rule docs to reflect the new unsafety.
+
+---
+
+_@eureka928 reviewed on 2026-01-19 18:02_
+
+---
+
+_Review comment by @eureka928 on `crates/ruff_linter/src/rules/flake8_simplify/rules/zip_dict_keys_and_values.rs`:130 on 2026-01-19 18:02_
+
+@ntBre this is updated, please review if this is good to go
+
+---
+
+_Comment by @eureka928 on 2026-01-19 18:02_
+
+Ready for review
+
+---
+
+_Review requested from @ntBre by @eureka928 on 2026-01-19 18:02_
 
 ---

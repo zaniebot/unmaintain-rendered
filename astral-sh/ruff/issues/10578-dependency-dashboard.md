@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-19T14:37:17Z
+updated_at: 2026-01-19T18:02:17Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-19T15:24:53Z
+synced_at: 2026-01-19T18:27:33Z
 ```
 
 # Dependency Dashboard
@@ -65,6 +65,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/salsa-digest -->Update salsa digest to de22550
  - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.3
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update dependency typescript-eslint to v8.53.0
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
@@ -81,7 +82,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.7
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
- - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `prettier`, `typescript-eslint`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
  - [ ] <!-- approvePr-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `black`, `crate-ci/typos`, `rbubley/mirrors-prettier`, `zizmorcore/zizmor-pre-commit`)
 

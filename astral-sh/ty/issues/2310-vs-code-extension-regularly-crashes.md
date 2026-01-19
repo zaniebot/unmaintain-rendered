@@ -9,9 +9,9 @@ labels:
   - fatal
 assignees: []
 created_at: 2026-01-02T22:37:38Z
-updated_at: 2026-01-09T07:49:42Z
+updated_at: 2026-01-19T17:46:56Z
 url: https://github.com/astral-sh/ty/issues/2310
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-19T18:27:28Z
 ```
 
 # VS Code Extension regularly crashes
@@ -156,5 +156,21 @@ There's a setting controlling the [extensions behavior](https://docs.astral.sh/t
 * The bundled version
 
 ty always uses the bundled version when opening an untrusted workspace.
+
+---
+
+_Comment by @npaolini2634 on 2026-01-19 17:44_
+
+Okay thanks, good to know!
+
+I didn't have any language server crashes for a few days, but I had another one just now. It seemed a bit different than in the past and just mentioned it exited in a panic.
+
+[2026-01-19 ty.log](https://github.com/user-attachments/files/24721436/2026-01-19.ty.log)
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 17:46_
+
+Thank you. This is https://github.com/astral-sh/ty/issues/1565
 
 ---

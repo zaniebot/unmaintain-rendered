@@ -2,16 +2,18 @@
 number: 22658
 title: "[`flake8-bugbear`] Make fix unsafe if it deletes comments (`B013`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: B013
 created_at: 2026-01-17T18:27:36Z
-updated_at: 2026-01-17T18:40:12Z
+updated_at: 2026-01-19T18:08:04Z
 url: https://github.com/astral-sh/ruff/pull/22658
-synced_at: 2026-01-17T19:08:58Z
+synced_at: 2026-01-19T18:27:46Z
 ```
 
 # [`flake8-bugbear`] Make fix unsafe if it deletes comments (`B013`)
@@ -57,5 +59,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 18:40_
 
 
 
+
+---
+
+_@amyreese approved on 2026-01-19 18:05_
+
+---
+
+_Label `fixes` added by @amyreese on 2026-01-19 18:05_
+
+---
+
+_Review requested from @ntBre by @amyreese on 2026-01-19 18:05_
+
+---
+
+_@ntBre approved on 2026-01-19 18:07_
+
+---
+
+_Merged by @ntBre on 2026-01-19 18:08_
+
+---
+
+_Closed by @ntBre on 2026-01-19 18:08_
 
 ---

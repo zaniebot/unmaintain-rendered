@@ -4,12 +4,14 @@ title: Consistent accessibility
 type: issue
 state: open
 author: AndreuCodina
-labels: []
+labels:
+  - rule
+  - needs-decision
 assignees: []
 created_at: 2026-01-19T17:23:50Z
-updated_at: 2026-01-19T17:25:41Z
+updated_at: 2026-01-19T18:01:46Z
 url: https://github.com/astral-sh/ruff/issues/22728
-synced_at: 2026-01-19T17:26:04Z
+synced_at: 2026-01-19T18:27:34Z
 ```
 
 # Consistent accessibility
@@ -45,5 +47,37 @@ This is important because I import those classes from `/src` and `/tests`, but I
 This issue is related to this topic: https://github.com/astral-sh/ruff/issues/16892
 
 **Aliases** should be covered too (https://github.com/astral-sh/ruff/issues/20916).
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-19 17:40_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2026-01-19 17:40_
+
+---
+
+_Comment by @ntBre on 2026-01-19 17:43_
+
+Thanks! I would probably lean toward adding a single rule that handles both this and #20916, unless there's a desire to keep them separate. I think I was picturing that we would flag any private type in a public interface, like the rustc lint in my other [comment](https://github.com/astral-sh/ruff/issues/20916#issuecomment-3415533744).
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 17:52_
+
+The main challenge here is probably going to decide on what's considered a public type. Is it all types that aren't prefixed or only those that are accessible from outide the module/package?
+
+---
+
+_Comment by @AndreuCodina on 2026-01-19 17:59_
+
+> The main challenge here is probably going to decide on what's considered a public type. Is it all types that aren't prefixed or only those that are accessible from outide the module/package?
+
+For me:
+- If a folder has an underscore, all inside is private.
+- If a file has an underscore, all inside is private.
+
+It's easier to think about it as the `internal` modifier of C# instead of `private`: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
 
 ---

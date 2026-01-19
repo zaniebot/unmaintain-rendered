@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-19T00:52:55Z
+updated_at: 2026-01-19T18:19:08Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-19T01:23:17Z
+synced_at: 2026-01-19T18:27:46Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -683,5 +683,11 @@ Gave this a try.
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-19 00:52_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 18:19_
+
+looks like the number of diagnostics went up by around 500 when you did the refactor to make it a method on `Type` -- is that expected? (I haven't looked through them at all myself yet, just wondered if you had)
 
 ---
