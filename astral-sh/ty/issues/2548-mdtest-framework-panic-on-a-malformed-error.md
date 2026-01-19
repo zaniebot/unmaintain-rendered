@@ -2,7 +2,7 @@
 number: 2548
 title: "Mdtest framework panic on a malformed `# error` assertion"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - testing
 assignees: []
 created_at: 2026-01-17T15:05:53Z
-updated_at: 2026-01-19T14:19:13Z
+updated_at: 2026-01-19T15:56:44Z
 url: https://github.com/astral-sh/ty/issues/2548
-synced_at: 2026-01-19T14:35:45Z
+synced_at: 2026-01-19T16:26:48Z
 ```
 
 # Mdtest framework panic on a malformed `# error` assertion
@@ -58,5 +58,9 @@ Hope that's alright
 _Comment by @AlexWaygood on 2026-01-19 14:19_
 
 Very much so, thank you!!
+
+---
+
+_Closed by @AlexWaygood on 2026-01-19 15:56_
 
 ---

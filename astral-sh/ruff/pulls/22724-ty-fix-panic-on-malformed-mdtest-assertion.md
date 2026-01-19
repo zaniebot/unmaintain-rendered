@@ -2,18 +2,19 @@
 number: 22724
 title: "[ty] Fix panic on malformed mdtest assertion"
 type: pull_request
-state: open
+state: merged
 author: Hugo-Polloli
 labels:
   - testing
   - ty
 assignees: []
+merged: true
 base: main
 head: fix-unclosed-assertion-quote
 created_at: 2026-01-19T14:07:18Z
-updated_at: 2026-01-19T15:08:38Z
+updated_at: 2026-01-19T15:56:43Z
 url: https://github.com/astral-sh/ruff/pull/22724
-synced_at: 2026-01-19T15:25:06Z
+synced_at: 2026-01-19T16:27:07Z
 ```
 
 # [ty] Fix panic on malformed mdtest assertion
@@ -91,5 +92,13 @@ _@Hugo-Polloli reviewed on 2026-01-19 15:08_
 _Review comment by @Hugo-Polloli on `crates/ty_test/src/matcher.rs`:1418 on 2026-01-19 15:08_
 
 oops, tried to keep things a bit too minimal and not introduce a new variant but you're right, it ended up being confusing, I added a new one and I hope it's more explicit now!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-19 15:56_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-19 15:56_
 
 ---

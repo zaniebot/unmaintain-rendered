@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T15:22:17Z
+updated_at: 2026-01-19T16:08:37Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T15:25:10Z
+synced_at: 2026-01-19T16:27:10Z
 ```
 
 # Dependency Dashboard
@@ -44,6 +44,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
  - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.37
  - [ ] <!-- unschedule-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
+ - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
@@ -86,8 +87,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 6865550](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
- - [ ] <!-- rebase-branch=renovate/clap-4.x-lockfile -->[Update Rust crate clap to v4.5.54](../pull/17557)
- - [ ] <!-- rebase-branch=renovate/tikv-jemallocator-0.x-lockfile -->[Update Rust crate tikv-jemallocator to v0.6.1](../pull/17570)
  - [ ] <!-- rebase-branch=renovate/tokio-rustls-0.x-lockfile -->[Update Rust crate tokio-rustls to v0.26.4](../pull/17571)
  - [ ] <!-- rebase-branch=renovate/tokio-util-0.x-lockfile -->[Update Rust crate tokio-util to v0.7.18](../pull/17573)
  - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
@@ -97,7 +96,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
  - [ ] <!-- rebase-branch=renovate/secret-service-5.x-lockfile -->[Update Rust crate secret-service to v5.1.0](../pull/17597)
  - [ ] <!-- rebase-branch=renovate/security-framework-3.x-lockfile -->[Update Rust crate security-framework to v3.5.1](../pull/17598)
- - [ ] <!-- rebase-branch=renovate/tokio-1.x-lockfile -->[Update Rust crate tokio to v1.49.0](../pull/17599)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
 ## PR Closed (Blocked)
@@ -133,7 +131,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `boxcar 0.2.5`
  - `bytecheck 0.8.0`
  - `cargo-util 0.2.14` → [Updates: `0.2.14`]
- - `clap 4.5.17` → [Updates: `4.5.17`]
+ - `clap 4.5.17`
  - `clap_complete_command 0.6.1`
  - `configparser 3.1.0`
  - `console 0.16.0`
@@ -218,7 +216,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `textwrap 0.16.1`
  - `thiserror 2.0.0` → [Updates: `2.0.0`]
  - `astral-tl 0.7.11`
- - `tokio 1.40.0` → [Updates: `1.40.0`]
+ - `tokio 1.40.0`
  - `tokio-stream 0.1.16` → [Updates: `0.1.16`]
  - `tokio-util 0.7.12` → [Updates: `0.7.12`]
  - `toml 0.9.2` → [Updates: `0.9.2`]
@@ -455,7 +453,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>crates/uv-performance-memory-allocator/Cargo.toml (2)</summary>
 
  - `mimalloc 0.1.43`
- - `tikv-jemallocator 0.6.0` → [Updates: `0.6.0`]
+ - `tikv-jemallocator 0.6.0`
 
 </details>
 
@@ -980,7 +978,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/test-system.yml (71)</summary>
+<details><summary>.github/workflows/test-system.yml (63)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
@@ -1042,22 +1040,16 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `debian bookworm` → [Updates: `trixie`, `bookworm`]
  - `fedora 44@sha256:64de49837325632232088e59c20518565a9d657095f9f3c2fa6033a42fb1412b`
- - `python 3.12` → [Updates: `3.14`]
  - `pyston/pyston 2.3.5` → [Updates: `2.3.5`]
  - `alpine latest` → [Updates: `latest`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.10` → [Updates: `3.14`]
- - `python 3.10` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
  - `amazonlinux 2023` → [Updates: `2023`]
 
 </details>
 
-<details><summary>.github/workflows/test-windows-trampolines.yml (5)</summary>
+<details><summary>.github/workflows/test-windows-trampolines.yml (7)</summary>
 
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.7`]

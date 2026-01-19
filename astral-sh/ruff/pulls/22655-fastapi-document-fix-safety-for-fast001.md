@@ -1,22 +1,22 @@
 ```yaml
-number: 22679
-title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB140`)"
+number: 22655
+title: "[`FastAPI`] Document fix safety for `FAST001`"
 type: pull_request
 state: merged
 author: chirizxc
 labels:
-  - fixes
+  - documentation
 assignees: []
 merged: true
 base: main
-head: FURB140
-created_at: 2026-01-18T13:28:31Z
-updated_at: 2026-01-19T16:23:48Z
-url: https://github.com/astral-sh/ruff/pull/22679
+head: FAST001
+created_at: 2026-01-17T18:02:44Z
+updated_at: 2026-01-19T16:23:52Z
+url: https://github.com/astral-sh/ruff/pull/22655
 synced_at: 2026-01-19T16:27:07Z
 ```
 
-# [`refurb`] Make fix unsafe if it deletes comments (`FURB140`)
+# [`FastAPI`] Document fix safety for `FAST001`
 
 ---
 
@@ -42,7 +42,7 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-18 13:41_
+_Comment by @astral-sh-bot[bot] on 2026-01-17 18:10_
 
 
 <!-- generated-comment ecosystem -->
@@ -62,22 +62,28 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:41_
 
 ---
 
-_Label `fixes` added by @ntBre on 2026-01-19 15:31_
+_Renamed from "[FastAPI] Ddd `Fix safety` for `FAST001`" to "[FastAPI] Add `Fix safety` for `FAST001`" by @chirizxc on 2026-01-17 18:18_
 
 ---
 
-_@ntBre approved on 2026-01-19 15:33_
+_@ntBre approved on 2026-01-19 16:22_
+
+Thank you!
 
 ---
 
-_Merged by @ntBre on 2026-01-19 15:33_
+_Renamed from "[FastAPI] Add `Fix safety` for `FAST001`" to "[`FastAPI`] Document fix safety for `FAST001`" by @ntBre on 2026-01-19 16:22_
 
 ---
 
-_Closed by @ntBre on 2026-01-19 15:33_
+_Label `documentation` added by @ntBre on 2026-01-19 16:22_
 
 ---
 
-_Branch deleted on 2026-01-19 16:23_
+_Merged by @ntBre on 2026-01-19 16:23_
+
+---
+
+_Closed by @ntBre on 2026-01-19 16:23_
 
 ---

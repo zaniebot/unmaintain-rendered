@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pt011-support-check-parameter
 created_at: 2026-01-19T15:07:10Z
-updated_at: 2026-01-19T15:08:15Z
+updated_at: 2026-01-19T16:05:25Z
 url: https://github.com/astral-sh/ruff/pull/22725
-synced_at: 2026-01-19T15:37:48Z
+synced_at: 2026-01-19T16:27:07Z
 ```
 
 # [`flake8-pytest-style`] Support `check` parameter in `PT011`
@@ -29,6 +29,26 @@ Closes #22673
 ## Test plan
 
 Added test cases for `check` parameter (valid callback and `check=None`).
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-19 16:05_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
 
 
 ---

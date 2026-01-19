@@ -11,9 +11,9 @@ merged: true
 base: main
 head: FURB136
 created_at: 2026-01-18T13:33:51Z
-updated_at: 2026-01-19T15:17:24Z
+updated_at: 2026-01-19T16:24:03Z
 url: https://github.com/astral-sh/ruff/pull/22680
-synced_at: 2026-01-19T15:25:06Z
+synced_at: 2026-01-19T16:27:07Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB136`)
@@ -75,5 +75,9 @@ _Merged by @ntBre on 2026-01-19 15:17_
 ---
 
 _Closed by @ntBre on 2026-01-19 15:17_
+
+---
+
+_Branch deleted on 2026-01-19 16:24_
 
 ---

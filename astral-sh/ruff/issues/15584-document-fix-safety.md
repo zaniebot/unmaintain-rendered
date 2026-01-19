@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2025-01-19T17:38:21Z
-updated_at: 2025-09-11T13:53:23Z
+updated_at: 2026-01-19T16:23:41Z
 url: https://github.com/astral-sh/ruff/issues/15584
-synced_at: 2026-01-12T15:54:54Z
+synced_at: 2026-01-19T16:26:54Z
 ```
 
 # Document fix safety
@@ -83,7 +83,7 @@ Thank you again!
 - [ ] crates/ruff_linter/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs
 - [ ] crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
 - [ ] crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs
-- [ ] crates/ruff_linter/src/rules/fastapi/rules/fastapi_redundant_response_model.rs
+- [x] crates/ruff_linter/src/rules/fastapi/rules/fastapi_redundant_response_model.rs (https://github.com/astral-sh/ruff/pull/22655)
 - [ ] crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs
 - [ ] crates/ruff_linter/src/rules/refurb/rules/unnecessary_enumerate.rs
 - [ ] crates/ruff_linter/src/rules/refurb/rules/check_and_remove_from_set.rs

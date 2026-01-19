@@ -2,17 +2,18 @@
 number: 17552
 title: "Add check for `uv-trampoline` windows crate version consistency"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/assert-version
 created_at: 2026-01-18T15:12:31Z
-updated_at: 2026-01-19T05:39:37Z
+updated_at: 2026-01-19T15:24:03Z
 url: https://github.com/astral-sh/uv/pull/17552
-synced_at: 2026-01-19T06:21:36Z
+synced_at: 2026-01-19T16:27:20Z
 ```
 
 # Add check for `uv-trampoline` windows crate version consistency
@@ -34,5 +35,17 @@ _Renamed from "zb/assert version" to "Add check for `uv-trampoline` windows crat
 ---
 
 _Marked ready for review by @zanieb on 2026-01-19 05:39_
+
+---
+
+_Merged by @zanieb on 2026-01-19 15:24_
+
+---
+
+_Closed by @zanieb on 2026-01-19 15:24_
+
+---
+
+_Branch deleted on 2026-01-19 15:24_
 
 ---

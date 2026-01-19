@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-19T14:45:00Z
+updated_at: 2026-01-19T15:33:30Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-19T15:24:54Z
+synced_at: 2026-01-19T16:26:54Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -311,5 +311,21 @@ Complexity does make sense to me
 > I propose for this to remain unsafe until the more clever check arrives.
 
 I'd rather make a single change or users will add the rule to allow unsafe fixes because they care about the fix, but that fix later becomes indeed more unsafe, but they are unlikely to remove it from unsafe fixes
+
+---
+
+_Comment by @k0pernikus on 2026-01-19 15:33_
+
+> Complexity does make sense to me
+> 
+> > I propose for this to remain unsafe until the more clever check arrives.
+> 
+> I'd rather make a single change or users will add the rule to allow unsafe fixes because they care about the fix, but that fix later becomes indeed more unsafe, but they are unlikely to remove it from unsafe fixes
+
+I don't agree, they could use [extend-safe-fixes](https://docs.astral.sh/ruff/settings/#lint_extend-safe-fixes) to cerry-pick `"F541"` just as I use [extend-unsafe-fixes](https://docs.astral.sh/ruff/settings/#lint_extend-unsafe-fixes) now.
+
+If a developer defaults to `--unsafe-fixes` for all, that is on them.
+
+Though again, this relates if one wants to prioritize finding potential bugs or allowing formats to be forced to remain consistent.  
 
 ---

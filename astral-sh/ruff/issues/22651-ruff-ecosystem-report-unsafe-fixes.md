@@ -9,9 +9,9 @@ labels:
   - ci
 assignees: []
 created_at: 2026-01-17T13:49:24Z
-updated_at: 2026-01-19T14:58:14Z
+updated_at: 2026-01-19T16:03:51Z
 url: https://github.com/astral-sh/ruff/issues/22651
-synced_at: 2026-01-19T15:24:54Z
+synced_at: 2026-01-19T16:26:54Z
 ```
 
 # ruff-ecosystem report unsafe fixes
@@ -43,5 +43,23 @@ _Label `internal` added by @ntBre on 2026-01-19 14:58_
 ---
 
 _Label `ci` added by @ntBre on 2026-01-19 14:58_
+
+---
+
+_Comment by @leandrobbraga on 2026-01-19 15:36_
+
+If you think this is useful I'm willing to do the work.
+
+---
+
+_Comment by @ntBre on 2026-01-19 16:03_
+
+Sure, go for it! What kind of output are you picturing? I think it probably makes sense to preserve the diff and just update the summary line.
+
+It would be kind of nice to do something with the diff lines since the pairs of +/- lines hit the truncation limit twice as fast, but in some cases it's still nice to see which lines were affected.
+
+---
+
+_Assigned to @leandrobbraga by @ntBre on 2026-01-19 16:03_
 
 ---

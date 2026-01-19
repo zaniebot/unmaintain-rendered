@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/defer-namedtuple
 created_at: 2026-01-19T11:42:59Z
-updated_at: 2026-01-19T15:24:41Z
+updated_at: 2026-01-19T15:35:49Z
 url: https://github.com/astral-sh/ruff/pull/22718
-synced_at: 2026-01-19T15:25:06Z
+synced_at: 2026-01-19T16:27:07Z
 ```
 
 # [ty] Support recursive and stringified annotations in functional `typing.NamedTuple`s
@@ -24,7 +24,7 @@ _@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/2528, fixes https://github.com/astral-sh/ty/issues/2529.
 
-In order to support `typing.NamedTuple`s with recursive or stringified types in their field specs, we must defer inference of the second argument to `typing.NamedTuple()` calls. However, we don't need to defer inference of `collections.namedtuple()` calls (those calls don't expect type expressions), and nor do we need to defer inference of "dangling" `NamedTuple` calls. Dangling `NamedTuple` classes can be recursive, but only in the context of when they appear inside a class's bases list, and we already defer inference of all expressions inside a class's bases list.
+In order to support `typing.NamedTuple`s with recursive or stringified types in their field specs, we must defer inference of the second argument to `typing.NamedTuple()` calls. However, we don't need to defer inference of `collections.namedtuple()` calls (those calls don't expect type expressions -- they just expect a string literal or a sequence of string literals), and nor do we need to defer inference of "dangling" `NamedTuple` calls. Dangling `NamedTuple` classes can be recursive, but only in the context of when they appear inside a class's bases list, and we already defer inference of all expressions inside a class's bases list.
 
 ## Test plan
 
@@ -287,5 +287,43 @@ _Comment by @AlexWaygood on 2026-01-19 15:18_
 I'm sort-of inclined to do that as a followup? It's a real bug that we should fix, but it also feels very unlikely to come up in real code, and it'll make the diff on this PR much bigger.
 
 I would add an x-failing mdtest with the `<!-- expect-panic -->` HTML comment, but it looks like the mdtest would be really slow, so I don't think it's worth it.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 15:27_
+
+And the panic isn't new -- it's a pre-existing issue. I can trigger it on `main` with:
+
+```py
+X = type("X", (tuple["X | None"],), {})
+```
+
+So we do just need to defer inference of the bases tuple passed to `type()`. I opened https://github.com/astral-sh/ty/issues/2564.
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 15:33_
+
+Sounds good 👍 
+
+---
+
+_Comment by @charliermarsh on 2026-01-19 15:33_
+
+I suspect I can fix that panic once this merges given the patterns established here (unless you're on it).
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 15:34_
+
+> I suspect I can fix that panic once this merges given the patterns established here (unless you're on it).
+
+yeah, that would be great!
+
+---
+
+_Comment by @AlexWaygood on 2026-01-19 15:35_
+
+(this PR _is_ one that I'd love @carljm and/or @dcreager to take a quick look at 😅)
 
 ---
