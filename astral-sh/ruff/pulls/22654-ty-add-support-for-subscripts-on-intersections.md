@@ -11,9 +11,9 @@ assignees: []
 base: charlie/int-method
 head: charlie/sub
 created_at: 2026-01-17T17:50:23Z
-updated_at: 2026-01-19T21:27:38Z
+updated_at: 2026-01-19T21:30:07Z
 url: https://github.com/astral-sh/ruff/pull/22654
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-19T22:35:17Z
 ```
 
 # [ty] Add support for subscripts on intersections
@@ -485,23 +485,25 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 21:26_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 576 | 2 | 33 |
+| `invalid-argument-type` | 575 | 61 | 34 |
 | `not-subscriptable` | 71 | 0 | 0 |
 | `invalid-assignment` | 29 | 0 | 10 |
-| `possibly-missing-attribute` | 17 | 0 | 12 |
-| `unused-ignore-comment` | 2 | 25 | 0 |
-| `invalid-return-type` | 5 | 1 | 10 |
+| `possibly-missing-attribute` | 17 | 6 | 14 |
+| `unused-ignore-comment` | 0 | 25 | 0 |
+| `invalid-return-type` | 5 | 6 | 10 |
 | `unsupported-operator` | 3 | 3 | 9 |
 | `unresolved-attribute` | 10 | 0 | 0 |
 | `call-non-callable` | 9 | 0 | 0 |
+| `invalid-await` | 0 | 7 | 0 |
+| `invalid-parameter-default` | 0 | 0 | 7 |
 | `no-matching-overload` | 5 | 0 | 0 |
 | `not-iterable` | 4 | 0 | 0 |
 | `type-assertion-failure` | 0 | 1 | 1 |
 | `invalid-key` | 1 | 0 | 0 |
-| **Total** | **732** | **32** | **75** |
+| **Total** | **729** | **109** | **85** |
 
 
-**[Full report with detailed diff](https://7f353e45.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://7f353e45.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://873b6fa8.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://873b6fa8.ty-ecosystem-ext.pages.dev/timing))
 
 
 

@@ -9,9 +9,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2026-01-15T16:51:25Z
-updated_at: 2026-01-15T16:55:22Z
+updated_at: 2026-01-19T21:53:38Z
 url: https://github.com/astral-sh/ty/issues/2521
-synced_at: 2026-01-15T17:50:07Z
+synced_at: 2026-01-19T22:34:58Z
 ```
 
 # Advanced generic call argument inference
@@ -95,5 +95,27 @@ _Label `bidirectional inference` added by @ibraheemdev on 2026-01-15 16:51_
 ---
 
 _Added to milestone `Stable` by @ibraheemdev on 2026-01-15 16:55_
+
+---
+
+_Comment by @ibraheemdev on 2026-01-19 21:53_
+
+Another interesting example:
+```py
+class X:
+    ...
+
+def lst[T](x: T) -> list[T]:
+    return [x]
+
+def f[T](x: list[T | int], y: list[T | str]):
+    ...
+
+# Argument to function `f` is incorrect: Expected `list[X | int]`, found `list[X]`
+# Argument to function `f` is incorrect: Expected `list[X | int]`, found `list[X]`
+f(lst(X()), lst(X()))
+```
+
+This one should be relatively easy to fix.
 
 ---
