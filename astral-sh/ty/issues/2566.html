@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment in PySide6 slots causes fallback to `Unknown` - astral-sh/ty #2566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Assignment in PySide6 slots causes fallback to <code>Unknown</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2566">#2566</a>
+        opened by <a href="https://github.com/philj56">@philj56</a>
+        on 2026-01-19 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/philj56">@philj56</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not sure if this counts as a bug in <code>ty</code>, but if a member variable with an explicit type hint is assigned to in a method wrapped in PySide's <code>@Slot()</code> decorator, <code>ty</code> falls back to typing the variable as <code>Unknown</code>, unless the slot also contains a type hint.</p>
+<p>Example:</p>
+<pre><code class="language-python">from typing import reveal_type
+
+from PySide6.QtCore import QObject, Slot
+
+
+class WithoutSlot(QObject):
+    def __init__(self):
+        self.x: int = 3
+
+    def set_x(self):
+        self.x = 4
+
+class WithSlot(QObject):
+    def __init__(self):
+        self.x: int = 3
+
+    @Slot()
+    def set_x(self):
+        self.x = 4
+
+class WithSlotAndAnnotation(QObject):
+    def __init__(self):
+        self.x: int = 3
+
+    @Slot()
+    def set_x(self):
+        self.x: int = 4
+
+reveal_type(WithoutSlot().x)
+reveal_type(WithSlot().x)
+reveal_type(WithSlotAndAnnotation().x)
+</code></pre>
+<p>Output:</p>
+<pre><code>$ ty check .\ty_slot.py
+info[revealed-type]: Revealed type
+  --&gt; ty_slot.py:29:13
+   |
+27 |         self.x: int = 4
+28 |
+29 | reveal_type(WithoutSlot().x)
+   |             ^^^^^^^^^^^^^^^ `int`
+30 | reveal_type(WithSlot().x)
+31 | reveal_type(WithSlotAndAnnotation().x)
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_slot.py:30:13
+   |
+29 | reveal_type(WithoutSlot().x)
+30 | reveal_type(WithSlot().x)
+   |             ^^^^^^^^^^^^ `Unknown | int`
+31 | reveal_type(WithSlotAndAnnotation().x)
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_slot.py:31:13
+   |
+29 | reveal_type(WithoutSlot().x)
+30 | reveal_type(WithSlot().x)
+31 | reveal_type(WithSlotAndAnnotation().x)
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^ `int`
+   |
+
+Found 3 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.12 (4b74e4ded 2026-01-14)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 17:29:50 UTC
+    </footer>
+</body>
+</html>

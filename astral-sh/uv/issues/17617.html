@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv in multi-stage docker container in github workflow - astral-sh/uv #17617</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv in multi-stage docker container in github workflow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17617">#17617</a>
+        opened by <a href="https://github.com/pstokkink">@pstokkink</a>
+        on 2026-01-19 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pstokkink">@pstokkink</a></div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm switching a project over to uv and overall it is working great! 👏</p>
+<p>We have a github action that spins up a few containers through a compose file and then runs tests inside the container (we need to have access to a postgres database, which runs in one of the containers). The application container (<code>web</code>) has a multi-stage build and sets the user to something other than root.</p>
+<p>I chowned the entire venv and application folders in the container to the non-root user and its group.</p>
+<pre><code>RUN chown user:user /app
+COPY --from=builder --chown=user:user /app /app
+</code></pre>
+<p>Now when I do the following in my github workflow:</p>
+<pre><code>- docker compose -f &quot;docker-compose.yml&quot; up -d --build
+- docker compose exec -T web uv run pytest
+</code></pre>
+<p>The latter fails with:
+<code>error: failed to remove file </code>/app/.venv/lib/python3.14/site-packages/package-name-0.1.dist-info/INSTALLER<code>: Permission denied (os error 13)</code></p>
+<p>When I build it locally, it is owned by the user until I do a <code>RUN uv run src/manage.py</code> and afterwards it is owned by root again.</p>
+<p>I've tried the <code>--no-project</code> and <code>--no-build</code> flags to no avail. What am I doing wrong? I can't find a clear answer in the documentation on this.</p>
+<h3>Platform</h3>
+<p>ubuntu-latest</p>
+<h3>Version</h3>
+<p>0.9.25</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @pstokkink on 2026-01-19 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pstokkink on 2026-01-19 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pstokkink">@pstokkink</a> on 2026-01-19 17:12</div>
+            <div class="timeline-body"><p>I was my own rubber duck here. Running the manage.py with --no-project --no-build resolved the issue</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 17:30:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`type(x) is t` doesn't work for `t: type[T]` - astral-sh/ty #2565</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>type(x) is t</code> doesn't work for <code>t: type[T]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2565">#2565</a>
+        opened by <a href="https://github.com/arjenzorgdoc">@arjenzorgdoc</a>
+        on 2026-01-19 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/arjenzorgdoc">@arjenzorgdoc</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>type(x) is y</code> doesn't work if <code>y</code> is of type <code>type[T]</code>. It does work with <code>isinstance</code></p>
+<p>I think this should all type check, but ty thinks <code>bad</code> is not ok:</p>
+<pre><code class="language-python">def good1(b: object) -&gt; int:
+    if type(b) is int:
+        return b
+    raise NotImplementedError
+
+
+def good2[T: int](b: object, t: type[T]) -&gt; int:
+    if isinstance(b, t):
+        return b
+    raise NotImplementedError
+
+
+def bad[T: int](b: object, t: type[T]) -&gt; int:
+    if type(b) is t:
+        return b   # &lt; ---- type error here
+    raise NotImplementedError
+</code></pre>
+<p>https://play.ty.dev/12096b28-8338-4038-a5c5-5db362115bd6</p>
+<p>My workaround:</p>
+<pre><code class="language-python">    if type(b) is t and isinstance(b, t):
+        return b
+</code></pre>
+<h3>Version</h3>
+<p>55a174ed9 2026-01-19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2026-01-19 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-19 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-19 16:33</div>
+            <div class="timeline-body"><p>thanks! I agree that narrowing here would be sound, as long as <code>T</code> does not have a generic class as its upper bound.</p>
+<p><code>if x is list[int]</code> is not a valid narrowing operation, so I don't think we could narrow for something like this:</p>
+<pre><code class="language-py">def bad2[T: list[int]](b: object, t: type[T]) -&gt; list[int]:
+    if type(b) is t:
+        return b
+    raise NotImplementedError
+</code></pre>
+<p>But narrowing seems fine if it's bound to a non-generic class, as in your example.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-19 17:29:50 UTC
+    </footer>
+</body>
+</html>
