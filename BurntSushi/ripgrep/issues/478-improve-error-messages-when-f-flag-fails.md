@@ -9,9 +9,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2017-05-09T17:10:51Z
-updated_at: 2023-09-05T12:04:43Z
+updated_at: 2026-01-19T15:03:03Z
 url: https://github.com/BurntSushi/ripgrep/issues/478
-synced_at: 2026-01-12T16:13:22Z
+synced_at: 2026-01-19T15:37:26Z
 ```
 
 # improve error messages when -f flag fails
@@ -109,5 +109,12 @@ I must have misunderstood the PRs. Only wanted to help you declutter your issues
 _Comment by @J-Kappes on 2023-09-05 12:04_
 
 Which files in the repo could be relevant to this?
+
+---
+
+_Comment by @c0d3l0v3r-HeHe on 2026-01-19 15:03_
+
+Hi @BurntSushi , just checking whether this issue is still open.
+If it hasn’t been addressed yet, I’d be happy to take a look and work on it.
 
 ---
