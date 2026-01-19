@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: RUF020
 created_at: 2026-01-17T20:59:42Z
-updated_at: 2026-01-19T18:54:02Z
+updated_at: 2026-01-19T19:41:26Z
 url: https://github.com/astral-sh/ruff/pull/22664
-synced_at: 2026-01-19T19:29:31Z
+synced_at: 2026-01-19T20:31:01Z
 ```
 
 # [`ruff`] Make fix unsafe if it deletes comments (`RUF020`)
@@ -84,5 +84,14 @@ _@ntBre approved on 2026-01-19 18:54_
 Thank you! This looks fine to me, just one suggestion about sharing the applicability check.
 
 (I almost wonder if this could warrant a helper method on `Checker` since this is such a common pattern, but I couldn't think of a great name/API for it earlier)
+
+---
+
+_Comment by @amyreese on 2026-01-19 19:41_
+
+> (I almost wonder if this could warrant a helper method on `Checker` since this is such a common pattern, but I couldn't think of a great name/API for it earlier)
+
+I kind of agree after seeing all these PRs. Perhaps something like `checker.contains_comments(expr)` ?
+
 
 ---

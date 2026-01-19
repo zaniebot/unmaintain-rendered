@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T18:50:50Z
+updated_at: 2026-01-19T19:35:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T19:29:34Z
+synced_at: 2026-01-19T20:31:05Z
 ```
 
 # Dependency Dashboard
@@ -84,7 +84,7 @@ The following updates await pending status checks. To force their creation now, 
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/container-image-digests -->[Pin dependencies](../pull/17554) (`alpine`, `amazonlinux`, `debian`, `pyston/pyston`)
+ - [ ] <!-- rebase-branch=renovate/container-image-digests -->[Update dependencies](../pull/17554) (`alpine`, `amazonlinux`, `debian`, `pyston/pyston`)
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 6865550](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)

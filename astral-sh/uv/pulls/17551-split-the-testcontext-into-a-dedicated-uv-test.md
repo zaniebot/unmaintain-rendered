@@ -11,9 +11,9 @@ draft: true
 base: main
 head: zb/uv-test
 created_at: 2026-01-18T03:50:46Z
-updated_at: 2026-01-18T03:50:47Z
+updated_at: 2026-01-19T19:41:13Z
 url: https://github.com/astral-sh/uv/pull/17551
-synced_at: 2026-01-18T04:11:25Z
+synced_at: 2026-01-19T20:31:15Z
 ```
 
 # Split the `TestContext` into a dedicated `uv-test` crate
@@ -27,5 +27,9 @@ _No description provided._
 ---
 
 _Label `internal` added by @zanieb on 2026-01-18 03:50_
+
+---
+
+_@charliermarsh approved on 2026-01-19 19:31_
 
 ---

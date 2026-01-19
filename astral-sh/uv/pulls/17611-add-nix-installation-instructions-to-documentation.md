@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: docs-nix-install
 created_at: 2026-01-19T14:44:46Z
-updated_at: 2026-01-19T14:50:12Z
+updated_at: 2026-01-19T19:33:49Z
 url: https://github.com/astral-sh/uv/pull/17611
-synced_at: 2026-01-19T15:25:20Z
+synced_at: 2026-01-19T20:31:15Z
 ```
 
 # Add Nix installation instructions to documentation
@@ -71,5 +71,15 @@ This happens because ["NixOS cannot run dynamically linked executables intended 
 ```nix
 programs.nix-ld.enable = true;
 ```
+
+---
+
+_@zanieb reviewed on 2026-01-19 19:33_
+
+---
+
+_Review comment by @zanieb on `docs/getting-started/installation.md`:181 on 2026-01-19 19:33_
+
+Should we be suggesting not using our managed Python versions? (this seems helpful to document either way though)
 
 ---

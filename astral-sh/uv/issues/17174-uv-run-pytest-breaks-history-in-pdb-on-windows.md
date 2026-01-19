@@ -9,9 +9,9 @@ labels:
   - windows
 assignees: []
 created_at: 2025-12-18T12:23:04Z
-updated_at: 2026-01-10T18:11:14Z
+updated_at: 2026-01-19T20:20:07Z
 url: https://github.com/astral-sh/uv/issues/17174
-synced_at: 2026-01-12T16:02:45Z
+synced_at: 2026-01-19T20:31:07Z
 ```
 
 # uv run pytest breaks history in pdb on windows
@@ -170,5 +170,11 @@ Also if you guys can connect with pyreadline3 guys, their window build is gonna 
 ---
 
 _Closed by @zanieb on 2026-01-10 18:11_
+
+---
+
+_Comment by @RmStorm on 2026-01-19 20:20_
+
+@zelosleone This is some A-grade work. Really impressive and thank you so much!
 
 ---
