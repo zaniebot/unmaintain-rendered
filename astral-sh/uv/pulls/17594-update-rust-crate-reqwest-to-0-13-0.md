@@ -2,7 +2,7 @@
 number: 17594
 title: Update Rust crate reqwest to 0.13.0
 type: pull_request
-state: open
+state: closed
 author: renovate
 labels:
   - internal
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/reqwest-0.x
 created_at: 2026-01-19T01:34:24Z
-updated_at: 2026-01-19T01:34:26Z
+updated_at: 2026-01-19T05:22:39Z
 url: https://github.com/astral-sh/uv/pull/17594
-synced_at: 2026-01-19T02:24:58Z
+synced_at: 2026-01-19T06:21:36Z
 ```
 
 # Update Rust crate reqwest to 0.13.0
@@ -347,5 +347,29 @@ required by package `astral-reqwest-middleware v0.4.2`
 ```
 
 
+
+---
+
+_Comment by @zanieb on 2026-01-19 05:21_
+
+See #17427 
+
+---
+
+_Closed by @zanieb on 2026-01-19 05:21_
+
+---
+
+_Comment by @renovate[bot] on 2026-01-19 05:22_
+
+### Renovate Ignore Notification
+
+Because you closed this PR without merging, Renovate will ignore this update (`0.13.0`). You will get a PR once a newer version is released. To ignore this dependency forever, add it to the `ignoreDeps` array of your Renovate config.
+
+If you accidentally closed this PR, or if you changed your mind: rename this PR to get a fresh replacement PR.
+
+---
+
+_Branch deleted on 2026-01-19 05:22_
 
 ---

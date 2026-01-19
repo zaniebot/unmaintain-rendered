@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-23T07:34:56Z
-updated_at: 2026-01-10T01:40:57Z
+updated_at: 2026-01-19T06:08:14Z
 url: https://github.com/astral-sh/uv/issues/17224
-synced_at: 2026-01-12T16:02:46Z
+synced_at: 2026-01-19T06:21:29Z
 ```
 
 # To Be Closed
@@ -19,23 +19,7 @@ synced_at: 2026-01-12T16:02:46Z
 
 _@mourad-ghafiri_
 
-### Summary
-
-A powerful VS Code extension for [UV](https://github.com/astral-sh/uv) — the extremely fast Python package manager.
-
-Features at a glance: Project templates • Dependency management • Python version switching • Virtual environments • HTTP server • Testing • And more!
-
-https://marketplace.visualstudio.com/items?itemName=MouradGHAFIRI.uv-vscode-extension
-
-Open Source, MIT License: https://github.com/mourad-ghafiri/uv-vscode-extension
-
-Currently installed by more than 2.2k UV lovers <3
-
-Thanks in advance
-
-### Example
-
-_No response_
+To Be Closed
 
 ---
 

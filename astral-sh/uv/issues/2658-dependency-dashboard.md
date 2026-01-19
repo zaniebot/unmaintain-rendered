@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-19T04:59:48Z
+updated_at: 2026-01-19T06:00:46Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-19T05:31:52Z
+synced_at: 2026-01-19T06:21:26Z
 ```
 
 # Dependency Dashboard
@@ -49,7 +49,12 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
+ - [ ] <!-- rebase-branch=renovate/criterion-4.x-lockfile -->[Update Rust crate criterion to v4.2.1](../pull/17587)
+ - [ ] <!-- rebase-branch=renovate/resvg-0.x -->[Update Rust crate resvg to 0.46.0](../pull/17595)
+ - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
+ - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
+ - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
 
 ## Pending Status Checks
 
@@ -95,7 +100,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/crate-ci-typos-1.x -->[Update crate-ci/typos action to v1.42.0](../pull/17581)
  - [ ] <!-- rebase-branch=renovate/python-3.x -->[Update dependency python to v3.14.2](../pull/17582)
  - [ ] <!-- rebase-branch=renovate/pre-commit-dependencies -->[Update pre-commit dependencies](../pull/17583) (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
- - [ ] <!-- rebase-branch=renovate/criterion-4.x-lockfile -->[Update Rust crate criterion to v4.2.1](../pull/17587)
  - [ ] <!-- rebase-branch=renovate/csv-1.x-lockfile -->[Update Rust crate csv to v1.4.0](../pull/17588)
  - [ ] <!-- rebase-branch=renovate/data-encoding-2.x-lockfile -->[Update Rust crate data-encoding to v2.10.0](../pull/17589)
  - [ ] <!-- rebase-branch=renovate/fs-err-3.x-lockfile -->[Update Rust crate fs-err to v3.2.2](../pull/17590)
@@ -103,18 +107,19 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/17591)
  - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
  - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
- - [ ] <!-- rebase-branch=renovate/reqwest-0.x -->[Update Rust crate reqwest to 0.13.0](../pull/17594)
- - [ ] <!-- rebase-branch=renovate/resvg-0.x -->[Update Rust crate resvg to 0.46.0](../pull/17595)
  - [ ] <!-- rebase-branch=renovate/schemars-1.x-lockfile -->[Update Rust crate schemars to v1.2.0](../pull/17596)
  - [ ] <!-- rebase-branch=renovate/secret-service-5.x-lockfile -->[Update Rust crate secret-service to v5.1.0](../pull/17597)
  - [ ] <!-- rebase-branch=renovate/security-framework-3.x-lockfile -->[Update Rust crate security-framework to v3.5.1](../pull/17598)
  - [ ] <!-- rebase-branch=renovate/tokio-1.x-lockfile -->[Update Rust crate tokio to v1.49.0](../pull/17599)
- - [ ] <!-- rebase-branch=renovate/windows-0.x -->[Update Rust crate windows to 0.62.0](../pull/17600)
- - [ ] <!-- rebase-branch=renovate/windows-registry-0.x -->[Update Rust crate windows-registry to 0.6.0](../pull/17601)
- - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/fedora-44.x -->[Update fedora Docker tag to v44](../pull/17604)
- - [ ] <!-- rebase-branch=renovate/whoami-2.x -->[Update Rust crate whoami to v2](../pull/17605)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
+
+## PR Closed (Blocked)
+
+The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
+
+ - [ ] <!-- recreate-branch=renovate/reqwest-0.x -->[Update Rust crate reqwest to 0.13.0](../pull/17594)
+ - [ ] <!-- recreate-branch=renovate/windows-registry-0.x -->[Update Rust crate windows-registry to 0.6.0](../pull/17601)
 
 ## Detected Dependencies
 

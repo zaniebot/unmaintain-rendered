@@ -11,9 +11,9 @@ assignees: []
 base: charlie/success
 head: charlie/data-decorator
 created_at: 2026-01-18T19:34:12Z
-updated_at: 2026-01-18T21:40:47Z
+updated_at: 2026-01-19T06:12:23Z
 url: https://github.com/astral-sh/ruff/pull/22687
-synced_at: 2026-01-18T22:21:55Z
+synced_at: 2026-01-19T06:21:23Z
 ```
 
 # [ty] Avoid overload errors when detecting dataclass-on-tuple
@@ -264,5 +264,29 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-18 21:40_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-18 21:40_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:2277 on 2026-01-19 06:00_
+
+These errors would be "semantic" errors as defined in `affects_overload_resolution`, right? If so, the comment could be updated
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:3942 on 2026-01-19 06:07_
+
+The `as_result` name for this method seems a bit misleading now that we don't account for all errors here (only the ones that affect overload resolution), maybe we should rename this? e.g., `has_errors_affecting_overload_resolution` (too long), `failed_overload_resolution`, etc. This method is also only called in `matching_overloads` and `matching_overloads_mut` so it seems ok to rename it to be specific to this usage.
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/bind.rs`:2449 on 2026-01-19 06:10_
+
+Yeah, I think that's correct, I reached the same conclusion in https://github.com/astral-sh/ruff/pull/22688#discussion_r2703241568.
+
+I think the body of this if branch is same as the one right above it, so both of these can be merged? Edit: Oh, merging that might be difficult but maybe we could extract out the logic into an inner function.
+
+---
+
+_@dhruvmanila approved on 2026-01-19 06:12_
 
 ---

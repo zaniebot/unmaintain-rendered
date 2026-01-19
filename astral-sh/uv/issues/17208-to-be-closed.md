@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-21T14:12:54Z
-updated_at: 2025-12-27T09:02:43Z
+updated_at: 2026-01-19T06:17:08Z
 url: https://github.com/astral-sh/uv/issues/17208
-synced_at: 2026-01-12T16:02:46Z
+synced_at: 2026-01-19T06:21:28Z
 ```
 
 # To Be Closed
@@ -38,15 +38,6 @@ This just looks like spam. Please don't use LLMs to write issues.
 ---
 
 _Closed by @zanieb on 2025-12-21 14:19_
-
----
-
-_Comment by @mourad-ghafiri on 2025-12-21 17:12_
-
-It is not a spam, there Extension is already published and installed by more than 2k people!
-https://marketplace.visualstudio.com/items?itemName=MouradGHAFIRI.uv-vscode-extension
-
-And yes I use LLMs!
 
 ---
 

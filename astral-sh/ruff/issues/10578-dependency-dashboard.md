@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-19T01:59:09Z
+updated_at: 2026-01-19T06:15:37Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-19T02:24:32Z
+synced_at: 2026-01-19T06:21:09Z
 ```
 
 # Dependency Dashboard
@@ -20,12 +20,6 @@ synced_at: 2026-01-19T02:24:32Z
 _@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/ruff).
-
-## Repository Problems
-
-These problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/astral-sh/ruff).
-
- - ⚠️ WARN: Detected empty commit - aborting git push
 
 ## Deprecations / Replacements
 > [!WARNING]
@@ -63,6 +57,15 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
+## Awaiting Schedule
+
+The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
+
+ - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
+ - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
+ - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
+
 ## PR Edited (Blocked)
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
@@ -83,14 +86,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `prettier`, `typescript-eslint`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/colored-3.x-lockfile -->Update Rust crate colored to v3.1.1
-
-## Other Branches
-
-The following updates are pending. To force the creation of a PR, click on a checkbox below.
-
- - [ ] <!-- other-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
- - [ ] <!-- other-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
- - [ ] <!-- other-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
 
 ## Open
 

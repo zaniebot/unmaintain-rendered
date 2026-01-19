@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/windows-0.x
 created_at: 2026-01-19T01:35:23Z
-updated_at: 2026-01-19T01:35:25Z
+updated_at: 2026-01-19T06:03:28Z
 url: https://github.com/astral-sh/uv/pull/17600
-synced_at: 2026-01-19T02:24:58Z
+synced_at: 2026-01-19T06:21:36Z
 ```
 
 # Update Rust crate windows to 0.62.0
@@ -190,5 +190,31 @@ Caused by:
 ```
 
 
+
+---
+
+_Comment by @zanieb on 2026-01-19 05:39_
+
+Conflicts with #17552 
+
+---
+
+_@zanieb reviewed on 2026-01-19 06:03_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/windows_registry.rs`:228 on 2026-01-19 06:03_
+
+I'm not sure if this is needed, to check.
+
+---
+
+_@zanieb reviewed on 2026-01-19 06:03_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/windows_registry.rs`:228 on 2026-01-19 06:03_
+
+See https://github.com/astral-sh/uv/pull/17601#discussion_r2703284194
 
 ---

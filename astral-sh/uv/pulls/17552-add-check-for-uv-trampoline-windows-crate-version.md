@@ -7,13 +7,12 @@ author: zanieb
 labels:
   - internal
 assignees: []
-draft: true
 base: main
 head: zb/assert-version
 created_at: 2026-01-18T15:12:31Z
-updated_at: 2026-01-18T15:13:04Z
+updated_at: 2026-01-19T05:39:37Z
 url: https://github.com/astral-sh/uv/pull/17552
-synced_at: 2026-01-18T15:23:39Z
+synced_at: 2026-01-19T06:21:36Z
 ```
 
 # Add check for `uv-trampoline` windows crate version consistency
@@ -31,5 +30,9 @@ _Label `internal` added by @zanieb on 2026-01-18 15:12_
 ---
 
 _Renamed from "zb/assert version" to "Add check for `uv-trampoline` windows crate version consistency" by @zanieb on 2026-01-18 15:13_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-19 05:39_
 
 ---
