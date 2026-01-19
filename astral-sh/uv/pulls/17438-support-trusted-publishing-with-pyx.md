@@ -5,14 +5,15 @@ type: pull_request
 state: open
 author: woodruffw
 labels:
+  - enhancement
   - registry
 assignees: []
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-19T11:19:48Z
+updated_at: 2026-01-19T11:49:13Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-19T11:30:41Z
+synced_at: 2026-01-19T12:32:49Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -106,5 +107,79 @@ Do we still need the `fresh_version_strategy` flag? It's not used anymore
 ---
 
 _@konstin reviewed on 2026-01-19 11:05_
+
+---
+
+_Review comment by @konstin on `crates/uv-publish/src/trusted_publishing/pyx.rs`:89 on 2026-01-19 11:19_
+
+Note that `path_segments` is sensitive to trailing slashes:
+
+```rust
+use std::str::FromStr;
+use url::Url;
+
+fn main() -> Result<(), ()> {
+    dbg!(
+        Url::from_str("https://pyx.dev/v1/upload/workspace_name/registry_name")
+            .unwrap()
+            .path_segments()
+            .map_or(Vec::new(), Iterator::collect)
+    );
+    dbg!(
+        Url::from_str("https://pyx.dev/v1/upload/workspace_name/registry_name/")
+            .unwrap()
+            .path_segments()
+            .map_or(Vec::new(), Iterator::collect)
+    );
+    Ok(())
+}
+```
+
+```
+[src/main.rs:5:5] Url::from_str("https://pyx.dev/v1/upload/workspace_name/registry_name").unwrap().path_segments().map_or(Vec::new(),
+Iterator::collect) = [
+    "v1",
+    "upload",
+    "workspace_name",
+    "registry_name",
+]
+[src/main.rs:11:5] Url::from_str("https://pyx.dev/v1/upload/workspace_name/registry_name/").unwrap().path_segments().map_or(Vec::new(),
+Iterator::collect) = [
+    "v1",
+    "upload",
+    "workspace_name",
+    "registry_name",
+    "",
+]
+```
+
+If pyx doesn't allow trailing slashes, the URL is invalid, though maybe we want a separate error for this, it sounds easy to get wrong? We had those cases with trailing slashes for PyPI too.
+
+---
+
+_Review comment by @konstin on `crates/uv-publish/src/lib.rs`:467 on 2026-01-19 11:43_
+
+nit: If we make `get_token` as method on the trait with default implementation, we can skip the async-traint-in-box and do:
+
+```rust
+                PyxPublishingService::new(registry, client)
+                    .get_token()
+                    .await
+                    .map_err(Box::new)?
+```
+
+---
+
+_Review comment by @konstin on `crates/uv-publish/src/trusted_publishing.rs`:88 on 2026-01-19 11:47_
+
+This sounds totally fine to me in the error path, it might even help in some fringe token mixup scenarios.
+
+---
+
+_@konstin approved on 2026-01-19 11:49_
+
+---
+
+_Label `enhancement` added by @konstin on 2026-01-19 11:49_
 
 ---

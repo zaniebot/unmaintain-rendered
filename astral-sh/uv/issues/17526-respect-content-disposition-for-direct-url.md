@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T16:16:15Z
-updated_at: 2026-01-16T18:24:27Z
+updated_at: 2026-01-19T11:53:57Z
 url: https://github.com/astral-sh/uv/issues/17526
-synced_at: 2026-01-16T19:01:52Z
+synced_at: 2026-01-19T12:32:42Z
 ```
 
 # Respect `Content-Disposition` for direct URL installations?
@@ -94,5 +94,11 @@ TL;DR: I'm pretty sure pip is compliant here, at least insofar as the specs are 
 ---
 
 _Label `compatibility` added by @zanieb on 2026-01-16 18:24_
+
+---
+
+_Comment by @konstin on 2026-01-19 11:53_
+
+uv depends on the filename in the URL in some locations such as `uv.lock` parsing, reading `Content-Disposition` requires bigger changes than allowing more URLs, since we need to ensure that the archive type doesn't change. I'm assuming that URLs that don't have a source distribution filename in their URL will return source archives rather than source distributions, or at least I haven't seen a production service that returns valid source distributions on opauqe URLs.
 
 ---

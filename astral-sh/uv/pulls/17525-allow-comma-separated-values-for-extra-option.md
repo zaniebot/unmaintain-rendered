@@ -4,14 +4,15 @@ title: "Allow comma-separated values for `--extra` option"
 type: pull_request
 state: open
 author: terror
-labels: []
+labels:
+  - enhancement
 assignees: []
 base: main
 head: extra-option-shorthand
 created_at: 2026-01-16T15:42:40Z
-updated_at: 2026-01-16T16:50:58Z
+updated_at: 2026-01-19T11:56:01Z
 url: https://github.com/astral-sh/uv/pull/17525
-synced_at: 2026-01-16T16:59:58Z
+synced_at: 2026-01-19T12:32:49Z
 ```
 
 # Allow comma-separated values for `--extra` option
@@ -47,5 +48,15 @@ Just re-purposed this PR!
 _@zanieb approved on 2026-01-16 16:50_
 
 cc @konstin in case I'm missing something here
+
+---
+
+_@konstin approved on 2026-01-19 11:55_
+
+If we have no concerns about consistency with other arguments that are multiple use, then SGTM
+
+---
+
+_Label `enhancement` added by @konstin on 2026-01-19 11:56_
 
 ---

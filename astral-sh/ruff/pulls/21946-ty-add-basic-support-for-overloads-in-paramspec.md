@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: dhruv/paramspec-overload-1
 created_at: 2025-12-12T13:21:14Z
-updated_at: 2026-01-19T09:39:22Z
+updated_at: 2026-01-19T11:38:07Z
 url: https://github.com/astral-sh/ruff/pull/21946
-synced_at: 2026-01-19T10:28:42Z
+synced_at: 2026-01-19T12:32:36Z
 ```
 
 # [ty] Add basic support for overloads in `ParamSpec`
@@ -252,5 +252,47 @@ _Review requested from @sharkdp by @dhruvmanila on 2026-01-19 09:37_
 ---
 
 _Review requested from @dcreager by @dhruvmanila on 2026-01-19 09:37_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md`:694 on 2026-01-19 11:21_
+
+I'm struggling to think of a reason why the current behaviour you have would be unsound in this specific example -- but [mypy](https://mypy-play.net/?mypy=latest&python=3.12&gist=e5ec5b750be3b566e0f70c55dbe1ed80), [pyright](https://pyright-play.net/?pyrightVersion=1.1.405&pythonVersion=3.13&reportUnreachable=true&code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDRRgBu1IJYRAJgFBcACTLNpy4dqwTChgB9VDAAUADwBcEmAEooAWgB8qlQDpDfAa3bdR42TMmKVAZxggNOvVEP6eFqAHckMABZSCEQgRBDUMCx2ANoAVLEACgC6csAqxGSUNNEJ9LJJ9LEhaHYqCfrFdoWxANbelWX6dZXOuhnkVNQ59A4gSUpcUENQXijUDtQcckUgJY2V1c2zpVDlSyWtUL0Dw7tQIBEAriAoW46p0wtQ8et2amqDwwcwx6djE9wiYlDAYGByVlwUm2qigAB8zk4dk9qMxSFJ4AhqHJfAEgiEwhEogDJNYYHlcUDevcuEA) and [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BhVFCipssADR1cANxiUouVJgA66NQAFZ8xcrWYYYTugYB9VgwAU%2BRMYYBKOgFoAfHduFPm7QqWqshnbmJta2cAyUjq7udJ6EavqBAO4QDAAWpsSolKg0MAzycADaAFQlAAoAupZgtkIiYrBF5VIWlVIl2WxwtuWEXXAdJQDWSQO9hKMDUW71ouIwzVLhlJWIanSbdAZG6PAFmJadlN0TA0NTJz10fZfdM3Qr6%2Bhbr3SU%2BQCulC8rNUfnOhlO5wez2DZbD4Mb4vPbhGD%2BRJGMC4XCWCymXimJ52OgAH0eEXsz1eHzkwlMTGIMEsKXSmWyuXyhXRJmCDFabKxKzBahAEhAnwY0DgJHIiBAAGI6ABVYVQVKkOhgT7oADGwtw6DgCQCyN4NFQZnQnxo2HkoTsDyeEM2UJhypUIAAcqbzZRbMB8ABfJ18gVkD5gKCkQgMWhQCjS8qkIMhx4YHAEOhqrWQNjfI0QLXxdDSgDKMBgdDSDAYxB6AHpK4HDCHCLw2JWYOhK5hcGq4JXU%2Bh05nNa3lbw6KgZKhoI1iz2%2BzkB9JiAPRWoyOktU45JQ4NmXgBeOhOgDMhAAjAAmP3oEDegWoDUQOQAMWgMAoaCweCIZCvQA) do all seem to reject this. Not sure if there's something I'm missing...
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md`:698 on 2026-01-19 11:22_
+
+```suggestion
+# Keyword argument matching should also work
+# TODO these should reveal the matching overload
+reveal_type(with_parameters(int_int, x=1))  # revealed: Overload[(x: int) -> str, (x: str) -> str]
+reveal_type(with_parameters(int_int, x="a"))  # revealed: Overload[(x: int) -> str, (x: str) -> str]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md`:735 on 2026-01-19 11:23_
+
+```suggestion
+# Mixed positional and keyword
+# TODO both should reveal `int`
+reveal_type(run(multi, 1, y=2))  # revealed: int | str
+reveal_type(run(multi, x=1, y=2))  # revealed: int | str
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:3456 on 2026-01-19 11:36_
+
+```suggestion
+        let callable_binding = bindings
+            .single_element()
+            .expect("ParamSpec sub-call should only contain a single CallableBinding");
+```
+
+---
+
+_@AlexWaygood approved on 2026-01-19 11:38_
 
 ---

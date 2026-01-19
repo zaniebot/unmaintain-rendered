@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-17T11:36:49Z
+updated_at: 2026-01-19T11:53:04Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-17T12:09:43Z
+synced_at: 2026-01-19T12:32:36Z
 ```
 
 # [ty] `struct.unpack` return type inference
@@ -261,5 +261,15 @@ I did a quick and dirty fix. I think it's probably fine, but I dont know rust we
 _Comment by @sakgoyal on 2026-01-17 08:01_
 
 Rolled up into 1 commit to make git history nicer if this gets merged
+
+---
+
+_@MichaReiser reviewed on 2026-01-19 11:53_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/call/bind.rs`:1245 on 2026-01-19 11:53_
+
+Should we error / early return if we see any unsupported/unknown format specifiers?
 
 ---

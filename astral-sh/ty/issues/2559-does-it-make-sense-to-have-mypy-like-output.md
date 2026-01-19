@@ -9,9 +9,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-19T07:33:30Z
-updated_at: 2026-01-19T11:12:18Z
+updated_at: 2026-01-19T11:31:21Z
 url: https://github.com/astral-sh/ty/issues/2559
-synced_at: 2026-01-19T11:30:09Z
+synced_at: 2026-01-19T12:32:18Z
 ```
 
 # Does it make sense to have mypy-like `--output-format concise` as the default?
@@ -61,5 +61,11 @@ I do also agree that our verbose diagnostics are possibly a bit _too_ verbose at
 ---
 
 _Label `diagnostics` added by @AlexWaygood on 2026-01-19 11:09_
+
+---
+
+_Comment by @MichaReiser on 2026-01-19 11:31_
+
+You may already know this but you can change the default output format by setting the [`terminal.output-format`](https://docs.astral.sh/ty/reference/configuration/#output-format) in the project's `ty.toml` or `pyproject.toml` or in your user-level configuration ([configuration files](https://docs.astral.sh/ty/configuration/#configuration-files))
 
 ---
