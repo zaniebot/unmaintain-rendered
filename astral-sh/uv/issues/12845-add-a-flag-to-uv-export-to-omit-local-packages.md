@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-04-11T20:59:37Z
-updated_at: 2025-04-19T07:14:32Z
+updated_at: 2026-01-20T13:54:13Z
 url: https://github.com/astral-sh/uv/issues/12845
-synced_at: 2026-01-12T16:01:14Z
+synced_at: 2026-01-20T14:40:50Z
 ```
 
 # Add a flag to `uv export` to omit local packages
@@ -125,5 +125,11 @@ _Comment by @fepegar on 2025-04-19 07:13_
 ~That sounds better. Would it make sense to be able to filter by source type? E.g. discard packages with `path` but not `git`.~
 
 Edit: I missed that `path` from your message and clearly agree with you :)
+
+---
+
+_Comment by @fepegar on 2026-01-20 13:54_
+
+Is this now supported by `--no-emit-local`?
 
 ---

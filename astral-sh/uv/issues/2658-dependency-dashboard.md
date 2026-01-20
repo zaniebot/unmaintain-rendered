@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T12:56:45Z
+updated_at: 2026-01-20T13:55:42Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T13:38:02Z
+synced_at: 2026-01-20T14:40:48Z
 ```
 
 # Dependency Dashboard
@@ -46,6 +46,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.2
  - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
+ - [ ] <!-- unschedule-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
  - [ ] <!-- unschedule-branch=renovate/debian-13.x -->Update debian Docker tag to v13
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
@@ -68,7 +69,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.7
  - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.14
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
- - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.8.0
  - [ ] <!-- approvePr-branch=renovate/conda-incubator-setup-miniconda-3.x -->Update conda-incubator/setup-miniconda action to v3.3.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.4.1
@@ -596,11 +596,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.2`]
  - `actions/download-artifact v4.1.8@fa0a91b85d4f404e444e00e005971372dc801d16` → [Updates: `v7.0.0`]
- - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.8.0`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.2`]
- - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.8.0`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
 
 </details>
 

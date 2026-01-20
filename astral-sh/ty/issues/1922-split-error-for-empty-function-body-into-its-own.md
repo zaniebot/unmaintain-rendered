@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-12-16T12:30:48Z
-updated_at: 2026-01-20T08:48:53Z
+updated_at: 2026-01-20T13:46:53Z
 url: https://github.com/astral-sh/ty/issues/1922
-synced_at: 2026-01-20T09:41:24Z
+synced_at: 2026-01-20T14:40:26Z
 ```
 
 # Split error for empty function body into its own error code
@@ -52,5 +52,21 @@ _Comment by @AlexWaygood on 2026-01-20 08:48_
 ---
 
 _Assigned to @maifeeulasad by @AlexWaygood on 2026-01-20 08:48_
+
+---
+
+_Comment by @maifeeulasad on 2026-01-20 13:38_
+
+Dear @AlexWaygood 
+
+I have created an issue upstream in `ruff`. Which is already linked here. Now waiting for their feedback. Either we can do it like this. Or I can just push my code update the submodule hash, which may become problamatic in future.
+
+Any thought on this??
+
+---
+
+_Comment by @AlexWaygood on 2026-01-20 13:46_
+
+hey @maifeeulasad -- sorry for the confusion! All the source code for ty is found in the Ruff respository, so to fix this issue you need to make a PR directly to the Ruff repository. Opening an issue over at Ruff isn't necessary, because that repository is maintained by the same team that works on ty. We update the submodule hash in this repository every time we make a release. You can see some more details on contributing to ty here: https://github.com/astral-sh/ruff/blob/main/crates/ty/CONTRIBUTING.md.
 
 ---

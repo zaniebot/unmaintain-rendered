@@ -10,9 +10,9 @@ labels:
   - style
 assignees: []
 created_at: 2025-09-19T13:37:01Z
-updated_at: 2026-01-18T11:25:52Z
+updated_at: 2026-01-20T13:55:11Z
 url: https://github.com/astral-sh/ruff/issues/20482
-synced_at: 2026-01-18T12:19:28Z
+synced_at: 2026-01-20T14:40:32Z
 ```
 
 # Ruff 2026 Style Guide
@@ -309,5 +309,50 @@ _Comment by @hugovk on 2026-01-18 11:25_
 Black 26.1.0 is now out with their new 2026 style:
 
 https://github.com/psf/black/releases/tag/26.1.0
+
+---
+
+_Comment by @RazerM on 2026-01-20 13:45_
+
+Now that black has stabilized multiline_string_handling I'd like to see it in ruff, it's the one thing keeping me from adopting ruff format in some projects.
+
+To summarise:
+
+ruff allows this:
+
+```python
+op.execute("""
+    CREATE TRIGGER ...
+    ...
+""")
+```
+
+but changes:
+
+```python
+op.execute(dedent("""
+    CREATE TRIGGER ...
+    ...
+""").strip())
+```
+
+to
+
+```python
+op.execute(
+    dedent("""
+    CREATE TRIGGER ...
+    ...
+    """).strip()
+)
+```
+
+which I can't get behind
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 13:55_
+
+@RazerM please create a separate issue to discuss this style change.
 
 ---

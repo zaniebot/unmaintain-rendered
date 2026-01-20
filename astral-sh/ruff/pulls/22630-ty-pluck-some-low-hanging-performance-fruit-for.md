@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ag/auto-import-perf1
 created_at: 2026-01-16T20:09:06Z
-updated_at: 2026-01-17T13:59:27Z
+updated_at: 2026-01-20T14:25:19Z
 url: https://github.com/astral-sh/ruff/pull/22630
-synced_at: 2026-01-17T14:11:29Z
+synced_at: 2026-01-20T14:40:45Z
 ```
 
 # [ty] Pluck some low hanging performance fruit for completions
@@ -117,7 +117,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:10_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/)
 
 No changes detected ✅
 
@@ -140,6 +140,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-16 20:12_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
 prefect (https://github.com/PrefectHQ/prefect)
 - src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
 + src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
@@ -149,21 +153,8 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
 - src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
 + src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
 - src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
 + src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
 + src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
 - src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
@@ -176,25 +167,21 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
 - src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
 + src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-- Found 5406 diagnostics
-+ Found 5411 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
 - Found 1825 diagnostics
-+ Found 1823 diagnostics
-
-core (https://github.com/home-assistant/core)
-+ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14509 diagnostics
-+ Found 14510 diagnostics
++ Found 1821 diagnostics
 
 
 ```
@@ -247,5 +234,84 @@ Nice! That's a much better approach than my brute force `truncate` call
 ---
 
 _@MichaReiser reviewed on 2026-01-17 13:59_
+
+---
+
+_@BurntSushi reviewed on 2026-01-20 13:37_
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_completion_bench/Cargo.toml`:1 on 2026-01-20 13:37_
+
+Honestly, the reason is partially just that I wasn't aware of those.  :-) And this particular program is just a copy of `ty_completion_eval` but stripped down for ad hoc benchmarking of completions specifically. So it was extremely quick and easy to add.
+
+Looking at `scripts/ty_benchmark`, it looks like that requires doing a full build of `ty` which means longer iteration times:
+
+```
+$ touch ./crates/ty_ide/src/completion.rs && time cargo build --bin ty_completion_bench --profile profiling
+   Compiling ty_ide v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_ide)
+   Compiling ty_completion_bench v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_completion_bench)
+    Finished `profiling` profile [optimized + debuginfo] target(s) in 3.24s
+
+real    3.313
+user    16.869
+sys     1.102
+maxmem  1227 MB
+faults  1767
+
+$ touch ./crates/ty_ide/src/completion.rs && time cargo build --bin ty --profile profiling
+   Compiling ty_ide v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_ide)
+   Compiling ty_server v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty_server)
+   Compiling ty v0.0.0 (/home/andrew/astral/ruff/pr1/crates/ty)
+    Finished `profiling` profile [optimized + debuginfo] target(s) in 8.93s
+
+real    9.005
+user    1:15.21
+sys     1.702
+maxmem  1539 MB
+faults  2140
+```
+
+The program was also made with profiling and ad hoc testing in mind. I'd have to actually go through the process of adding completions to `ty_benchmark` to figure out whether it would work for that. But my program does the minimal amount of work necessary to do a completion request and lets you also repeat that completion request to test the cached case. _And_ you can see the actual completion output, which can be important for understanding what is actually happening. Similarly for `ty_walltime`, which uses divan and doesn't [seem to have a good profiling story](https://github.com/nvzqz/divan/issues/72).
+
+Now to be clear, I _do_ think we should add completion benchmarks to both `ty_benchmark` and `ty_walltime`. Because, yes, running the benchmarks in CI and running them as part of a more complete LSP flow seems like a wise thing to do. But I'd still want this little CLI for ad hoc testing and profiling.
+
+I can add a README noting all of this. Maybe we can get to a point where the CLI isn't needed any more.
+
+---
+
+_Review comment by @BurntSushi on `crates/ty_completion_bench/Cargo.toml`:1 on 2026-01-20 13:59_
+
+I added a README.
+
+---
+
+_@BurntSushi reviewed on 2026-01-20 13:59_
+
+---
+
+_@MichaReiser reviewed on 2026-01-20 13:59_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_completion_bench/Cargo.toml`:1 on 2026-01-20 13:59_
+
+Thanks for the context. 
+
+I think my concern mainly is this
+
+> Honestly, the reason is partially just that I wasn't aware of those. :-) 
+
+But that's addressed if the plan is to ultimately add those benchmarks to `ty_walltime`, and this is more of an ad-hoc script. 
+
+---
+
+_@MichaReiser approved on 2026-01-20 13:59_
+
+---
+
+_Comment by @BurntSushi on 2026-01-20 14:20_
+
+I created https://github.com/astral-sh/ty/issues/2570 for tracking adding benchmarks to `ty_walltime` at minimum.
 
 ---

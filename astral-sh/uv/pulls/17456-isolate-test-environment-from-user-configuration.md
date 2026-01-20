@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-19T10:40:19Z
+updated_at: 2026-01-20T14:23:11Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-19T11:30:41Z
+synced_at: 2026-01-20T14:40:58Z
 ```
 
 # Isolate test environment from user configuration and remove redundant env_remove calls
@@ -240,5 +240,11 @@ _Label `internal` added by @konstin on 2026-01-19 10:39_
 ---
 
 _Review request for @konstin removed by @konstin on 2026-01-19 10:40_
+
+---
+
+_Comment by @gaborbernat on 2026-01-20 14:23_
+
+@EliteTK @zanieb can you take a look again please, thanks?
 
 ---

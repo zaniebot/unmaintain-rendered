@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-16T17:40:54Z
-updated_at: 2026-01-20T12:32:07Z
+updated_at: 2026-01-20T14:30:57Z
 url: https://github.com/astral-sh/uv/pull/17533
-synced_at: 2026-01-20T12:36:03Z
+synced_at: 2026-01-20T14:40:58Z
 ```
 
 # Change chocolatey system test to ensure uv uses the right python
@@ -127,5 +127,45 @@ _Renamed from "Set `UV_TEST_PYTHON_PATH` for the chocolatey system test to ensur
 _Comment by @EliteTK on 2026-01-20 12:32_
 
 @zanieb I went with the approach of refreshing the path from the registry. Although this means that `GITHUB_PATH` won't work properly...
+
+---
+
+_@zanieb reviewed on 2026-01-20 14:25_
+
+---
+
+_Review comment by @zanieb on `.github/workflows/test-system.yml`:549 on 2026-01-20 14:25_
+
+Should we just put this into `check_system_python.py` with a `--python-version` flag?
+
+---
+
+_Review comment by @zanieb on `.github/workflows/test-system.yml`:553 on 2026-01-20 14:25_
+
+Can we add a comment explaining why this is needed?
+
+---
+
+_@zanieb reviewed on 2026-01-20 14:25_
+
+---
+
+_@zanieb reviewed on 2026-01-20 14:26_
+
+---
+
+_Review comment by @zanieb on `.github/workflows/test-system.yml`:527 on 2026-01-20 14:26_
+
+Does it make sense to include the patch version here? Doesn't that mean when new security releases are out our test will break?
+
+---
+
+_Review comment by @EliteTK on `.github/workflows/test-system.yml`:527 on 2026-01-20 14:30_
+
+Including the patch hasn't broken so far for this specific test (as in, this isn't a new addition), and 3.9 doesn't receive security patches any more. I think the bigger risk is that chocolatey just entirely drops it. But that could be the case with any version we pick.
+
+---
+
+_@EliteTK reviewed on 2026-01-20 14:30_
 
 ---

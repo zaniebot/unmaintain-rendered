@@ -2,18 +2,19 @@
 number: 22749
 title: "[`pyupgrade`] Allow shadowing non-builtin bindings (`UP029`)"
 type: pull_request
-state: open
+state: merged
 author: ntBre
 labels:
   - bug
   - rule
 assignees: []
+merged: true
 base: main
 head: brent/up029
 created_at: 2026-01-20T00:34:48Z
-updated_at: 2026-01-20T07:55:05Z
+updated_at: 2026-01-20T13:52:07Z
 url: https://github.com/astral-sh/ruff/pull/22749
-synced_at: 2026-01-20T08:39:33Z
+synced_at: 2026-01-20T14:40:45Z
 ```
 
 # [`pyupgrade`] Allow shadowing non-builtin bindings (`UP029`)
@@ -100,5 +101,27 @@ Can we move this after filtering by name? I suspect filtering by namie is faster
 ---
 
 _@MichaReiser approved on 2026-01-20 07:55_
+
+---
+
+_@ntBre reviewed on 2026-01-20 13:40_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_builtin_import.rs`:117 on 2026-01-20 13:40_
+
+Ah yes of course, thanks!
+
+---
+
+_Merged by @ntBre on 2026-01-20 13:52_
+
+---
+
+_Closed by @ntBre on 2026-01-20 13:52_
+
+---
+
+_Branch deleted on 2026-01-20 13:52_
 
 ---

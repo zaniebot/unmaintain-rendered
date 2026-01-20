@@ -2,15 +2,15 @@
 number: 16182
 title: "`UP029` triggers if import redefines previous import"
 type: issue
-state: open
+state: closed
 author: injust
 labels:
   - bug
 assignees: []
 created_at: 2025-02-16T11:13:56Z
-updated_at: 2025-02-16T15:01:25Z
+updated_at: 2026-01-20T13:52:06Z
 url: https://github.com/astral-sh/ruff/issues/16182
-synced_at: 2026-01-12T15:54:55Z
+synced_at: 2026-01-20T14:40:32Z
 ```
 
 # `UP029` triggers if import redefines previous import
@@ -50,5 +50,9 @@ _Label `bug` added by @ntBre on 2025-02-16 14:59_
 _Comment by @ntBre on 2025-02-16 15:01_
 
 Thanks for the report! I think the first case could be a bit tricky, especially if the `*` import is from outside the standard library, but the second case would be good to handle if nothing else.
+
+---
+
+_Closed by @ntBre on 2026-01-20 13:52_
 
 ---

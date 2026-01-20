@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: brent/lambda-walrus
 created_at: 2026-01-19T21:38:34Z
-updated_at: 2026-01-20T07:30:16Z
+updated_at: 2026-01-20T14:01:11Z
 url: https://github.com/astral-sh/ruff/pull/22747
-synced_at: 2026-01-20T07:37:49Z
+synced_at: 2026-01-20T14:40:45Z
 ```
 
 # Preserve required parentheses in lambda bodies
@@ -103,5 +103,17 @@ _@MichaReiser reviewed on 2026-01-20 07:30_
 _Review comment by @MichaReiser on `crates/ruff_python_formatter/src/expression/expr_lambda.rs`:444 on 2026-01-20 07:30_
 
 Do we need the same change on line 356? Or is it that we don't need it because the body must already be parenthesized?
+
+I suggest adding a test that tries to exercise the 356 branch, just to be sure
+
+---
+
+_@ntBre reviewed on 2026-01-20 13:51_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_python_formatter/src/expression/expr_lambda.rs`:444 on 2026-01-20 13:51_
+
+Added another test! Yes, this is okay because we're already adding parentheses in that branch. I believe that's true for all of the other branches too, we just need to avoid the final fallback behavior to `Parentheses::Never`.
 
 ---
