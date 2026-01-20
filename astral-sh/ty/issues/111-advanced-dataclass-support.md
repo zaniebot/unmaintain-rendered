@@ -8,9 +8,9 @@ labels:
   - dataclasses
 assignees: []
 created_at: 2025-04-28T08:13:21Z
-updated_at: 2025-12-13T17:30:11Z
+updated_at: 2026-01-20T16:26:17Z
 url: https://github.com/astral-sh/ty/issues/111
-synced_at: 2026-01-12T15:54:22Z
+synced_at: 2026-01-20T16:46:39Z
 ```
 
 # Advanced dataclass support
@@ -36,9 +36,9 @@ We already have initial support for dataclasses, but some more advanced features
   - [x] weakref_slot
   - [x] The synthesized `__replace__` method on Python 3.13+ https://github.com/astral-sh/ruff/pull/19545
 - [ ] Emit diagnostic when defining a field without a default after a field with a default, see [existing TODO](https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L120): https://github.com/astral-sh/ruff/pull/19825
-- [ ] Emit diagnostic when setting `order=True` on a dataclass that has a custom `__lt__` (or similar), see [existing TODO](https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L361)
-- [ ] Verify signature of methods such as `__post_init__`, see [this comment](https://github.com/astral-sh/ruff/pull/19527#discussion_r2228364684)
-- [ ] Emit diagnostic if `frozen=True` but the class has a custom `__setattr__` or `__delattr__` method in the class body (this raises `TypeError` at runtime) https://github.com/astral-sh/ruff/pull/21430
+- [ ] Emit diagnostic when setting `order=True` on a dataclass that has a custom `__lt__` (or similar), see [existing TODO](https://github.com/astral-sh/ruff/blob/dbc137c9516808baa292da7a928e50ba36a14d39/crates/red_knot_python_semantic/resources/mdtest/dataclasses.md?plain=1#L361) https://github.com/astral-sh/ruff/pull/22689
+- [ ] Verify signature of methods such as `__post_init__`, see [this comment](https://github.com/astral-sh/ruff/pull/19527#discussion_r2228364684) https://github.com/astral-sh/ruff/pull/22730
+- [x] Emit diagnostic if `frozen=True` but the class has a custom `__setattr__` or `__delattr__` method in the class body (this raises `TypeError` at runtime) https://github.com/astral-sh/ruff/pull/21430
 - [x] Add support for `dataclasses.field(kw_only=True)`
 
 ---

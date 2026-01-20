@@ -2,18 +2,19 @@
 number: 17533
 title: Change chocolatey system test to ensure uv uses the right python
 type: pull_request
-state: open
+state: merged
 author: EliteTK
 labels:
   - bug
   - "test:system"
 assignees: []
+merged: true
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-16T17:40:54Z
-updated_at: 2026-01-20T15:32:46Z
+updated_at: 2026-01-20T16:15:33Z
 url: https://github.com/astral-sh/uv/pull/17533
-synced_at: 2026-01-20T15:44:17Z
+synced_at: 2026-01-20T16:47:12Z
 ```
 
 # Change chocolatey system test to ensure uv uses the right python
@@ -177,5 +178,33 @@ _@zanieb reviewed on 2026-01-20 14:55_
 _Review comment by @zanieb on `.github/workflows/test-system.yml`:527 on 2026-01-20 14:55_
 
 Oh, I see we were requesting this specific patch version. Thats fine.
+
+---
+
+_@zanieb approved on 2026-01-20 15:50_
+
+---
+
+_Merged by @EliteTK on 2026-01-20 16:02_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 16:02_
+
+---
+
+_Branch deleted on 2026-01-20 16:02_
+
+---
+
+_Comment by @EliteTK on 2026-01-20 16:07_
+
+Dang it... It merges automatically even if system tests fail?
+
+---
+
+_Comment by @konstin on 2026-01-20 16:15_
+
+GitHub auto-merge can unfortunately only be configured on the required checks.
 
 ---

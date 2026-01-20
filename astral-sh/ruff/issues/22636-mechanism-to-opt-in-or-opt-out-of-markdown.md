@@ -7,9 +7,9 @@ author: amyreese
 labels: []
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-20T07:12:59Z
+updated_at: 2026-01-20T15:59:40Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-20T07:37:37Z
+synced_at: 2026-01-20T16:46:46Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -40,5 +40,17 @@ Ah sorry. I didn't see your comment here before posting on the PR.
 
 I don't know. But using `include`/`exclude` is definitely the first thing that comes to mind when it's about defining on which files Ruff should run. I don't have the answer here but we should explore the different options and then decide on a design
 
+
+---
+
+_Comment by @ntBre on 2026-01-20 15:36_
+
+I also don't know, but it makes some sense to me to reuse `include` and `exclude`. It does seem a bit annoying to have to `extend-include = ["**/*.md"]` to enable the feature though. Are we planning to make markdown formatting off by default?
+
+---
+
+_Comment by @amyreese on 2026-01-20 15:59_
+
+The main question to me was whether we add `*.md` to the global/default `INCLUDE` or `INCLUDE_PREVIEW` and use a feature flag similar to `docstring-code-format` to turn on/off actually *formatting* (or linting?) those files, or if we just support the ability to format/lint markdown files with no feature flags, and just leave it to users to add `*.md` to their `include`/`extend-include` lists themselves in order to "turn it on".
 
 ---

@@ -2,16 +2,16 @@
 number: 17524
 title: "CI failures on `test-system / python3.9 via chocolatey` due to Windows version change"
 type: issue
-state: open
+state: closed
 author: EliteTK
 labels:
   - bug
   - internal
 assignees: []
 created_at: 2026-01-16T14:52:31Z
-updated_at: 2026-01-16T14:52:45Z
+updated_at: 2026-01-20T16:02:17Z
 url: https://github.com/astral-sh/uv/issues/17524
-synced_at: 2026-01-16T14:58:01Z
+synced_at: 2026-01-20T16:47:04Z
 ```
 
 # CI failures on `test-system / python3.9 via chocolatey` due to Windows version change
@@ -52,5 +52,9 @@ _Label `bug` added by @EliteTK on 2026-01-16 14:52_
 ---
 
 _Label `internal` added by @EliteTK on 2026-01-16 14:52_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 16:02_
 
 ---

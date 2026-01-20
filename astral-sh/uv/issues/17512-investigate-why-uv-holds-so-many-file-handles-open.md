@@ -10,9 +10,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2026-01-16T09:32:03Z
-updated_at: 2026-01-17T07:31:26Z
+updated_at: 2026-01-20T15:56:29Z
 url: https://github.com/astral-sh/uv/issues/17512
-synced_at: 2026-01-17T08:06:35Z
+synced_at: 2026-01-20T16:47:04Z
 ```
 
 # Investigate why uv holds so many file handles open
@@ -274,5 +274,11 @@ uv      16284 chilin  197u      REG               1,17        56 880687414 /User
 uv      16284 chilin  198u      REG               1,17        56 880687412 /Users/chilin/.cache/uv/sdists-v9/editable/daffd7fb1938b330/.tmpgt0SLF
 uv      16284 chilin  199u      REG               1,17        56 880687413 /Users/chilin/.cache/uv/sdists-v9/editable/82ad1b230e7233cf/.tmpQF4dtH
 ```
+
+---
+
+_Comment by @konstin on 2026-01-20 15:56_
+
+That's interesting - I wonder if we should have closed those locks?
 
 ---

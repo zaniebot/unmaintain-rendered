@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T15:28:15Z
+updated_at: 2026-01-20T16:13:59Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T15:44:04Z
+synced_at: 2026-01-20T16:46:59Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -59,25 +58,57 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 02:47_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-django-test-migrations (https://github.com/wemake-services/django-test-migrations)
-+ django_test_migrations/db/backends/postgresql/configuration.py:12:7: error[unimplemented-abstract-method] Final class `PostgreSQLDatabaseConfiguration` does not implement abstract method `statement_timeout`
-- Found 2 diagnostics
-+ Found 3 diagnostics
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 46 diagnostics
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1821 diagnostics
++ Found 1825 diagnostics
 
 core (https://github.com/home-assistant/core)
-+ homeassistant/util/read_only_dict.py:13:7: error[unimplemented-abstract-method] Final class `ReadOnlyDict` does not implement abstract method `__delitem__`
-+ homeassistant/util/read_only_dict.py:13:7: error[unimplemented-abstract-method] Final class `ReadOnlyDict` does not implement abstract method `__setitem__`
-- Found 14492 diagnostics
-+ Found 14494 diagnostics
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14491 diagnostics
++ Found 14492 diagnostics
 
 
 ```
@@ -134,15 +165,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 02:53_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-parameter-default` | 0 | 0 | 7 |
-| `invalid-return-type` | 0 | 5 | 2 |
-| `invalid-await` | 0 | 0 | 6 |
-| `unimplemented-abstract-method` | 3 | 0 | 0 |
-| `invalid-argument-type` | 0 | 0 | 2 |
-| **Total** | **3** | **5** | **17** |
+| `invalid-argument-type` | 61 | 0 | 3 |
+| `possibly-missing-attribute` | 6 | 0 | 2 |
+| `invalid-await` | 7 | 0 | 0 |
+| `invalid-return-type` | 1 | 0 | 5 |
+| `invalid-assignment` | 0 | 0 | 5 |
+| **Total** | **75** | **0** | **15** |
 
 
-**[Full report with detailed diff](https://87e42dfb.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://87e42dfb.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://3b7a3276.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3b7a3276.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -283,5 +314,114 @@ Oh gosh.
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-20 15:28_
+
+---
+
+_@charliermarsh reviewed on 2026-01-20 15:44_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/place.rs`:301 on 2026-01-20 15:44_
+
+I think we were losing the origin here (unintentionally?).
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-20 15:46_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:753 on 2026-01-20 15:57_
+
+(but we should emit an error when such a class is _instantiated_, of course -- which is https://github.com/astral-sh/ty/issues/1877; it doesn't need to be implemented here)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:760 on 2026-01-20 16:11_
+
+`Protocol`s also actually have a custom metaclass, we just haven't implemented that yet (which is https://github.com/astral-sh/ty/issues/1204 -- see https://github.com/astral-sh/ty/issues/1204#issuecomment-3308633844). `MyEnum` fails at runtime:
+
+```pycon
+>>> from abc import abstractmethod
+... from enum import Enum
+... from typing import Protocol
+... 
+... class Stringable(Protocol):
+...     @abstractmethod
+...     def stringify(self) -> str: ...
+... 
+... class MyEnum(Stringable, Enum):  # error: [unimplemented-abstract-method]
+...     A = 1
+...     B = 2
+...     
+Traceback (most recent call last):
+  File "<python-input-0>", line 9, in <module>
+    class MyEnum(Stringable, Enum):  # error: [unimplemented-abstract-method]
+        A = 1
+        B = 2
+TypeError: metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+```
+
+but you can get it to work if you create a custom metaclass that mutually subclasses `EnumMeta` and `ABCMeta`:
+
+```pycon
+>>> from enum import EnumMeta
+>>> from abc import ABCMeta, ABC
+>>> class Stringable(ABC):
+...     @abstractmethod
+...     def stringify(self) -> str: ...
+...     
+>>> class AbstractEnumMeta(ABCMeta, EnumMeta): ...
+... 
+>>> class MyEnum(Stringable, Enum, metaclass=AbstractEnumMeta):
+...     A = 1
+...     B = 2
+...
+>>>
+```
+
+But combining the metaclasses like that appears to break the checking that `ABCMeta` does to prohibit instantiation of classes with namespace packages:
+
+```pycon     
+>>> MyEnum(1)
+<MyEnum.A: 1>
+```
+
+But anyway, it doesn't look like you're looking at the metaclasses when deciding whether a method should be considered as an abstract method? Which I think is correct -- it matches mypy's behaviour, and I don't think a type checker should care that this class doesn't have `ABCMeta` as its metaclass; the intention is clear that the method should be implemented if a subclass wants to be considered a concrete, instantiable method:
+
+```py
+from abc import abstractmethod
+
+class Foo:
+    @abstractmethod
+    def method(self): ...
+```
+
+So TL;DR, I'd get rid of the `Protocol` base class and the prose describing why we have `Protocol` as a base class here; I think it's unnecessary :-)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:1 on 2026-01-20 16:13_
+
+Can you also add these tests (no errors should be emitted):
+
+```py
+from abc import abstractmethod, ABC
+
+class Base(ABC):
+    @property
+    @abstractmethod
+    def foo(self) -> int: ...
+
+class Child1(Base):
+    foo = 42
+
+class Child2(Base):
+    foo: int = 42
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 16:13_
 
 ---
