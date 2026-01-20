@@ -7,9 +7,9 @@ author: philj56
 labels: []
 assignees: []
 created_at: 2026-01-19T17:03:34Z
-updated_at: 2026-01-20T14:00:30Z
+updated_at: 2026-01-20T22:01:18Z
 url: https://github.com/astral-sh/ty/issues/2566
-synced_at: 2026-01-20T14:40:26Z
+synced_at: 2026-01-20T22:52:34Z
 ```
 
 # Assignment in decorated method causes fallback to `Unknown`
@@ -65,5 +65,15 @@ ty 0.0.12 (4b74e4ded 2026-01-14)
 ---
 
 _Renamed from "Assignment in PySide6 slots causes fallback to `Unknown`" to "Assignment in decorated method causes fallback to `Unknown`" by @philj56 on 2026-01-20 13:57_
+
+---
+
+_Comment by @carljm on 2026-01-20 22:01_
+
+Thanks for the report! Tracked this down and put up a fix in https://github.com/astral-sh/ruff/pull/22778
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-20 22:01_
 
 ---

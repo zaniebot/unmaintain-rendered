@@ -4,14 +4,16 @@ title: "[`pyupgrade`] properly trigger in nested class (`UP008`)"
 type: pull_request
 state: open
 author: leandrobbraga
-labels: []
+labels:
+  - bug
+  - rule
 assignees: []
 base: main
 head: bugfix/up008-inner-class
 created_at: 2026-01-18T13:05:36Z
-updated_at: 2026-01-18T13:17:55Z
+updated_at: 2026-01-20T22:48:33Z
 url: https://github.com/astral-sh/ruff/pull/22677
-synced_at: 2026-01-18T14:22:04Z
+synced_at: 2026-01-20T22:52:51Z
 ```
 
 # [`pyupgrade`] properly trigger in nested class (`UP008`)
@@ -20,7 +22,9 @@ synced_at: 2026-01-18T14:22:04Z
 
 _@leandrobbraga_
 
-I also tested it in multi-level nested classes and it worked as well.
+When I was debugging I've noticed that the function parameters were of type `ExprName` in normal situation and `Attribute` if it was an inner class. I don't know enough of ruff's codebase to understand if it makes sense to pattern match it as well or if there is a deeper issue that needs to be solved. 
+
+I went the pattern match approach and it seems to work without regression. I also tested it in multi-level nested classes and it worked as well.
 
 ```console
 echo 'class Base:
@@ -124,5 +128,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-18 13:17_
 
 
 
+
+---
+
+_Review requested from @ntBre by @ntBre on 2026-01-20 22:48_
+
+---
+
+_Label `bug` added by @ntBre on 2026-01-20 22:48_
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-20 22:48_
 
 ---

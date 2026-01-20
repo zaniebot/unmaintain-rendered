@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/bidi-diagnostics
 created_at: 2026-01-17T03:51:36Z
-updated_at: 2026-01-20T21:45:30Z
+updated_at: 2026-01-20T21:55:03Z
 url: https://github.com/astral-sh/ruff/pull/22643
-synced_at: 2026-01-20T21:54:18Z
+synced_at: 2026-01-20T22:52:51Z
 ```
 
 # [ty] Improve invalid assignment diagnostics with type context
@@ -417,18 +417,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 03:59_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 2 | 6 | 32 |
-| `invalid-return-type` | 2 | 0 | 34 |
-| `invalid-assignment` | 5 | 0 | 29 |
-| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-argument-type` | 0 | 5 | 29 |
+| `invalid-return-type` | 6 | 0 | 25 |
+| `invalid-assignment` | 5 | 0 | 25 |
 | `possibly-missing-attribute` | 2 | 0 | 2 |
 | `no-matching-overload` | 0 | 2 | 0 |
 | `unresolved-attribute` | 0 | 2 | 0 |
-| `unused-ignore-comment` | 0 | 2 | 0 |
-| **Total** | **11** | **12** | **104** |
+| **Total** | **13** | **9** | **81** |
 
 
-**[Full report with detailed diff](https://902123ef.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://902123ef.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://389259bf.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://389259bf.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -437,13 +435,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 03:59_
 _Comment by @codspeed-hq[bot] on 2026-01-17 04:08_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **improve performance by 4.94%**
+## Merging this PR will **improve performance by 4.23%**
 
 
 
 
-`⚡ 2` improved benchmarks  
-`✅ 21` untouched benchmarks  
+`⚡ 1` improved benchmark  
+`✅ 22` untouched benchmarks  
 `⏩ 30` skipped benchmarks[^skipped]  
 
 
@@ -452,11 +450,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-17 04:08_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | [`` static_frame ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Astatic_frame&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 22 s | 21 s | +4.64% |
-| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8.3 s | 7.9 s | +4.94% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 7.6 s | 7.3 s | +4.23% |
 ---
 
-<sub>Comparing <code>ibraheem/bidi-diagnostics</code> (d6a2820) with <code>main</code> (938c1c5)</sub>
+<sub>Comparing <code>ibraheem/bidi-diagnostics</code> (e4c20ab) with <code>main</code> (3b5d0d5)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/ibraheem%2Fbidi-diagnostics?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>

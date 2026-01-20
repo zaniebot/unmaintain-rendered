@@ -2,18 +2,19 @@
 number: 17438
 title: Support Trusted Publishing with pyx
 type: pull_request
-state: open
+state: merged
 author: woodruffw
 labels:
   - enhancement
   - registry
 assignees: []
+merged: true
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-20T17:22:02Z
+updated_at: 2026-01-20T22:18:27Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-20T17:37:25Z
+synced_at: 2026-01-20T22:53:04Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -211,5 +212,17 @@ _@woodruffw reviewed on 2026-01-20 17:22_
 _Review comment by @woodruffw on `crates/uv-publish/src/lib.rs`:467 on 2026-01-20 17:22_
 
 Oh yeah, that's way clearer. I'll refactor!
+
+---
+
+_Merged by @woodruffw on 2026-01-20 22:18_
+
+---
+
+_Closed by @woodruffw on 2026-01-20 22:18_
+
+---
+
+_Branch deleted on 2026-01-20 22:18_
 
 ---

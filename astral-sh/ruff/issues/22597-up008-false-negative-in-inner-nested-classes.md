@@ -9,9 +9,9 @@ labels:
   - rule
 assignees: []
 created_at: 2026-01-15T13:09:16Z
-updated_at: 2026-01-15T15:44:12Z
+updated_at: 2026-01-20T22:43:49Z
 url: https://github.com/astral-sh/ruff/issues/22597
-synced_at: 2026-01-15T15:50:10Z
+synced_at: 2026-01-20T22:52:40Z
 ```
 
 # UP008 false negative in inner (nested) classes
@@ -104,5 +104,11 @@ _Label `bug` added by @ntBre on 2026-01-15 15:44_
 ---
 
 _Label `rule` added by @ntBre on 2026-01-15 15:44_
+
+---
+
+_Comment by @leandrobbraga on 2026-01-20 22:43_
+
+I have a fix in https://github.com/astral-sh/ruff/pull/22677
 
 ---

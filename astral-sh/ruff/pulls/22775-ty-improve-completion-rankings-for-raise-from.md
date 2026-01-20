@@ -4,14 +4,15 @@ title: "[ty] Improve completion rankings for raise-from/except contexts"
 type: pull_request
 state: open
 author: RasmusNygren
-labels: []
+labels:
+  - ty
 assignees: []
 base: main
 head: completions-exception-context
 created_at: 2026-01-20T20:34:23Z
-updated_at: 2026-01-20T20:41:42Z
+updated_at: 2026-01-20T22:17:18Z
 url: https://github.com/astral-sh/ruff/pull/22775
-synced_at: 2026-01-20T20:55:43Z
+synced_at: 2026-01-20T22:52:51Z
 ```
 
 # [ty] Improve completion rankings for raise-from/except contexts
@@ -109,5 +110,9 @@ _Review requested from @MichaReiser by @RasmusNygren on 2026-01-20 20:41_
 ---
 
 _Review requested from @Gankra by @RasmusNygren on 2026-01-20 20:41_
+
+---
+
+_Label `ty` added by @ntBre on 2026-01-20 22:17_
 
 ---
