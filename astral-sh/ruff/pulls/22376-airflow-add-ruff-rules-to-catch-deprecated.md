@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-20T04:11:42Z
+updated_at: 2026-01-20T06:29:32Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-20T04:32:23Z
+synced_at: 2026-01-20T06:36:15Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -628,5 +628,26 @@ Also, for `airflow.sdk.execution_time.macros`, I wonder if we should make it `ai
 
 <img width="1333" height="471" alt="Screenshot from 2026-01-19 23-08-56" src="https://github.com/user-attachments/assets/ce774d06-0398-4cfd-8e60-2ced92322e7d" />
 
+
+---
+
+_Comment by @amoghrajesh on 2026-01-20 05:48_
+
+> Also, for airflow.sdk.execution_time.macros, I wonder if we should make it airflow.sdk.macros here because it doesn't seem to be a valid import. So, we need to make a change on the airflow side, and wonder if it will be a new patch version update for task-sdk.
+
+
+It will be in 3.2.0 now. Not urgent enough to be a patch level item
+
+---
+
+_Comment by @amoghrajesh on 2026-01-20 06:11_
+
+PR for macros: https://github.com/apache/airflow/pull/60808
+
+---
+
+_@Lee-W reviewed on 2026-01-20 06:29_
+
+LGTM again :)
 
 ---
