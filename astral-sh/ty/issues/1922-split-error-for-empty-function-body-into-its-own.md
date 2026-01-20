@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-12-16T12:30:48Z
-updated_at: 2025-12-16T14:30:04Z
+updated_at: 2026-01-20T08:48:53Z
 url: https://github.com/astral-sh/ty/issues/1922
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-20T09:41:24Z
 ```
 
 # Split error for empty function body into its own error code
@@ -36,5 +36,21 @@ _Label `diagnostics` added by @AlexWaygood on 2025-12-16 12:30_
 ---
 
 _Added to milestone `Stable` by @carljm on 2025-12-16 14:30_
+
+---
+
+_Comment by @maifeeulasad on 2026-01-20 08:47_
+
+Can I work on this one?
+
+---
+
+_Comment by @AlexWaygood on 2026-01-20 08:48_
+
+@maifeeulasad sure!
+
+---
+
+_Assigned to @maifeeulasad by @AlexWaygood on 2026-01-20 08:48_
 
 ---

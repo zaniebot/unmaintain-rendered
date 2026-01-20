@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: charlie/int-method
 created_at: 2026-01-19T18:58:41Z
-updated_at: 2026-01-20T06:55:15Z
+updated_at: 2026-01-20T08:39:53Z
 url: https://github.com/astral-sh/ruff/pull/22731
-synced_at: 2026-01-20T07:37:49Z
+synced_at: 2026-01-20T09:41:43Z
 ```
 
 # [ty] Make `infer_subscript_expression_types` a method on `Type`
@@ -342,5 +342,17 @@ But I also find it difficult to give any advice here with this little informatio
 ---
 
 _@MichaReiser reviewed on 2026-01-20 06:55_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 08:39_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3789 on 2026-01-20 08:39_
+
+Ah I think this new method should probably operate on the Type IR too (good catch, I haven't really looked at the code yet).
+
+
 
 ---

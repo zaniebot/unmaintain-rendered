@@ -2,17 +2,18 @@
 number: 22752
 title: "[ty] Emit invalid type form for stringified annotations"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: charlie/inf
 created_at: 2026-01-20T02:17:08Z
-updated_at: 2026-01-20T05:20:10Z
+updated_at: 2026-01-20T08:37:57Z
 url: https://github.com/astral-sh/ruff/pull/22752
-synced_at: 2026-01-20T05:34:25Z
+synced_at: 2026-01-20T09:41:43Z
 ```
 
 # [ty] Emit invalid type form for stringified annotations
@@ -215,5 +216,23 @@ Unrelated to this PR, but maybe we should avoid raising diagnostics for inner el
 ---
 
 _@dhruvmanila approved on 2026-01-20 05:20_
+
+---
+
+_@AlexWaygood approved on 2026-01-20 08:37_
+
+Excellent, thank you!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-20 08:37_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-20 08:37_
+
+---
+
+_Branch deleted on 2026-01-20 08:37_
 
 ---

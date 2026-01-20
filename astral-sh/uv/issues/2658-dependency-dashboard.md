@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T05:58:52Z
+updated_at: 2026-01-20T08:42:00Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T06:36:18Z
+synced_at: 2026-01-20T09:41:46Z
 ```
 
 # Dependency Dashboard
@@ -47,6 +47,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.2
  - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
+ - [ ] <!-- unschedule-branch=renovate/debian-13.x -->Update debian Docker tag to v13
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
 ## PR Edited (Blocked)
@@ -76,7 +77,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
- - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
 
 ## Open
 

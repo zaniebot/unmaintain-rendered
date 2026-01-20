@@ -4,14 +4,15 @@ title: "[ty] look up attributes on metaclasses for goto-definition"
 type: pull_request
 state: open
 author: felixscherz
-labels: []
+labels:
+  - ty
 assignees: []
 base: main
 head: feat/goto-definition-looks-up-on-metaclass
 created_at: 2026-01-20T08:05:46Z
-updated_at: 2026-01-20T08:08:54Z
+updated_at: 2026-01-20T08:50:53Z
 url: https://github.com/astral-sh/ruff/pull/22758
-synced_at: 2026-01-20T08:39:33Z
+synced_at: 2026-01-20T09:41:43Z
 ```
 
 # [ty] look up attributes on metaclasses for goto-definition
@@ -137,5 +138,9 @@ core (https://github.com/home-assistant/core)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-20 08:50_
 
 ---

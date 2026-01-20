@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-12T13:43:52Z
-updated_at: 2026-01-16T02:16:27Z
+updated_at: 2026-01-20T08:52:05Z
 url: https://github.com/astral-sh/uv/issues/17416
-synced_at: 2026-01-16T03:04:55Z
+synced_at: 2026-01-20T09:41:48Z
 ```
 
 # Exclude the project from `no-build` by default
@@ -136,5 +136,11 @@ Basically I want to disable building external dependencies but not my own projec
 > `uv build` with `-no-build = true` only works for `--build-backend uv`
 
 as it doesn't work with the config above.
+
+---
+
+_Comment by @bluetech on 2026-01-20 08:52_
+
+I have a workspace with many packages using `uv_build` and I tried to set `no-build = true` in the root pyproject.toml for security reasons. I get the "can't be installed because [...] has no binary distribution" error. Does it make sense to have editable installs in particular excluded from the `no-build` check?
 
 ---

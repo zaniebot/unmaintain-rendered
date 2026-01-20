@@ -5,12 +5,13 @@ type: issue
 state: open
 author: tubarao312
 labels:
+  - help wanted
   - diagnostics
 assignees: []
 created_at: 2026-01-19T15:00:56Z
-updated_at: 2026-01-19T15:06:28Z
+updated_at: 2026-01-20T09:08:19Z
 url: https://github.com/astral-sh/ty/issues/2563
-synced_at: 2026-01-19T15:24:48Z
+synced_at: 2026-01-20T09:41:25Z
 ```
 
 # Improve diagnostics when a variable is declared to have a type from the `numbers` module and an `int`/`float`/`complex` is passed
@@ -72,5 +73,9 @@ main.py:5: note: Consider using a protocol instead, such as typing.SupportsFloat
 ---
 
 _Renamed from "Object of type `Literal[1]` is not assignable to `numbers.Number`" to "Improve diagnostics when a variable is declared to have a type from the `numbers` module and an `int`/`float`/`complex` is passed" by @AlexWaygood on 2026-01-19 15:06_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2026-01-20 09:08_
 
 ---

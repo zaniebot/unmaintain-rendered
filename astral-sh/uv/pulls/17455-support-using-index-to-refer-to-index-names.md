@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: tk/index-by-name
 created_at: 2026-01-13T23:35:35Z
-updated_at: 2026-01-19T15:16:16Z
+updated_at: 2026-01-20T09:30:09Z
 url: https://github.com/astral-sh/uv/pull/17455
-synced_at: 2026-01-19T15:25:20Z
+synced_at: 2026-01-20T09:41:56Z
 ```
 
 # Support using `--index` to refer to index names
@@ -85,5 +85,35 @@ _Marked ready for review by @EliteTK on 2026-01-19 15:16_
 ---
 
 _Review requested from @konstin by @EliteTK on 2026-01-19 15:16_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/edit.rs`:11283 on 2026-01-20 09:20_
+
+I'd prefer workspace root only, to avoid the problem of workspace root and member declaration getting out of sync.
+
+---
+
+_@konstin reviewed on 2026-01-20 09:20_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/edit.rs`:11456 on 2026-01-20 09:22_
+
+nit: `regex::escape` the mock server URL - though that filter doesn't seem to be used?
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/edit.rs`:11501 on 2026-01-20 09:29_
+
+Can you remove the commented out code, and/or leave a TODO comment?
+
+---
+
+_@konstin approved on 2026-01-20 09:30_
+
+---
+
+_Review requested from @zanieb by @konstin on 2026-01-20 09:30_
 
 ---
