@@ -303,16 +303,492 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3789 on 2026-01-20 11:30</div>
-            <div class="timeline-body"><p>So the only AST-dependent argument here is <code>ast::ExprContext</code>, which doesn't hold a <code>TextRange</code> or node index in it. So I don't <em>think</em> that this should cause any issues with overly eager Salsa invalidation?</p>
+            <div class="timeline-body"><p>So the only AST node passed in here is <code>ast::ExprContext</code>, which doesn't hold a <code>TextRange</code> or node index in it. So I don't <em>think</em> that this should cause any issues with overly eager Salsa invalidation?</p>
 <p>https://github.com/astral-sh/ruff/blob/0a1dddbf73e368a2019617ee907b0eb271eca979/crates/ruff_python_ast/src/nodes.rs#L2478-L2486</p>
-<p>If even passing this in as an argument could cause issues, though, then it could be easily replaced with a boolean <code>in_store_context</code> parameter.</p>
+<p>If even passing this in as an argument could cause issues, though, then it could be easily replaced with a boolean <code>in_store_context</code> parameter. All we do with it is check that <code>expr_context != ExprContext::Store</code> towards the end of the method.</p>
 <p>Passing in the <code>scope_id</code>, <code>index</code> and <code>typevar_binding_context</code> are different, though... and I don't see a way to avoid that, given how special-cased several subscript operations are in the Python type system. So it may well be best to make this a Salsa-tracked query, like @MichaReiser suggests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3789 on 2026-01-20 11:35</div>
+            <div class="timeline-body"><blockquote>
+<p>But I also find it difficult to give any advice here with this little information in the summary. Where and how do we plan on using this?</p>
+</blockquote>
+<p>The main motivation is to make this a &quot;pure&quot; method that does not have side effects (does not eagerly emit diagnostics), and instead returns a <code>Result</code> that allows the caller to either emit a diagnostic or discard the error, as it sees fit.</p>
+<p>The new design will make it much easier to implement subscript support for intersections (https://github.com/astral-sh/ruff/pull/22654), because for subscript support on intersections we need to speculatively call <code>Type::subscript()</code> on each intersection element, and only report a diagnostic if the call would fail on <em>each</em> intersection element.</p>
+<p>This new design will also make it easier to improve our subscript diagnostics on union types in the future. Right now if you have an object of type <code>int | range</code> and you try to subscript it, ty will report two diagnostics -- one for subscripting an object of type <code>int</code> and one for subscripting an object of type <code>range</code>. Ideally we would combine these two into a single diagnostic, but that's hard with the current <code>TypeInferencBuilder::infer_subscript_expression_types()</code> method that eagerly emits diagnostics as soon as it encounters them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-20 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3789 on 2026-01-20 11:59</div>
+            <div class="timeline-body"><p>Always making this a salsa query might negatively impact memory usage and isn't really necessary when called in the type inference builder.</p>
+<p>I wonder if this should just be a standalone helper function instead that we call from the type inference builder (uncached), and we can later add a <code>try_subscript</code> with whatever we exactly need in <code>Type::subscript.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3789 on 2026-01-20 12:07</div>
+            <div class="timeline-body"><p>Okay, so I think we can make this a pure method that doesn't depend on state (like <code>Type::try_call</code>, <code>Type::try_iterate</code>, etc.) by moving the special cases for <code>Generic[]</code> subscripts, <code>Protocol</code> subscripts and <code>Concatenate</code> subscripts out of the method and back into the <code>TypeInferenceBuilder</code>. This patch passes all tests, and means that the <code>Type</code> method no longer needs to have <code>index</code>, <code>typevar_binding_context</code> or <code>scope</code> passed in. Unlike the special cases we apply for tuple subscripts, string-literal subscripts, etc., it isn't important for us to apply these special cases recursively: it's not necessary for us to recognise the very special nature of these special forms in the very unlikely event that they appear in a union or intersection:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index ce93043720..71f703ef62 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -109,6 +109,7 @@ use crate::types::infer::nearest_enclosing_function;
+ use crate::types::mro::{DynamicMroErrorKind, StaticMroErrorKind};
+ use crate::types::newtype::NewType;
+ use crate::types::subclass_of::SubclassOfInner;
++use crate::types::subscript::{SubscriptError, SubscriptErrorKind};
+ use crate::types::tuple::{Tuple, TupleLength, TupleSpec, TupleSpecBuilder, TupleType};
+ use crate::types::typed_dict::{
+     TypedDictAssignmentKind, validate_typed_dict_constructor, validate_typed_dict_dict_literal,
+@@ -123,7 +124,7 @@ use crate::types::{
+     TrackedConstraintSet, Truthiness, Type, TypeAliasType, TypeAndQualifiers, TypeContext,
+     TypeQualifiers, TypeVarBoundOrConstraints, TypeVarBoundOrConstraintsEvaluation,
+     TypeVarDefaultEvaluation, TypeVarIdentity, TypeVarInstance, TypeVarKind, TypeVarVariance,
+-    TypedDictType, UnionBuilder, UnionType, UnionTypeInstance, binding_type,
++    TypedDictType, UnionBuilder, UnionType, UnionTypeInstance, any_over_type, binding_type,
+     definition_expression_type, infer_scope_types, todo_type,
+ };
+ use crate::types::{CallableTypes, overrides};
+@@ -14453,20 +14454,141 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+         slice_ty: Type&lt;'db&gt;,
+         expr_context: ExprContext,
+     ) -&gt; Type&lt;'db&gt; {
+-        match value_ty.subscript(
+-            self.db(),
+-            slice_ty,
+-            expr_context,
+-            self.scope(),
+-            self.index,
+-            self.typevar_binding_context,
+-        ) {
+-            Ok(result) =&gt; result,
+-            Err(error) =&gt; {
+-                error.report_diagnostics(&amp;self.context, subscript);
+-                error.result_type()
++        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
++        enum LegacyGenericContextError&lt;'db&gt; {
++            /// It's invalid to subscript `Generic` or `Protocol` with this type.
++            InvalidArgument(Type&lt;'db&gt;),
++            /// It's invalid to subscript `Generic` or `Protocol` with a variadic tuple type.
++            /// We should emit a diagnostic for this, but we don't yet.
++            VariadicTupleArguments,
++            /// It's valid to subscribe `Generic` or `Protocol` with this type,
++            /// but the type is not yet supported.
++            NotYetSupported,
++        }
++
++        impl&lt;'db&gt; LegacyGenericContextError&lt;'db&gt; {
++            const fn into_type(self) -&gt; Type&lt;'db&gt; {
++                match self {
++                    LegacyGenericContextError::InvalidArgument(_)
++                    | LegacyGenericContextError::VariadicTupleArguments =&gt; Type::unknown(),
++                    LegacyGenericContextError::NotYetSupported =&gt; {
++                        todo_type!(&quot;ParamSpecs and TypeVarTuples&quot;)
++                    }
++                }
+             }
+         }
++
++        let db = self.db();
++
++        let legacy_generic_class_context = |typevars: Type&lt;'db&gt;| -&gt; Result&lt;
++            GenericContext&lt;'db&gt;,
++            LegacyGenericContextError&lt;'db&gt;,
++        &gt; {
++            let typevars_class_tuple_spec = typevars.exact_tuple_instance_spec(db);
++
++            let typevars = if let Some(tuple_spec) = typevars_class_tuple_spec.as_deref() {
++                match tuple_spec {
++                    Tuple::Fixed(typevars) =&gt; typevars.elements_slice(),
++                    Tuple::Variable(_) =&gt; {
++                        return Err(LegacyGenericContextError::VariadicTupleArguments);
++                    }
++                }
++            } else {
++                std::slice::from_ref(&amp;typevars)
++            };
++
++            let typevars: Result&lt;FxOrderSet&lt;_&gt;, LegacyGenericContextError&lt;'db&gt;&gt; = typevars
++                .iter()
++                .map(|typevar| {
++                    let argument_ty = *typevar;
++                    if let Type::KnownInstance(KnownInstanceType::TypeVar(typevar)) = argument_ty {
++                        bind_typevar(
++                            db,
++                            self.index,
++                            self.scope().file_scope_id(db),
++                            self.typevar_binding_context,
++                            typevar,
++                        )
++                        .ok_or(LegacyGenericContextError::InvalidArgument(argument_ty))
++                    } else if any_over_type(
++                        db,
++                        argument_ty,
++                        &amp;|ty| match ty {
++                            Type::Dynamic(
++                                DynamicType::TodoUnpack | DynamicType::TodoStarredExpression,
++                            ) =&gt; true,
++                            Type::NominalInstance(nominal) =&gt; {
++                                nominal.has_known_class(db, KnownClass::TypeVarTuple)
++                            }
++                            _ =&gt; false,
++                        },
++                        true,
++                    ) {
++                        Err(LegacyGenericContextError::NotYetSupported)
++                    } else {
++                        Err(LegacyGenericContextError::InvalidArgument(argument_ty))
++                    }
++                })
++                .collect();
++            typevars.map(|typevars| GenericContext::from_typevar_instances(db, typevars))
++        };
++
++        // Special typing forms for which subscriptions are context-dependent are parsed here,
++        // outside of `Type::subscript`, which is a pure function that doesn't depend on the
++        // semantic index or any context-dependent state.
++        let subscript_result = match value_ty {
++            Type::SpecialForm(SpecialFormType::Generic) =&gt; {
++                match legacy_generic_class_context(slice_ty) {
++                    Ok(context) =&gt; Ok(Type::KnownInstance(KnownInstanceType::SubscriptedGeneric(
++                        context,
++                    ))),
++                    Err(LegacyGenericContextError::InvalidArgument(argument_ty)) =&gt; {
++                        Err(SubscriptError::new(
++                            Type::unknown(),
++                            SubscriptErrorKind::InvalidLegacyGenericArgument {
++                                origin: &quot;Generic&quot;,
++                                argument_ty,
++                            },
++                        ))
++                    }
++                    Err(error) =&gt; Ok(error.into_type()),
++                }
++            }
++            Type::SpecialForm(SpecialFormType::Protocol) =&gt; {
++                match legacy_generic_class_context(slice_ty) {
++                    Ok(context) =&gt; Ok(Type::KnownInstance(KnownInstanceType::SubscriptedProtocol(
++                        context,
++                    ))),
++                    Err(LegacyGenericContextError::InvalidArgument(argument_ty)) =&gt; {
++                        Err(SubscriptError::new(
++                            Type::unknown(),
++                            SubscriptErrorKind::InvalidLegacyGenericArgument {
++                                origin: &quot;Protocol&quot;,
++                                argument_ty,
++                            },
++                        ))
++                    }
++                    Err(error) =&gt; Ok(error.into_type()),
++                }
++            }
++            Type::SpecialForm(SpecialFormType::Concatenate) =&gt; {
++                // TODO: Add proper support for `Concatenate`
++                let mut variables = FxOrderSet::default();
++                slice_ty.bind_and_find_all_legacy_typevars(
++                    db,
++                    self.typevar_binding_context,
++                    &amp;mut variables,
++                );
++                let generic_context = GenericContext::from_typevar_instances(db, variables);
++                Ok(Type::Dynamic(DynamicType::UnknownGeneric(generic_context)))
++            }
++            _ =&gt; value_ty.subscript(self.db(), slice_ty, expr_context),
++        };
++
++        subscript_result.unwrap_or_else(|e| {
++            e.report_diagnostics(&amp;self.context, subscript);
++            e.result_type()
++        })
+     }
+ 
+     fn infer_slice_expression(&amp;mut self, slice: &amp;ast::ExprSlice) -&gt; Type&lt;'db&gt; {
+diff --git a/crates/ty_python_semantic/src/types/subscript.rs b/crates/ty_python_semantic/src/types/subscript.rs
+index 9397e7e3e3..e78465d401 100644
+--- a/crates/ty_python_semantic/src/types/subscript.rs
++++ b/crates/ty_python_semantic/src/types/subscript.rs
+@@ -1,12 +1,9 @@
+ use itertools::Itertools;
+ use ruff_python_ast as ast;
+ 
++use crate::Db;
+ use crate::place::{DefinedPlace, Definedness, Place};
+-use crate::semantic_index::SemanticIndex;
+-use crate::semantic_index::definition::Definition;
+-use crate::semantic_index::scope::ScopeId;
+ use crate::subscript::{PyIndex, PySlice};
+-use crate::{Db, FxOrderSet};
+ 
+ use super::call::{Bindings, CallArguments, CallDunderError, CallError, CallErrorKind};
+ use super::class::KnownClass;
+@@ -17,12 +14,10 @@ use super::diagnostic::{
+     report_index_out_of_bounds, report_invalid_key_on_typed_dict, report_not_subscriptable,
+     report_slice_step_size_zero,
+ };
+-use super::generics::{GenericContext, bind_typevar};
+ use super::infer::TypeContext;
+ use super::instance::SliceLiteral;
+ use super::special_form::SpecialFormType;
+-use super::tuple::{Tuple, TupleSpec};
+-use super::visitor::any_over_type;
++use super::tuple::TupleSpec;
+ use super::{
+     DynamicType, KnownInstanceType, Type, TypeAliasType, UnionBuilder, UnionType, todo_type,
+ };
+@@ -34,7 +29,7 @@ pub(crate) struct SubscriptError&lt;'db&gt; {
+ }
+ 
+ #[derive(Debug)]
+-enum SubscriptErrorKind&lt;'db&gt; {
++pub(crate) enum SubscriptErrorKind&lt;'db&gt; {
+     /// An index is out of bounds for a literal tuple/string/bytes subscript.
+     IndexOutOfBounds {
+         kind: &amp;'static str,
+@@ -83,7 +78,7 @@ enum SubscriptErrorKind&lt;'db&gt; {
+ }
+ 
+ impl&lt;'db&gt; SubscriptError&lt;'db&gt; {
+-    fn new(result_ty: Type&lt;'db&gt;, error: SubscriptErrorKind&lt;'db&gt;) -&gt; Self {
++    pub(crate) fn new(result_ty: Type&lt;'db&gt;, error: SubscriptErrorKind&lt;'db&gt;) -&gt; Self {
+         Self {
+             result_ty,
+             errors: vec![error],
+@@ -293,87 +288,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+         db: &amp;'db dyn Db,
+         slice_ty: Type&lt;'db&gt;,
+         expr_context: ast::ExprContext,
+-        scope_id: ScopeId&lt;'db&gt;,
+-        index: &amp;'db SemanticIndex&lt;'db&gt;,
+-        typevar_binding_context: Option&lt;Definition&lt;'db&gt;&gt;,
+     ) -&gt; Result&lt;Type&lt;'db&gt;, SubscriptError&lt;'db&gt;&gt; {
+-        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+-        enum LegacyGenericContextError&lt;'db&gt; {
+-            /// It's invalid to subscript `Generic` or `Protocol` with this type.
+-            InvalidArgument(Type&lt;'db&gt;),
+-            /// It's invalid to subscript `Generic` or `Protocol` with a variadic tuple type.
+-            /// We should emit a diagnostic for this, but we don't yet.
+-            VariadicTupleArguments,
+-            /// It's valid to subscribe `Generic` or `Protocol` with this type,
+-            /// but the type is not yet supported.
+-            NotYetSupported,
+-        }
+-
+-        impl&lt;'db&gt; LegacyGenericContextError&lt;'db&gt; {
+-            const fn into_type(self) -&gt; Type&lt;'db&gt; {
+-                match self {
+-                    LegacyGenericContextError::InvalidArgument(_)
+-                    | LegacyGenericContextError::VariadicTupleArguments =&gt; Type::unknown(),
+-                    LegacyGenericContextError::NotYetSupported =&gt; {
+-                        todo_type!(&quot;ParamSpecs and TypeVarTuples&quot;)
+-                    }
+-                }
+-            }
+-        }
+-
+-        let legacy_generic_class_context = |typevars: Type&lt;'db&gt;| -&gt; Result&lt;
+-            GenericContext&lt;'db&gt;,
+-            LegacyGenericContextError&lt;'db&gt;,
+-        &gt; {
+-            let typevars_class_tuple_spec = typevars.exact_tuple_instance_spec(db);
+-
+-            let typevars = if let Some(tuple_spec) = typevars_class_tuple_spec.as_deref() {
+-                match tuple_spec {
+-                    Tuple::Fixed(typevars) =&gt; typevars.elements_slice(),
+-                    Tuple::Variable(_) =&gt; {
+-                        return Err(LegacyGenericContextError::VariadicTupleArguments);
+-                    }
+-                }
+-            } else {
+-                std::slice::from_ref(&amp;typevars)
+-            };
+-
+-            let typevars: Result&lt;FxOrderSet&lt;_&gt;, LegacyGenericContextError&lt;'db&gt;&gt; = typevars
+-                .iter()
+-                .map(|typevar| {
+-                    let argument_ty = *typevar;
+-                    if let Type::KnownInstance(KnownInstanceType::TypeVar(typevar)) = argument_ty {
+-                        bind_typevar(
+-                            db,
+-                            index,
+-                            scope_id.file_scope_id(db),
+-                            typevar_binding_context,
+-                            typevar,
+-                        )
+-                        .ok_or(LegacyGenericContextError::InvalidArgument(argument_ty))
+-                    } else if any_over_type(
+-                        db,
+-                        argument_ty,
+-                        &amp;|ty| match ty {
+-                            Type::Dynamic(
+-                                DynamicType::TodoUnpack | DynamicType::TodoStarredExpression,
+-                            ) =&gt; true,
+-                            Type::NominalInstance(nominal) =&gt; {
+-                                nominal.has_known_class(db, KnownClass::TypeVarTuple)
+-                            }
+-                            _ =&gt; false,
+-                        },
+-                        true,
+-                    ) {
+-                        Err(LegacyGenericContextError::NotYetSupported)
+-                    } else {
+-                        Err(LegacyGenericContextError::InvalidArgument(argument_ty))
+-                    }
+-                })
+-                .collect();
+-            typevars.map(|typevars| GenericContext::from_typevar_instances(db, typevars))
+-        };
+-
+         let value_ty = self;
+ 
+         let inferred = match (value_ty, slice_ty) {
+@@ -383,18 +298,12 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 db,
+                 slice_ty,
+                 expr_context,
+-                scope_id,
+-                index,
+-                typevar_binding_context,
+             )),
+ 
+             (_, Type::TypeAlias(alias)) =&gt; Some(value_ty.subscript(
+                 db,
+                 alias.value_type(db),
+                 expr_context,
+-                scope_id,
+-                index,
+-                typevar_binding_context,
+             )),
+ 
+             (Type::Union(union), _) =&gt; Some(map_union_subscript(db, union, |element| {
+@@ -402,9 +311,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                     db,
+                     slice_ty,
+                     expr_context,
+-                    scope_id,
+-                    index,
+-                    typevar_binding_context,
+                 )
+             })),
+ 
+@@ -413,9 +319,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                     db,
+                     element,
+                     expr_context,
+-                    scope_id,
+-                    index,
+-                    typevar_binding_context,
+                 )
+             })),
+ 
+@@ -556,9 +459,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                     db,
+                     Type::IntLiteral(i64::from(bool)),
+                     expr_context,
+-                    scope_id,
+-                    index,
+-                    typevar_binding_context,
+                 ))
+             }
+ 
+@@ -569,30 +469,9 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                     db,
+                     Type::IntLiteral(i64::from(bool)),
+                     expr_context,
+-                    scope_id,
+-                    index,
+-                    typevar_binding_context,
+                 ))
+             }
+ 
+-            (Type::SpecialForm(SpecialFormType::Protocol), typevars) =&gt; Some(
+-                match legacy_generic_class_context(typevars) {
+-                    Ok(context) =&gt; Ok(Type::KnownInstance(
+-                        KnownInstanceType::SubscriptedProtocol(context),
+-                    )),
+-                    Err(LegacyGenericContextError::InvalidArgument(argument_ty)) =&gt; Err(
+-                        SubscriptError::new(
+-                            Type::unknown(),
+-                            SubscriptErrorKind::InvalidLegacyGenericArgument {
+-                                origin: &quot;Protocol&quot;,
+-                                argument_ty,
+-                            },
+-                        ),
+-                    ),
+-                    Err(error) =&gt; Ok(error.into_type()),
+-                },
+-            ),
+-
+             (Type::KnownInstance(KnownInstanceType::SubscriptedProtocol(_)), _) =&gt; {
+                 // TODO: emit a diagnostic
+                 Some(Ok(todo_type!(&quot;doubly-specialized typing.Protocol&quot;)))
+@@ -611,24 +490,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 )))
+             }
+ 
+-            (Type::SpecialForm(SpecialFormType::Generic), typevars) =&gt; Some(
+-                match legacy_generic_class_context(typevars) {
+-                    Ok(context) =&gt; Ok(Type::KnownInstance(
+-                        KnownInstanceType::SubscriptedGeneric(context),
+-                    )),
+-                    Err(LegacyGenericContextError::InvalidArgument(argument_ty)) =&gt; Err(
+-                        SubscriptError::new(
+-                            Type::unknown(),
+-                            SubscriptErrorKind::InvalidLegacyGenericArgument {
+-                                origin: &quot;Generic&quot;,
+-                                argument_ty,
+-                            },
+-                        ),
+-                    ),
+-                    Err(error) =&gt; Ok(error.into_type()),
+-                },
+-            ),
+-
+             (Type::KnownInstance(KnownInstanceType::SubscriptedGeneric(_)), _) =&gt; {
+                 // TODO: emit a diagnostic
+                 Some(Ok(todo_type!(&quot;doubly-specialized typing.Generic&quot;)))
+@@ -638,18 +499,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 Some(Ok(Type::Dynamic(DynamicType::TodoUnpack)))
+             }
+ 
+-            (Type::SpecialForm(SpecialFormType::Concatenate), _) =&gt; {
+-                // TODO: Add proper support for `Concatenate`
+-                let mut variables = FxOrderSet::default();
+-                slice_ty.bind_and_find_all_legacy_typevars(
+-                    db,
+-                    typevar_binding_context,
+-                    &amp;mut variables,
+-                );
+-                let generic_context = GenericContext::from_typevar_instances(db, variables);
+-                Some(Ok(Type::Dynamic(DynamicType::UnknownGeneric(generic_context))))
+-            }
+-
+             (Type::SpecialForm(special_form), _) if special_form.class().is_special_form() =&gt; {
+                 Some(Ok(todo_type!(&quot;Inference of subscript on special form&quot;)))
+             }
+</code></pre>
+</details>
+
+<p>Then we don't need to add any Salsa caching, and we end up with a very similar design to what we use elsewhere for recursive operations on <code>Type</code>s.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 11:36:27 UTC
+        Synced at 2026-01-20 12:38:57 UTC
     </footer>
 </body>
 </html>
