@@ -9,9 +9,9 @@ labels:
   - typing semantics
 assignees: []
 created_at: 2026-01-18T12:22:29Z
-updated_at: 2026-01-18T12:23:06Z
+updated_at: 2026-01-20T02:17:03Z
 url: https://github.com/astral-sh/ty/issues/2553
-synced_at: 2026-01-18T13:20:36Z
+synced_at: 2026-01-20T02:39:58Z
 ```
 
 # No `invalid-type-form` errors for invalid type forms in quoted annotations
@@ -45,5 +45,9 @@ _Label `typing semantics` added by @AlexWaygood on 2026-01-18 12:22_
 ---
 
 _Added to milestone `Stable` by @AlexWaygood on 2026-01-18 12:22_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-20 02:17_
 
 ---
