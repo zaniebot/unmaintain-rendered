@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Allow shadowing non-builtin bindings (`UP029`) - astral-sh/ruff #22749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Allow shadowing non-builtin bindings (<code>UP029</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22749">#22749</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2026-01-20 00:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I thought the fix unsafety example in the <a href="https://docs.astral.sh/ruff/rules/unnecessary-builtin-import/#fix-safety">rule docs</a> looked a bit suspicious
+while I was going through more potential default rules today (<a href="https://play.ruff.rs/f1a8b73d-6277-4414-b918-44bbba2863c2">playground</a>):</p>
+<pre><code class="language-py">def str(x):
+    return x
+
+from builtins import str
+
+str(1)  # `&quot;1&quot;` with the import, `1` without
+</code></pre>
+<p>Changing the behavior in this way seemed to go beyond fix unsafety and into bug
+territory. Sure enough, there was an existing bug report in #16182.</p>
+<p>This PR fixes #16182 (and the fix safety example) by checking that the builtin
+import that the rule flags is actually shadowing a builtin binding. I also left
+an exception for <code>from builtins import *</code>, but we could consider ignoring that
+case too.</p>
+<p>I initially tried reusing <code>SemanticModel::resolve_name</code> and <code>only_binding</code>, but
+they are specific to <code>ExprName</code>s because that seems to be all that is inserted
+into the <code>SemanticModel::resolved_names</code> map.</p>
+<h2>Test Plan</h2>
+<p>New tests based on #16182 and the fix safety docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2026-01-20 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2026-01-20 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2026-01-20 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2026-01-20 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-20 00:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-20 01:41:48 UTC
+    </footer>
+</body>
+</html>
