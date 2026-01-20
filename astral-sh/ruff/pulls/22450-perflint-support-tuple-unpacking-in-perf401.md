@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-20T02:29:50Z
+updated_at: 2026-01-20T02:36:17Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-20T02:40:20Z
+synced_at: 2026-01-20T03:42:49Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -698,5 +698,15 @@ No worries, and no rush! Thanks for working on this!
 ---
 
 _@ntBre reviewed on 2026-01-20 00:40_
+
+---
+
+_@Jkhall81 reviewed on 2026-01-20 02:36_
+
+---
+
+_Review comment by @Jkhall81 on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:260 on 2026-01-20 02:36_
+
+I updated `manual_list_comprehension.rs` and `PERF401.py` to incorporate all of your suggested changes.
 
 ---

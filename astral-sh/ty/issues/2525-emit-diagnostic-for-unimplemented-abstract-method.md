@@ -7,9 +7,9 @@ author: vepain
 labels: []
 assignees: []
 created_at: 2026-01-15T21:43:37Z
-updated_at: 2026-01-16T00:48:08Z
+updated_at: 2026-01-20T02:41:32Z
 url: https://github.com/astral-sh/ty/issues/2525
-synced_at: 2026-01-16T01:03:50Z
+synced_at: 2026-01-20T03:42:31Z
 ```
 
 # Emit diagnostic for unimplemented abstract method on @final class
@@ -77,5 +77,9 @@ _Added to milestone `Stable` by @carljm on 2026-01-16 00:10_
 ---
 
 _Renamed from "False negative for unimplemented abstract method for classes decorated with @final" to "Emit diagnostic for unimplemented abstract method on @final class" by @carljm on 2026-01-16 00:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-20 02:41_
 
 ---
