@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T17:22:07Z
+updated_at: 2026-01-20T18:46:48Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T17:37:12Z
+synced_at: 2026-01-20T18:47:35Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -531,5 +532,9 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/bu
 ---
 
 _@AlexWaygood reviewed on 2026-01-20 17:22_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-20 18:46_
 
 ---

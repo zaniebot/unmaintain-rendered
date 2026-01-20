@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-20T09:28:18Z
-updated_at: 2026-01-20T17:16:00Z
+updated_at: 2026-01-20T18:41:58Z
 url: https://github.com/astral-sh/ruff/issues/22759
-synced_at: 2026-01-20T17:37:00Z
+synced_at: 2026-01-20T18:47:21Z
 ```
 
 # numpy 2.4 function removals
@@ -85,5 +85,21 @@ _Label `rule` added by @ntBre on 2026-01-20 17:16_
 ---
 
 _Label `needs-decision` added by @ntBre on 2026-01-20 17:16_
+
+---
+
+_Comment by @JohannesBuchner on 2026-01-20 18:40_
+
+matplotlib is another common package worth thinking about, their list of deprecated functions and modules is very long (but almost all of them I have never heard of).
+
+---
+
+_Comment by @JohannesBuchner on 2026-01-20 18:41_
+
+> Thanks for the suggestion! I think some of these 2.4 deprecations are already included in [numpy2-deprecation (NPY201)](https://docs.astral.sh/ruff/rules/numpy2-deprecation/#numpy2-deprecation-npy201). I see [`numpy.trapz`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L554), [`numpy.n1d`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L324), and [`numpy.disp`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L286) at least. We could probably just expand that rule with the few missing ones for 2.4.
+
+That's great. Maybe the description could be updated, currently it sounds like it is specific to 2.0, but it would make sense to keep the rule evolving with all numpy 2.* versions.
+
+
 
 ---

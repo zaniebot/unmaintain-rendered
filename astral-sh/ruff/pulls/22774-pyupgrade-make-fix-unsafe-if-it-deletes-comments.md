@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: UP039
 created_at: 2026-01-20T18:26:26Z
-updated_at: 2026-01-20T18:26:26Z
+updated_at: 2026-01-20T18:42:19Z
 url: https://github.com/astral-sh/ruff/pull/22774
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-20T18:47:35Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP039`)
@@ -36,6 +36,26 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
 ## Test Plan
 
 <!-- How was it tested? -->
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-20 18:42_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
 
 
 ---

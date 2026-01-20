@@ -6,13 +6,14 @@ state: open
 author: bxff
 labels:
   - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: ty/support-typing-unpack
 created_at: 2026-01-20T17:57:41Z
-updated_at: 2026-01-20T18:19:53Z
+updated_at: 2026-01-20T18:46:11Z
 url: https://github.com/astral-sh/ruff/pull/22771
-synced_at: 2026-01-20T18:40:22Z
+synced_at: 2026-01-20T18:47:35Z
 ```
 
 # [ty] Support `Unpack[TypedDict]` for precise **kwargs typing (PEP 692)
@@ -420,5 +421,9 @@ prefect (https://github.com/PrefectHQ/prefect)
 
 
 
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2026-01-20 18:46_
 
 ---
