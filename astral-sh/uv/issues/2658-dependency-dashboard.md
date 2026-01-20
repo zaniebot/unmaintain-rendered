@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T10:54:29Z
+updated_at: 2026-01-20T12:28:50Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T11:33:11Z
+synced_at: 2026-01-20T12:35:53Z
 ```
 
 # Dependency Dashboard
@@ -55,8 +55,6 @@ The following updates are awaiting their schedule. To get an update now, click o
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
  - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
- - [ ] <!-- rebase-branch=renovate/tokio-stream-0.x-lockfile -->[Update Rust crate tokio-stream to v0.1.18](../pull/17572)
- - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/17591)
  - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
  - [ ] <!-- rebase-branch=renovate/artifact-github-actions-dependencies -->[Update Artifact GitHub Actions dependencies](../pull/14202) (`actions/download-artifact`, `actions/upload-artifact`)
@@ -71,7 +69,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.7
  - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.14
  - [ ] <!-- approvePr-branch=renovate/thiserror-2.x-lockfile -->Update Rust crate thiserror to v2.0.18
- - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
+ - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.8.0
  - [ ] <!-- approvePr-branch=renovate/conda-incubator-setup-miniconda-3.x -->Update conda-incubator/setup-miniconda action to v3.3.0
  - [ ] <!-- approvePr-branch=renovate/msrv -->Update MSRV to v1.92.0
  - [ ] <!-- approvePr-branch=renovate/zizmorcore-zizmor-action-0.x -->Update zizmorcore/zizmor-action action to v0.4.1
@@ -84,8 +82,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 6865550](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
- - [ ] <!-- rebase-branch=renovate/tokio-rustls-0.x-lockfile -->[Update Rust crate tokio-rustls to v0.26.4](../pull/17571)
- - [ ] <!-- rebase-branch=renovate/tokio-util-0.x-lockfile -->[Update Rust crate tokio-util to v0.7.18](../pull/17573)
  - [ ] <!-- rebase-branch=renovate/toml-0.x-lockfile -->[Update Rust crate toml to v0.9.11](../pull/17574)
  - [ ] <!-- rebase-branch=renovate/http-1.x-lockfile -->[Update Rust crate http to v1.4.0](../pull/17518)
  - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/17592)
@@ -154,7 +150,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `hex 0.4.3`
  - `html-escape 0.2.13`
  - `http 1.1.0` → [Updates: `1.1.0`]
- - `indexmap 2.5.0` → [Updates: `2.5.0`]
+ - `indexmap 2.5.0`
  - `indicatif 0.18.0`
  - `indoc 2.0.5`
  - `itertools 0.14.0`
@@ -211,8 +207,8 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `thiserror 2.0.0` → [Updates: `2.0.0`]
  - `astral-tl 0.7.11`
  - `tokio 1.40.0`
- - `tokio-stream 0.1.16` → [Updates: `0.1.16`]
- - `tokio-util 0.7.12` → [Updates: `0.7.12`]
+ - `tokio-stream 0.1.16`
+ - `tokio-util 0.7.12`
  - `toml 0.9.2` → [Updates: `0.9.2`]
  - `toml_edit 0.24.0`
  - `tracing 0.1.40`
@@ -250,7 +246,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `temp-env 0.3.6`
  - `test-case 3.3.1`
  - `test-log 0.2.16`
- - `tokio-rustls 0.26.2` → [Updates: `0.26.2`]
+ - `tokio-rustls 0.26.2`
  - `whoami 2.0.0`
 
 </details>
@@ -601,11 +597,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.2`]
  - `actions/download-artifact v4.1.8@fa0a91b85d4f404e444e00e005971372dc801d16` → [Updates: `v7.0.0`]
- - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.8.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `taiki-e/install-action v2.66.1@3522286d40783523f9c7880e33f785905b4c20d0` → [Updates: `v2.66.2`]
- - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.7.0`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f` → [Updates: `v4.8.0`]
 
 </details>
 

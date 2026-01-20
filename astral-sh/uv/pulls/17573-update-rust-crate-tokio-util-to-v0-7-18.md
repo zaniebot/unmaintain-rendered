@@ -2,18 +2,19 @@
 number: 17573
 title: Update Rust crate tokio-util to v0.7.18
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/tokio-util-0.x-lockfile
 created_at: 2026-01-19T01:31:22Z
-updated_at: 2026-01-19T19:14:36Z
+updated_at: 2026-01-20T12:27:37Z
 url: https://github.com/astral-sh/uv/pull/17573
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-20T12:36:03Z
 ```
 
 # Update Rust crate tokio-util to v0.7.18
@@ -76,5 +77,17 @@ _Comment by @EliteTK on 2026-01-19 15:33_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @EliteTK on 2026-01-20 12:27_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 12:27_
+
+---
+
+_Branch deleted on 2026-01-20 12:27_
 
 ---

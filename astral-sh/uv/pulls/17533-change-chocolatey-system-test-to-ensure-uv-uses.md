@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-16T17:40:54Z
-updated_at: 2026-01-19T15:39:00Z
+updated_at: 2026-01-20T12:32:07Z
 url: https://github.com/astral-sh/uv/pull/17533
-synced_at: 2026-01-19T16:27:20Z
+synced_at: 2026-01-20T12:36:03Z
 ```
 
 # Change chocolatey system test to ensure uv uses the right python
@@ -121,5 +121,11 @@ What might also work: We could try to set `$env:PATH` from the registry and invo
 ---
 
 _Renamed from "Set `UV_TEST_PYTHON_PATH` for the chocolatey system test to ensure uv uses the right python" to "Change chocolatey system test to ensure uv uses the right python" by @EliteTK on 2026-01-19 15:39_
+
+---
+
+_Comment by @EliteTK on 2026-01-20 12:32_
+
+@zanieb I went with the approach of refreshing the path from the registry. Although this means that `GITHUB_PATH` won't work properly...
 
 ---

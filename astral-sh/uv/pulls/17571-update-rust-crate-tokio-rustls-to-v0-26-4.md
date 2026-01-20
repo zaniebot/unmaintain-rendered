@@ -2,18 +2,19 @@
 number: 17571
 title: Update Rust crate tokio-rustls to v0.26.4
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
   - "build:skip-release"
 assignees: []
+merged: true
 base: main
 head: renovate/tokio-rustls-0.x-lockfile
 created_at: 2026-01-19T01:31:04Z
-updated_at: 2026-01-19T19:14:34Z
+updated_at: 2026-01-20T12:02:57Z
 url: https://github.com/astral-sh/uv/pull/17571
-synced_at: 2026-01-19T19:29:44Z
+synced_at: 2026-01-20T12:36:03Z
 ```
 
 # Update Rust crate tokio-rustls to v0.26.4
@@ -57,5 +58,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:31_
 ---
 
 _Label `build:skip-release` added by @renovate[bot] on 2026-01-19 19:14_
+
+---
+
+_Merged by @konstin on 2026-01-20 12:02_
+
+---
+
+_Closed by @konstin on 2026-01-20 12:02_
+
+---
+
+_Branch deleted on 2026-01-20 12:02_
 
 ---

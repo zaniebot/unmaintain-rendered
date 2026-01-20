@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: RUF020
 created_at: 2026-01-17T20:59:42Z
-updated_at: 2026-01-19T20:34:20Z
+updated_at: 2026-01-20T12:11:15Z
 url: https://github.com/astral-sh/ruff/pull/22664
-synced_at: 2026-01-19T21:33:07Z
+synced_at: 2026-01-20T12:35:50Z
 ```
 
 # [`ruff`] Make fix unsafe if it deletes comments (`RUF020`)
@@ -105,5 +105,13 @@ diagnostic.set_applicable_fix(checker.comment_ranges(), edit);
 ```
 
 could also be nice. I don't think `checker.contains_comments(ranged)` returning a bool is _that_ much of an improvement over the status quo, so I wanted it to return or even set the applicability too.
+
+---
+
+_Review requested from @amyreese by @chirizxc on 2026-01-20 12:10_
+
+---
+
+_Review requested from @ntBre by @chirizxc on 2026-01-20 12:10_
 
 ---
