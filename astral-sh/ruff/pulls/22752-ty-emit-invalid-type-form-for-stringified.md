@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/inf
 created_at: 2026-01-20T02:17:08Z
-updated_at: 2026-01-20T02:24:51Z
+updated_at: 2026-01-20T05:20:10Z
 url: https://github.com/astral-sh/ruff/pull/22752
-synced_at: 2026-01-20T02:40:20Z
+synced_at: 2026-01-20T05:34:25Z
 ```
 
 # [ty] Emit invalid type form for stringified annotations
@@ -205,5 +205,15 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-20 02:24_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-20 02:24_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/annotations/string.md`:211 on 2026-01-20 05:13_
+
+Unrelated to this PR, but maybe we should avoid raising diagnostics for inner elements like "int literals" here and only emit the "list literal" diagnostic.
+
+---
+
+_@dhruvmanila approved on 2026-01-20 05:20_
 
 ---

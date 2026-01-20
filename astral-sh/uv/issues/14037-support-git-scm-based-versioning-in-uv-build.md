@@ -10,9 +10,9 @@ labels:
   - build-backend
 assignees: []
 created_at: 2025-06-14T09:25:44Z
-updated_at: 2026-01-20T00:50:35Z
+updated_at: 2026-01-20T05:06:40Z
 url: https://github.com/astral-sh/uv/issues/14037
-synced_at: 2026-01-20T01:38:39Z
+synced_at: 2026-01-20T05:34:30Z
 ```
 
 # Support Git scm-based versioning in `uv` build backend
@@ -101,5 +101,13 @@ _Comment by @mcarans on 2026-01-20 00:50_
 > You can switch to uv and keep hatchling around as the build backend.
 
 I have made that switch, but wonder what niche uv_build is meant to fill if hatchling provides a decent backend for uv?
+
+---
+
+_Comment by @zanieb on 2026-01-20 05:06_
+
+> [...], but wonder what niche uv_build is meant to fill if hatchling provides a decent backend for uv?
+
+The first niche it's intended to fill is good out of the box user experience for basic project workflows, i.e., not even necessarily cases where you're publishing packages or worrying about version management techniques. The initial goal was to build something that integrates well with uv and addresses early pain points for users who aren't used to having a build system. We'll be exploring expanding the use cases it serves — it already has most of the common settings you'd need, but there are more advanced stories we haven't solved yet. This particular feature is hard because it introduces dynamic project metadata, which is broadly problematic in the packaging ecosystem and not something we want to casually embrace.
 
 ---

@@ -2,16 +2,16 @@
 number: 2569
 title: ty highlights the entire class in diagnostic to indicate type variable
 type: issue
-state: open
+state: closed
 author: dhruvmanila
 labels:
   - bug
   - diagnostics
 assignees: []
 created_at: 2026-01-20T04:18:21Z
-updated_at: 2026-01-20T04:19:08Z
+updated_at: 2026-01-20T05:06:38Z
 url: https://github.com/astral-sh/ty/issues/2569
-synced_at: 2026-01-20T04:32:05Z
+synced_at: 2026-01-20T05:34:07Z
 ```
 
 # ty highlights the entire class in diagnostic to indicate type variable
@@ -65,5 +65,15 @@ _Label `diagnostics` added by @dhruvmanila on 2026-01-20 04:18_
 ---
 
 _Label `bug` added by @dhruvmanila on 2026-01-20 04:19_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-20 05:06_
+
+Oops, this was fixed in https://github.com/astral-sh/ruff/pull/22646
+
+---
+
+_Closed by @dhruvmanila on 2026-01-20 05:06_
 
 ---

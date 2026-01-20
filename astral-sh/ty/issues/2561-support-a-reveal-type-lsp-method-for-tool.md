@@ -6,11 +6,12 @@ state: open
 author: KotlinIsland
 labels:
   - server
+  - editor
 assignees: []
 created_at: 2026-01-19T11:09:46Z
-updated_at: 2026-01-19T11:22:04Z
+updated_at: 2026-01-20T05:30:17Z
 url: https://github.com/astral-sh/ty/issues/2561
-synced_at: 2026-01-19T12:32:18Z
+synced_at: 2026-01-20T05:34:07Z
 ```
 
 # support a "reveal type" lsp method for tool integration
@@ -46,5 +47,9 @@ I'd be open to that as it doesn't expose much internals. Can you say a little mo
 I'd be inclined to make the result type an object with only a full qualified name string for now. It will make it easier to expose more information later. 
 
 Are there other LSP methods that you expect are needed for Pycharm?
+
+---
+
+_Label `editor` added by @dhruvmanila on 2026-01-20 05:30_
 
 ---
