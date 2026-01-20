@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to create a single file *installable* python package - astral-sh/uv #17632</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to create a single file <em>installable</em> python package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17632">#17632</a>
+        opened by <a href="https://github.com/ntninja">@ntninja</a>
+        on 2026-01-20 20:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntninja">@ntninja</a></div>
+            <div class="timeline-body">Question
+<p>I have (or rather someone else has) a project with this structure:</p>
+<pre><code>pip/
+    flatpak-pip-generator.py
+    pyproject.toml
+    readme.my
+    uv.lock
+</code></pre>
+<p>I tried renaming <code>flatpak-pip-generator.py</code> to <code>flatpak_pip_generator.py</code> and adding the following to <code>pyproject.toml</code> to make it installable as single command using <code>pipx</code>:</p>
+<pre><code>diff --git a/pip/pyproject.toml b/pip/pyproject.toml
+index 1b6558d..cdba620 100644
+--- a/pip/pyproject.toml
++++ b/pip/pyproject.toml
+@@ -1,5 +1,9 @@
++[build-system]
++requires = [&quot;uv_build&gt;=0.9.26,&lt;0.10.0&quot;]
++build-backend = &quot;uv_build&quot;
++
+ [project]
+-name = &quot;flatpak_pip_generator&quot;
++name = &quot;flatpak-pip-generator&quot;
+ version = &quot;0.0.1&quot;
+ description = &quot;Tool to automatically generate flatpak-builder manifest for pip modules&quot;
+ license = {text = &quot;MIT&quot;}
+@@ -14,6 +18,9 @@ dependencies = [
+ Homepage = &quot;https://github.com/flatpak/flatpak-builder-tools/tree/master/pip&quot;
+ Repository = &quot;https://github.com/flatpak/flatpak-builder-tools.git&quot;
+ 
++[project.scripts]
++flatpak-pip-generator = &quot;flatpak_pip_generator:main&quot;
++
+ [dependency-groups]
+ dev = [
+     &quot;mypy&lt;2.0.0,&gt;=1.11.2&quot;,
+</code></pre>
+<p>However installation using <code>pipx</code> fails since <code>uv</code> seems to insist in locating the single script at <code>src/flatpak_pip_generator/__init__.py</code>, rather than just <code>flatpak_pip_generator.py</code>:</p>
+<pre><code>$ pipx install git+file://./home/user/src-ext/flatpak-builder-tools#subdirectory=pip
+  error: subprocess-exited-with-error
+  
+  × Building wheel for flatpak-pip-generator (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [12 lines of output]
+      Error: Expected a Python module at: src/flatpak_pip_generator/__init__.py
+      
+      Stack backtrace:
+         0: &lt;unknown&gt;
+         1: &lt;unknown&gt;
+         2: &lt;unknown&gt;
+         3: &lt;unknown&gt;
+         4: __libc_start_call_main
+                   at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+         5: __libc_start_main_impl
+                   at ./csu/../csu/libc-start.c:360:3
+         6: &lt;unknown&gt;
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for flatpak-pip-generator
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─&gt; flatpak-pip-generator
+Cannot determine package name from spec &#x27;git+file://./home/user/src-ext/flatpak-builder-tools#subdirectory=pip&#x27;. Check package spec for
+errors.
+[1]    2423299 exit 1     pipx install 
+</code></pre>
+<p>How does one tell <code>uv</code> that the file isn’t inside <code>src/</code>?</p>
+<p>(Issue #6293 appears to be related, but adding <code>[tool.hatch.build.targets.wheel]</code> with <code>packages = [&quot;.&quot;]</code> to <code>pyproject.toml</code> does nothing.)</p>
+Platform
+<p>Linux 6.18.2-x64v3-xanmod1 x86_64 GNU/Linux</p>
+Version
+<p>None, whatever <code>uv_build&gt;=0.9.26,&lt;0.10.0</code> currently pulls in during <code>pipx</code> install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntninja">@ntninja</a> on 2026-01-20 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntninja">@ntninja</a> on 2026-01-20 20:14</div>
+            <div class="timeline-body"><p>Notably it <em>does</em> work and can be installed and used when moving the single file to <code>src/flatpak_pip_generator/__init__.py</code> instead, but this goes against the spirit of the place hosting it <em>also</em> as a single downloadable script…</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-20 20:59:13 UTC
+    </footer>
+</body>
+</html>
