@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-02-20T00:18:56Z
-updated_at: 2026-01-20T15:01:03Z
+updated_at: 2026-01-20T17:08:35Z
 url: https://github.com/astral-sh/ruff/issues/3045
-synced_at: 2026-01-20T15:43:50Z
+synced_at: 2026-01-20T17:36:58Z
 ```
 
 # Rule to enforce import module only
@@ -83,5 +83,15 @@ _Comment by @serjflint on 2026-01-20 12:48_
 _Comment by @ntBre on 2026-01-20 15:01_
 
 Hi @serjflint! Thanks for checking! But this doesn't seem like it has much overlap with isort to me. This is about linting against particular types of imports, not about grouping or sorting them in a certain way, unless I'm misunderstanding something.
+
+---
+
+_Comment by @serjflint on 2026-01-20 17:08_
+
+> Hi @serjflint! Thanks for checking! But this doesn't seem like it has much overlap with isort to me. This is about linting against particular types of imports, not about grouping or sorting them in a certain way, unless I'm misunderstanding something.
+
+I meant forcing imports to import only modules. But knowing which is a module or an object inside a module is a bit outside of scope of the formatter.
+
+
 
 ---

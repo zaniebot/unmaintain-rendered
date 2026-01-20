@@ -5,12 +5,12 @@ type: issue
 state: open
 author: GideonBear
 labels:
-  - bug
+  - question
 assignees: []
 created_at: 2026-01-17T14:15:05Z
-updated_at: 2026-01-17T18:14:18Z
+updated_at: 2026-01-20T17:33:31Z
 url: https://github.com/astral-sh/uv/issues/17549
-synced_at: 2026-01-17T19:09:03Z
+synced_at: 2026-01-20T17:37:18Z
 ```
 
 # `uv lock` does not update `uv.lock` `package.metadata.requires-dist[*].specifier` when useless trailing `.0` is added/removed from specifier in `pyproject.toml`
@@ -185,5 +185,13 @@ I propose to either:
 2. Allow `uv lock` to change the lockfile when the specifier is changed, even if they are equivalent
 
 Normalizing the specifier seems like the best solution, given the function of a lockfile.
+
+---
+
+_Label `bug` removed by @konstin on 2026-01-20 17:33_
+
+---
+
+_Label `question` added by @konstin on 2026-01-20 17:33_
 
 ---

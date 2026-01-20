@@ -2,16 +2,18 @@
 number: 22669
 title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB154`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: FURB154
 created_at: 2026-01-17T21:50:19Z
-updated_at: 2026-01-17T22:00:25Z
+updated_at: 2026-01-20T16:43:15Z
 url: https://github.com/astral-sh/ruff/pull/22669
-synced_at: 2026-01-17T22:25:51Z
+synced_at: 2026-01-20T17:37:12Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB154`)
@@ -57,5 +59,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 22:00_
 
 
 
+
+---
+
+_@amyreese approved on 2026-01-20 16:41_
+
+---
+
+_Merged by @amyreese on 2026-01-20 16:41_
+
+---
+
+_Closed by @amyreese on 2026-01-20 16:41_
+
+---
+
+_Label `fixes` added by @amyreese on 2026-01-20 16:43_
 
 ---

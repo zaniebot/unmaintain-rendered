@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T16:13:59Z
+updated_at: 2026-01-20T17:22:07Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T16:46:59Z
+synced_at: 2026-01-20T17:37:12Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -423,5 +423,113 @@ class Child2(Base):
 ---
 
 _@AlexWaygood reviewed on 2026-01-20 16:13_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:04_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:815 on 2026-01-20 17:04_
+
+We could also add a failing test for properties with abstract deleters (we don't support property deleters at all yet, which is why it would not currently pass):
+
+```pycon
+>>> class F(ABC):
+...     @property
+...     def g(self): ...
+...     @g.setter
+...     def g(self, value): ...
+...     @g.deleter
+...     @abstractmethod
+...     def g(self): ...
+...     
+>>> F()
+Traceback (most recent call last):
+  File "<python-input-16>", line 1, in <module>
+    F()
+    ~^^
+TypeError: Can't instantiate abstract class F without an implementation for abstract method 'g'
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1074 on 2026-01-20 17:09_
+
+I find it a bit confusing that this method returns a map of "abstract methods", but then it's up to the caller to figure out if they're still abstract (because they might only be abstract on a grandparent class; they could have then been overridden with a concrete method on a parent class). My instinct would be to have the returned map only return methods that are _still_ abstract on `self`.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:09_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:12_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/final.md`:1 on 2026-01-20 17:12_
+
+Can you also add a test like this, where an abstract method is overridden as concrete but then overridden again as abstract:
+
+```py
+from abc import abstractmethod, ABC
+from typing import final
+
+class GreatGrandparent(ABC):
+    @abstractmethod
+    def f(self): ...
+
+class GrandParent(GreatGrandparent):
+    def f(self): ...
+
+class Parent(GrandParent):
+    @abstractmethod
+    def f(self): ...
+
+@final
+class Child(Parent): ...  # error
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:14_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/place.rs`:301 on 2026-01-20 17:14_
+
+yes, this looks correct! good catch
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:21_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:1889 on 2026-01-20 17:21_
+
+Your docs here mention classes that inherit from `ABC` or `Protocol`. But at runtime, any class with `ABCMeta` (or a subclass thereof) as its metaclass cannot be instantiated if it has unimplemented abstract methods; it doesn't have to have `ABC` or `Protocol` in its MRO. And at type-checking time, you're not currently checking the MRO or the metaclass at all.
+
+As I said in https://github.com/astral-sh/ruff/pull/22753/files#r2709058042, I think that's correct behaviour for a type checker:
+- It matches mypy
+- The intent for the class to be abstract is clear even if it won't be enforced at runtime
+- It's useful for stub authors if they want to indicate that you really _should_ override a certain method on a particular class when you subclass it -- authors of stubs generally don't want to pretend that a class has `ABCMeta` as its metaclass if it doesn't at runtime, but they might want to nonetheless mark a method as abstract in the stubs to help out users of the stubs
+
+But if we don't want to change our behaviour here, we should change the docs to make it clear that even though abstractness at runtime is only enforced for classes with `ABCMeta` (or a subclass thereof) as their metaclass, we enforce it at type-checking for all classes regardless of their metaclass
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:1406 on 2026-01-20 17:21_
+
+```suggestion
+                            .message(format_args!(
+                                "`{method_name}` defined as abstract on superclass `{defining_class}`",
+                                defining_class = defining_class.name(db)
+                            )),
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 17:22_
 
 ---

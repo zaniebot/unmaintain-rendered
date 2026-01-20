@@ -7,9 +7,9 @@ author: amyreese
 labels: []
 assignees: []
 created_at: 2026-01-16T23:26:57Z
-updated_at: 2026-01-20T15:59:40Z
+updated_at: 2026-01-20T17:15:13Z
 url: https://github.com/astral-sh/ruff/issues/22636
-synced_at: 2026-01-20T16:46:46Z
+synced_at: 2026-01-20T17:37:00Z
 ```
 
 # Mechanism to opt-in or opt-out of markdown formatting
@@ -52,5 +52,11 @@ I also don't know, but it makes some sense to me to reuse `include` and `exclude
 _Comment by @amyreese on 2026-01-20 15:59_
 
 The main question to me was whether we add `*.md` to the global/default `INCLUDE` or `INCLUDE_PREVIEW` and use a feature flag similar to `docstring-code-format` to turn on/off actually *formatting* (or linting?) those files, or if we just support the ability to format/lint markdown files with no feature flags, and just leave it to users to add `*.md` to their `include`/`extend-include` lists themselves in order to "turn it on".
+
+---
+
+_Comment by @amyreese on 2026-01-20 17:15_
+
+Will ask in the main issue if users want ruff to format markdown files by default or want explicit opt-in
 
 ---

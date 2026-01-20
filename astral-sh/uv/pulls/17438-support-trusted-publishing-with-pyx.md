@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-20T15:17:04Z
+updated_at: 2026-01-20T17:22:02Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-20T15:44:17Z
+synced_at: 2026-01-20T17:37:25Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -64,7 +64,7 @@ _@woodruffw reviewed on 2026-01-15 22:38_
 
 ---
 
-_Review comment by @woodruffw on `scripts/publish/test_publish.py`:436 on 2026-01-15 22:38_
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:434 on 2026-01-15 22:38_
 
 NOTE: I've removed the previous strategy of polling the index for a "fresh" version to test publishing with, in favor of this "timestamp" strategy where we pick a monotonically increasing (but not contiguous) version.
 
@@ -78,7 +78,7 @@ _@woodruffw reviewed on 2026-01-15 22:38_
 
 ---
 
-_Review comment by @woodruffw on `scripts/publish/test_publish.py`:794 on 2026-01-15 22:38_
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:788 on 2026-01-15 22:38_
 
 The log volume was a bit extreme (and not helpful), so I've dropped it back down to `INFO`.
 
@@ -100,7 +100,7 @@ _Label `registry` added by @woodruffw on 2026-01-16 03:17_
 
 ---
 
-_Review comment by @konstin on `scripts/publish/test_publish.py`:436 on 2026-01-19 11:05_
+_Review comment by @konstin on `scripts/publish/test_publish.py`:434 on 2026-01-19 11:05_
 
 Do we still need the `fresh_version_strategy` flag? It's not used anymore 
 
@@ -188,7 +188,7 @@ _@woodruffw reviewed on 2026-01-20 15:16_
 
 ---
 
-_Review comment by @woodruffw on `scripts/publish/test_publish.py`:436 on 2026-01-20 15:16_
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:434 on 2026-01-20 15:16_
 
 Nope, it's safe to remove. Will do!
 
@@ -201,5 +201,15 @@ _@woodruffw reviewed on 2026-01-20 15:17_
 _Review comment by @woodruffw on `crates/uv-publish/src/trusted_publishing/pyx.rs`:89 on 2026-01-20 15:17_
 
 Thanks for catching this! We do allow trailing slashes on pyx's upload endpoint, so I'll accommodate here.
+
+---
+
+_@woodruffw reviewed on 2026-01-20 17:22_
+
+---
+
+_Review comment by @woodruffw on `crates/uv-publish/src/lib.rs`:467 on 2026-01-20 17:22_
+
+Oh yeah, that's way clearer. I'll refactor!
 
 ---

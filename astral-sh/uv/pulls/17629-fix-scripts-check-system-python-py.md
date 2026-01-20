@@ -13,9 +13,9 @@ merged: true
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-20T16:11:00Z
-updated_at: 2026-01-20T16:34:34Z
+updated_at: 2026-01-20T16:36:02Z
 url: https://github.com/astral-sh/uv/pull/17629
-synced_at: 2026-01-20T16:47:12Z
+synced_at: 2026-01-20T17:37:25Z
 ```
 
 # Fix `scripts/check_system_python.py`
@@ -61,5 +61,11 @@ _Branch deleted on 2026-01-20 16:24_
 _Comment by @zanieb on 2026-01-20 16:34_
 
 The system tests jobs aren't a part of the required checks
+
+---
+
+_Comment by @EliteTK on 2026-01-20 16:36_
+
+Yeah. I wasn't sure how exactly that worked. Now I've learned by way of a practical lesson.
 
 ---

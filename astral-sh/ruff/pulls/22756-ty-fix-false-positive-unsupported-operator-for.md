@@ -8,12 +8,13 @@ labels:
   - bug
   - ty
 assignees: []
+draft: true
 base: main
 head: charlie/con
 created_at: 2026-01-20T03:55:05Z
-updated_at: 2026-01-20T15:37:02Z
+updated_at: 2026-01-20T16:59:36Z
 url: https://github.com/astral-sh/ruff/pull/22756
-synced_at: 2026-01-20T16:46:59Z
+synced_at: 2026-01-20T17:37:12Z
 ```
 
 # [ty] Fix false-positive unsupported-operator for constrained TypeVars
@@ -256,5 +257,9 @@ _Converted to draft by @charliermarsh on 2026-01-20 15:24_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-20 15:37_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-20 16:59_
 
 ---

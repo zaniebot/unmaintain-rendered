@@ -4,12 +4,14 @@ title: numpy 2.4 function removals
 type: issue
 state: open
 author: JohannesBuchner
-labels: []
+labels:
+  - rule
+  - needs-decision
 assignees: []
 created_at: 2026-01-20T09:28:18Z
-updated_at: 2026-01-20T09:28:18Z
+updated_at: 2026-01-20T17:16:00Z
 url: https://github.com/astral-sh/ruff/issues/22759
-synced_at: 2026-01-20T09:41:31Z
+synced_at: 2026-01-20T17:37:00Z
 ```
 
 # numpy 2.4 function removals
@@ -67,5 +69,21 @@ scipy.interpolate.interp2d
 
 
 
+
+---
+
+_Comment by @ntBre on 2026-01-20 17:15_
+
+Thanks for the suggestion! I think some of these 2.4 deprecations are already included in [numpy2-deprecation (NPY201)](https://docs.astral.sh/ruff/rules/numpy2-deprecation/#numpy2-deprecation-npy201). I see [`numpy.trapz`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L554), [`numpy.n1d`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L324), and [`numpy.disp`](https://github.com/astral-sh/ruff/blob/a6752942ad0d083bf2df0c2992499090257cfe7f/crates/ruff_linter/src/rules/numpy/rules/numpy_2_0_deprecation.rs#L286) at least. We could probably just expand that rule with the few missing ones for 2.4.
+
+scipy would probably require a new rule, which we might need a bit more consensus on, but I'd be open to the idea.
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-20 17:16_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2026-01-20 17:16_
 
 ---

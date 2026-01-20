@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: main
 head: charlie/self2
 created_at: 2026-01-20T03:50:54Z
-updated_at: 2026-01-20T15:54:53Z
+updated_at: 2026-01-20T16:59:40Z
 url: https://github.com/astral-sh/ruff/pull/22755
-synced_at: 2026-01-20T16:46:59Z
+synced_at: 2026-01-20T17:37:12Z
 ```
 
 # [ty] Disallow Self in metaclass and static methods
@@ -192,5 +193,9 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-20 15:54_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-20 15:54_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-20 16:59_
 
 ---
