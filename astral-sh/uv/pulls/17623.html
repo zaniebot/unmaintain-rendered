@@ -59,10 +59,92 @@ Installed 2 packages in 6ms
         <div class="timeline-entry">
             <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-20 13:56</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13402 on 2026-01-20 13:59</div>
+            <div class="timeline-body"><p>This comment seems to contradict the output now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13362 on 2026-01-20 13:59</div>
+            <div class="timeline-body"><pre><code>    // This file collides too, but we always show the first file.
+</code></pre>
+<p>Typo I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13394 on 2026-01-20 13:59</div>
+            <div class="timeline-body"><pre><code>    // This file collides too, but we always show the first file.
+</code></pre>
+<p>ditto</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-installer/src/installer.rs</code>:202 on 2026-01-20 14:04</div>
+            <div class="timeline-body"><p>I think we should print the error chain here. Similarly to this:</p>
+<p>https://github.com/astral-sh/uv/blob/f793b182edab2fea4a9d37fcef3cb4546de583b1/crates/uv-python/src/discovery.rs#L1565-L1574</p>
+<p>I was going to say we could centralise the implementation... But there&#x27;s no direct way to do that.</p>
+<p>Maybe for now just merge as is, or copy the code and adjust it, and then I will propose something as a PR later...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:28 on 2026-01-20 18:54</div>
+            <div class="timeline-body"><p>Maybe the <code>struct</code> should itself also be renamed to more closely reflect its use... Although I am not sure what that name should be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:62 on 2026-01-20 22:18</div>
+            <div class="timeline-body"><p>Since this ends up being turned into a <code>Path</code> on the other side, I think it makes sense to make the key type here a <code>PathBuf</code> and avoid the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:156 on 2026-01-20 22:43</div>
+            <div class="timeline-body"><p>We never pass <code>files</code> outside of this function so it can hold references.</p>
+<pre><code>                        .insert((wheel, dir_entry.metadata()?.len()));
+</code></pre>
+<p>You&#x27;ll need to edit the type signature above too (although you can switch the key types to placeholders as they can be inferred).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:161 on 2026-01-20 22:43</div>
+            <div class="timeline-body"><pre><code>                        .insert((wheel.clone(), dir_entry.path()));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:161 on 2026-01-20 22:46</div>
+            <div class="timeline-body"><p>Technically the wheel clone could be dropped here too if you feel like it. But it would require some reshuffling so not sure it&#x27;s totally worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:124 on 2026-01-20 23:03</div>
+            <div class="timeline-body"><p>It seems justifiable to compare contents lazily if the sizes match and aren&#x27;t zero.</p>
+<p>It would only happen when there are overlapping files (rare) with identical sizes (rarer). But it would ensure that we&#x27;re not under-reporting in extremely rare cases which definitely <em>will</em> cause a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:57 on 2026-01-20 23:16</div>
+            <div class="timeline-body"><p>Given the doc comment, it&#x27;s kind of confusing for it to take &quot;relative&quot; (<code>&amp;Path</code>) at all.</p>
+<p>I think one of these may be preferable:</p>
+<ul>
+<li>It could take an absolute path and a module name (i.e. <code>Component</code>) and the responsibility on passing just the module name should fall on the parent.</li>
+<li>The function could just be renamed and the doc comment reworded?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:148 on 2026-01-20 23:23</div>
+            <div class="timeline-body"><pre><code></code></pre>
+<p>Sorting here doesn&#x27;t affect the iteration order for <code>BTreeMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> approved on 2026-01-20 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 19:55:27 UTC
+        Synced at 2026-01-20 23:56:02 UTC
     </footer>
 </body>
 </html>
