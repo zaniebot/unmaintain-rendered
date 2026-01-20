@@ -2,17 +2,18 @@
 number: 17565
 title: Update Rust crate rustls to v0.23.36
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/rustls-0.x-lockfile
 created_at: 2026-01-19T01:30:10Z
-updated_at: 2026-01-19T16:13:49Z
+updated_at: 2026-01-20T10:53:17Z
 url: https://github.com/astral-sh/uv/pull/17565
-synced_at: 2026-01-19T16:27:20Z
+synced_at: 2026-01-20T11:33:21Z
 ```
 
 # Update Rust crate rustls to v0.23.36
@@ -56,5 +57,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:30_
 ---
 
 _@EliteTK approved on 2026-01-19 16:13_
+
+---
+
+_Merged by @EliteTK on 2026-01-20 10:53_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 10:53_
+
+---
+
+_Branch deleted on 2026-01-20 10:53_
 
 ---

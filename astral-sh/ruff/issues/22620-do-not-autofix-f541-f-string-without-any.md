@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-16T12:36:06Z
-updated_at: 2026-01-19T15:33:30Z
+updated_at: 2026-01-20T11:26:32Z
 url: https://github.com/astral-sh/ruff/issues/22620
-synced_at: 2026-01-19T16:26:54Z
+synced_at: 2026-01-20T11:32:55Z
 ```
 
 # Do not autofix F541 `f-string without any placeholders` / mark as risky
@@ -327,5 +327,18 @@ I don't agree, they could use [extend-safe-fixes](https://docs.astral.sh/ruff/se
 If a developer defaults to `--unsafe-fixes` for all, that is on them.
 
 Though again, this relates if one wants to prioritize finding potential bugs or allowing formats to be forced to remain consistent.  
+
+---
+
+_Comment by @mkusz on 2026-01-20 11:26_
+
+I'm on the side, that any tool that validates code, should report more potential errors and not fix them automatically when there is unclear intention. In this specific case, as a linter, you are not sure if user forgot to remove `f` or forgot to add `{}` inside of the string. It's why I'm also think that this should be a considered unsafe fix. I understand that for some of the devs.
+Also there is some Zen of Python behind this way of thinking:
+```
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+ ```
+I know that with this we are not fully sure if this is an error or an intention, but we are entering a `guess` territory, so we should follow the path of `explicitly silenced` and allow user to `extend-safe-fixes` or do `--unsafe-fixes` globally.
 
 ---

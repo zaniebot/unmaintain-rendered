@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-20T10:01:03Z
+updated_at: 2026-01-20T10:54:29Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-20T10:43:28Z
+synced_at: 2026-01-20T11:33:11Z
 ```
 
 # Dependency Dashboard
@@ -54,10 +54,8 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates have been manually edited so Renovate will no longer make changes. To discard all commits and start over, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/rustls-0.x-lockfile -->[Update Rust crate rustls to v0.23.36](../pull/17565)
  - [ ] <!-- rebase-branch=renovate/syn-2.x-lockfile -->[Update Rust crate syn to v2.0.114](../pull/17567)
  - [ ] <!-- rebase-branch=renovate/tokio-stream-0.x-lockfile -->[Update Rust crate tokio-stream to v0.1.18](../pull/17572)
- - [ ] <!-- rebase-branch=renovate/url-2.x-lockfile -->[Update Rust crate url to v2.5.8](../pull/17575)
  - [ ] <!-- rebase-branch=renovate/indexmap-2.x-lockfile -->[Update Rust crate indexmap to v2.13.0](../pull/17591)
  - [ ] <!-- rebase-branch=renovate/junction-1.x-lockfile -->[Update Rust crate junction to v1.3.0](../pull/17593)
  - [ ] <!-- rebase-branch=renovate/wmi-0.x -->[Update Rust crate wmi to 0.18.0](../pull/17602)
@@ -224,7 +222,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `tracing-tree 0.4.0`
  - `unicode-width 0.2.0`
  - `unscanny 0.1.0`
- - `url 2.5.2` → [Updates: `2.5.2`]
+ - `url 2.5.2`
  - `uuid 1.16.0`
  - `version-ranges 0.1.3`
  - `walkdir 2.5.0`
@@ -247,7 +245,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `insta 1.40.0` → [Updates: `1.40.0`]
  - `predicates 3.1.2`
  - `rcgen 0.14.5` → [Updates: `0.14.5`]
- - `rustls 0.23.29` → [Updates: `0.23.29`]
+ - `rustls 0.23.29`
  - `similar 2.6.0`
  - `temp-env 0.3.6`
  - `test-case 3.3.1`

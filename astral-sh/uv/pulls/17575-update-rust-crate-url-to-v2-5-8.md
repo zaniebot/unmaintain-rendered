@@ -2,17 +2,18 @@
 number: 17575
 title: Update Rust crate url to v2.5.8
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/url-2.x-lockfile
 created_at: 2026-01-19T01:31:39Z
-updated_at: 2026-01-19T15:29:11Z
+updated_at: 2026-01-20T10:51:41Z
 url: https://github.com/astral-sh/uv/pull/17575
-synced_at: 2026-01-19T16:27:20Z
+synced_at: 2026-01-20T11:33:21Z
 ```
 
 # Update Rust crate url to v2.5.8
@@ -71,5 +72,17 @@ _Label `internal` added by @renovate[bot] on 2026-01-19 01:31_
 _Comment by @EliteTK on 2026-01-19 15:29_
 
 :+1: reviewed changed code
+
+---
+
+_Merged by @EliteTK on 2026-01-20 10:51_
+
+---
+
+_Closed by @EliteTK on 2026-01-20 10:51_
+
+---
+
+_Branch deleted on 2026-01-20 10:51_
 
 ---

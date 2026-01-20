@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: charlie/int-method
 created_at: 2026-01-19T18:58:41Z
-updated_at: 2026-01-20T08:39:53Z
+updated_at: 2026-01-20T11:30:10Z
 url: https://github.com/astral-sh/ruff/pull/22731
-synced_at: 2026-01-20T09:41:43Z
+synced_at: 2026-01-20T11:33:08Z
 ```
 
 # [ty] Make `infer_subscript_expression_types` a method on `Type`
@@ -354,5 +354,21 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3789
 Ah I think this new method should probably operate on the Type IR too (good catch, I haven't really looked at the code yet).
 
 
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 11:30_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3789 on 2026-01-20 11:30_
+
+So the only AST-dependent argument here is `ast::ExprContext`, which doesn't hold a `TextRange` or node index in it. So I don't _think_ that this should cause any issues with overly eager Salsa invalidation?
+
+https://github.com/astral-sh/ruff/blob/0a1dddbf73e368a2019617ee907b0eb271eca979/crates/ruff_python_ast/src/nodes.rs#L2478-L2486
+
+If even passing this in as an argument could cause issues, though, then it could be easily replaced with a boolean `in_store_context` parameter.
+
+Passing in the `scope_id`, `index` and `typevar_binding_context` are different, though... and I don't see a way to avoid that, given how special-cased several subscript operations are in the Python type system. So it may well be best to make this a Salsa-tracked query, like @MichaReiser suggests.
 
 ---
