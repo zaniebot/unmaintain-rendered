@@ -2,19 +2,20 @@
 number: 22630
 title: "[ty] Pluck some low hanging performance fruit for completions"
 type: pull_request
-state: open
+state: merged
 author: BurntSushi
 labels:
   - performance
   - server
   - ty
 assignees: []
+merged: true
 base: main
 head: ag/auto-import-perf1
 created_at: 2026-01-16T20:09:06Z
-updated_at: 2026-01-20T14:25:19Z
+updated_at: 2026-01-20T14:37:41Z
 url: https://github.com/astral-sh/ruff/pull/22630
-synced_at: 2026-01-20T14:40:45Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # [ty] Pluck some low hanging performance fruit for completions
@@ -313,5 +314,17 @@ _@MichaReiser approved on 2026-01-20 13:59_
 _Comment by @BurntSushi on 2026-01-20 14:20_
 
 I created https://github.com/astral-sh/ty/issues/2570 for tracking adding benchmarks to `ty_walltime` at minimum.
+
+---
+
+_Merged by @BurntSushi on 2026-01-20 14:37_
+
+---
+
+_Closed by @BurntSushi on 2026-01-20 14:37_
+
+---
+
+_Branch deleted on 2026-01-20 14:37_
 
 ---

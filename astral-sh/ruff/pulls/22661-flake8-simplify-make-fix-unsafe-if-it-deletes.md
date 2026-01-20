@@ -2,16 +2,18 @@
 number: 22661
 title: "[`flake8-simplify`] Make fix unsafe if it deletes comments (`SIM911`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: SIM911
 created_at: 2026-01-17T20:20:31Z
-updated_at: 2026-01-17T20:29:43Z
+updated_at: 2026-01-20T15:18:10Z
 url: https://github.com/astral-sh/ruff/pull/22661
-synced_at: 2026-01-17T21:12:36Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # [`flake8-simplify`] Make fix unsafe if it deletes comments (`SIM911`)
@@ -61,5 +63,25 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 20:29_
 
 
 
+
+---
+
+_@ntBre approved on 2026-01-20 15:15_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-20 15:15_
+
+---
+
+_Merged by @ntBre on 2026-01-20 15:15_
+
+---
+
+_Closed by @ntBre on 2026-01-20 15:15_
+
+---
+
+_Branch deleted on 2026-01-20 15:18_
 
 ---

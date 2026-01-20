@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-20T13:54:11Z
+updated_at: 2026-01-20T14:38:55Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-20T14:40:31Z
+synced_at: 2026-01-20T15:43:51Z
 ```
 
 # Dependency Dashboard
@@ -106,7 +106,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 ## Detected Dependencies
 
-<details><summary>cargo (47)</summary>
+<details><summary>cargo (48)</summary>
 <blockquote>
 
 <details><summary>Cargo.toml (122)</summary>
@@ -399,6 +399,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </details>
 
 <details><summary>crates/ty_combine/Cargo.toml</summary>
+
+
+</details>
+
+<details><summary>crates/ty_completion_bench/Cargo.toml</summary>
 
 
 </details>
@@ -826,7 +831,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `@eslint/js ^9.21.0`
  - `@tailwindcss/vite ^4.0.14`
- - `@types/react ^19.0.11`
+ - `@types/react ^19.0.11` → [Updates: `^19.0.11`]
  - `@types/react-dom ^19.0.0`
  - `@vitejs/plugin-react-swc ^4.0.0`
  - `eslint ^9.22.0`

@@ -2,15 +2,15 @@
 number: 12845
 title: "Add a flag to `uv export` to omit local packages"
 type: issue
-state: open
+state: closed
 author: fepegar
 labels:
   - enhancement
 assignees: []
 created_at: 2025-04-11T20:59:37Z
-updated_at: 2026-01-20T13:54:13Z
+updated_at: 2026-01-20T14:35:12Z
 url: https://github.com/astral-sh/uv/issues/12845
-synced_at: 2026-01-20T14:40:50Z
+synced_at: 2026-01-20T15:44:09Z
 ```
 
 # Add a flag to `uv export` to omit local packages
@@ -131,5 +131,15 @@ Edit: I missed that `path` from your message and clearly agree with you :)
 _Comment by @fepegar on 2026-01-20 13:54_
 
 Is this now supported by `--no-emit-local`?
+
+---
+
+_Comment by @zanieb on 2026-01-20 14:35_
+
+Yeah I think `--no-emit-local` is what you needed!
+
+---
+
+_Closed by @zanieb on 2026-01-20 14:35_
 
 ---

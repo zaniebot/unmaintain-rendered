@@ -2,19 +2,20 @@
 number: 22747
 title: Preserve required parentheses in lambda bodies
 type: pull_request
-state: open
+state: merged
 author: ntBre
 labels:
   - bug
   - formatter
   - preview
 assignees: []
+merged: true
 base: main
 head: brent/lambda-walrus
 created_at: 2026-01-19T21:38:34Z
-updated_at: 2026-01-20T14:01:11Z
+updated_at: 2026-01-20T15:28:31Z
 url: https://github.com/astral-sh/ruff/pull/22747
-synced_at: 2026-01-20T14:40:45Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # Preserve required parentheses in lambda bodies
@@ -115,5 +116,21 @@ _@ntBre reviewed on 2026-01-20 13:51_
 _Review comment by @ntBre on `crates/ruff_python_formatter/src/expression/expr_lambda.rs`:444 on 2026-01-20 13:51_
 
 Added another test! Yes, this is okay because we're already adding parentheses in that branch. I believe that's true for all of the other branches too, we just need to avoid the final fallback behavior to `Parentheses::Never`.
+
+---
+
+_@MichaReiser approved on 2026-01-20 15:10_
+
+---
+
+_Merged by @ntBre on 2026-01-20 15:28_
+
+---
+
+_Closed by @ntBre on 2026-01-20 15:28_
+
+---
+
+_Branch deleted on 2026-01-20 15:28_
 
 ---

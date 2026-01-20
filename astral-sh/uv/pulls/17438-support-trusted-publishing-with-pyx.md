@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-19T11:49:13Z
+updated_at: 2026-01-20T15:17:04Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-19T12:32:49Z
+synced_at: 2026-01-20T15:44:17Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -181,5 +181,25 @@ _@konstin approved on 2026-01-19 11:49_
 ---
 
 _Label `enhancement` added by @konstin on 2026-01-19 11:49_
+
+---
+
+_@woodruffw reviewed on 2026-01-20 15:16_
+
+---
+
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:436 on 2026-01-20 15:16_
+
+Nope, it's safe to remove. Will do!
+
+---
+
+_@woodruffw reviewed on 2026-01-20 15:17_
+
+---
+
+_Review comment by @woodruffw on `crates/uv-publish/src/trusted_publishing/pyx.rs`:89 on 2026-01-20 15:17_
+
+Thanks for catching this! We do allow trailing slashes on pyx's upload endpoint, so I'll accommodate here.
 
 ---

@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-08-27T13:13:26Z
-updated_at: 2025-09-22T08:27:48Z
+updated_at: 2026-01-20T15:15:44Z
 url: https://github.com/astral-sh/ruff/issues/13122
-synced_at: 2026-01-12T15:54:52Z
+synced_at: 2026-01-20T15:43:51Z
 ```
 
 # Could ruff also check files according to file's shebang?
@@ -142,5 +142,11 @@ _Comment by @MichaReiser on 2025-09-22 08:27_
 
 > tl;dr It's recommended to use the include / extend-include config options to explicitly list down the files that you want Ruff to check for. Adding support for it might come with a performance cost although not sure.
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-20 15:15_
+
+Doing the shebang check only for files without extension might not be that expensive, as they shouldn't be very common.
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: tk/fix-ci-system-chocolatey
 created_at: 2026-01-16T17:40:54Z
-updated_at: 2026-01-20T14:30:57Z
+updated_at: 2026-01-20T15:32:46Z
 url: https://github.com/astral-sh/uv/pull/17533
-synced_at: 2026-01-20T14:40:58Z
+synced_at: 2026-01-20T15:44:17Z
 ```
 
 # Change chocolatey system test to ensure uv uses the right python
@@ -140,7 +140,7 @@ Should we just put this into `check_system_python.py` with a `--python-version` 
 
 ---
 
-_Review comment by @zanieb on `.github/workflows/test-system.yml`:553 on 2026-01-20 14:25_
+_Review comment by @zanieb on `.github/workflows/test-system.yml`:546 on 2026-01-20 14:25_
 
 Can we add a comment explaining why this is needed?
 
@@ -167,5 +167,15 @@ Including the patch hasn't broken so far for this specific test (as in, this isn
 ---
 
 _@EliteTK reviewed on 2026-01-20 14:30_
+
+---
+
+_@zanieb reviewed on 2026-01-20 14:55_
+
+---
+
+_Review comment by @zanieb on `.github/workflows/test-system.yml`:527 on 2026-01-20 14:55_
+
+Oh, I see we were requesting this specific patch version. Thats fine.
 
 ---

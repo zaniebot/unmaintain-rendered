@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-02-20T00:18:56Z
-updated_at: 2026-01-20T12:48:17Z
+updated_at: 2026-01-20T15:01:03Z
 url: https://github.com/astral-sh/ruff/issues/3045
-synced_at: 2026-01-20T13:37:44Z
+synced_at: 2026-01-20T15:43:50Z
 ```
 
 # Rule to enforce import module only
@@ -77,5 +77,11 @@ It's tragic the PR was closed. The [pylint plugin](https://github.com/Enforcer/p
 _Comment by @serjflint on 2026-01-20 12:48_
 
 @ntBre Hello! Is it possible to contribute this feature as on opt-in option to isort section of the formatter instead of a separate rule for the linter?
+
+---
+
+_Comment by @ntBre on 2026-01-20 15:01_
+
+Hi @serjflint! Thanks for checking! But this doesn't seem like it has much overlap with isort to me. This is about linting against particular types of imports, not about grouping or sorting them in a certain way, unless I'm misunderstanding something.
 
 ---

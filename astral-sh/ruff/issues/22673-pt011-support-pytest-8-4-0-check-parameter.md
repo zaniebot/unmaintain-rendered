@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2026-01-18T10:24:03Z
-updated_at: 2026-01-19T14:50:02Z
+updated_at: 2026-01-20T15:15:03Z
 url: https://github.com/astral-sh/ruff/issues/22673
-synced_at: 2026-01-19T15:24:54Z
+synced_at: 2026-01-20T15:43:52Z
 ```
 
 # [PT011] Support pytest 8.4.0 `check` parameter
@@ -51,5 +51,11 @@ Makes sense to me!
 ---
 
 _Label `rule` added by @ntBre on 2026-01-19 14:50_
+
+---
+
+_Comment by @harupy on 2026-01-20 15:15_
+
+@ntBre Thanks for the comment! Filed #22725
 
 ---

@@ -2,16 +2,18 @@
 number: 22670
 title: "[`refurb`] Make fix unsafe if it deletes comments (`FURB145`)"
 type: pull_request
-state: open
+state: merged
 author: chirizxc
-labels: []
+labels:
+  - fixes
 assignees: []
+merged: true
 base: main
 head: FURB145
 created_at: 2026-01-17T21:56:31Z
-updated_at: 2026-01-18T13:11:43Z
+updated_at: 2026-01-20T15:18:45Z
 url: https://github.com/astral-sh/ruff/pull/22670
-synced_at: 2026-01-18T13:20:54Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # [`refurb`] Make fix unsafe if it deletes comments (`FURB145`)
@@ -79,5 +81,25 @@ _Comment by @chirizxc on 2026-01-18 13:11_
 > https://github.com/astral-sh/ruff/blob/b4b8299d6cc3db6fd6125a30d58d58ef3d3069bf/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_dict_comprehension_for_iterable.rs#L36-L38
 
 I think it's ready, the rest of the PRs have also changed.
+
+---
+
+_@ntBre approved on 2026-01-20 15:06_
+
+---
+
+_Label `fixes` added by @ntBre on 2026-01-20 15:06_
+
+---
+
+_Merged by @ntBre on 2026-01-20 15:07_
+
+---
+
+_Closed by @ntBre on 2026-01-20 15:07_
+
+---
+
+_Branch deleted on 2026-01-20 15:18_
 
 ---

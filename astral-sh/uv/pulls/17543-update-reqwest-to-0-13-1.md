@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: update-reqwest-tls
 created_at: 2026-01-16T22:20:41Z
-updated_at: 2026-01-16T22:48:04Z
+updated_at: 2026-01-20T15:22:38Z
 url: https://github.com/astral-sh/uv/pull/17543
-synced_at: 2026-01-16T23:06:08Z
+synced_at: 2026-01-20T15:44:17Z
 ```
 
 # Update Reqwest to `0.13.1`
@@ -51,5 +51,17 @@ _Assigned to @zanieb by @zanieb on 2026-01-16 22:21_
 _Comment by @salmonsd on 2026-01-16 22:34_
 
 Will work on failing tests (apologies)
+
+---
+
+_@salmonsd reviewed on 2026-01-20 15:22_
+
+---
+
+_Review comment by @salmonsd on `crates/uv-client/src/base_client.rs`:602 on 2026-01-20 15:22_
+
+*note*
+
+This adds custom certs to the certificate store _regardless_ of the backend specified, which does diverge from the previous functionality which used native-tls if `--native-tls` flag was passed _OR_ if `SSL_CERT_*` env vars are present. Open to feedback if we want to keep that similar functionality.
 
 ---

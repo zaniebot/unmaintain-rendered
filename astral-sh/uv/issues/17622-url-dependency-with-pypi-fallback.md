@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-20T12:31:06Z
-updated_at: 2026-01-20T12:31:06Z
+updated_at: 2026-01-20T14:52:31Z
 url: https://github.com/astral-sh/uv/issues/17622
-synced_at: 2026-01-20T12:35:56Z
+synced_at: 2026-01-20T15:44:10Z
 ```
 
 # URL dependency with PyPI fallback
@@ -44,5 +44,17 @@ uv 0.9.17
 ---
 
 _Label `question` added by @evakkuri on 2026-01-20 12:31_
+
+---
+
+_Comment by @zanieb on 2026-01-20 14:52_
+
+I think you want to just use `--no-sources-package ray` locally and have a single source for the proprietary version.
+
+---
+
+_Comment by @zanieb on 2026-01-20 14:52_
+
+Otherwise the idea you're looking for is basically https://github.com/astral-sh/uv/issues/7945
 
 ---

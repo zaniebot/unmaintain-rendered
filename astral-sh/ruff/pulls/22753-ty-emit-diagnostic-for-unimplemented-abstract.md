@@ -8,12 +8,13 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+draft: true
 base: main
 head: charlie/final
 created_at: 2026-01-20T02:42:20Z
-updated_at: 2026-01-20T14:08:21Z
+updated_at: 2026-01-20T15:28:15Z
 url: https://github.com/astral-sh/ruff/pull/22753
-synced_at: 2026-01-20T14:40:45Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # [ty] Emit diagnostic for unimplemented abstract method on @final class
@@ -58,53 +59,25 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 02:47_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:949:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:989:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1032:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1072:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1115:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1154:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1194:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1573:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+django-test-migrations (https://github.com/wemake-services/django-test-migrations)
++ django_test_migrations/db/backends/postgresql/configuration.py:12:7: error[unimplemented-abstract-method] Final class `PostgreSQLDatabaseConfiguration` does not implement abstract method `statement_timeout`
+- Found 2 diagnostics
++ Found 3 diagnostics
 
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 46 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-
-pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
-- tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- Found 4452 diagnostics
-+ Found 4450 diagnostics
-
-rotki (https://github.com/rotki/rotki)
-+ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-+ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2056 diagnostics
-+ Found 2057 diagnostics
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
 
 core (https://github.com/home-assistant/core)
-+ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14491 diagnostics
-+ Found 14492 diagnostics
++ homeassistant/util/read_only_dict.py:13:7: error[unimplemented-abstract-method] Final class `ReadOnlyDict` does not implement abstract method `__delitem__`
++ homeassistant/util/read_only_dict.py:13:7: error[unimplemented-abstract-method] Final class `ReadOnlyDict` does not implement abstract method `__setitem__`
+- Found 14492 diagnostics
++ Found 14494 diagnostics
 
 
 ```
@@ -161,14 +134,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 02:53_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-argument-type` | 2 | 1 | 4 |
-| `invalid-assignment` | 0 | 0 | 5 |
-| `invalid-return-type` | 0 | 0 | 5 |
-| `unused-ignore-comment` | 0 | 2 | 0 |
-| **Total** | **2** | **3** | **14** |
+| `invalid-parameter-default` | 0 | 0 | 7 |
+| `invalid-return-type` | 0 | 5 | 2 |
+| `invalid-await` | 0 | 0 | 6 |
+| `unimplemented-abstract-method` | 3 | 0 | 0 |
+| `invalid-argument-type` | 0 | 0 | 2 |
+| **Total** | **3** | **5** | **17** |
 
 
-**[Full report with detailed diff](https://570e1361.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://570e1361.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://87e42dfb.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://87e42dfb.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -216,13 +190,13 @@ _Review requested from @AlexWaygood by @charliermarsh on 2026-01-20 13:50_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1084 on 2026-01-20 14:01_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1093 on 2026-01-20 14:01_
 
 we should add a branch (and tests) for `Type::PropertyInstance` too -- if the getter is abstract then the class can't be instantiated. (I can't remember what happens if the setter is decorated with `@abstractmethod` but the getter is not.)
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1107 on 2026-01-20 14:04_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1116 on 2026-01-20 14:04_
 
 It looks like this logic means you don't emit a diagnostic on this:
 
@@ -261,5 +235,53 @@ missing a let-chain opportunity :P
 ---
 
 _@AlexWaygood reviewed on 2026-01-20 14:08_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-20 15:03_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-20 15:09_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-20 15:12_
+
+now you're emitting false-positive errors on classes like this, which _can_ be instantiated at runtime 😄
+
+```py
+from abc import abstractmethod, ABC
+from typing import final
+
+class Base(ABC):
+    @property
+    @abstractmethod
+    def f(self) -> int: ...
+
+@final
+class Child(Base):
+    f = 42
+```
+
+The difference between `Child` and a class like this:
+
+```py
+@final
+class BadChild(Base):
+    f: int
+```
+
+is that `Child.f` has a _definition_ whereas `BadChild.f` only has a _declaration_
+
+---
+
+_Comment by @charliermarsh on 2026-01-20 15:15_
+
+Oh gosh.
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-20 15:28_
 
 ---

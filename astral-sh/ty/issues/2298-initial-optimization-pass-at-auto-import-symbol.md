@@ -2,16 +2,16 @@
 number: 2298
 title: Initial optimization pass at auto-import symbol extraction
 type: issue
-state: open
+state: closed
 author: liketoeatcheese
 labels:
   - performance
   - completions
 assignees: []
 created_at: 2026-01-01T22:28:10Z
-updated_at: 2026-01-09T15:14:27Z
+updated_at: 2026-01-20T14:37:41Z
 url: https://github.com/astral-sh/ty/issues/2298
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-20T15:43:46Z
 ```
 
 # Initial optimization pass at auto-import symbol extraction
@@ -115,5 +115,9 @@ _Assigned to @BurntSushi by @BurntSushi on 2026-01-06 16:20_
 ---
 
 _Renamed from "Separate extra paths for autocomplete and separate extra path for analysis" to "Initial optimization pass at auto-import symbol extraction" by @BurntSushi on 2026-01-09 15:14_
+
+---
+
+_Closed by @BurntSushi on 2026-01-20 14:37_
 
 ---

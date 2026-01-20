@@ -2,18 +2,19 @@
 number: 17542
 title: Add a nextest setup hook and optional code signing for tests on macOS
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
   - testing
 assignees: []
+merged: true
 base: main
 head: zb/sign-macos
 created_at: 2026-01-16T22:18:26Z
-updated_at: 2026-01-19T19:42:32Z
+updated_at: 2026-01-20T14:43:43Z
 url: https://github.com/astral-sh/uv/pull/17542
-synced_at: 2026-01-19T20:31:15Z
+synced_at: 2026-01-20T15:44:17Z
 ```
 
 # Add a nextest setup hook and optional code signing for tests on macOS
@@ -57,5 +58,27 @@ _Review comment by @woodruffw on `scripts/codesign-macos.sh`:34 on 2026-01-19 19
 ---
 
 _@woodruffw approved on 2026-01-19 19:42_
+
+---
+
+_Review comment by @zanieb on `scripts/codesign-macos.sh`:34 on 2026-01-20 14:43_
+
+I don't think it works, per our discussion in Discord.
+
+---
+
+_@zanieb reviewed on 2026-01-20 14:43_
+
+---
+
+_Merged by @zanieb on 2026-01-20 14:43_
+
+---
+
+_Closed by @zanieb on 2026-01-20 14:43_
+
+---
+
+_Branch deleted on 2026-01-20 14:43_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-20T10:39:37Z
-updated_at: 2026-01-20T10:39:37Z
+updated_at: 2026-01-20T14:53:04Z
 url: https://github.com/astral-sh/uv/issues/17621
-synced_at: 2026-01-20T11:33:14Z
+synced_at: 2026-01-20T15:44:10Z
 ```
 
 # Add copies of activations scripts in standard location for windows
@@ -32,5 +32,11 @@ _No response_
 ---
 
 _Label `enhancement` added by @elupus on 2026-01-20 10:39_
+
+---
+
+_Comment by @zanieb on 2026-01-20 14:53_
+
+See https://github.com/astral-sh/uv/issues/13392  
 
 ---

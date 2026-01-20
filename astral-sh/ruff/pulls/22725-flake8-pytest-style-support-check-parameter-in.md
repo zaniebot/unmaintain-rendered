@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pt011-support-check-parameter
 created_at: 2026-01-19T15:07:10Z
-updated_at: 2026-01-19T16:05:25Z
+updated_at: 2026-01-20T15:16:11Z
 url: https://github.com/astral-sh/ruff/pull/22725
-synced_at: 2026-01-19T16:27:07Z
+synced_at: 2026-01-20T15:44:04Z
 ```
 
 # [`flake8-pytest-style`] Support `check` parameter in `PT011`
@@ -50,5 +50,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 16:05_
 
 
 
+
+---
+
+_Review requested from @ntBre by @ntBre on 2026-01-20 15:16_
 
 ---
