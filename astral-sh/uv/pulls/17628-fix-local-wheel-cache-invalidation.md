@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix-local-wheel-cache-invalidation
 created_at: 2026-01-20T15:23:54Z
-updated_at: 2026-01-20T15:23:54Z
+updated_at: 2026-01-20T18:05:11Z
 url: https://github.com/astral-sh/uv/pull/17628
-synced_at: 2026-01-20T15:44:17Z
+synced_at: 2026-01-20T18:40:35Z
 ```
 
 # Fix local wheel cache invalidation
@@ -57,5 +57,11 @@ Include file modification times (mtime) in the cache hash for local distribution
 - Minimal overhead: one `fs::metadata()` call per local file distribution
 - No impact on remote dependencies
 - OS metadata is heavily cached
+
+---
+
+_Comment by @zanieb on 2026-01-20 18:05_
+
+Was this authored by using an LLM? Could you disclose how you decided on this design and iterated on the fix?
 
 ---

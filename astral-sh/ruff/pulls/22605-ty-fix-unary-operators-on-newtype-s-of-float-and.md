@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: newtype_unary
 created_at: 2026-01-15T17:42:25Z
-updated_at: 2026-01-17T05:34:55Z
+updated_at: 2026-01-20T18:35:40Z
 url: https://github.com/astral-sh/ruff/pull/22605
-synced_at: 2026-01-17T06:04:22Z
+synced_at: 2026-01-20T18:40:22Z
 ```
 
 # [ty] fix unary operators on `NewType`s of `float` and `complex`
@@ -333,5 +333,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-17 05:34_
 **[Full report with detailed diff](https://e9538907.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://e9538907.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@oconnor663 reviewed on 2026-01-20 18:35_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types.rs`:3231 on 2026-01-20 18:35_
+
+This was a good catch. I added a failing test case in a1c1863bd397cb54e6c732c30b9e3550f50123e0 and fixed it in 82cdbfc32e722bcf75a48b50cfb4d41f3110d0f1. In short, I think this special case should _only_ apply to the `float` and `complex` unions.
 
 ---

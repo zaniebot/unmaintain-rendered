@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-17T14:15:05Z
-updated_at: 2026-01-20T17:33:31Z
+updated_at: 2026-01-20T18:04:46Z
 url: https://github.com/astral-sh/uv/issues/17549
-synced_at: 2026-01-20T17:37:18Z
+synced_at: 2026-01-20T18:40:28Z
 ```
 
 # `uv lock` does not update `uv.lock` `package.metadata.requires-dist[*].specifier` when useless trailing `.0` is added/removed from specifier in `pyproject.toml`
@@ -193,5 +193,29 @@ _Label `bug` removed by @konstin on 2026-01-20 17:33_
 ---
 
 _Label `question` added by @konstin on 2026-01-20 17:33_
+
+---
+
+_Comment by @konstin on 2026-01-20 17:37_
+
+uv tries to only update the lockfile when required, and do only the minimal update if changes are required. I wouldn't consider it outdated if there's only a cosmetic change such as a trailing zero. `uv sync --locked` still passes with the lockfile, so I don't think we need to update here. We could normalize the specifier, but I don't think we gain something by doing it, as all parts of uv are aware that they are semantically equivalent.
+
+---
+
+_Comment by @GideonBear on 2026-01-20 18:01_
+
+> We could normalize the specifier, but I don't think we gain something by doing it, as all parts of uv are aware that they are semantically equivalent.
+
+Like I said, the problem is only that the next lockfile change (like `uv version --bump` in my example) changes the `termcolor` version, which is completely unrelated. This gives some review strain (which is admittedly not a big deal in a lockfile).
+
+> uv tries to only update the lockfile when required, and do **only the minimal update if changes are required**.
+
+By this logic, can the second lockfile update (`uv version --bump`) leave the `termcolor` specifier alone? That would also solve my problem.
+
+---
+
+_Comment by @GideonBear on 2026-01-20 18:04_
+
+I'm curious now whether there are any other objects in the lockfile that are `x == y` but not `serialize(x) == serialize(y)`, I speculate that that is where it is coming from; with something like `if current_lockfile != new_lockfile { write_lockfile(serialize(new_lockfile)) }`
 
 ---

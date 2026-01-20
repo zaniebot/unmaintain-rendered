@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-22395
 created_at: 2026-01-12T18:45:18Z
-updated_at: 2026-01-13T08:33:12Z
+updated_at: 2026-01-20T18:25:44Z
 url: https://github.com/astral-sh/ruff/pull/22538
-synced_at: 2026-01-13T09:21:15Z
+synced_at: 2026-01-20T18:40:22Z
 ```
 
 # [flake8_bugbear] fix: improve docs for `no_explicit_stacklevel`
@@ -84,5 +84,15 @@ _Label `documentation` added by @MichaReiser on 2026-01-13 08:33_
 ---
 
 _Assigned to @dylwil3 by @MichaReiser on 2026-01-13 08:33_
+
+---
+
+_@ntBre reviewed on 2026-01-20 18:25_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_bugbear/rules/no_explicit_stacklevel.rs`:23 on 2026-01-20 18:25_
+
+Does this link work? I don't think it will match up with the one below in the `## References` section, but I'd have to test the docs locally to be sure.
 
 ---
