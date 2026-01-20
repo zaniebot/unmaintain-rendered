@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use a simpler ordering for BDD variables - astral-sh/ruff #22777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use a simpler ordering for BDD variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22777">#22777</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2026-01-20 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
+            <div class="timeline-body"><p>This PR updates the ordering that we use for the BDD variables in our constraint set representation. If we only care about <em>correctness</em>, we can choose any ordering that we want, as long as it&#x27;s consistent. However, different orderings can have very different <em>performance</em> characteristics. Many BDD libraries attempt to reorder variables on the fly while building and working with BDDs. We don&#x27;t do that, but we have tried to make some simple choices that have clear wins.</p>
+<p>In particular, we now use the IDs that salsa assigns to each constraint as it is created. This tends to ensure that constraints that are close to each other in the source are also close to each other in the BDD structure.</p>
+<p>As an optimization, we also <em>reverse</em> this ordering, so that constraints that appear earlier in the source appear &quot;lower&quot; (closer to the terminal nodes) in the BDD. Since we build up BDDs by combining smaller BDDs (which will have been constructed from expressions earlier in the source), this tends to minimize the amount of &quot;node shuffling&quot; that we have to do when combining BDDs.</p>
+<p>Previously, we tried to be more clever — for instance, by comparing the typevars of each constraint first, in an attempt to keep all of the constraints for a single typevar adjacent in the BDD structure. However, this proved to be counterproductive; we&#x27;ve found empirically that we get smaller BDDs with an ordering that is more aligned with source order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-20 21:29</div>
+            <div class="timeline-body">
+
+<a href="https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/">Typing conformance results</a>
+<p>No changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-20 21:30</div>
+            <div class="timeline-body">
+
+<code>mypy_primer</code> results
+
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
+- tests/test_validators.py:1257:20: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Literal[&quot;spam&quot;]`
++ tests/test_validators.py:1257:20: error[invalid-argument-type] Argument is incorrect: Expected `float | int`, found `Literal[&quot;spam&quot;]`
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/aglib/kernel/__init__.py:218:20: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | None` and `Literal[1]`
++ pwndbg/aglib/kernel/__init__.py:218:20: error[unsupported-operator] Operator `+` is not supported between objects of type `None | Unknown` and `Literal[1]`
+- pwndbg/aglib/kernel/__init__.py:224:22: error[unsupported-operator] Operator `+` is not supported between objects of type `Unknown | None` and `int`
++ pwndbg/aglib/kernel/__init__.py:224:22: error[unsupported-operator] Operator `+` is not supported between objects of type `None | Unknown` and `int`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
++ tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 4454 diagnostics
++ Found 4456 diagnostics
+
+rotki (https://github.com/rotki/rotki)
++ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
++ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2058 diagnostics
++ Found 2059 diagnostics
+
+
+</code></pre>
+
+
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>trio (https://github.com/python-trio/trio)
+-     struct fields = ~12MB
++     struct fields = ~11MB
+
+
+</code></pre>
+
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-20 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-20 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-20 21:43</div>
+            <div class="timeline-body">
+
+<code>ecosystem-analyzer</code> results
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 2 | 2 | 4 |
+| <code>invalid-await</code> | 0 | 2 | 6 |
+| <code>invalid-assignment</code> | 0 | 0 | 5 |
+| <code>invalid-return-type</code> | 1 | 0 | 3 |
+| <code>possibly-missing-attribute</code> | 0 | 3 | 1 |
+| <code>unused-ignore-comment</code> | 1 | 2 | 0 |
+| <code>unresolved-attribute</code> | 0 | 0 | 2 |
+| <code>unsupported-operator</code> | 0 | 0 | 2 |
+| <strong>Total</strong> | <strong>4</strong> | <strong>9</strong> | <strong>23</strong> |</p>
+<p><strong><a href="https://3b5e2689.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://3b5e2689.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-20 21:56:38 UTC
+    </footer>
+</body>
+</html>

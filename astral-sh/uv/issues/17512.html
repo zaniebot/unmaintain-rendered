@@ -273,10 +273,18 @@ uv      16284 chilin  199u      REG               1,17        56 880687413 /User
             <div class="timeline-body"><p>That&#x27;s interesting - I wonder if we should have closed those locks?</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denyszhak">@denyszhak</a> on 2026-01-20 21:17</div>
+            <div class="timeline-body"><p>@konstin I will check how Cargo does it but I would give this one a try</p>
+<p>The locks themselves are looking correctly scoped - they protect the cache shard during the entire build to prevent concurrent writes. The issue is that too many locks are acquired simultaneously.</p>
+<p>We acquire them early and each lock is held until the build completes but then we use semaphore that only allows <code>available_parallelism</code> (number of cpus).</p>
+<p>Should we limit concurrency earlier? Change prepare_stream to use <code>buffer_unordered(concurrent_builds)</code> instead of unbounded <code>FuturesUnordered</code>. This way only N editables start at a time, matching the build semaphore.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 19:41:33 UTC
+        Synced at 2026-01-20 21:57:50 UTC
     </footer>
 </body>
 </html>
