@@ -343,10 +343,108 @@ class Child2(Base):
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 16:13</div>
             <div class="timeline-body"></div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:815 on 2026-01-20 17:04</div>
+            <div class="timeline-body"><p>We could also add a failing test for properties with abstract deleters (we don't support property deleters at all yet, which is why it would not currently pass):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class F(ABC):
+...     @property
+...     def g(self): ...
+...     @g.setter
+...     def g(self, value): ...
+...     @g.deleter
+...     @abstractmethod
+...     def g(self): ...
+...     
+&gt;&gt;&gt; F()
+Traceback (most recent call last):
+  File &quot;&lt;python-input-16&gt;&quot;, line 1, in &lt;module&gt;
+    F()
+    ~^^
+TypeError: Can't instantiate abstract class F without an implementation for abstract method 'g'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1074 on 2026-01-20 17:09</div>
+            <div class="timeline-body"><p>I find it a bit confusing that this method returns a map of &quot;abstract methods&quot;, but then it's up to the caller to figure out if they're still abstract (because they might only be abstract on a grandparent class; they could have then been overridden with a concrete method on a parent class). My instinct would be to have the returned map only return methods that are <em>still</em> abstract on <code>self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:1 on 2026-01-20 17:12</div>
+            <div class="timeline-body"><p>Can you also add a test like this, where an abstract method is overridden as concrete but then overridden again as abstract:</p>
+<pre><code class="language-py">from abc import abstractmethod, ABC
+from typing import final
+
+class GreatGrandparent(ABC):
+    @abstractmethod
+    def f(self): ...
+
+class GrandParent(GreatGrandparent):
+    def f(self): ...
+
+class Parent(GrandParent):
+    @abstractmethod
+    def f(self): ...
+
+@final
+class Child(Parent): ...  # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:301 on 2026-01-20 17:14</div>
+            <div class="timeline-body"><p>yes, this looks correct! good catch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1889 on 2026-01-20 17:21</div>
+            <div class="timeline-body"><p>Your docs here mention classes that inherit from <code>ABC</code> or <code>Protocol</code>. But at runtime, any class with <code>ABCMeta</code> (or a subclass thereof) as its metaclass cannot be instantiated if it has unimplemented abstract methods; it doesn't have to have <code>ABC</code> or <code>Protocol</code> in its MRO. And at type-checking time, you're not currently checking the MRO or the metaclass at all.</p>
+<p>As I said in https://github.com/astral-sh/ruff/pull/22753/files#r2709058042, I think that's correct behaviour for a type checker:</p>
+<ul>
+<li>It matches mypy</li>
+<li>The intent for the class to be abstract is clear even if it won't be enforced at runtime</li>
+<li>It's useful for stub authors if they want to indicate that you really <em>should</em> override a certain method on a particular class when you subclass it -- authors of stubs generally don't want to pretend that a class has <code>ABCMeta</code> as its metaclass if it doesn't at runtime, but they might want to nonetheless mark a method as abstract in the stubs to help out users of the stubs</li>
+</ul>
+<p>But if we don't want to change our behaviour here, we should change the docs to make it clear that even though abstractness at runtime is only enforced for classes with <code>ABCMeta</code> (or a subclass thereof) as their metaclass, we enforce it at type-checking for all classes regardless of their metaclass</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:1406 on 2026-01-20 17:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            .message(format_args!(
+                                &quot;`{method_name}` defined as abstract on superclass `{defining_class}`&quot;,
+                                defining_class = defining_class.name(db)
+                            )),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-20 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 16:37:16 UTC
+        Synced at 2026-01-20 17:40:25 UTC
     </footer>
 </body>
 </html>
