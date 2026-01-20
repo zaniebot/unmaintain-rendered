@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: show-one-more-path
 created_at: 2026-01-20T20:45:11Z
-updated_at: 2026-01-20T20:45:12Z
+updated_at: 2026-01-20T21:09:16Z
 url: https://github.com/astral-sh/ruff/pull/22776
-synced_at: 2026-01-20T20:55:43Z
+synced_at: 2026-01-20T21:54:18Z
 ```
 
 # [ty] show final search path instead of "and 1 more paths"
@@ -71,5 +71,15 @@ _Review requested from @dcreager by @mswart on 2026-01-20 20:45_
 ---
 
 _Review requested from @MichaReiser by @mswart on 2026-01-20 20:45_
+
+---
+
+_@mswart reviewed on 2026-01-20 21:09_
+
+---
+
+_Review comment by @mswart on `crates/ty_python_semantic/src/types/infer/builder.rs`:8137 on 2026-01-20 21:09_
+
+This could be implemented with `.next()`, too: we only count the items afterwards, but that feels a bit magic.
 
 ---

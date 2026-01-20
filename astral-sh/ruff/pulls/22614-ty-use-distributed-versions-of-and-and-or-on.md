@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: dcreager/distributed-ops
 created_at: 2026-01-16T10:01:46Z
-updated_at: 2026-01-19T09:22:39Z
+updated_at: 2026-01-20T21:28:46Z
 url: https://github.com/astral-sh/ruff/pull/22614
-synced_at: 2026-01-19T10:28:42Z
+synced_at: 2026-01-20T21:54:18Z
 ```
 
 # [ty] Use distributed versions of AND and OR on constraint sets
@@ -340,7 +340,7 @@ _@dcreager reviewed on 2026-01-16 10:08_
 
 ---
 
-_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:722 on 2026-01-16 10:08_
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:723 on 2026-01-16 10:08_
 
 While we're here, I'm updating the BDD variable ordering to be less clever. For the pathological example from #21902 this has a huge benefit.
 
@@ -350,7 +350,7 @@ _@dcreager reviewed on 2026-01-16 10:08_
 
 ---
 
-_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:4097 on 2026-01-16 10:08_
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:4028 on 2026-01-16 10:08_
 
 and also update the tree display to make it more obvious where we're sharing tree structure
 
@@ -485,7 +485,7 @@ I went through some `when_any` usages and:
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:722 on 2026-01-19 09:17_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:723 on 2026-01-19 09:17_
 
 Should we do this in a separate PR so that we better understand where the performance improvements are coming from?
 
@@ -496,5 +496,17 @@ _@MichaReiser approved on 2026-01-19 09:22_
 Nice. 
 
 It might make sense to specialize `distribute_or` and `distribute_and` (or `when_any`) for `&[T]` and `ExactSizeIterator` as we see a perf regression on many projects (while small). Unless the perf regression is related to the `ordering` change. I suggest splitting that change into its own PR so that we have a better understanding where the regression is coming from.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:723 on 2026-01-20 21:28_
+
+Done: https://github.com/astral-sh/ruff/pull/22777
+
+(I have not addressed the other comments below yet; did this first to see what the performance looks like before considering a fallback for smaller vecs/etc)
+
+---
+
+_@dcreager reviewed on 2026-01-20 21:28_
 
 ---

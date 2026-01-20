@@ -2,18 +2,19 @@
 number: 22577
 title: "[ty] Build constraint set sequent maps lazily"
 type: pull_request
-state: open
+state: merged
 author: dcreager
 labels:
   - internal
   - ty
 assignees: []
+merged: true
 base: main
 head: dcreager/lazy-sequent-map
 created_at: 2026-01-14T18:04:45Z
-updated_at: 2026-01-19T08:39:07Z
+updated_at: 2026-01-20T21:15:16Z
 url: https://github.com/astral-sh/ruff/pull/22577
-synced_at: 2026-01-19T09:27:02Z
+synced_at: 2026-01-20T21:54:18Z
 ```
 
 # [ty] Build constraint set sequent maps lazily
@@ -32,7 +33,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 18:06_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
+## [Typing conformance results](https://github.com/python/typing/blob/dece44f2922ca390fe314145d09939514a21e76e/conformance/)
 
 No changes detected ✅
 
@@ -55,48 +56,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 18:07_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | str | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | str | ... omitted 4 union elements`
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 46 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_ | Self@iloc]`
-+ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
 - static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
 + static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | IndexHierarchy | TypeBlocks | ... omitted 8 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- Found 1824 diagnostics
-+ Found 1823 diagnostics
 
 
 ```
@@ -109,9 +78,9 @@ static-frame (https://github.com/static-frame/static-frame)
 <summary>Memory usage changes were detected when running on open source projects</summary>
 
 ```diff
-prefect (https://github.com/PrefectHQ/prefect)
--     struct metadata = ~49MB
-+     struct metadata = ~52MB
+trio (https://github.com/python-trio/trio)
+-     struct fields = ~11MB
++     struct fields = ~12MB
 
 
 ```
@@ -134,7 +103,7 @@ _Label `internal` added by @dcreager on 2026-01-14 18:14_
 _Comment by @codspeed-hq[bot] on 2026-01-14 18:26_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **improve performance by 4.65%**
+## Merging this PR will **improve performance by 5.14%**
 
 
 
@@ -149,10 +118,10 @@ _Comment by @codspeed-hq[bot] on 2026-01-14 18:26_
 
 |     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8.2 s | 7.9 s | +4.65% |
+| ⚡ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 8 s | 7.6 s | +5.14% |
 ---
 
-<sub>Comparing <code>dcreager/lazy-sequent-map</code> (2d07e1b) with <code>main</code> (3608c62)</sub>
+<sub>Comparing <code>dcreager/lazy-sequent-map</code> (30edce9) with <code>main</code> (6a2cc89)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Flazy-sequent-map?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -353,7 +322,7 @@ I found a different way to do this that keeps the performance win but doesn't re
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:2177 on 2026-01-19 08:31_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/constraints.rs`:2178 on 2026-01-19 08:31_
 
 Nit: Maybe for a separate PR: Would it make sense to maybe use `SmallVec` here? (what's a "typcial" size of `constraints?)
 
@@ -372,5 +341,37 @@ _@MichaReiser approved on 2026-01-19 08:37_
 _Comment by @MichaReiser on 2026-01-19 08:39_
 
 Nice. I don't have a lot of context on the BDD work but the cachng makes sense to me. Probably something that would also benefit from within-same-revision LRU caching, to cap the memory usage (see prefect). 
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:2178 on 2026-01-20 21:01_
+
+Good idea, done! (I don't have specific numbers but it's definitely true that most constraint sets will have a smallish number of constraints. I chose 8 more or less at random)
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/constraints.rs`:2219 on 2026-01-20 21:08_
+
+> Was it only the `SequentMap::add` call that could result in cycles?
+
+Yes, because of the subtype checks that we have to perform to compare the lower/upper bounds of each constraint. That could cause a cycle if we had to create a sequent map while we were in the middle of inferring the lower/upper bound type.
+
+I was using the mdtests + ecosystem tests to verify that the cycle handler isn't needed with this change. My intuition for why is that (a) the lazy processing delays the `add` calls enough that we're no longer in the middle of inferring the types of the lower/upper bounds, and (b) we might not have to analyze certain constraints at all anymore, since we only look at a constraint once we actually encounter it when walking a BDD tree.
+
+---
+
+_@dcreager reviewed on 2026-01-20 21:08_
+
+---
+
+_Merged by @dcreager on 2026-01-20 21:15_
+
+---
+
+_Closed by @dcreager on 2026-01-20 21:15_
+
+---
+
+_Branch deleted on 2026-01-20 21:15_
 
 ---

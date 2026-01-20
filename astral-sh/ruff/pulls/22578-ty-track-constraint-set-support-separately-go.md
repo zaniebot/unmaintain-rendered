@@ -9,12 +9,12 @@ labels:
   - ty
 assignees: []
 draft: true
-base: dcreager/lazy-sequent-map
+base: main
 head: dcreager/support
 created_at: 2026-01-14T18:21:11Z
-updated_at: 2026-01-14T19:26:41Z
+updated_at: 2026-01-20T21:15:15Z
 url: https://github.com/astral-sh/ruff/pull/22578
-synced_at: 2026-01-14T19:42:40Z
+synced_at: 2026-01-20T21:54:18Z
 ```
 
 # [ty] Track constraint set "support" separately; go back to fully reduced BDDs
