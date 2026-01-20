@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better detection for conflicting packages - astral-sh/uv #17623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better detection for conflicting packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17623">#17623</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2026-01-20 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
+            <div class="timeline-body"><p>In the previous iteration, conflict detection was based on top level modules. This would work if all namespace packages correctly omitted the <code>__init__.py</code>, but e.g. the nvidia packages include an empty <code>nvida/__init__.py</code>.</p>
+<p>Instead, we track overlapping top level modules during installation and perform conflict analysis after installation, recursing only as far as necessary.</p>
+<p>See https://github.com/astral-sh/uv/pull/13437 for a list of reported conflicts.</p>
+<p>Before:</p>
+<pre><code>$ uv venv -c -q &amp;&amp; uv pip install --preview nvidia-nvjitlink-cu12==12.8.93 nvidia-nvtx-cu12==12.8.90
+  Resolved 2 packages in 0.99ms
+  ░░░░░░░░░░░░░░░░░░░░ [0/2] Installing wheels...                                                    warning: The module `nvidia` is provided by more than one package, which causes an install race condition and can result in a broken module. Consider removing your dependency on either `nvidia-nvtx-cu12` (v12.8.90) or `nvidia-nvjitlink-cu12` (v12.8.93).
+  Installed 2 packages in 3ms
+   + nvidia-nvjitlink-cu12==12.8.93
+   + nvidia-nvtx-cu12==12.8.90
+</code></pre>
+<p>After:</p>
+<pre><code>$ uv venv -c -q &amp;&amp; cargo run -q pip install --preview nvidia-nvjitlink-cu12==12.8.93 nvidia-nvtx-cu12==12.8.90
+  Resolved 2 packages in 3ms
+  Installed 2 packages in 4ms
+   + nvidia-nvjitlink-cu12==12.8.93
+   + nvidia-nvtx-cu12==12.8.90
+</code></pre>
+<p>Still detected true positive:</p>
+<pre><code>$ uv venv -c -q &amp;&amp; cargo run -q pip install --no-progress opencv-python opencv-contrib-python --no-build --no-deps --preview
+  Resolved 2 packages in 5ms
+warning: The file `cv2/__init__.pyi` is provided by more than one package, which causes an install race condition and can result in a broken module. Packages containing the file:
+* opencv-contrib-python (opencv_contrib_python-4.13.0.90-cp37-abi3-manylinux_2_28_x86_64.whl)
+* opencv-python (opencv_python-4.13.0.90-cp37-abi3-manylinux_2_28_x86_64.whl)
+Installed 2 packages in 6ms
+ + opencv-contrib-python==4.13.0.90
+ + opencv-python==4.13.0.90
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @EliteTK by @konstin on 2026-01-20 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2026-01-20 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-20 14:45:50 UTC
+    </footer>
+</body>
+</html>
