@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-19T07:33:30Z
-updated_at: 2026-01-20T09:09:25Z
+updated_at: 2026-01-20T19:31:50Z
 url: https://github.com/astral-sh/ty/issues/2559
-synced_at: 2026-01-20T09:41:25Z
+synced_at: 2026-01-20T20:43:14Z
 ```
 
 # Make the first-time user experience of ty less overwhelming 
@@ -86,5 +86,11 @@ _Label `question` removed by @AlexWaygood on 2026-01-20 09:09_
 ---
 
 _Added to milestone `Stable` by @AlexWaygood on 2026-01-20 09:09_
+
+---
+
+_Comment by @carljm on 2026-01-20 19:31_
+
+@AlexWaygood Since you removed `question` and added this to stable milestone, can you clarify what you see as the specific action item(s) for someone picking up this issue, and how we can evaluate whether this issue has been fixed?
 
 ---

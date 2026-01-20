@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ty/support-typing-unpack
 created_at: 2026-01-20T17:57:41Z
-updated_at: 2026-01-20T18:46:11Z
+updated_at: 2026-01-20T18:51:57Z
 url: https://github.com/astral-sh/ruff/pull/22771
-synced_at: 2026-01-20T18:47:35Z
+synced_at: 2026-01-20T20:43:31Z
 ```
 
 # [ty] Support `Unpack[TypedDict]` for precise **kwargs typing (PEP 692)
@@ -425,5 +425,34 @@ prefect (https://github.com/PrefectHQ/prefect)
 ---
 
 _Label `ecosystem-analyzer` added by @AlexWaygood on 2026-01-20 18:46_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-20 18:51_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unused-ignore-comment` | 1 | 24 | 0 |
+| `unknown-argument` | 20 | 1 | 0 |
+| `invalid-argument-type` | 10 | 4 | 6 |
+| `invalid-return-type` | 0 | 6 | 7 |
+| `no-matching-overload` | 8 | 0 | 0 |
+| `invalid-assignment` | 0 | 1 | 5 |
+| `possibly-missing-attribute` | 0 | 4 | 0 |
+| `invalid-method-override` | 3 | 0 | 0 |
+| `not-subscriptable` | 0 | 3 | 0 |
+| **Total** | **42** | **43** | **18** |
+
+
+**[Full report with detailed diff](https://9731fb71.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://9731fb71.ty-ecosystem-ext.pages.dev/timing))
+
+
 
 ---

@@ -2,18 +2,19 @@
 number: 22605
 title: "[ty] fix unary operators on `NewType`s of `float` and `complex`"
 type: pull_request
-state: open
+state: merged
 author: oconnor663
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: newtype_unary
 created_at: 2026-01-15T17:42:25Z
-updated_at: 2026-01-20T18:40:15Z
+updated_at: 2026-01-20T19:05:51Z
 url: https://github.com/astral-sh/ruff/pull/22605
-synced_at: 2026-01-20T18:47:35Z
+synced_at: 2026-01-20T20:43:31Z
 ```
 
 # [ty] fix unary operators on `NewType`s of `float` and `complex`
@@ -343,5 +344,78 @@ This was a good catch. I added a failing test case in a1c1863bd397cb54e6c732c30b
 _Comment by @oconnor663 on 2026-01-20 18:38_
 
 This should be ready for proper review now :)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 18:49_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3239 on 2026-01-20 18:49_
+
+what would happen if a `foo` method were added to both `int` and `float` in the future[^1], and it had a `Self` return type?
+
+```py
+NT = NewType(float)
+
+nt = NT(3.14)
+reveal_type(nt.foo())  # `int | float` or `NT`?
+```
+
+[^1]: I'll get writing the "add a `foo` method to `float` and `int`" PEP ASAP
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 18:50_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3239 on 2026-01-20 18:50_
+
+(currently the only method that exists on both classes and returns `Self` is `__new__` -- `float.fromhex()` returns `Self`, but it only exists on the `float` class, not the `int` class)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-20 18:53_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:3239 on 2026-01-20 18:53_
+
+Uff, this does seem like a very silly and unlikely edge case I'm pointing out, though. And I'm not even sure what the correct answer there even is. I think you can just ignore me here.
+
+---
+
+_@AlexWaygood approved on 2026-01-20 18:55_
+
+it makes me a bit sad how many edge cases NewTypes of `float` are causing (and how many carve-outs we have to add as a result), but I don't see a way around it :( this LGTM!
+
+---
+
+_@oconnor663 reviewed on 2026-01-20 19:00_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types.rs`:3239 on 2026-01-20 19:00_
+
+Yeah I went looking for `Self` return types in typeshed, and it looked like they were all classmethods today, so I figured maybe I didn't need a clear answer to this :sweat_smile: (Similarly, probably obvious to you, but for completeness / my notes: if I _subclass_ `int` or `float`, and then `NewType` _that_, the base will be `NewTypeBase::ClassLiteral`, and this special case won't apply.)
+
+---
+
+_Comment by @oconnor663 on 2026-01-20 19:02_
+
+Yeah it also makes me nervous. Like how many other things (now or in the future) will "actually be unions on the inside" in some sense, and will need to go through a similarly painful process of accumulating all these special cases?
+
+---
+
+_Merged by @oconnor663 on 2026-01-20 19:05_
+
+---
+
+_Closed by @oconnor663 on 2026-01-20 19:05_
+
+---
+
+_Branch deleted on 2026-01-20 19:05_
 
 ---

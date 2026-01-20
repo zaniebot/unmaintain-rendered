@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: docs/ruff-format-flag
 created_at: 2026-01-20T12:37:36Z
-updated_at: 2026-01-20T15:53:23Z
+updated_at: 2026-01-20T19:14:51Z
 url: https://github.com/astral-sh/ruff/pull/22761
-synced_at: 2026-01-20T16:46:59Z
+synced_at: 2026-01-20T20:43:31Z
 ```
 
 # 📝 Add --exit-non-zero-on-format to formatter exit codes section
@@ -89,5 +89,15 @@ I think `--exit-non-zero-on-format` might fit nicely in the first list:
 as:
 
 - `1` if Ruff terminates successfully, one or more files were formatted, and `--exit-non-zero-on-format` was specified
+
+---
+
+_@alejsdev reviewed on 2026-01-20 19:14_
+
+---
+
+_Review comment by @alejsdev on `docs/formatter.md`:379 on 2026-01-20 19:14_
+
+done, thank you! 
 
 ---

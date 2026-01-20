@@ -2,15 +2,15 @@
 number: 2499
 title: "*Unary* operators not correctly inherited with `NewType(..., float)`"
 type: issue
-state: open
+state: closed
 author: jpgoldberg
 labels:
   - bug
 assignees: []
 created_at: 2026-01-14T19:43:06Z
-updated_at: 2026-01-14T23:20:49Z
+updated_at: 2026-01-20T19:05:51Z
 url: https://github.com/astral-sh/ty/issues/2499
-synced_at: 2026-01-14T23:42:12Z
+synced_at: 2026-01-20T20:43:14Z
 ```
 
 # *Unary* operators not correctly inherited with `NewType(..., float)`
@@ -91,5 +91,9 @@ _Added to milestone `Pre-stable 1` by @carljm on 2026-01-14 23:20_
 ---
 
 _Label `bug` added by @carljm on 2026-01-14 23:20_
+
+---
+
+_Closed by @oconnor663 on 2026-01-20 19:05_
 
 ---

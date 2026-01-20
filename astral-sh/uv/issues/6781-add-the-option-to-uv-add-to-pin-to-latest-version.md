@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2024-08-28T22:39:56Z
-updated_at: 2025-10-08T11:12:38Z
+updated_at: 2026-01-20T19:15:29Z
 url: https://github.com/astral-sh/uv/issues/6781
-synced_at: 2026-01-12T15:59:07Z
+synced_at: 2026-01-20T20:43:35Z
 ```
 
 # Add the option to `uv add` to pin to latest version of package
@@ -255,5 +255,16 @@ _Comment by @silverwind on 2025-10-08 11:11_
 If you are not pinning a dependency in `pyproject.toml` and another package depends on your package, the version of your dependency isn't actually pinned.
 
 I always change the `>=` dependencies that uv creates to `==` and I would really like a `save-exact` option which does this by default. It should be trivial to implement.
+
+---
+
+_Comment by @christopherwerner on 2026-01-20 19:15_
+
+Tl;dr  `uv add <something> --bounds=exact` as of uv 0.7.9 (preview feature!)
+Excluded-newer is a poor workaround. It turns out though that this has been since added - found by following mquan86's link.
+It was added in May 2025 - here are the release notes: https://github.com/astral-sh/uv/releases/tag/0.7.9
+
+See the pyproject setting here https://docs.astral.sh/uv/reference/settings/#add-bounds
+This issue seemed to be the one that convinced zanieb et al: https://github.com/astral-sh/uv/issues/6783
 
 ---

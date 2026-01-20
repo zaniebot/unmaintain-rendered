@@ -9,9 +9,9 @@ labels:
   - style
 assignees: []
 created_at: 2026-01-20T13:57:30Z
-updated_at: 2026-01-20T15:07:53Z
+updated_at: 2026-01-20T18:57:57Z
 url: https://github.com/astral-sh/ruff/issues/22764
-synced_at: 2026-01-20T15:43:52Z
+synced_at: 2026-01-20T20:43:20Z
 ```
 
 # More opinionated multiline string formatting
@@ -129,5 +129,23 @@ I don't see a strong reason here to change anything in Ruff as it gives you the 
 ---
 
 _Renamed from "multiline_string_handling in ruff format" to "More opinionated multiline string formatting" by @MichaReiser on 2026-01-20 15:07_
+
+---
+
+_Comment by @MeGaGiGaGon on 2026-01-20 18:57_
+
+The black playground is out of date, so it still has 2025's style (we haven't managed to get in contact with the maintainer to update it v.v). The new 2026 style leaves the formatting as Razer observes:
+```powershell
+PS ~\Documents\python_projects\black>uvx black -c @'
+op.execute(dedent("""
+    CREATE TRIGGER ...
+    ...
+""").strip())
+'@
+op.execute(dedent("""
+    CREATE TRIGGER ...
+    ...
+""").strip())
+```
 
 ---
