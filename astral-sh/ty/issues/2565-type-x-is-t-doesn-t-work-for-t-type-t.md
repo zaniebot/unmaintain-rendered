@@ -2,15 +2,15 @@
 number: 2565
 title: "`type(x) is t` doesn't work for `t: type[T]`"
 type: issue
-state: open
+state: closed
 author: arjenzorgdoc
 labels:
   - narrowing
 assignees: []
 created_at: 2026-01-19T16:26:12Z
-updated_at: 2026-01-19T16:33:08Z
+updated_at: 2026-01-20T08:23:02Z
 url: https://github.com/astral-sh/ty/issues/2565
-synced_at: 2026-01-19T17:25:58Z
+synced_at: 2026-01-20T08:39:15Z
 ```
 
 # `type(x) is t` doesn't work for `t: type[T]`
@@ -80,5 +80,9 @@ def bad2[T: list[int]](b: object, t: type[T]) -> list[int]:
 ```
 
 But narrowing seems fine if it's bound to a non-generic class, as in your example.
+
+---
+
+_Closed by @AlexWaygood on 2026-01-20 08:23_
 
 ---

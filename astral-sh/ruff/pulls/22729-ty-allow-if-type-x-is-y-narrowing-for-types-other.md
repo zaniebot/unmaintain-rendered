@@ -2,18 +2,19 @@
 number: 22729
 title: "[ty] Allow `if type(x) is Y` narrowing for types other than class-literal types"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: alex/type-t-narrow
 created_at: 2026-01-19T17:25:04Z
-updated_at: 2026-01-19T17:38:43Z
+updated_at: 2026-01-20T08:23:02Z
 url: https://github.com/astral-sh/ruff/pull/22729
-synced_at: 2026-01-19T18:27:46Z
+synced_at: 2026-01-20T08:39:33Z
 ```
 
 # [ty] Allow `if type(x) is Y` narrowing for types other than class-literal types
@@ -185,5 +186,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-19 17:33_
 _Comment by @AlexWaygood on 2026-01-19 17:38_
 
 The ecosystem report shows false positives going away on ibis and yarl
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:37_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-20 08:23_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-20 08:23_
+
+---
+
+_Branch deleted on 2026-01-20 08:23_
 
 ---

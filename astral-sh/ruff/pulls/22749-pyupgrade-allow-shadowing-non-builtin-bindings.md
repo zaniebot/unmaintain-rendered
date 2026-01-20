@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: brent/up029
 created_at: 2026-01-20T00:34:48Z
-updated_at: 2026-01-20T00:46:07Z
+updated_at: 2026-01-20T07:55:05Z
 url: https://github.com/astral-sh/ruff/pull/22749
-synced_at: 2026-01-20T01:38:34Z
+synced_at: 2026-01-20T08:39:33Z
 ```
 
 # [`pyupgrade`] Allow shadowing non-builtin bindings (`UP029`)
@@ -90,5 +90,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-20 00:46_
 
 
 
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_builtin_import.rs`:117 on 2026-01-20 07:55_
+
+Can we move this after filtering by name? I suspect filtering by namie is faster than all the symbol lookup that we do here. It IMO, also makes it less confusing whyu we always return `true `for `*`.
+
+---
+
+_@MichaReiser approved on 2026-01-20 07:55_
 
 ---
